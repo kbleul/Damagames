@@ -1,0 +1,49 @@
+:jbake-title: System Scope and Context
+:jbake-type: page_toc
+:jbake-status: published
+:jbake-menu: arc42
+:jbake-order: 3
+:filename: /chapters/03_system_scope_and_context.adoc
+ifndef::imagesdir[:imagesdir: ../../images]
+
+:toc:
+
+[[section-system-scope-and-context]]
+== System Scope and Context
+
+.scope and context diagram
+[plantuml, "{plantUMLDir}scope_context", png] 
+----
+@startuml
+skinparam actorStyle awesome
+
+:Player: --> (Smartphone)
+(Smartphone) --> [DAMA]
+(Smartphone) --> (Telecom)
+(DAMA) --> (Telecom)
+:DevOps: --> (DAMA)
+
+@enduml
+----
+
+[cols="5,5"]
+|===
+| Neighbor
+| Description
+
+| Player
+| User who wants to play the game with his smartphone
+
+| Smartphone
+| Players phone
+
+| Telecom
+| Cell provider of user for internet and VAS
+
+| DAMA
+| Gaming platform to be developed with this solution architecture
+
+| DevOps
+| Development and Operations team for DAMA
+
+|===

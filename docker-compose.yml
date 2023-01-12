@@ -1,0 +1,52 @@
+version: '3'
+services:
+  app:
+    build:
+      context: ./dockerfiles
+      dockerfile: javascript.dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/var/www/html
+    labels:
+      - "traefik.http.routers.app.rule=Host(`app.localhost`)"
+    depends_on:
+      - traefik
+      - api
+
+  database:
+    image: mariadb:10.6
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: dama
+      MYSQL_USER: dama
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: secret
+      SERVICE_TAGS: dev
+      SERVICE_NAME: database
+
+  api:
+    build:
+      context: ./dockerfiles
+      dockerfile: php.dockerfile
+    ports:
+      - "8082:8082"
+    volumes:
+      - ./backend:/var/www/html
+    labels:
+      - "traefik.http.routers.api.rule=(Host(`api.app.localhost`))"
+    depends_on:
+      - traefik
+      - database
+
+  traefik:
+    image: traefik:v2.9
+    command: --api.insecure=true --providers.docker
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

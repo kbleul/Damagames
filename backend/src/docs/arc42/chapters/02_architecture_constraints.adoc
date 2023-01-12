@@ -1,0 +1,41 @@
+:jbake-title: Architecture Constraints
+:jbake-type: page_toc
+:jbake-status: published
+:jbake-menu: arc42
+:jbake-order: 2
+:filename: /chapters/02_architecture_constraints.adoc
+ifndef::imagesdir[:imagesdir: ../../images]
+
+:toc:
+
+[[section-architecture-constraints]]
+== Architecture Constraints
+
+DAMA shall
+
+- allow players to always find a partner for a game, even if it is just a bot
+- not be a gambling platform that requires a gambling license
+- be easily accessible for new users who receive a game invite from a friend
+- be automatically built and tested for quick release cycles and high quality standards
+
+[role="arc42help"]
+****
+.Contents
+Any requirement that constraints software architects in their freedom of design and implementation decisions or decision about the development process. These constraints sometimes go beyond individual systems and are valid for whole organizations and companies.
+
+.Motivation
+Architects should know exactly where they are free in their design decisions and where they must adhere to constraints.
+Constraints must always be dealt with; they may be negotiable, though.
+
+.Form
+Simple tables of constraints with explanations.
+If needed you can subdivide them into
+technical constraints, organizational and political constraints and
+conventions (e.g. programming or versioning guidelines, documentation or naming conventions)
+
+
+.Further Information
+
+See https://docs.arc42.org/section-2/[Architecture Constraints] in the arc42 documentation.
+
+****

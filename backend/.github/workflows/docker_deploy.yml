@@ -1,0 +1,54 @@
+---
+name: 'Deploy Docker Containers'
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install SSH key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        #name: id_rsa # optional
+        known_hosts: ${{ secrets.SSH_FINGERPRINT }}
+        #config: ${{ secrets.CONFIG }} # ssh_config; optional
+        #if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
+
+    - name: Create docker context
+      run: docker context create prod --docker "host=ssh://${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}"
+
+    # - name: Remove old php container to force build
+    #   run: docker-compose --context prod -f docker-compose.prod.yml rm -s -f
+
+    # - name: Stop containers
+    #   run: docker-compose --context prod -f docker-compose.prod.yml down --remove-orphans
+
+    - name: Deploy Docker Containers
+      run: |
+        docker-compose --context prod -f docker-compose.prod.yml up --build -d
+      env:
+        DOCKER_HOST: ssh://${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}
+        #DOCKER_TLS_VERIFY: 1
+        #DOCKER_CERT_PATH: /github/workspace/.ssh
+        APP_ENV: dev
+        DB_CONNECTION: mysql
+        DB_HOST: database
+        DB_PORT: 3306
+        DB_DATABASE: dama
+        DB_USERNAME: dama
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+        PUSHER_APP_ID: 1515042
+        PUSHER_APP_KEY: ${{ secrets.PUSHER_APP_KEY }}
+        PUSHER_APP_SECRET: ${{ secrets.PUSHER_APP_SECRET }}
+        PUSHER_HOST: damagames.com
+        PUSHER_PORT: 443
+        PUSHER_SCHEME: https
+        PUSHER_APP_CLUSTER: ap2
+

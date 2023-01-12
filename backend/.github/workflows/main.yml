@@ -1,0 +1,24 @@
+---
+name: 'build, release and deploy'
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - 'v*-rc[0-9]+'
+
+jobs:
+  build_arc_docs:
+    uses: ./.github/workflows/build_arc_docs.yml
+
+  release:
+    uses: ./.github/workflows/release.yml
+    needs: 'build_arc_docs'
+  # with:
+  #   secrets:
+  #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy:
+    uses: ./.github/workflows/docker_deploy.yml
+    secrets: inherit
+    #needs: 'release'

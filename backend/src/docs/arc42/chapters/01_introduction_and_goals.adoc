@@ -1,0 +1,108 @@
+:jbake-title: Introduction and Goals
+:jbake-type: page_toc
+:jbake-status: published
+:jbake-menu: arc42
+:jbake-order: 1
+:filename: /chapters/01_introduction_and_goals.adoc
+ifndef::imagesdir[:imagesdir: ../../images]
+
+:toc:
+
+[[section-introduction-and-goals]]
+== Introduction and Goals
+
+DAMA is a multiplayer platform for playing checkers online against friends or other unknown players.
+For a VAS subscription of daily 2 Birr you get daily 100 coins which allows on average for 10 games. Game cost can depend on skill of player, there are different levels of cost and potential winnings per game.
+
+You can get additional coins by 
+
+- one-off payment
+- winning against other players
+- inviting friends
+
+Possibly there will be an integration with eCommerce site(s) to "cash out" by getting products (for example buy shampoo with 10,000 coins)
+
+The business goal is to maximize profits.
+
+=== Requirements Overview
+
+
+Main driving force for the game is to acquire as many players as possible and have them play as many games as possible to create revenue. For this gamification and audiovisual feedback is used to reward players.
+
+Backlog is managed at https://jaktech.atlassian.net/jira/software/c/projects/DAMA/boards/3/backlog
+
+The game should enable users to easily
+
+- sign up or sign in
+- subscribe and unsubscribe to daily credits
+- check their current credits
+- start a game of checkers with friends or strangers currently online
+- get a reward when they win
+- invite friends to a game (possibly for reward of credit when inviting a new player)
+
+Should have gamification
+- get a reward for daily log in
+- see their rank (i.e. ELO based "you are ranked No. 234 of 22422 players" or military tiers that fit with the theme of the game "King", "General", ...)
+
+KPIs
+
+- Monthly Active Users (MAU)
+- Daily Active Users (DAU)
+- # completed games daily
+- # completed games monthly
+- responsiveness: ms until user move is updated on clients
+- Avg. wait time for starting a new game
+- % of game requests where game was cancelled after waiting > 3 seconds
+- % of game requests where wait time was > 20 seconds
+
+
+=== Quality Goals
+
+[cols="5,5,5"]
+|===
+| Priority
+| Quality Goal
+| Scenario
+
+| 1
+| Functional Suitability
+| Whenever users have time for a quick game, they should be able to do it without long wait time for opponents
+
+| 2
+| Security
+| As the game handles VAS for the user, it must not be possible by third parties to abuse the billing system
+
+| 3
+| Transparency
+| Payments through VAS must be transparent in order to ensure trust of users and them recommending DAMA to friends
+
+| 4
+| Compatibility
+| The game must be compatible with the primary compute platform and app distribution channel of the target demographic
+
+| 5
+| Reliability
+| Ongoing games must not be interruped, rewards must be fairly distributed
+
+|===
+
+
+
+=== Stakeholders
+
+[options="header",cols="1,2,2"]
+|===
+|Role/Name|Contact|Expectations
+| Business Manager | Jochen Moninger <jochen@impacc.org> | Consulted on and informed about goals and risks of the product, accountible for the business strategy
+| Business Manager  | Jemaneh Aklog <jemaneh.2011@gmail.com> | Accountible for implementing the product with the dev team
+
+| Product Owner | Eyob Atnafu | Accountible for achieving product goals
+| Scrum Master  | Meron Tamiru | Helps the team to achieve product and quality goals and be agile
+| Solution Architect & Technical Consultant  | Markus Matiaschek <mmatiaschek@gmail.com> t.me/mmmuck +4915752642483 | Accountible for ensuring a maintainable solution architecture that is manageable by the dev team and can achieve the business goals.
+| UX/UI Designer | Dagim | Create game design and overall UI/UX
+| Backend Developer | Amanuel | Develops Laravel REST API 
+| Frontend Developer | Tesfaye | React.js Frontend development
+| Frontend Developer | Kibrom | React.js Frontend development
+| DevOps | Yohannes | Infrastructure & Deployment & Project Mgmt.
+| QA Engineer |  | 
+|===

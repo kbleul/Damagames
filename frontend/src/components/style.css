@@ -1,0 +1,18 @@
+input[type="text"]:focus {
+  box-shadow: 0 0 5px rgba(255, 76, 1, 1);
+
+  border: 1px solid rgba(255, 76, 1, 1);
+  border: 1px solid #ff4c01;
+}
+input[type="tel"]:focus,input[type="password"]:focus {
+  box-shadow: 0 0 5px rgba(255, 76, 1, 1);
+
+  border: 1px solid rgba(255, 76, 1, 1);
+  border: 1px solid #ff4c01;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

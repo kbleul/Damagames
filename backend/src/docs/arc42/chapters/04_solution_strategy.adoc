@@ -1,0 +1,73 @@
+:jbake-title: Solution Strategy
+:jbake-type: page_toc
+:jbake-status: published
+:jbake-menu: arc42
+:jbake-order: 4
+:filename: /chapters/04_solution_strategy.adoc
+ifndef::imagesdir[:imagesdir: ../../images]
+
+:toc:
+
+[[section-solution-strategy]]
+== Solution Strategy
+
+
+[role="arc42help"]
+****
+.Contents
+A short summary and explanation of the fundamental decisions and solution strategies, that shape system architecture. It includes
+
+* technology decisions
+* decisions about the top-level decomposition of the system, e.g. usage of an architectural pattern or design pattern
+* decisions on how to achieve key quality goals
+* relevant organizational decisions, e.g. selecting a development process or delegating certain tasks to third parties.
+
+.Motivation
+These decisions form the cornerstones for your architecture. They are the foundation for many other detailed decisions or implementation rules.
+
+.Form
+Keep the explanations of such key decisions short.
+
+Motivate what was decided and why it was decided that way,
+based upon problem statement, quality goals and key constraints.
+Refer to details in the following sections.
+
+
+.Further Information
+
+See https://docs.arc42.org/section-4/[Solution Strategy] in the arc42 documentation.
+
+****
+
+
+[cols="5,5,5"]
+|===
+| Goal/Requirement
+| Architectural Approach
+| Details
+
+| Security
+| Standard components that the team is already familiar with should be used as much as possible with secure defaults
+| 
+
+| Security
+| Ensure every API call is authenticated and user is authorized to do the transaction.
+| 
+
+| Transparency
+| Integration with Telco services enable cost and billing transparency
+| 
+
+
+| Compatibility
+| Develop a Progressive Web App (PWA) that can run in any browser and be installed as an App to users phone
+|
+
+| Reliability
+| Ongoing games must not be interruped, rewards must be fairly distributed
+|
+
+| Functional Suitability
+| Whenever users have time for a quick game, they should be able to do it without long wait time for opponents
+|
+|===

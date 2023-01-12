@@ -1,0 +1,14 @@
+.gradle
+build
+.DS_Store
+
+/node_modules
+/public/build
+/storage/*.key
+vendor/*
+.env
+**/.env
+/.fleet
+/.idea
+/.vscode
+/letsencrypt
