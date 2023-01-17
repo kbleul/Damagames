@@ -16,6 +16,31 @@ Clone this repo, and ensure that the dependencies are installed. From the comman
 cd backend && composer install
 cd frontend && npm install
 ```
+### Environment variables and secrets
+
+Set up the following environment variables and secrets
+
+| Name          | Default  | Description                           |
+| ------------- | -------- | ------------------------------------- |
+| APP_ENV       | dev      | dev or prod?                          |
+| DB_CONNECTION | mysql    | type of database                      |
+| DB_HOST       | database | hostname of database                  |
+| DB_PORT       | 3306     | db port                               |
+| DB_DATABASE   | dama     | name of the database                  |
+| DB_USERNAME   | dama     | database username                     |
+| DB_PASSWORD   | SECRET   | secret to define the db user password |
+|               |          |                                       |
+
+### GitHub deployment variables and secrets
+
+| Name            | Default       | Description                                               |
+| --------------- | ------------- | --------------------------------------------------------- |
+| REMOTE_HOST     | damagames.com | FQDN of linux server                                      |
+| REMOTE_USER     | root          | user on linux server                                      |
+| SSH_FINGERPRINT |               | ssh-keyscan damagames.com                                 |
+| SSH_PRIVATE_KEY | SECRET        | ssh-keygen -m PEM -t rsa -b 4096 + ~/.ssh/authorized_keys |
+|                 |               |                                                           |
+
 
 Then, bring everything up with Docker Compose:
 

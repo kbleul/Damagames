@@ -1,27 +1,19 @@
-FROM php:8.1 as php
+FROM php:8-fpm-alpine
 
-RUN apt-get update -y
-RUN apt-get install -y unzip libpq-dev libcurl4-gnutls-dev
-RUN docker-php-ext-install pdo pdo_mysql bcmath
+RUN mkdir -p /var/www/html
 
-RUN pecl install -o -f redis \
-    && rm -rf /tmp/pear \
-    && docker-php-ext-enable redis
-
-WORKDIR /var/www
+WORKDIR /var/www/html
 COPY . .
-
 COPY --from=composer:2.4 /usr/bin/composer /usr/bin/composer
-
-RUN docker-php-ext-install pdo pdo_mysql
-
 RUN docker-php-ext-install pdo pdo_mysql exif
 
-ENV PORT=8007
+EXPOSE 8082
 
-RUN chmod +x Docker/entrypoint.sh
+RUN chmod +x /var/www/html/entrypoint.sh
 RUN composer install --ignore-platform-req=php
-ENTRYPOINT ["/bin/sh", "./Docker/entrypoint.sh" ]
+
+# CMD ["/usr/local/bin/php", "artisan", "serve", "--host=0.0.0.0", "--port=8082"]
+ENTRYPOINT ["/bin/sh", "/var/www/html/entrypoint.sh" ]
 
 
 
