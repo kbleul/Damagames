@@ -1,0 +1,49 @@
+@startuml
+skinparam actorStyle awesome
+
+node "GitHub" {
+        collections repo1 as "dama repository"
+        collections repo2 as "dama frontend repository"
+        control main_action as "GitHub Action:  Release"
+        control develop_action as "GitHub Action:  Test"
+        control front_main_action as "GitHub Action:  Release"
+        control front_develop_action as "GitHub Action:  Test"
+        artifact frontend as "Frontend Release"
+        artifact backend as "Backend Release"
+        artifact frontrc as "Frontend Release Candidate"
+        artifact backrc as "Backend Release Candidate"
+
+        storage secrets as "GitHub secrets" {
+            card "prod-ssh-key"
+            card "qa-ssh-key"
+        }
+
+        repo1 --> main_action : main branch
+        repo1 --> develop_action : develop branch
+        repo2 --> front_main_action : main branch
+        repo2 --> front_develop_action : develop branch
+        front_main_action --> frontend
+        main_action --> backend
+        front_develop_action --> frontrc
+        develop_action --> backrc
+    }
+    actor dev as "developer"
+    node laptop as "development laptop"
+
+cloud "Contabo cloud Germany" {
+    node "DNS"
+    
+    node qa as "demo/qa environment"
+    node prod as "prod environment"
+
+    ' node registry as "docker registry2"
+    
+    dev --> laptop
+    laptop --> repo1 : git push
+    laptop --> repo2 : git push
+    frontrc --> qa : ssh
+    backrc --> qa : deploy
+    frontend --> prod : via
+    backend --> prod : ansible
+
+@enduml

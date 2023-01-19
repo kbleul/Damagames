@@ -1,0 +1,23 @@
+@startuml
+autonumber
+
+actor Player1 as Player1
+boundary frontend as frontend
+participant board_endpoint as "/games/{id}/board"
+participant move_endpoint as "/games/{id}/moves/{seq}"
+actor Player2 as Player2
+
+
+Player1 -> frontend : started game
+frontend -> board_endpoint : GET /games/{id}/board
+board_endpoint -> frontend : 200 board state \n{ next player \nnext move seq }
+frontend -> Player1 : render board state
+Player1 -> frontend : make move
+frontend -> move_endpoint : POST /games/{id}/moves/{seq}
+move_endpoint -> frontend : 201
+frontend -> Player1 : move confirmed \nwait for opponents move
+frontend -> move_endpoint : GET /games/{id}/moves/{seq+1} \nretry when timeout
+Player2 -> move_endpoint : POST /games/{id}/moves/{seq}
+move_endpoint -> frontend : 200 Player 2 move
+frontend -> Player1 : render opponent move \nwait for Player1 move
+@enduml
