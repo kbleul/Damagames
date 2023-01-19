@@ -24,6 +24,9 @@ jobs:
       - name: Set version
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
+      - name: "Change to docs directory"
+        run: cd docs
+
       - name: "Run build of HTML version"
         run: ./dtcw generateHTML
 
@@ -48,6 +51,9 @@ jobs:
   #     - uses: actions/checkout@v3
   #     - name: Set version
   #       run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+  #     - name: "Change to docs directory"
+  #       run: cd docs
 
       - name: "Remove help for PDF version"
         run: |

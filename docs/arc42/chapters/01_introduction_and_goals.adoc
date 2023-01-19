@@ -103,6 +103,6 @@ KPIs
 | Backend Developer | Amanuel | Develops Laravel REST API 
 | Frontend Developer | Tesfaye | React.js Frontend development
 | Frontend Developer | Kibrom | React.js Frontend development
-| DevOps | Yohannes | Infrastructure & Deployment & Project Mgmt.
+| DevOps | Yohahannes Mekonnen | Infrastructure & Deployment & Project Mgmt.
 | QA Engineer |  | 
 |===

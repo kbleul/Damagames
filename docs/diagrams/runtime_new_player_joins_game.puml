@@ -1,0 +1,22 @@
+@startuml
+autonumber
+boundary messenger as "WhatsApp/Telegram"
+actor Player as Player
+boundary Frontend as Frontend
+participant game_endpoint as "/games/{id}"
+participant user_endpoint as "auth"
+
+Player <- messenger : receives link from friend
+Player -> Frontend : Open https://dama.et/games/{id}
+Frontend -> game_endpoint : POST /games/{id}/player2 to join game
+game_endpoint -> game_endpoint : is user authenticated\n false
+game_endpoint -> Frontend : unauthenticated session\n with state set for "start-game"\n with the game ID \nredirect to /login
+Frontend -> user_endpoint : GET
+user_endpoint -> Frontend : 200 sign-up / sign-in page
+Frontend -> user_endpoint : POST sign-up form (just username for now)
+user_endpoint -> Frontend : 201 authenticated session
+Frontend -> Frontend : get state \nshow loading animation
+Frontend -> game_endpoint : POST /games/{id}/player2 to join game
+game_endpoint -> Frontend : 201 game
+Frontend -> Player : Game has started
+@enduml
