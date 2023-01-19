@@ -1,0 +1,33 @@
+@startuml
+skinparam actorStyle awesome
+
+actor Player
+node Smartphone
+node Telecom {
+  interface VAS
+}
+
+package "DAMA" {
+  interface HTTPS
+  component traefik
+  folder Frontend
+  component API as "REST API"
+  interface HTTP
+  database "MySql"
+  component Events as "Events logging"
+  component Dashboard as "KPI Dashboard"
+
+  () HTTPS - traefik
+  () HTTP - [API]
+  traefik --> Frontend
+  traefik - HTTP
+  [API] --> MySql
+}
+
+:Player: --> Smartphone
+Smartphone --> HTTPS
+Smartphone --> VAS
+API --> VAS
+:DevOps: --> DAMA
+
+@enduml

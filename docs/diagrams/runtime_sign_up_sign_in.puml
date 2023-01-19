@@ -1,0 +1,26 @@
+@startuml
+autonumber
+
+actor Player as "Player browser"
+participant httpd
+boundary Frontend as Frontend
+participant API
+
+Player -> httpd : https://dama.et \nGET /
+httpd -> Player : 200 serve Frontend
+Player -> Frontend : start matchmaking \nstart private game
+Frontend -> API : POST /games
+API -> API : authenticated: \nfalse
+API -> Frontend : redirect /login \nwith callback_uri \n and state to \nPOST /games \nafter redirect
+Frontend -> Player : Sign-up / Sign-in page
+Player -> Frontend : Sign-up
+Frontend -> API : POST /users/
+API -> Frontend : 201 success \n redirect to main screen
+Frontend -> Frontend : get state \nshow loading animation
+Frontend -> Player : Start screen with loading animation
+Frontend -> API : POST /games
+API -> API : authenticated \n && authorized \ntrue
+API -> Frontend : 201 success
+Frontend -> Player : waiting for Player \nshare private game URL
+
+@enduml

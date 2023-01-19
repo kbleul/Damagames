@@ -4,16 +4,16 @@ outputPath = 'build'
 // This path is appended to the docDir property specified in gradle.properties
 // or in the command line, and therefore must be relative to it.
 
-inputPath = 'src/docs';
+inputPath = '.';
 
 // the pdfThemeDir config in this file is outdated.
 // please check http://doctoolchain.org/docToolchain/v2.0.x/020_tutorial/030_generateHTML.html#_pdf_style for further details
 // pdfThemeDir = './src/docs/pdfTheme'
 
 inputFiles = [
-        //[file: 'doctoolchain_demo.adoc',       formats: ['html','pdf']],
         //[file: 'arc42-template.adoc',    formats: ['html','pdf']],
-        [file: 'arc42/arc42.adoc', formats: ['html','pdf']],
+        [file: 'operations/ops_manual.adoc',       formats: ['pdf']],
+        //[file: 'arc42/arc42.adoc', formats: ['html','pdf']],
 	/** inputFiles **/
 ]
 
@@ -163,7 +163,7 @@ changelog.with {
     // Directory of which the exportChangelog task will export the changelog.
     // It should be relative to the docDir directory provided in the
     // gradle.properties file.
-    dir = 'src/docs'
+    dir = 'docs'
 
     // Command used to fetch the list of changes.
     // It should be a single command taking a directory as a parameter.

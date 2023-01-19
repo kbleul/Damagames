@@ -12,19 +12,7 @@ ifndef::imagesdir[:imagesdir: ../../images]
 == System Scope and Context
 
 .scope and context diagram
-[plantuml, "{plantUMLDir}scope_context", png] 
-----
-@startuml
-skinparam actorStyle awesome
-
-:Player: --> (Smartphone)
-(Smartphone) --> [DAMA]
-(Smartphone) --> (Telecom)
-(DAMA) --> (Telecom)
-:DevOps: --> (DAMA)
-
-@enduml
-----
+plantuml::../diagrams/scope_context.puml[png]
 
 [cols="5,5"]
 |===

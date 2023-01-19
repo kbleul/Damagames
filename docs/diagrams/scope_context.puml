@@ -1,0 +1,11 @@
+@startuml
+skinparam actorStyle awesome
+
+:Player: --> (Smartphone)
+(Smartphone) --> [DAMA]
+(Smartphone) --> (Telecom)
+(DAMA) --> (Telecom)
+:DevOps: --> (GitHub)
+(GitHub) --> (DAMA)
+
+@enduml
