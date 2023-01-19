@@ -169,7 +169,15 @@ Set up the following environment variables and secrets
 
 ==== Server
 
+* create SSH keys
+* add pub key to ~/.ssh/authorized_keys
+
 ==== GitHub
+
+Setup the above variables and secrets in the GitHub repository under Settings: 
+
+image::../images/GitHub_setup.png["GitHub Settings page for environment variables and secrets"]
+
 
 === First Start
 
