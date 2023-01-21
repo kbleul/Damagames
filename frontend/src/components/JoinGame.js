@@ -25,7 +25,7 @@ const JoinGame = () => {
     socket.on("getMessage", (data) => {
       navigate("/game");
     });
-  }, []);
+  }, [navigate]);
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -195,10 +195,11 @@ const JoinGame = () => {
   const joinViaCodeMutation = useMutation(
     async (newData) =>
       await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}join-game-via-code`,
+        user && token ? `${process.env.REACT_APP_BACKEND_URL}auth-join-game-via-code` : 
+                        `${process.env.REACT_APP_BACKEND_URL}join-game-via-code`,
         newData,
         {
-          headers,
+          headers:user && token ? header : headers,
         }
       ),
     {

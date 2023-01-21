@@ -100,7 +100,8 @@ const NewGame = () => {
             socket.emit("join-room", responseData?.data?.data?.game);
             setIsCreated(true);
             setValue(
-              `${process.env.REACT_APP_FRONTEND_URL}/join-game/` + responseData?.data?.data?.game
+              `http://192.168.43.253:3000/join-game/` +
+                responseData?.data?.data?.game
             );
             setCode(responseData?.data?.data?.code);
             //first clear local storage
@@ -110,7 +111,10 @@ const NewGame = () => {
               "playerOne",
               JSON.stringify(responseData?.data?.data?.playerOne)
             );
-            localStorage.setItem("playerOneToken", responseData?.data?.data?.token);
+            localStorage.setItem(
+              "playerOneToken",
+              responseData?.data?.data?.token
+            );
             localStorage.setItem("playerOneIp", responseData?.data?.data?.ip);
           },
           onError: (err) => {},
@@ -138,14 +142,15 @@ const NewGame = () => {
   const loggedInNameMutationSubmitHandler = async (values) => {
     try {
       loggedInMutation.mutate(
-        {},
+        { has_bet: false },
         {
           onSuccess: (responseData) => {
             console.log(responseData?.data?.data);
             socket.emit("join-room", responseData?.data?.data?.game);
             setIsCreated(true);
             setValue(
-               `${process.env.REACT_APP_FRONTEND_URL}/join-game/`  + responseData?.data?.data?.game
+              `${process.env.REACT_APP_FRONTEND_URL}/join-game/` +
+                responseData?.data?.data?.game
             );
             setCode(responseData?.data?.data?.code);
             //first clear local storage
