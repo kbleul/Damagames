@@ -12,6 +12,7 @@ const savedData = [
   "p1",
   "p2",
   "players",
+  "bt_coin_amount"
 ];
 
 export default function ExitWarningModal({

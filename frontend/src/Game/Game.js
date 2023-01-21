@@ -19,10 +19,18 @@ import DrawGameModal from "./components/DrawGameModal.js";
 import { BsFillChatFill } from "react-icons/bs";
 import { FaTimes, FaTelegramPlane } from "react-icons/fa";
 import { getSmartMove } from "./components/Opponent.js";
+import { useHome } from "../context/HomeContext";
+import winSound from '../assets/sounds/win.mp3';
+import moveSound from '../assets/sounds/move.mp3';
+import strikeSound from '../assets/sounds/strike.mp3';
 const Game = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [play] = useSound(move);
+  const [playMove] = useSound(moveSound);
+  const [playStrike] = useSound(strikeSound);
+  const [playWin] = useSound(winSound);
+ const { soundOn , isBet , betCoin } = useHome();
   const [MyTurn, setMyTurn] = useContext(TurnContext);
   const [isWinnerModalOpen, setIsWinnerModalOpen] = useState(false);
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
@@ -52,6 +60,7 @@ const Game = () => {
     "p1",
     "p2",
     "players",
+    "bt_coin_amount"
   ];
   const [columns, setColumns] = useState({
     a: 0,
@@ -347,6 +356,8 @@ const Game = () => {
   const secondPlayer = JSON.parse(localStorage.getItem("playerTwo"));
   const playerOneIp = localStorage.getItem("playerOneIp");
   const playerTwoIp = localStorage.getItem("playerTwoIp");
+  const btCoin = localStorage.getItem("bt_coin_amount");
+  
   let gameStatus;
   switch (gameState.winner) {
     case "player1pieces":
@@ -373,6 +384,7 @@ const Game = () => {
   useEffect(() => {
     if (gameState.winner || winnerPlayer) {
       setIsWinnerModalOpen(true);
+      soundOn && playWin();
     }
     // if (gameStatus === "Player One Wins!") {
     //   setWinnerPlayer(firstPlayer);
@@ -436,6 +448,7 @@ const Game = () => {
   };
 
   const calcPawns = (boardState) => {
+    let [prevP1 , prevP2] = pawns
     let player1Counter = 0;
     let player2Counter = 0;
 
@@ -449,6 +462,9 @@ const Game = () => {
     });
 
     setPawns([12 - player2Counter, 12 - player1Counter]);
+    if(12 - player1Counter !== prevP1 || 12 - player2Counter !== prevP2) { 
+      soundOn && playStrike() 
+    }  else { soundOn && playMove() }
 
     console.log([player1Counter, player2Counter]);
   };
@@ -459,7 +475,6 @@ const Game = () => {
       "getGameMessage",
       ({ winnerPlayer, boardState, currentPlayer, turnPlayer }) => {
         // setUpdatedState({winnerPlayer,boardState,currentPlayer})
-        play();
         const tempMoves = moves;
         console.log("called");
         turnPlayer === "player2" ? ++tempMoves[0] : ++tempMoves[1];
@@ -820,6 +835,9 @@ const Game = () => {
           </div>
         </div>
       )}
+       <div>
+       {btCoin && <p className="text-xs font-bold text-white">Bet : {btCoin} coins</p>}
+      </div>
       <ExitWarningModal
         isExitModalOpen={isExitModalOpen}
         set_isExitModalOpen={setIsExitModalOpen}
