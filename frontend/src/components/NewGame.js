@@ -172,7 +172,7 @@ const NewGame = () => {
             socket.emit("join-room", responseData?.data?.data?.game);
             setIsCreated(true);
             setValue(
-              `http://172.17.104.253:3000/join-game/` +
+              `${process.env.REACT_APP_FRONTEND_URL}/join-game/` +
                 responseData?.data?.data?.game
             );
 
