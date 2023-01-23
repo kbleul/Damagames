@@ -12,7 +12,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import RematchModal from "./components/RematchModal";
 import useSound from "use-sound";
-import move from "../assets/sounds/move .mp3";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import DrawGameModal from "./components/DrawGameModal.js";
@@ -23,14 +22,15 @@ import { useHome } from "../context/HomeContext";
 import winSound from '../assets/sounds/win.mp3';
 import moveSound from '../assets/sounds/move.mp3';
 import strikeSound from '../assets/sounds/strike.mp3';
+import { ThreeDots } from "react-loader-spinner";
+
 const Game = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [play] = useSound(move);
   const [playMove] = useSound(moveSound);
   const [playStrike] = useSound(strikeSound);
   const [playWin] = useSound(winSound);
- const { soundOn , isBet , betCoin } = useHome();
+ const { soundOn , setSoundOn  } = useHome();
   const [MyTurn, setMyTurn] = useContext(TurnContext);
   const [isWinnerModalOpen, setIsWinnerModalOpen] = useState(false);
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
@@ -236,59 +236,75 @@ const Game = () => {
       }
 
       updateStatePostMove(postMoveState);
+      soundOn && playMove()
 
+console.log("gameState",gameState)
+console.log("postMoveState",postMoveState)
+console.log("current", getCurrentState())
       // Start computer move is the player is finished
       if (
         postMoveState.currentPlayer === false &&
         postMoveState.winner === null
       ) {
-        // computerTurn();
+      computerTurn(postMoveState);
       }
     }
   }
 
   //computer turn
-  function computerTurn(piece = null) {
-    if (gameState.players > 1 || id == 1) {
-      return;
-    }
+  function computerTurn(newMoveState , piece = null) { //console.log("gameState",gameState)
+    // if (gameState.players > 1 || id == 1) {
+    //   return;
+    // }
+console.log({newMoveState})
     setTimeout(() => {
-      const currentState = getCurrentState();
-      const boardState = currentState.boardState;
-
+     // const currentState = getCurrentState();
+      const boardState = newMoveState.boardState;
       let computerMove;
-      let coordinates;
       let moveTo;
+      let coordinates;
+      let mergerObj;
 
-      // If var piece != null, the piece has previously jumped.
-      if (piece === null) {
         computerMove = getSmartMove(columns, gameState, boardState, "player2");
         console.log({ computerMove });
+        
         coordinates = computerMove.piece;
         moveTo = computerMove.moveTo;
-      } else {
-        // Prevent the computer player from choosing another piece to move. It must move the active piece
-        computerMove = getMoves(
-          columns,
-          boardState,
-          piece,
-          boardState[piece].isKing,
-          true
-        );
-        coordinates = piece;
-        moveTo =
-          computerMove[0][Math.floor(Math.random() * computerMove[0].length)];
-      }
+
+        let tempHistory = gameState.history
+        tempHistory.push(newMoveState)
+        console.log("SDfds", tempHistory)
+        mergerObj = {...gameState , activePiece : computerMove.piece , 
+          moves : [computerMove.moveTo], players : 1 , stepNumber : ++gameState.stepNumber , 
+          history : tempHistory }
+
+          console.log("newobj", mergerObj )
+  
 
       const clickedSquare = boardState[coordinates];
-
-      let movesData = getMoves(
-        columns,
-        boardState,
-        coordinates,
-        clickedSquare.isKing,
-        false
-      );
+      let movesData 
+      if(!piece) {
+        movesData = getMoves(
+          columns,
+          newMoveState.boardState,
+          coordinates,
+          clickedSquare.isKing,
+          false
+        );
+      } else {
+        movesData = getMoves(
+            columns,
+            newMoveState.boardState,
+            piece,
+            newMoveState.boardState.isKing,
+            true
+          );
+          coordinates = piece;
+          moveTo =
+            movesData[0][Math.floor(Math.random() * movesData[0].length)];
+            
+      }
+     
       // console.log("gg",coordinates,movesData[0],movesData[1])
 
       setGameState((prevState) => {
@@ -299,10 +315,13 @@ const Game = () => {
           jumpKills: movesData[1],
         };
       });
+     
 
       setTimeout(() => {
-        console.log({ moveTo: gameState, moveTo });
-        const postMoveState = movePiece(columns, moveTo, gameState);
+        //console.log({ moveTo: mergerObj });
+        
+        const postMoveState = movesData[1] ? movePiece(columns, mergerObj.moves[0], {...mergerObj , jumpKills : movesData[1]}) : 
+        movePiece(columns, mergerObj.moves[0], mergerObj);
         console.log({ postMoveState });
         if (postMoveState === null) {
           return;
@@ -310,11 +329,14 @@ const Game = () => {
 
         updateStatePostMove(postMoveState);
 
+        if(movesData[1] && soundOn) { playStrike(); }
+        else if(!movesData[1] && soundOn) { playMove(); }
+
         // If the computer player has jumped and is still moving, continue jump with active piece
         if (postMoveState.currentPlayer === false) {
-          computerTurn(postMoveState.activePiece);
+          computerTurn(postMoveState,postMoveState.activePiece);
         }
-      }, 500);
+      }, 600);
     }, 1000);
   }
 
@@ -464,8 +486,7 @@ const Game = () => {
     setPawns([12 - player2Counter, 12 - player1Counter]);
     if(12 - player1Counter !== prevP1 || 12 - player2Counter !== prevP2) { 
       soundOn && playStrike() 
-    }  else { soundOn && playMove() }
-
+    }  
     console.log([player1Counter, player2Counter]);
   };
 
@@ -559,6 +580,8 @@ const Game = () => {
       setLatestMessage(null);
     }, 4000);
   }, [latestMessage]);
+
+  //reverse board
   function dict_reverse(obj) {
     let new_obj = {};
     let rev_obj = Object.keys(obj).reverse();
@@ -618,9 +641,10 @@ const Game = () => {
   
     relative  flex flex-col min-h-screen items-center justify-evenly `}
     >
-      <section className="w-full flex items-end justify-end">
+      <section className="w-full flex items-end justify-between">
+      <button className="text-white" onClick={() => setSoundOn(prev => !prev)}> Sound</button>
         <button
-          className="mr-8"
+          className="mr-8 border"
           onClick={() => setIsExitModalOpen((prev) => !prev)}
         >
           <svg
@@ -725,7 +749,15 @@ const Game = () => {
           </div>
         </div>
       </section>
-
+        { !currentPlayer && <ThreeDots
+            height="20"
+            width="40"
+            radius="9"
+            color="#f75105"
+            ariaLabel="three-dots-loading"
+            wrapperStyle={{}}
+            wrapperClassName=""
+            visible={true}  />}
       <div className="game-board  ">
         <div
           className={` shadow-2xl    ${

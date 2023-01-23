@@ -94,7 +94,7 @@ export function getMoves(columns,boardState, coordinates, isKing = false, hasJum
   }
 
 //move piece
-export function movePiece(coordinates, gameState) {
+export function movePiece(coordinates, gameState) { console.log("pp")
     let currentState = Object.assign({}, gameState.history[gameState.stepNumber]);
     let boardState = Object.assign({}, currentState.boardState);
     let movingPiece = Object.assign({}, boardState[gameState.activePiece]);
