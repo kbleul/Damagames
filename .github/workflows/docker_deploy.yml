@@ -16,12 +16,12 @@ jobs:
       with:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         #name: id_rsa # optional
-        known_hosts: ${{ env.SSH_FINGERPRINT }}
+        known_hosts: ${{ vars.SSH_FINGERPRINT }}
         #config: ${{ secrets.CONFIG }} # ssh_config; optional
         #if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
 
     - name: Create docker context
-      run: docker context create prod --docker "host=ssh://${{ env.REMOTE_USER }}@${{ env.REMOTE_HOST }}"
+      run: docker context create prod --docker "host=ssh://${{ vars.REMOTE_USER }}@${{ vars.REMOTE_HOST }}"
 
     # - name: Remove old php container to force build
     #   run: docker-compose --context prod -f docker-compose.prod.yml rm -s -f
@@ -31,9 +31,16 @@ jobs:
 
     - name: Deploy Docker Containers
       run: |
-        docker-compose --context prod -f docker-compose.prod.yml up --build -d
+        docker-compose --context prod -f docker-compose.prod.yml up --build --remove-orphans -d
       env:
-        DOCKER_HOST: ssh://${{ env.REMOTE_USER }}@${{ env.REMOTE_HOST }}
+        DOCKER_HOST: ssh://${{ vars.REMOTE_USER }}@${{ vars.REMOTE_HOST }}
+        REMOTE_HOST: ${{ vars.REMOTE_HOST }}
         #DOCKER_TLS_VERIFY: 1
         #DOCKER_CERT_PATH: /github/workspace/.ssh
+        APP_ENV: ${{ vars.APP_ENV }}
+        DB_CONNECTION: ${{ vars.DB_CONNECTION }}
+        DB_HOST: ${{ vars.DB_HOST }}
+        DB_PORT: ${{ vars.DB_PORT }}
+        DB_DATABASE: ${{ vars.DB_DATABASE }}
+        DB_USERNAME: ${{ vars.DB_USERNAME }}
         DB_PASSWORD: ${{ secrets.DB_PASSWORD }}

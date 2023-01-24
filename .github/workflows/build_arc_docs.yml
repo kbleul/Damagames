@@ -24,16 +24,15 @@ jobs:
       - name: Set version
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
-      - name: "Change to docs directory"
-        run: cd docs
-
       - name: "Run build of HTML version"
-        run: ./dtcw generateHTML
+        run: |
+          cd docs
+          ./dtcw generateHTML
 
       - name: zip html5 version
         uses: montudor/action-zip@v1
         with:
-          args: zip -qq -r solution_architecture-${{ env.RELEASE_VERSION }}.zip build/html5
+          args: zip -qq -r solution_architecture-${{ env.RELEASE_VERSION }}.zip docs/build/html5
       
       - name: "Upload html5 version"
         uses: actions/upload-artifact@v3.1.1
@@ -57,18 +56,32 @@ jobs:
 
       - name: "Remove help for PDF version"
         run: |
-          find . -name "*\.adoc" -exec sed -i '/\*\*\*\*/,/\*\*\*\*/d' {} \;
-          find . -name "*\.adoc" -exec sed -i '/arc42help/d' {} \;
+          find docs -name "*\.adoc" -exec sed -i '/\*\*\*\*/,/\*\*\*\*/d' {} \;
+          find docs -name "*\.adoc" -exec sed -i '/arc42help/d' {} \;
 
       - name: "Run build of PDF version"
-        run: ./dtcw generatePDF
+        run: |
+          cd docs
+          pwd
+          ./dtcw generatePDF
+          ls -al
 
       - name: "Rename PDF with version"
-        run: mv build/pdf/arc42/arc42.pdf solution_architecture-${{ env.RELEASE_VERSION }}.pdf
+        run: mv docs/build/pdf/arc42/arc42.pdf solution_architecture-${{ env.RELEASE_VERSION }}.pdf
 
       - name: "Upload PDF version"
         uses: actions/upload-artifact@v3.1.1
         with:
           name: solution_architecture.pdf
           path: solution_architecture-${{ env.RELEASE_VERSION }}.pdf
+          # retention-days: 90
+
+      - name: "Rename operations_manual.pdf with version"
+        run: mv docs/build/pdf/operations/ops_manual.pdf ops_manual-${{ env.RELEASE_VERSION }}.pdf
+
+      - name: "Upload operations manual"
+        uses: actions/upload-artifact@v3.1.1
+        with:
+          name: ops_manual.pdf
+          path: ops_manual-${{ env.RELEASE_VERSION }}.pdf
           # retention-days: 90
