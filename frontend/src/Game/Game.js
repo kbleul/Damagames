@@ -15,6 +15,7 @@ import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import DrawGameModal from "./components/DrawGameModal.js";
 import winSound from '../assets/sounds/win.mp3';
+import loseSound from '../assets/sounds/lose.mp3';
 import moveSound from '../assets/sounds/move.mp3';
 import strikeSound from '../assets/sounds/strike.mp3';
 import { ThreeDots } from "react-loader-spinner";
@@ -24,15 +25,17 @@ const Game = () => {
   const [playMove] = useSound(moveSound);
   const [playStrike] = useSound(strikeSound);
   const [playWin] = useSound(winSound);
+  const [playLose] = useSound(loseSound);
+
   const  [soundOn , setSoundOn ] = useState(localStorage.getItem("dama-sound") ? localStorage.getItem("dama-sound") : true);
   const [MyTurn, setMyTurn] = useContext(TurnContext);
   const [isWinnerModalOpen, setIsWinnerModalOpen] = useState(false);
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
   
-  // const [timerP1, setTimerP1] = useState(20);
-  // const [timerP2, setTimerP2] = useState(20);
+  const [timerP1, setTimerP1] = useState(20);
+  const [timerP2, setTimerP2] = useState(20);
 
-  // const [latestState , setLatestState] = useState({});
+  const [latestState , setLatestState] = useState({});
 
 
   const [isRematchModalOpen, setIsRematchModalOpen] = useState(false);
@@ -41,9 +44,7 @@ const Game = () => {
 
   const [pawns, setPawns] = useState([0, 0]);
   const [moves, setMoves] = useState([0, 0]);
-  //const [timer, setTimer] = useState(15);
-
-  // const [playMove] = useSound(require("../assets/sounds/move.mp3"), { volume : 0.25 });
+  const [timer, setTimer] = useState(15);
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -305,7 +306,16 @@ const Game = () => {
   useEffect(() => {
     if (gameState.winner || winnerPlayer) {
       setIsWinnerModalOpen(true);
-      soundOn && playWin();
+      console.log({winnerPlayer , "storage" : localStorage.getItem("playerTwo") , soundOn})
+      if(winnerPlayer === "player1pieces" && localStorage.getItem("playerOne") && soundOn )
+             { playWin(); }
+      else if(winnerPlayer === "player2pieces" && localStorage.getItem("playerOne") && soundOn )
+             { playLose(); }
+      else if(winnerPlayer === "player2pieces" && localStorage.getItem("playerTwo") && soundOn )
+             { playWin(); }
+      else if(winnerPlayer === "player1pieces" && localStorage.getItem("playerTwo") && soundOn )
+             { playLose(); }
+
     }
     // if (gameStatus === "Player One Wins!") {
     //   setWinnerPlayer(firstPlayer);
@@ -365,10 +375,7 @@ const Game = () => {
       soundOn && playStrike() 
       console.log("strike")
     }
-  
-    console.log([...pawns] , [prevP1 , prevP2]);
 
-    console.log([player1Counter, player2Counter]);
   };
 
   useEffect(() => {
