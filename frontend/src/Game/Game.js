@@ -23,16 +23,16 @@ const Game = () => {
   const navigate = useNavigate();
   const [playMove] = useSound(moveSound);
   const [playStrike] = useSound(strikeSound);
-  const [playWin] = useSound(winSound);
+ // const [playWin] = useSound(winSound);
  const  [soundOn , setSoundOn ] = useState(localStorage.getItem("dama-sound") ? localStorage.getItem("dama-sound") : true);
   const [MyTurn, setMyTurn] = useContext(TurnContext);
   const [isWinnerModalOpen, setIsWinnerModalOpen] = useState(false);
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
   
-  const [timerP1, setTimerP1] = useState(20);
-  const [timerP2, setTimerP2] = useState(20);
+  // const [timerP1, setTimerP1] = useState(20);
+  // const [timerP2, setTimerP2] = useState(20);
 
-  const [latestState , setLatestState] = useState({});
+  // const [latestState , setLatestState] = useState({});
 
 
   const [isRematchModalOpen, setIsRematchModalOpen] = useState(false);
@@ -41,7 +41,7 @@ const Game = () => {
 
   const [pawns, setPawns] = useState([0, 0]);
   const [moves, setMoves] = useState([0, 0]);
-  const [timer, setTimer] = useState(15);
+  //const [timer, setTimer] = useState(15);
 
   // const [playMove] = useSound(require("../assets/sounds/move.mp3"), { volume : 0.25 });
   const headers = {
@@ -228,7 +228,7 @@ const Game = () => {
       }
 
       updateStatePostMove(postMoveState);
-      soundOn && playMove()
+      if(soundOn) { playMove()} 
       // Start computer move is the player is finished
       if (
         postMoveState.currentPlayer === false &&
@@ -240,7 +240,7 @@ const Game = () => {
   }
 
   function updateStatePostMove(postMoveState) {
-    setLatestState(postMoveState)
+    // setLatestState(postMoveState)
     setGameState({
       history: gameState.history.concat([
         {
@@ -348,7 +348,6 @@ const Game = () => {
 
   const calcPawns = (boardState) => {
     let [prevP1 , prevP2] = pawns
-    soundOn && playWin();
     let player1Counter = 0;
     let player2Counter = 0;
 
@@ -361,7 +360,7 @@ const Game = () => {
       }
     });
 
-    if(pawns[0] !== 12 - player2Counter || pawns[1] !== player2Counter !== prevP2) {
+    if(pawns[0] !== 12 - player2Counter || pawns[1] !== player2Counter - prevP2) {
       setPawns([12 - player2Counter, 12 - player1Counter]);
       soundOn && playStrike() 
       console.log("strike")
@@ -378,7 +377,7 @@ const Game = () => {
       "getGameMessage",
       ({ winnerPlayer, boardState, currentPlayer, turnPlayer }) => {
         // setUpdatedState({winnerPlayer,boardState,currentPlayer})
-        console.log({"myboard":boardState})
+        
         const tempMoves = moves;
         console.log("called");
         turnPlayer === "player2" ? ++tempMoves[0] : ++tempMoves[1];
@@ -401,7 +400,6 @@ const Game = () => {
           };
         });
         calcPawns(boardState);
-      console.log({"myboard2":boardState})
 
       }
 
@@ -467,56 +465,59 @@ const Game = () => {
   }
   console.log({ winnerPlayer });
 
-  //   const counterFunc = () => {
-  //     setTimer(prev => --prev)
-  // }
   
-  useEffect(() => {
-    let myCounter = 0
+//   useEffect(() => {
+//     let myCounter = 0
 
-    if(localStorage.getItem("playerOne") && MyTurn === "player1") {
-      let myInterval = setInterval(() => {
-         setTimerP1(prev => --prev) 
-         ++myCounter;
-         console.log({myCounter})
+//     if(localStorage.getItem("playerOne") && MyTurn === "player1") {
+//       let myInterval = setInterval(() => {
+//          setTimerP1(prev => --prev) 
+//          ++myCounter;
+//         // console.log({myCounter})
+//  console.log({timerP1, timerP2})
          
-         if(myCounter >= 10) {
-           clearInterval(myInterval) 
-           setTimerP1(20) 
- console.log({boardState, latestState})
-          //  socket.emit("sendGameMessage", {
-          //    winnerPlayer: latestState.winner,
-          //    boardState: latestState.boardState,
-          //    currentPlayer: !latestState.currentPlayer,
-          //    turnPlayer: !latestState.currentPlayer ? "player1" : "player2",
-          //   });
-         }  
-      } , 1000);
-    }
+//          if(myCounter >= 10) {
+//            clearInterval(myInterval) 
+//            setTimerP1(20) 
+//           //  socket.emit("sendGameMessage", {
+//           //    winnerPlayer: latestState.winner,
+//           //    boardState: latestState.boardState,
+//           //    currentPlayer: !latestState.currentPlayer,
+//           //    turnPlayer: !latestState.currentPlayer ? "player1" : "player2",
+//           //   });
+//          }  
+//       } , 1000);
+//     }
 
-    else if(localStorage.getItem("playerTwo") && MyTurn === "player2") {
-      let myInterval = setInterval(() => {
-         setTimerP2(prev => --prev) 
-         ++myCounter;
-         console.log({myCounter})
+//     else if(localStorage.getItem("playerTwo") && MyTurn === "player2") {
+//       let myInterval = setInterval(() => {
+//          setTimerP2(prev => --prev) 
+//          ++myCounter;
+//       //   console.log({myCounter})
+//          console.log({timerP1, timerP2})
          
-         if(myCounter >= 10) {
-           clearInterval(myInterval) 
-           setTimerP2(20) 
-           console.log({boardState, latestState})
+//          if(myCounter >= 10) {
+//            clearInterval(myInterval) 
+//            setTimerP2(20) 
+
  
-          //  socket.emit("sendGameMessage", {
-          //    winnerPlayer: latestState.winner,
-          //    boardState: latestState.boardState,
-          //    currentPlayer: latestState.currentPlayer,
-          //    turnPlayer: latestState.currentPlayer ? "player1" : "player2",
-          //   });
-         }  
-      } , 1000);
-    }
+//           //  socket.emit("sendGameMessage", {
+//           //    winnerPlayer: latestState.winner,
+//           //    boardState: latestState.boardState,
+//           //    currentPlayer: latestState.currentPlayer,
+//           //    turnPlayer: latestState.currentPlayer ? "player1" : "player2",
+//           //   });
+//          }  
+//       } , 1000);
+//     }
    
   
-}, [MyTurn])
+// }, [MyTurn])
+
+useEffect(() => {
+  console.log({soundOn})
+}, [soundOn])
+
 
   useEffect(() => {
     if (winnerPlayer) {
@@ -592,8 +593,8 @@ const Game = () => {
         <p className="text-white text-xs">SoundOff</p>
       </button>}
 
-     {localStorage.getItem("playerOne") && MyTurn==="player1" && <p className="text-white font-bold text-sm">Timer : { timerP1}</p>}
-     {localStorage.getItem("playerTwo") && MyTurn==="player2" && <p className="text-white font-bold text-sm">Timer : { timerP2}</p>}
+     {/* {localStorage.getItem("playerOne") && MyTurn==="player1" && <p className="text-white font-bold text-sm">Timer : { timerP1}</p>}
+     {localStorage.getItem("playerTwo") && MyTurn==="player2" && <p className="text-white font-bold text-sm">Timer : { timerP2}</p>} */}
         
         <button
           className="mr-8"
