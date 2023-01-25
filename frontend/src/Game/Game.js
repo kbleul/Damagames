@@ -242,6 +242,12 @@ const Game = () => {
 
   function updateStatePostMove(postMoveState) {
     // setLatestState(postMoveState)
+    const tempMoves = moves;
+    let turnPlayer = postMoveState.currentPlayer ? "player1" : "player2"
+    turnPlayer === "player2" ? ++tempMoves[0] : ++tempMoves[1];
+    setMoves(tempMoves);
+    setMyTurn(turnPlayer);
+    setWinnerPlayer(winnerPlayer);
     setGameState({
       history: gameState.history.concat([
         {
@@ -372,11 +378,13 @@ const Game = () => {
 
     if(pawns[0] !== 12 - player2Counter || pawns[1] !== player2Counter - prevP2) {
       setPawns([12 - player2Counter, 12 - player1Counter]);
-      soundOn && playStrike() 
+      // soundOn && playStrike() 
       console.log("strike")
     }
 
   };
+
+
 
   useEffect(() => {
     // let cPlayer = currentPlayer
@@ -384,15 +392,11 @@ const Game = () => {
       "getGameMessage",
       ({ winnerPlayer, boardState, currentPlayer, turnPlayer }) => {
         // setUpdatedState({winnerPlayer,boardState,currentPlayer})
-        
+        if(soundOn) { playMove()} 
         const tempMoves = moves;
-        console.log("called");
         turnPlayer === "player2" ? ++tempMoves[0] : ++tempMoves[1];
         setMoves(tempMoves);
-
-        console.log("turnPlayer", turnPlayer);
         setMyTurn(turnPlayer);
-        console.log("board", boardState);
         setWinnerPlayer(winnerPlayer);
         setGameState((prevGameState) => {
           return {
@@ -406,11 +410,11 @@ const Game = () => {
             }),
           };
         });
-        calcPawns(boardState);
-
+        // calcPawns(boardState);
       }
-
-    );
+      
+      );
+     
 
     socket.on(
       "getResetGameMessage",
