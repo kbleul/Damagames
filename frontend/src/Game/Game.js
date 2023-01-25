@@ -11,17 +11,32 @@ import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import RematchModal from "./components/RematchModal";
 import useSound from "use-sound";
-import move from "../assets/sounds/move .mp3";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import DrawGameModal from "./components/DrawGameModal.js";
+import winSound from '../assets/sounds/win.mp3';
+import loseSound from '../assets/sounds/lose.mp3';
+import moveSound from '../assets/sounds/move.mp3';
+import strikeSound from '../assets/sounds/strike.mp3';
+import { ThreeDots } from "react-loader-spinner";
 
 const Game = () => {
   const navigate = useNavigate();
-  const [play] = useSound(move);
+  const [playMove] = useSound(moveSound);
+  const [playStrike] = useSound(strikeSound);
+  const [playWin] = useSound(winSound);
+  const [playLose] = useSound(loseSound);
+
+  const  [soundOn , setSoundOn ] = useState(localStorage.getItem("dama-sound") ? localStorage.getItem("dama-sound") : true);
   const [MyTurn, setMyTurn] = useContext(TurnContext);
   const [isWinnerModalOpen, setIsWinnerModalOpen] = useState(false);
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
+  
+  const [timerP1, setTimerP1] = useState(20);
+  const [timerP2, setTimerP2] = useState(20);
+
+  const [latestState , setLatestState] = useState({});
+
 
   const [isRematchModalOpen, setIsRematchModalOpen] = useState(false);
   const [isDrawModalOpen, setIsDrawModalOpen] = useState(false);
@@ -29,7 +44,7 @@ const Game = () => {
 
   const [pawns, setPawns] = useState([0, 0]);
   const [moves, setMoves] = useState([0, 0]);
-  // const [playMove] = useSound(require("../assets/sounds/move.mp3"), { volume : 0.25 });
+  const [timer, setTimer] = useState(15);
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -45,6 +60,8 @@ const Game = () => {
     "p1",
     "p2",
     "players",
+    "bt_coin_amount",
+    "dama-sound"
   ];
   const [columns, setColumns] = useState({
     a: 0,
@@ -212,7 +229,7 @@ const Game = () => {
       }
 
       updateStatePostMove(postMoveState);
-
+      if(soundOn) { playMove()} 
       // Start computer move is the player is finished
       if (
         postMoveState.currentPlayer === false &&
@@ -224,6 +241,7 @@ const Game = () => {
   }
 
   function updateStatePostMove(postMoveState) {
+    // setLatestState(postMoveState)
     setGameState({
       history: gameState.history.concat([
         {
@@ -260,6 +278,8 @@ const Game = () => {
   const secondPlayer = JSON.parse(localStorage.getItem("playerTwo"));
   const playerOneIp = localStorage.getItem("playerOneIp");
   const playerTwoIp = localStorage.getItem("playerTwoIp");
+  const btCoin = localStorage.getItem("bt_coin_amount");
+
   let gameStatus;
   switch (gameState.winner) {
     case "player1pieces":
@@ -286,6 +306,16 @@ const Game = () => {
   useEffect(() => {
     if (gameState.winner || winnerPlayer) {
       setIsWinnerModalOpen(true);
+      console.log({winnerPlayer , "storage" : localStorage.getItem("playerTwo") , soundOn})
+      if(winnerPlayer === "player1pieces" && localStorage.getItem("playerOne") && soundOn )
+             { playWin(); }
+      else if(winnerPlayer === "player2pieces" && localStorage.getItem("playerOne") && soundOn )
+             { playLose(); }
+      else if(winnerPlayer === "player2pieces" && localStorage.getItem("playerTwo") && soundOn )
+             { playWin(); }
+      else if(winnerPlayer === "player1pieces" && localStorage.getItem("playerTwo") && soundOn )
+             { playLose(); }
+
     }
     // if (gameStatus === "Player One Wins!") {
     //   setWinnerPlayer(firstPlayer);
@@ -327,6 +357,7 @@ const Game = () => {
   };
 
   const calcPawns = (boardState) => {
+    let [prevP1 , prevP2] = pawns
     let player1Counter = 0;
     let player2Counter = 0;
 
@@ -339,9 +370,12 @@ const Game = () => {
       }
     });
 
-    setPawns([12 - player2Counter, 12 - player1Counter]);
+    if(pawns[0] !== 12 - player2Counter || pawns[1] !== player2Counter - prevP2) {
+      setPawns([12 - player2Counter, 12 - player1Counter]);
+      soundOn && playStrike() 
+      console.log("strike")
+    }
 
-    console.log([player1Counter, player2Counter]);
   };
 
   useEffect(() => {
@@ -350,7 +384,7 @@ const Game = () => {
       "getGameMessage",
       ({ winnerPlayer, boardState, currentPlayer, turnPlayer }) => {
         // setUpdatedState({winnerPlayer,boardState,currentPlayer})
-        play();
+        
         const tempMoves = moves;
         console.log("called");
         turnPlayer === "player2" ? ++tempMoves[0] : ++tempMoves[1];
@@ -373,7 +407,9 @@ const Game = () => {
           };
         });
         calcPawns(boardState);
+
       }
+
     );
 
     socket.on(
@@ -435,6 +471,61 @@ const Game = () => {
     return new_obj;
   }
   console.log({ winnerPlayer });
+
+  
+//   useEffect(() => {
+//     let myCounter = 0
+
+//     if(localStorage.getItem("playerOne") && MyTurn === "player1") {
+//       let myInterval = setInterval(() => {
+//          setTimerP1(prev => --prev) 
+//          ++myCounter;
+//         // console.log({myCounter})
+//  console.log({timerP1, timerP2})
+         
+//          if(myCounter >= 10) {
+//            clearInterval(myInterval) 
+//            setTimerP1(20) 
+//           //  socket.emit("sendGameMessage", {
+//           //    winnerPlayer: latestState.winner,
+//           //    boardState: latestState.boardState,
+//           //    currentPlayer: !latestState.currentPlayer,
+//           //    turnPlayer: !latestState.currentPlayer ? "player1" : "player2",
+//           //   });
+//          }  
+//       } , 1000);
+//     }
+
+//     else if(localStorage.getItem("playerTwo") && MyTurn === "player2") {
+//       let myInterval = setInterval(() => {
+//          setTimerP2(prev => --prev) 
+//          ++myCounter;
+//       //   console.log({myCounter})
+//          console.log({timerP1, timerP2})
+         
+//          if(myCounter >= 10) {
+//            clearInterval(myInterval) 
+//            setTimerP2(20) 
+
+ 
+//           //  socket.emit("sendGameMessage", {
+//           //    winnerPlayer: latestState.winner,
+//           //    boardState: latestState.boardState,
+//           //    currentPlayer: latestState.currentPlayer,
+//           //    turnPlayer: latestState.currentPlayer ? "player1" : "player2",
+//           //   });
+//          }  
+//       } , 1000);
+//     }
+   
+  
+// }, [MyTurn])
+
+useEffect(() => {
+  console.log({soundOn})
+}, [soundOn])
+
+
   useEffect(() => {
     if (winnerPlayer) {
       if (winnerPlayer === "player1pieces" || winnerPlayer === "player1moves") {
@@ -480,13 +571,38 @@ const Game = () => {
       console.log(err);
     }
   };
+
+  const changeSound = () => {
+    console.log({soundOn})
+    localStorage.setItem("dama-sound", !soundOn)
+    setSoundOn(prev => !prev)
+  }
+
+
   return (
     <div
       className={`
   
     relative  flex flex-col min-h-screen items-center justify-evenly `}
     >
-      <section className="w-full flex items-end justify-end">
+      <section className="w-full flex items-center justify-between">
+      {soundOn ? 
+        <button onClick={changeSound} className="ml-[8%] flex flex-col items-center justify-center">
+         <svg width="23" height="23" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15.658 10.057L16.365 9.35C16.4579 9.25716 16.5316 9.14692 16.5819 9.02559C16.6322 8.90426 16.6582 8.7742 16.6582 8.64285C16.6582 8.51151 16.6324 8.38143 16.5822 8.26007C16.532 8.1387 16.4583 8.02841 16.3655 7.9355C16.2727 7.84259 16.1624 7.76888 16.0411 7.71857C15.9198 7.66826 15.7897 7.64234 15.6584 7.6423C15.527 7.64225 15.3969 7.66808 15.2756 7.7183C15.1542 7.76852 15.0439 7.84216 14.951 7.935L14.244 8.643L13.537 7.935C13.3494 7.74749 13.0949 7.6422 12.8296 7.6423C12.5644 7.64239 12.31 7.74786 12.1225 7.9355C11.935 8.12314 11.8297 8.37758 11.8298 8.64285C11.8299 8.90812 11.9354 9.16249 12.123 9.35L12.83 10.057L12.123 10.764C11.9408 10.9526 11.84 11.2052 11.8423 11.4674C11.8446 11.7296 11.9498 11.9804 12.1352 12.1658C12.3206 12.3512 12.5714 12.4564 12.8336 12.4587C13.0958 12.461 13.3484 12.3602 13.537 12.178L14.244 11.471L14.951 12.178C15.1396 12.3602 15.3922 12.461 15.6544 12.4587C15.9166 12.4564 16.1674 12.3512 16.3528 12.1658C16.5382 11.9804 16.6434 11.7296 16.6457 11.4674C16.648 11.2052 16.5472 10.9526 16.365 10.764L15.658 10.057ZM4 0H16C17.0609 0 18.0783 0.421427 18.8284 1.17157C19.5786 1.92172 20 2.93913 20 4V16C20 17.0609 19.5786 18.0783 18.8284 18.8284C18.0783 19.5786 17.0609 20 16 20H4C2.93913 20 1.92172 19.5786 1.17157 18.8284C0.421427 18.0783 0 17.0609 0 16V4C0 2.93913 0.421427 1.92172 1.17157 1.17157C1.92172 0.421427 2.93913 0 4 0ZM5.282 13.287H6.287L8.11 14.997C8.48086 15.3442 8.96997 15.5373 9.478 15.537H9.682C10.1063 15.537 10.5133 15.3684 10.8134 15.0684C11.1134 14.7683 11.282 14.3613 11.282 13.937V6.137C11.282 5.71265 11.1134 5.30569 10.8134 5.00563C10.5133 4.70557 10.1063 4.537 9.682 4.537H9.478C8.96983 4.53699 8.48071 4.73042 8.11 5.078L6.287 6.788H5.282C4.75157 6.788 4.24286 6.99871 3.86779 7.37379C3.49271 7.74886 3.282 8.25757 3.282 8.788V11.288C3.282 11.8184 3.49271 12.3271 3.86779 12.7022C4.24286 13.0773 4.75157 13.288 5.282 13.288V13.287ZM7.078 8.787L9.282 6.72V13.354L7.078 11.287H5.282V8.787H7.078Z" fill="#FF4C01"/>
+         </svg>
+        <p className="text-white text-xs">SoundOn</p>
+      </button> :
+      <button onClick={changeSound} className="ml-[8%] flex flex-col items-center justify-center">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+         <path d="M15.658 10.057L16.365 9.35C16.4579 9.25716 16.5316 9.14692 16.5819 9.02559C16.6322 8.90426 16.6582 8.7742 16.6582 8.64285C16.6582 8.51151 16.6324 8.38143 16.5822 8.26007C16.532 8.1387 16.4583 8.02841 16.3655 7.9355C16.2727 7.84259 16.1624 7.76888 16.0411 7.71857C15.9198 7.66826 15.7897 7.64234 15.6584 7.6423C15.527 7.64225 15.3969 7.66808 15.2756 7.7183C15.1542 7.76852 15.0439 7.84216 14.951 7.935L14.244 8.643L13.537 7.935C13.3494 7.74749 13.0949 7.6422 12.8296 7.6423C12.5644 7.64239 12.31 7.74786 12.1225 7.9355C11.935 8.12314 11.8297 8.37758 11.8298 8.64285C11.8299 8.90812 11.9354 9.16249 12.123 9.35L12.83 10.057L12.123 10.764C11.9408 10.9526 11.84 11.2052 11.8423 11.4674C11.8446 11.7296 11.9498 11.9804 12.1352 12.1658C12.3206 12.3512 12.5714 12.4564 12.8336 12.4587C13.0958 12.461 13.3484 12.3602 13.537 12.178L14.244 11.471L14.951 12.178C15.1396 12.3602 15.3922 12.461 15.6544 12.4587C15.9166 12.4564 16.1674 12.3512 16.3528 12.1658C16.5382 11.9804 16.6434 11.7296 16.6457 11.4674C16.648 11.2052 16.5472 10.9526 16.365 10.764L15.658 10.057ZM4 0H16C17.0609 0 18.0783 0.421427 18.8284 1.17157C19.5786 1.92172 20 2.93913 20 4V16C20 17.0609 19.5786 18.0783 18.8284 18.8284C18.0783 19.5786 17.0609 20 16 20H4C2.93913 20 1.92172 19.5786 1.17157 18.8284C0.421427 18.0783 0 17.0609 0 16V4C0 2.93913 0.421427 1.92172 1.17157 1.17157C1.92172 0.421427 2.93913 0 4 0ZM5.282 13.287H6.287L8.11 14.997C8.48086 15.3442 8.96997 15.5373 9.478 15.537H9.682C10.1063 15.537 10.5133 15.3684 10.8134 15.0684C11.1134 14.7683 11.282 14.3613 11.282 13.937V6.137C11.282 5.71265 11.1134 5.30569 10.8134 5.00563C10.5133 4.70557 10.1063 4.537 9.682 4.537H9.478C8.96983 4.53699 8.48071 4.73042 8.11 5.078L6.287 6.788H5.282C4.75157 6.788 4.24286 6.99871 3.86779 7.37379C3.49271 7.74886 3.282 8.25757 3.282 8.788V11.288C3.282 11.8184 3.49271 12.3271 3.86779 12.7022C4.24286 13.0773 4.75157 13.288 5.282 13.288V13.287ZM7.078 8.787L9.282 6.72V13.354L7.078 11.287H5.282V8.787H7.078Z" fill="#FF4C01"/>
+        </svg>
+        <p className="text-white text-xs">SoundOff</p>
+      </button>}
+
+     {/* {localStorage.getItem("playerOne") && MyTurn==="player1" && <p className="text-white font-bold text-sm">Timer : { timerP1}</p>}
+     {localStorage.getItem("playerTwo") && MyTurn==="player2" && <p className="text-white font-bold text-sm">Timer : { timerP2}</p>} */}
+        
         <button
           className="mr-8"
           onClick={() => setIsExitModalOpen((prev) => !prev)}
@@ -592,6 +708,25 @@ const Game = () => {
           </div>
         </div>
       </section>
+
+      { !currentPlayer && localStorage.getItem("playerOne") && <ThreeDots
+                      height="20" 
+                      width="40"
+                      radius="9"
+                      color="#f75105"
+                      ariaLabel="three-dots-loading"
+                      wrapperStyle={{}}
+                      wrapperClassName=""
+                      visible={true}  />}
+        { currentPlayer && localStorage.getItem("playerTwo") && <ThreeDots
+                      height="20" 
+                      width="40"
+                      radius="9"
+                      color="#f75105"
+                      ariaLabel="three-dots-loading"
+                      wrapperStyle={{}}
+                      wrapperClassName=""
+                      visible={true}  />}
 
       <div className="game-board  ">
         <div
