@@ -169,7 +169,15 @@ Set up the following environment variables and secrets
 
 ==== Server
 
+* create SSH keys
+* add pub key to ~/.ssh/authorized_keys
+
 ==== GitHub
+
+Setup the above variables and secrets in the GitHub repository under Settings: 
+
+image::../images/GitHub_setup.png["GitHub Settings page for environment variables and secrets"]
+
 
 === First Start
 
@@ -223,7 +231,7 @@ Users are asked if they want to install Dama by the PWA
 
 [source,yaml]
 ----
-include::../../.github/workflows/docker_deploy.yml[]
+include::../../.github/workflows/docker_deploy.yml[docker_deploy.yml workflow definition]
 ----
 
 === Regular Startup Und Shutdown
@@ -232,6 +240,29 @@ Regular startup should be done via GitHub workflows.
 
 Shutdown can be done via docker stop commands.
 
+example
+[source%linenums,shell]
+----
+docker ps -a
+docker stop dama_php_1
+docker stop dama_redis_1
+docker stop dama_nginx-frontend_1
+docker stop dama_database_1
+docker stop traefik
+docker stop damagames_api_1
+docker stop damagames_socket_1
+docker stop damagames_frontend_1
+docker stop damagames_database_1
+docker ps
+docker rm traefik
+docker rm damagames_api_1
+docker rm damagames_socket_1
+docker rm damagames_frontend_1
+docker rm damagames_database_1
+docker ps -a
+docker rm 2ebc6454390b_damagames_traefik_1
+----
+
 === Planned Shutdown and Restart
 
 TODO: define maintenance shutdowns
@@ -239,6 +270,9 @@ TODO: define maintenance shutdowns
 === Unplanned Shutdown (crash)
 
 After an unplanned shutdown the system should start up automatically again. If not, the GitHub workflow docker_deploy.yml 'Deploy Docker Containers' can be run manually from the GitHub UI.
+
+.re-run from GitHub UI
+image::../images/re-run_jobs.png[re-run deploy of latest release]
 
 == Running Operations
 

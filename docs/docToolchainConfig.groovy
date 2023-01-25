@@ -13,7 +13,7 @@ inputPath = '.';
 inputFiles = [
         //[file: 'arc42-template.adoc',    formats: ['html','pdf']],
         [file: 'operations/ops_manual.adoc',       formats: ['pdf']],
-        //[file: 'arc42/arc42.adoc', formats: ['html','pdf']],
+        [file: 'arc42/arc42.adoc', formats: ['html','pdf']],
 	/** inputFiles **/
 ]
 
