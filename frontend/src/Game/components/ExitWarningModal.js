@@ -12,7 +12,8 @@ const savedData = [
   "p1",
   "p2",
   "players",
-  "bt_coin_amount"
+  "bt_coin_amount",
+  "dama-sound"
 ];
 
 export default function ExitWarningModal({

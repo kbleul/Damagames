@@ -47,7 +47,7 @@ const CreateGame = () => {
         >
           Play online
         </button>
-        <button
+        <button 
           onClick={() => navigate(`/game/${1}`)}
           className="w-3/5 mt-24 border-2 bg-transparent whitespace-nowrap
            border-orange-color p-2 px-11 font-medium text-orange-color rounded-lg max-w-[20rem]"

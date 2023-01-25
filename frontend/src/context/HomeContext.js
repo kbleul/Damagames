@@ -8,10 +8,7 @@ export function useHome() {
 
 export function HomeProvider({ children }) {
   const [checked, setChecked] = useState(false);
-  const [soundOn, setSoundOn] = useState(true);
-  const [isBet, setIsBet] = useState(false);
-  const [betCoin, setBetCoin] = useState(0);
-
+ 
   // const [tokenExpirationDate, setTokenExpirationDate] = useState();
 
   useEffect(() => {
@@ -23,12 +20,7 @@ export function HomeProvider({ children }) {
     <HomeContext.Provider
       value={{
         checked,
-        soundOn,
-        setSoundOn,
-        isBet,
-        setIsBet,
-        betCoin,
-        setBetCoin,
+      
       }}
     >
       {children}
