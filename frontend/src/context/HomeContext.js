@@ -18,10 +18,7 @@ export function HomeProvider({ children }) {
   //Return
   return (
     <HomeContext.Provider
-      value={{
-        checked,
-      
-      }}
+      value={{ checked,  }}
     >
       {children}
     </HomeContext.Provider>
