@@ -23,8 +23,8 @@ const Game = () => {
   const navigate = useNavigate();
   const [playMove] = useSound(moveSound);
   const [playStrike] = useSound(strikeSound);
- // const [playWin] = useSound(winSound);
- const  [soundOn , setSoundOn ] = useState(localStorage.getItem("dama-sound") ? localStorage.getItem("dama-sound") : true);
+  const [playWin] = useSound(winSound);
+  const  [soundOn , setSoundOn ] = useState(localStorage.getItem("dama-sound") ? localStorage.getItem("dama-sound") : true);
   const [MyTurn, setMyTurn] = useContext(TurnContext);
   const [isWinnerModalOpen, setIsWinnerModalOpen] = useState(false);
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
