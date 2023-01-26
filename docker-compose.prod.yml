@@ -25,6 +25,11 @@ services:
     frontend:
         build: 
             context: ./frontend/
+        environment:
+            - PUBLIC_URL=${REACT_APP_FRONTEND_URL}
+            - NODE_ENV=${APP_ENV}
+            - REACT_APP_FRONTEND_URL
+            - REACT_APP_BACKEND_URL
         labels:
         - "traefik.frontend.priority=1"
         - "traefik.enable=true"
@@ -54,8 +59,6 @@ services:
             - DB_DATABASE
             - DB_USERNAME
             - DB_PASSWORD
-        ports:
-            - 8000:8000
         depends_on:
             - database
         labels:
@@ -64,9 +67,7 @@ services:
         #- "traefik.http.routers.api-http.rule=Host(`api.${REMOTE_HOST}`)"
         - "traefik.http.middlewares.api-http.redirectscheme.scheme=https"
         - "traefik.http.routers.api-https.entrypoints=websecure"
-        - "traefik.http.routers.api-https.rule=Host(`api.${REMOTE_HOST}`) || PathPrefix(`/api`)"
-        - "traefik.http.routers.api-https.middlewares=api-stripprefix"
-        - "traefik.http.middlewares.api-stripprefix.stripprefix.prefixes=/api"
+        - "traefik.http.routers.api-https.rule=Host(`api.${REMOTE_HOST}`)"
         - "traefik.http.routers.api-https.tls.certresolver=myresolver"
 
     # Database server
@@ -90,15 +91,14 @@ services:
         environment:
             - APP_ENV
             - CONTAINER_ROLE=sockets
+            - PORT=3000     # if not set defaults to 7744
         labels:
         - "traefik.enable=true"
         - "traefik.http.routers.sockets-http.entrypoints=web"
         #- "traefik.http.routers.sockets-http.rule=Host(`sockets.${REMOTE_HOST}`)"
         - "traefik.http.middlewares.sockets-http.redirectscheme.scheme=https"
         - "traefik.http.routers.sockets-https.entrypoints=websecure"
-        - "traefik.http.routers.sockets-https.rule=Host(`sockets.${REMOTE_HOST}`) || PathPrefix(`/sockets`)"
-        - "traefik.http.routers.sockets-https.middlewares=sockets-stripprefix"
-        - "traefik.http.middlewares.sockets-stripprefix.stripprefix.prefixes=/sockets"
+        - "traefik.http.routers.sockets-https.rule=Host(`sockets.${REMOTE_HOST}`) || PathPrefix(`/socket.io`)"
         - "traefik.http.routers.sockets-https.tls.certresolver=myresolver"
 
 volumes:
