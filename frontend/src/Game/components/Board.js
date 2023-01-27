@@ -14,7 +14,7 @@ const Board = (props) => {
     if(JSON.parse(localStorage.getItem("playerOne")) && MyTurn === "player1" && props["squareClasses"].includes("player1"))
     { squareClasses = props["squareClasses"] + " myturn" }
 
-    else if(!JSON.parse(localStorage.getItem("playerOne")) && MyTurn === "player2" && props["squareClasses"].includes("player2"))
+    else if(JSON.parse(localStorage.getItem("playerTwo")) && MyTurn === "player2" && props["squareClasses"].includes("player2"))
     { squareClasses = props["squareClasses"] + " myturn" }
    
     else {  squareClasses = props["squareClasses"]  }

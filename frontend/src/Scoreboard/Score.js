@@ -1,6 +1,7 @@
 import Avatar from "../assets/Avatar.png";
 
 const Score = ({ score, hasBadge, index }) => {
+  console.log({score})
   return (
     <article className="w-4/5 max-w-[50rem] relative">
       <section
@@ -11,17 +12,17 @@ const Score = ({ score, hasBadge, index }) => {
       >
         <div className="p-2 border w-1/4 rounded-lg max-w-[5rem] flex justify-center">
           <p className="absolute top-[4.5vh] border border-gray-200 px-5 py-[0.1rem] text-white  text-xs rounded-md bg-[#089b9b]">
-            {score?.score} pts
+            {score.coin} pts
           </p>
           <img
             src={
-              score?.winner?.profile_image ? score?.winner?.profile_image : Avatar
+              score?.profile_image ? score?.profile_image : Avatar
             }
             alt="avatar"
           />
         </div>
         <div className="w-[70%] font-bold self-center text-white text-left ml-4 text-sm">{`${++index}- ${
-          score?.winner?.username
+          score?.username
         }`}</div>
 
         {hasBadge && (

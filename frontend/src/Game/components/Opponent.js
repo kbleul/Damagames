@@ -4,7 +4,6 @@ export class Opponent extends ReactCheckers {
 
     getComputerMoves(boardState, player) {
         const self = this;
-        // console.log({self})
         let computerMoves = {};
 
         for (const coordinates in boardState) {
