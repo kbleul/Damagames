@@ -13,7 +13,7 @@ const WinnerModal = ({
   const navigate = useNavigate();
   const playerOneIp = localStorage.getItem("playerOneIp");
   const playerTwoIp = localStorage.getItem("playerTwoIp");
-  console.log(winnerPlayer === "player1pieces", winnerPlayer);
+ 
   return (
     <>
       <Transition appear show={isWinnerModalOpen} as={Fragment}>

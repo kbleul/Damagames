@@ -3,7 +3,11 @@ import Score from "./Score";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Circles } from "react-loader-spinner";
+
+
+
 const ScoreBoard = () => {
+
   const navigate = useNavigate();
 
   const headers = {
@@ -46,10 +50,12 @@ const ScoreBoard = () => {
           />
         </svg>
       </button>
+      // ads with no set-up
+
       {scoreBoardData.isFetched ? (
         scoreBoardData?.data?.data?.data?.map((score) => (
           <Score
-            key={score.winner.id}
+            key={score.created_at + "" + score.id}
             score={score}
             hasBadge={
               scoreBoardData?.data?.data?.data.indexOf(score) < 3 ? true : false

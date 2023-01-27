@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import Board from "./components/Board.js";
 import { returnPlayerName } from "./components/utils.js";
 import "./game.css";
@@ -32,10 +32,12 @@ const Game = () => {
   const [isWinnerModalOpen, setIsWinnerModalOpen] = useState(false);
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
   
-  const [timerP1, setTimerP1] = useState(20);
-  const [timerP2, setTimerP2] = useState(20);
+  const [timerP1, setTimerP1] = useState(30);
+  const [timerP2, setTimerP2] = useState(30);
 
-  const [latestState , setLatestState] = useState({});
+  const [passedCounter , setPassedCounter] = useState(0);
+ const intervalRef = useRef(null)
+
 
 
   const [isRematchModalOpen, setIsRematchModalOpen] = useState(false);
@@ -44,7 +46,6 @@ const Game = () => {
 
   const [pawns, setPawns] = useState([0, 0]);
   const [moves, setMoves] = useState([0, 0]);
-  const [timer, setTimer] = useState(15);
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -228,8 +229,18 @@ const Game = () => {
         return;
       }
 
+
       updateStatePostMove(postMoveState);
-      if(soundOn) { playMove()} 
+      const tempMoves = moves;
+      //  console.log("called");
+        MyTurn === "player1" ? ++tempMoves[0] : ++tempMoves[1];
+        setMoves(tempMoves);
+      setMoves(tempMoves);
+const tempnum = 5
+      if(tempnum === 4) { 
+        console.log({"sound" :  localStorage.getItem("dama-sound") });
+        playMove() 
+      } 
       // Start computer move is the player is finished
       if (
         postMoveState.currentPlayer === false &&
@@ -241,7 +252,6 @@ const Game = () => {
   }
 
   function updateStatePostMove(postMoveState) {
-    // setLatestState(postMoveState)
     setGameState({
       history: gameState.history.concat([
         {
@@ -256,13 +266,16 @@ const Game = () => {
       stepNumber: gameState.history.length,
       winner: postMoveState.winner,
     });
-
+console.log({currentPlayer , turnPlayer : postMoveState.currentPlayer ? "player1" : "player2"})
     socket.emit("sendGameMessage", {
       winnerPlayer: postMoveState.winner,
       boardState: postMoveState.boardState,
       currentPlayer: postMoveState.currentPlayer,
       turnPlayer: postMoveState.currentPlayer ? "player1" : "player2",
     });
+
+    calcPawns(postMoveState.boardState);
+
 
     // playOff();
     // playActive();
@@ -279,6 +292,7 @@ const Game = () => {
   const playerOneIp = localStorage.getItem("playerOneIp");
   const playerTwoIp = localStorage.getItem("playerTwoIp");
   const btCoin = localStorage.getItem("bt_coin_amount");
+
 
   let gameStatus;
   switch (gameState.winner) {
@@ -306,22 +320,18 @@ const Game = () => {
   useEffect(() => {
     if (gameState.winner || winnerPlayer) {
       setIsWinnerModalOpen(true);
-      console.log({winnerPlayer , "storage" : localStorage.getItem("playerTwo") , soundOn})
-      if(winnerPlayer === "player1pieces" && localStorage.getItem("playerOne") && soundOn )
+      console.log({winnerPlayer , "storage1" : localStorage.getItem("playerOne") , "storage2" :localStorage.getItem("playerTwo") , sound : localStorage.getItem("dama-sound")})
+      if(winnerPlayer === "player1pieces" && localStorage.getItem("playerOne") && localStorage.getItem("dama-sound") )
              { playWin(); }
-      else if(winnerPlayer === "player2pieces" && localStorage.getItem("playerOne") && soundOn )
+      else if(winnerPlayer === "player2pieces" && localStorage.getItem("playerOne") && localStorage.getItem("dama-sound") )
              { playLose(); }
-      else if(winnerPlayer === "player2pieces" && localStorage.getItem("playerTwo") && soundOn )
+      else if(winnerPlayer === "player2pieces" && localStorage.getItem("playerTwo") && localStorage.getItem("dama-sound") )
              { playWin(); }
-      else if(winnerPlayer === "player1pieces" && localStorage.getItem("playerTwo") && soundOn )
+      else if(winnerPlayer === "player1pieces" && localStorage.getItem("playerTwo") && localStorage.getItem("dama-sound") )
              { playLose(); }
-
+      else { playWin(); }
     }
-    // if (gameStatus === "Player One Wins!") {
-    //   setWinnerPlayer(firstPlayer);
-    // } else if (gameStatus === "Player Two Wins!") {
-    //   setWinnerPlayer(secondPlayer);
-    // }
+
   }, [gameState, gameStatus, winnerPlayer]);
 
   const resetGame = () => {
@@ -360,7 +370,6 @@ const Game = () => {
     let [prevP1 , prevP2] = pawns
     let player1Counter = 0;
     let player2Counter = 0;
-
     Object.keys(boardState).forEach((key) => {
       if (boardState[key]?.player === "player1") {
         ++player1Counter;
@@ -383,16 +392,15 @@ const Game = () => {
     socket.on(
       "getGameMessage",
       ({ winnerPlayer, boardState, currentPlayer, turnPlayer }) => {
+        stopInterval()
         // setUpdatedState({winnerPlayer,boardState,currentPlayer})
-        
+        console.log("got message",  winnerPlayer, boardState, currentPlayer, turnPlayer )
         const tempMoves = moves;
-        console.log("called");
+      //  console.log("called");
         turnPlayer === "player2" ? ++tempMoves[0] : ++tempMoves[1];
         setMoves(tempMoves);
 
-        console.log("turnPlayer", turnPlayer);
         setMyTurn(turnPlayer);
-        console.log("board", boardState);
         setWinnerPlayer(winnerPlayer);
         setGameState((prevGameState) => {
           return {
@@ -406,10 +414,9 @@ const Game = () => {
             }),
           };
         });
+
         calcPawns(boardState);
-
       }
-
     );
 
     socket.on(
@@ -470,60 +477,117 @@ const Game = () => {
     });
     return new_obj;
   }
-  console.log({ winnerPlayer });
 
-  
-//   useEffect(() => {
-//     let myCounter = 0
+ const stopInterval = () => {
+  clearInterval(intervalRef.current);
+  intervalRef.current = null;
+  setTimerP1(30)
+  setTimerP2(30)
 
-//     if(localStorage.getItem("playerOne") && MyTurn === "player1") {
-//       let myInterval = setInterval(() => {
-//          setTimerP1(prev => --prev) 
-//          ++myCounter;
-//         // console.log({myCounter})
-//  console.log({timerP1, timerP2})
-         
-//          if(myCounter >= 10) {
-//            clearInterval(myInterval) 
-//            setTimerP1(20) 
-//           //  socket.emit("sendGameMessage", {
-//           //    winnerPlayer: latestState.winner,
-//           //    boardState: latestState.boardState,
-//           //    currentPlayer: !latestState.currentPlayer,
-//           //    turnPlayer: !latestState.currentPlayer ? "player1" : "player2",
-//           //   });
-//          }  
-//       } , 1000);
-//     }
-
-//     else if(localStorage.getItem("playerTwo") && MyTurn === "player2") {
-//       let myInterval = setInterval(() => {
-//          setTimerP2(prev => --prev) 
-//          ++myCounter;
-//       //   console.log({myCounter})
-//          console.log({timerP1, timerP2})
-         
-//          if(myCounter >= 10) {
-//            clearInterval(myInterval) 
-//            setTimerP2(20) 
-
+ }
  
-//           //  socket.emit("sendGameMessage", {
-//           //    winnerPlayer: latestState.winner,
-//           //    boardState: latestState.boardState,
-//           //    currentPlayer: latestState.currentPlayer,
-//           //    turnPlayer: latestState.currentPlayer ? "player1" : "player2",
-//           //   });
-//          }  
-//       } , 1000);
-//     }
+
+ const timeChecker = () => {
+
+    let myCounter = 0
+
+    if(currentPlayer && localStorage.getItem("playerOneIp")) {
+      intervalRef.current = setInterval(() => {
+        if(myCounter === 0)
+        { setTimerP1(30)  }
+        else { setTimerP1(prev => --prev)  }
+         ++myCounter;
+
+         if(myCounter >= 30) {
+           stopInterval()
+           setTimerP1(30) 
+           myCounter = 0
+           setMyTurn("player2")
+           setPassedCounter(prev => ++prev)
+            setGameState(
+              {
+                ...gameState,
+                history: [...gameState.history,
+                  {
+                    boardState: gameState.history[gameState.history.length -1].boardState,
+                    currentPlayer: !gameState.history[gameState.history.length -1].currentPlayer,
+                  },
+                ],
+                activePiece: null,
+                moves: [],
+                jumpKills: null,
+                hasJumped: null,
+                stepNumber: 0,
+                winner: null,
+              })
+
+           passedCounter >= 3 && setWinnerPlayer("player2pieces") 
+           passedCounter >= 3 && stopInterval()
+           socket.emit("sendGameMessage", {
+             winnerPlayer: passedCounter >= 3 ? "player2pieces"  : gameState.winner,
+             boardState: gameState.history[gameState.history.length -1].boardState,
+             currentPlayer: !gameState.history[gameState.history.length -1].currentPlayer,
+             turnPlayer: !gameState.history[gameState.history.length -1].currentPlayer ? "player1" : "player2",
+            });
+
+         }  
+         
+      } , 1000);
+    }
+
+    else if(!currentPlayer && localStorage.getItem("playerTwoIp")) {
+      intervalRef.current = setInterval(() => {
+       if(myCounter === 0)
+       { setTimerP2(30)  }
+       else { setTimerP2(prev => --prev)  }
+        ++myCounter;
+        
+        if(myCounter >= 30) {
+          stopInterval()
+          setTimerP2(30) 
+          myCounter = 0
+  setMyTurn("player1")
+ setPassedCounter(prev => ++prev)
+
+ setGameState(
+   {
+     ...gameState,
+     history: [
+       {
+         boardState: gameState.history[gameState.history.length -1].boardState,
+         currentPlayer: !gameState.history[gameState.history.length -1].currentPlayer,
+       },
+     ],
+     activePiece: null,
+     moves: [],
+     jumpKills: null,
+     hasJumped: null,
+     stepNumber: 0,
+     winner: null,
+   })
+
+   passedCounter >= 3 && setWinnerPlayer("player1pieces")
+   passedCounter >= 3 && stopInterval();
+    socket.emit("sendGameMessage", {
+      winnerPlayer: passedCounter >= 3 ? "player1pieces"  : gameState.winner,
+      boardState: gameState.history[gameState.history.length -1].boardState,
+      currentPlayer: !gameState.history[gameState.history.length -1].currentPlayer,
+      turnPlayer: !gameState.history[gameState.history.length -1].currentPlayer ? "player1" : "player2",
+     });
+        }  
+     } , 1000);
+   }
+  
    
   
-// }, [MyTurn])
 
-useEffect(() => {
-  console.log({soundOn})
-}, [soundOn])
+ }
+
+ useEffect(() => {
+   timeChecker()
+ }, [currentPlayer])
+ 
+  
 
 
   useEffect(() => {
@@ -542,6 +606,11 @@ useEffect(() => {
       }
     }
   }, [winnerPlayer]);
+
+  useEffect(() => {
+    localStorage.setItem("dama-sound",true) 
+  }, [])
+  
   //send winner
   const gameId = localStorage.getItem("gameId");
   const winnerMutation = useMutation(
@@ -562,20 +631,21 @@ useEffect(() => {
         },
         {
           onSuccess: (responseData) => {
-            console.log(responseData?.data);
+          //  console.log(responseData?.data);
           },
           onError: (err) => {},
         }
       );
     } catch (err) {
-      console.log(err);
+    //  console.log(err);
     }
   };
 
   const changeSound = () => {
-    console.log({soundOn})
-    localStorage.setItem("dama-sound", !soundOn)
-    setSoundOn(prev => !prev)
+   // console.log({soundOn})
+    localStorage.setItem("dama-sound", !localStorage.getItem("dama-sound"))
+     setSoundOn(prev => !prev)
+   //  stopInterval()
   }
 
 
@@ -599,9 +669,16 @@ useEffect(() => {
         </svg>
         <p className="text-white text-xs">SoundOff</p>
       </button>}
-
-     {/* {localStorage.getItem("playerOne") && MyTurn==="player1" && <p className="text-white font-bold text-sm">Timer : { timerP1}</p>}
-     {localStorage.getItem("playerTwo") && MyTurn==="player2" && <p className="text-white font-bold text-sm">Timer : { timerP2}</p>} */}
+      {/* currentPlayer && localStorage.getItem("playerOneIp") && 
+      {!currentPlayer && localStorage.getItem("playerTwoIp") && */}
+      <section className="flex flex-col">
+        <div>
+          { currentPlayer && localStorage.getItem("playerOneIp")  && <p className="text-white font-bold text-sm">Timer : { timerP1}</p> }
+         {!currentPlayer && localStorage.getItem("playerTwoIp")  && <p className="text-white font-bold text-sm">Timer : { timerP2}</p> }
+        </div>
+        {passedCounter === 3 && <p className="text-yellow-400 font-bold text-xs">You will lose if you don't move next</p>  }
+      </section>
+     
         
         <button
           className="mr-8"
