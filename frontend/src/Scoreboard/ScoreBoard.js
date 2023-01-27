@@ -49,7 +49,7 @@ const ScoreBoard = () => {
       {scoreBoardData.isFetched ? (
         scoreBoardData?.data?.data?.data?.map((score) => (
           <Score
-            key={score.winner.id}
+            key={score?.winner?.id}
             score={score}
             hasBadge={
               scoreBoardData?.data?.data?.data.indexOf(score) < 3 ? true : false
