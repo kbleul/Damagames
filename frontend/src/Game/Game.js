@@ -23,9 +23,6 @@ import strikeSound from "../assets/sounds/strike.mp3";
 import { BsFillChatFill } from "react-icons/bs";
 import { FaTimes, FaTelegramPlane } from "react-icons/fa";
 import { getSmartMove } from "./components/Opponent.js";
-import { useHome } from "../context/HomeContext";
-
-
 import { ThreeDots } from "react-loader-spinner";
 
 const Game = () => {
@@ -62,7 +59,6 @@ const Game = () => {
   const [moves, setMoves] = useState([0, 0]);
   const [timer, setTimer] = useState(15);
 
-  
   const messageInputRef = useRef();
   const [messageInputOpen, setMessageInputOpen] = useState(false);
   const [latestMessage, setLatestMessage] = useState(null);
@@ -107,30 +103,30 @@ const Game = () => {
     const player1 = [
       "a8",
       "c8",
-      "e8",
-      "g8",
-      "b7",
-      "d7",
-      "f7",
-      "h7",
-      "a6",
-      "c6",
-      "e6",
-      "g6",
+      // "e8",
+      // "g8",
+      // "b7",
+      // "d7",
+      // "f7",
+      // "h7",
+      // "a6",
+      // "c6",
+      // "e6",
+      // "g6",
     ];
     const player2 = [
       "b3",
       "d3",
-      "f3",
-      "h3",
-      "a2",
-      "c2",
-      "e2",
-      "g2",
-      "b1",
-      "d1",
-      "f1",
-      "h1",
+      // "f3",
+      // "h3",
+      // "a2",
+      // "c2",
+      // "e2",
+      // "g2",
+      // "b1",
+      // "d1",
+      // "f1",
+      // "h1",
     ];
 
     player1.forEach(function (i) {
@@ -176,7 +172,8 @@ const Game = () => {
     winner: null,
   });
 
-  useEffect(() => { console.log(id === 1 , id === "1" , id == 1)
+  useEffect(() => {
+    console.log(id === 1, id === "1", id == 1);
     if (id == 1) {
       setGameState((prevGameState) => {
         return { ...prevGameState, players: 1 };
@@ -260,55 +257,61 @@ const Game = () => {
 
       updateStatePostMove(postMoveState);
       // if(soundOn) { playMove()}
-      soundOn && playMove()
-console.log("gameState",gameState )
-console.log("postMoveState",postMoveState)
-console.log("current", getCurrentState())
+      soundOn && playMove();
+      console.log("gameState", gameState);
+      console.log("postMoveState", postMoveState);
+      console.log("current", getCurrentState());
       // Start computer move is the player is finished
-      if ( id === "1" &&
+      if (
+        id === "1" &&
         postMoveState.currentPlayer === false &&
         postMoveState.winner === null
       ) {
-        setMoves([++moves[0], moves[1]])
-        calcPawns(boardState)
-      computerTurn(postMoveState);
+        setMoves([++moves[0], moves[1]]);
+        calcPawns(boardState);
+        computerTurn(postMoveState);
       }
     }
   }
 
   //computer turn
-  function computerTurn(newMoveState , piece = null) { //console.log("gameState",gameState)
+  function computerTurn(newMoveState, piece = null) {
+    //console.log("gameState",gameState)
     // if (gameState.players > 1 || id == 1) {
     //   return;
     // }
-console.log({newMoveState})
+    console.log({ newMoveState });
     setTimeout(() => {
-     // const currentState = getCurrentState();
+      // const currentState = getCurrentState();
       const boardState = newMoveState.boardState;
       let computerMove;
       let moveTo;
       let coordinates;
       let mergerObj;
 
-        computerMove = getSmartMove(columns, gameState, boardState, "player2");
-        console.log({ computerMove });
-        
-        coordinates = computerMove.piece;
-        moveTo = computerMove.moveTo;
+      computerMove = getSmartMove(columns, gameState, boardState, "player2");
+      console.log({ computerMove });
 
-        let tempHistory = gameState.history
-        tempHistory.push(newMoveState)
-        console.log("SDfds", tempHistory)
-        mergerObj = {...gameState , activePiece : computerMove.piece , 
-          moves : [computerMove.moveTo], players : 1 , stepNumber : ++gameState.stepNumber , 
-          history : tempHistory }
+      coordinates = computerMove.piece;
+      moveTo = computerMove.moveTo;
 
-          console.log("newobj", mergerObj )
-  
+      let tempHistory = gameState.history;
+      tempHistory.push(newMoveState);
+      console.log("SDfds", tempHistory);
+      mergerObj = {
+        ...gameState,
+        activePiece: computerMove.piece,
+        moves: [computerMove.moveTo],
+        players: 1,
+        stepNumber: ++gameState.stepNumber,
+        history: tempHistory,
+      };
+
+      console.log("newobj", mergerObj);
 
       const clickedSquare = boardState[coordinates];
-      let movesData 
-      if(!piece) {
+      let movesData;
+      if (!piece) {
         movesData = getMoves(
           columns,
           newMoveState.boardState,
@@ -318,18 +321,16 @@ console.log({newMoveState})
         );
       } else {
         movesData = getMoves(
-            columns,
-            newMoveState.boardState,
-            piece,
-            newMoveState.boardState.isKing,
-            true
-          );
-          coordinates = piece;
-          moveTo =
-            movesData[0][Math.floor(Math.random() * movesData[0].length)];
-            
+          columns,
+          newMoveState.boardState,
+          piece,
+          newMoveState.boardState.isKing,
+          true
+        );
+        coordinates = piece;
+        moveTo = movesData[0][Math.floor(Math.random() * movesData[0].length)];
       }
-     
+
       // console.log("gg",coordinates,movesData[0],movesData[1])
 
       setGameState((prevState) => {
@@ -340,30 +341,34 @@ console.log({newMoveState})
           jumpKills: movesData[1],
         };
       });
-     
 
       setTimeout(() => {
         //console.log({ moveTo: mergerObj });
-        
-        const postMoveState = movesData[1] ? movePiece(columns, mergerObj.moves[0], {...mergerObj , jumpKills : movesData[1]}) : 
-        movePiece(columns, mergerObj.moves[0], mergerObj);
+
+        const postMoveState = movesData[1]
+          ? movePiece(columns, mergerObj.moves[0], {
+              ...mergerObj,
+              jumpKills: movesData[1],
+            })
+          : movePiece(columns, mergerObj.moves[0], mergerObj);
         console.log({ postMoveState });
         if (postMoveState === null) {
           return;
         }
-   
 
         updateStatePostMove(postMoveState);
 
-        setMoves([moves[0], ++moves[1]])
+        setMoves([moves[0], ++moves[1]]);
 
-      
-        if(movesData[1] && soundOn) { playStrike(); }
-        else if(!movesData[1] && soundOn) { playMove(); }
+        if (movesData[1] && soundOn) {
+          playStrike();
+        } else if (!movesData[1] && soundOn) {
+          playMove();
+        }
 
         // If the computer player has jumped and is still moving, continue jump with active piece
         if (postMoveState.currentPlayer === false) {
-          computerTurn(postMoveState,postMoveState.activePiece);
+          computerTurn(postMoveState, postMoveState.activePiece);
         }
       }, 600);
     }, 1000);
@@ -371,19 +376,23 @@ console.log({newMoveState})
 
   //update the game state after move
   function updateStatePostMove(postMoveState) {
-    setGameState({
-      history: gameState.history.concat([
-        {
-          boardState: postMoveState.boardState,
-          currentPlayer: postMoveState.currentPlayer,
-        },
-      ]),
-      activePiece: postMoveState.activePiece,
-      moves: postMoveState.moves,
-      jumpKills: postMoveState.jumpKills,
-      hasJumped: postMoveState.hasJumped,
-      stepNumber: gameState.history.length,
-      winner: postMoveState.winner,
+    setGameState((prevGameState) => {
+      return {
+        ...prevGameState,
+
+        history: gameState.history.concat([
+          {
+            boardState: postMoveState.boardState,
+            currentPlayer: postMoveState.currentPlayer,
+          },
+        ]),
+        activePiece: postMoveState.activePiece,
+        moves: postMoveState.moves,
+        jumpKills: postMoveState.jumpKills,
+        hasJumped: postMoveState.hasJumped,
+        stepNumber: gameState.history.length,
+        winner: postMoveState.winner,
+      };
     });
 
     socket.emit("sendGameMessage", {
@@ -411,7 +420,6 @@ console.log({newMoveState})
   const playerTwoIp = localStorage.getItem("playerTwoIp");
   const btCoin = localStorage.getItem("bt_coin_amount");
 
-  
   let gameStatus;
   switch (gameState.winner) {
     case "player1pieces":
@@ -494,6 +502,23 @@ console.log({newMoveState})
       isWinnerModalOpen: false,
     });
   };
+  const setNewGameWithComputer = () => {
+    setGameState({
+      players: 1,
+      history: [
+        {
+          boardState: createBoard(),
+          currentPlayer: true,
+        },
+      ],
+      activePiece: null,
+      moves: [],
+      jumpKills: null,
+      hasJumped: null,
+      stepNumber: 0,
+      winner: null,
+    });
+  };
 
   const drawGame = () => {
     socket.emit("sendDrawGameRequest", { status: "Draw" });
@@ -506,7 +531,7 @@ console.log({newMoveState})
       messageInputRef.current.focus();
       return;
     }
-  
+
     socket.emit("sendChatMessage", {
       message: messageInputRef.current.value,
     });
@@ -543,9 +568,9 @@ console.log({newMoveState})
     }
 
     // setPawns([12 - player2Counter, 12 - player1Counter]);
-    // if(12 - player1Counter !== prevP1 || 12 - player2Counter !== prevP2) { 
-    //   soundOn && playStrike() 
-    // }  
+    // if(12 - player1Counter !== prevP1 || 12 - player2Counter !== prevP2) {
+    //   soundOn && playStrike()
+    // }
     // console.log([...pawns] , [prevP1 , prevP2]);
   };
   function compareObjects(obj1, obj2) {
@@ -572,7 +597,7 @@ console.log({newMoveState})
 
   let array = gameState.history;
   let lastElement = array[array.length - 1];
-  
+
   useEffect(() => {
     // let cPlayer = currentPlayer
     socket.on(
@@ -580,7 +605,7 @@ console.log({newMoveState})
       ({ winnerPlayer, boardState, currentPlayer, turnPlayer }) => {
         stopInterval();
         // setUpdatedState({winnerPlayer,boardState,currentPlayer})
-    
+
         const tempMoves = moves;
         turnPlayer === "player2" ? ++tempMoves[0] : ++tempMoves[1];
         setMoves(tempMoves);
@@ -617,8 +642,8 @@ console.log({newMoveState})
         setMyTurn("player1");
         setPawns([0, 0]);
         setMoves([0, 0]);
-        setTimerP1(30)
-        setTimerP2(30)
+        setTimerP1(30);
+        setTimerP2(30);
       }
     );
     socket.on("getResetGameRequest", ({ status }) => {
@@ -809,8 +834,6 @@ console.log({newMoveState})
 
   // }, [MyTurn])
 
-
-
   useEffect(() => {
     if (winnerPlayer) {
       if (winnerPlayer === "player1pieces" || winnerPlayer === "player1moves") {
@@ -857,15 +880,13 @@ console.log({newMoveState})
           onError: (err) => {},
         }
       );
-    } catch (err) {
-    }
+    } catch (err) {}
   };
 
   const changeSound = () => {
     localStorage.setItem("dama-sound", !soundOn);
     setSoundOn((prev) => !prev);
   };
-  
 
   return (
     <div
@@ -976,7 +997,7 @@ console.log({newMoveState})
             />
           </div>
           <h4 className="text-white capitalize  font-semibold text-xs">
-          {id == 1 && "You"}
+            {id == 1 && "You"}
           </h4>
         </div>
 
@@ -1037,15 +1058,18 @@ console.log({newMoveState})
           </div>
         </div>
       </section>
-        { id == 1 && !currentPlayer && <ThreeDots
-            height="20" 
-            width="40"
-            radius="9"
-            color="#f75105"
-            ariaLabel="three-dots-loading"
-            wrapperStyle={{}}
-            wrapperClassName=""
-            visible={true}  />}
+      {id == 1 && !currentPlayer && (
+        <ThreeDots
+          height="20"
+          width="40"
+          radius="9"
+          color="#f75105"
+          ariaLabel="three-dots-loading"
+          wrapperStyle={{}}
+          wrapperClassName=""
+          visible={true}
+        />
+      )}
 
       {!currentPlayer && localStorage.getItem("playerOne") && (
         <ThreeDots
@@ -1089,13 +1113,15 @@ console.log({newMoveState})
           }`}
         >
           <Board
-            boardState={id === "1" ? dict_reverse(boardState) :
-              !id  ? localStorage.getItem("playerOne") 
-                      ? dict_reverse(boardState)
-                      : boardState
-                    : boardState
-          }
-            
+            boardState={
+              id === "1"
+                ? dict_reverse(boardState)
+                : !id
+                ? localStorage.getItem("playerOne")
+                  ? dict_reverse(boardState)
+                  : boardState
+                : boardState
+            }
             currentPlayer={currentPlayer}
             activePiece={gameState.activePiece}
             moves={gameState.moves}
@@ -1122,35 +1148,42 @@ console.log({newMoveState})
         </div>
         <p className="text-xs font-bold text-white">Draw</p>
       </div>
-    {id != 1  &&  <div className="absolute right-3 bottom-5 flex items-end justify-end">
-        <BsFillChatFill
-          onClick={openChatFilled}
-          size={30}
-          className="text-orange-color"
-        />
-      </div>}
-  
-      {/* message */}
-      {latestMessage && <motion.div
-       initial={{ opacity:0 }}
-       animate={{ opacity:1}}
-       transition={{type: "tween",duration:1,ease:'easeInOut'}}
-      className={`absolute top-36  bg-white max-w-sm  p-1 w-44 ${playerOneIp ? "left-3" : "right-3"}
-       border border-orange-color rounded-lg m-3`}>
-        <div className="text-gray-800">
-          <p className="text-start text-sm pl-2 font-medium">
-            {latestMessage}
-          </p>
-
-          {playerOneIp && (
-            <div className="absolute top-0 left-[39px] transform -translate-x-1/2 -translate-y-1/2 rotate-45 w-4 h-4 bg-white border-l border-t border-orange-color"></div>
-          )}
-
-          {playerTwoIp && (
-            <div className="absolute right-[39px] top-0 transform -translate-x-1/2 -translate-y-1/2 rotate-45 w-4 h-4 bg-white border-l border-t border-orange-color"></div>
-          )}
+      {id != 1 && (
+        <div className="absolute right-3 bottom-5 flex items-end justify-end">
+          <BsFillChatFill
+            onClick={openChatFilled}
+            size={30}
+            className="text-orange-color"
+          />
         </div>
-      </motion.div>}
+      )}
+
+      {/* message */}
+      {latestMessage && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ type: "tween", duration: 1, ease: "easeInOut" }}
+          className={`absolute top-36  bg-white max-w-sm  p-1 w-44 ${
+            playerOneIp ? "left-3" : "right-3"
+          }
+       border border-orange-color rounded-lg m-3`}
+        >
+          <div className="text-gray-800">
+            <p className="text-start text-sm pl-2 font-medium">
+              {latestMessage}
+            </p>
+
+            {playerOneIp && (
+              <div className="absolute top-0 left-[39px] transform -translate-x-1/2 -translate-y-1/2 rotate-45 w-4 h-4 bg-white border-l border-t border-orange-color"></div>
+            )}
+
+            {playerTwoIp && (
+              <div className="absolute right-[39px] top-0 transform -translate-x-1/2 -translate-y-1/2 rotate-45 w-4 h-4 bg-white border-l border-t border-orange-color"></div>
+            )}
+          </div>
+        </motion.div>
+      )}
       {messageInputOpen && (
         <div className="bg-dark-bg absolute bottom-0 left-0 right-0 p-3 flex flex-col space-y-2 transition duration-1000 ease-out">
           <FaTimes
@@ -1181,8 +1214,10 @@ console.log({newMoveState})
           </div>
         </div>
       )}
-       <div>
-       {btCoin && <p className="text-xs font-bold text-white">Bet : {btCoin} coins</p>}
+      <div>
+        {btCoin && (
+          <p className="text-xs font-bold text-white">Bet : {btCoin} coins</p>
+        )}
       </div>
       <ExitWarningModal
         isExitModalOpen={isExitModalOpen}
@@ -1195,6 +1230,8 @@ console.log({newMoveState})
         winnerPlayer={winnerPlayer}
         resetGame={resetGame}
         rejectGameRequest={rejectGameRequest}
+        gameState={gameState}
+        setNewGameWithComputer={setNewGameWithComputer}
       />
       <RematchModal
         isRematchModalOpen={isRematchModalOpen}
