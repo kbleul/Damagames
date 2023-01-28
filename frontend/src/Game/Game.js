@@ -2,12 +2,13 @@ import React, { useEffect, useState, useContext, useRef } from "react";
 import Board from "./components/Board.js";
 import { returnPlayerName } from "./components/utils.js";
 import "./game.css";
+import { motion, useAnimation } from "framer-motion";
 import { getMoves, movePiece } from "./components/ReactCheckers";
 import WinnerModal from "./components/WinnerModal";
 import ExitWarningModal from "./components/ExitWarningModal";
 import socket from "../utils/socket.io";
 import { TurnContext } from "../context/TurnContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import RematchModal from "./components/RematchModal";
 import useSound from "use-sound";
@@ -20,7 +21,13 @@ import moveSound from "../assets/sounds/move.mp3";
 import strikeSound from "../assets/sounds/strike.mp3";
 import { ThreeDots } from "react-loader-spinner";
 
+import { BsFillChatFill } from "react-icons/bs";
+import { FaTimes, FaTelegramPlane } from "react-icons/fa";
+import { getSmartMove } from "./components/Opponent.js";
+import { useHome } from "../context/HomeContext";
+
 const Game = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const [playMove] = useSound(moveSound);
   const [playStrike] = useSound(strikeSound);
@@ -32,6 +39,7 @@ const Game = () => {
       ? localStorage.getItem("dama-sound")
       : true
   );
+  const [play] = useSound(move);
   const [MyTurn, setMyTurn] = useContext(TurnContext);
   const [isWinnerModalOpen, setIsWinnerModalOpen] = useState(false);
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
@@ -50,6 +58,10 @@ const Game = () => {
 
   const [pawns, setPawns] = useState([0, 0]);
   const [moves, setMoves] = useState([0, 0]);
+  // const [playMove] = useSound(require("../assets/sounds/move.mp3"), { volume : 0.25 });
+  const messageInputRef = useRef();
+  const [messageInputOpen, setMessageInputOpen] = useState(false);
+  const [latestMessage, setLatestMessage] = useState(null);
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -160,6 +172,14 @@ const Game = () => {
     winner: null,
   });
 
+  useEffect(() => {
+    if (id == 1) {
+      setGameState((prevGameState) => {
+        return { ...prevGameState, players: 1 };
+      });
+    }
+  }, [id]);
+
   function getCurrentState() {
     const history = gameState?.history?.slice(0, gameState.stepNumber + 1);
     return history[history.length - 1];
@@ -246,6 +266,78 @@ const Game = () => {
     }
   }
 
+  //computer turn
+  function computerTurn(piece = null) {
+    if (gameState.players > 1 || id == 1) {
+      return;
+    }
+    setTimeout(() => {
+      const currentState = getCurrentState();
+      const boardState = currentState.boardState;
+
+      let computerMove;
+      let coordinates;
+      let moveTo;
+
+      // If var piece != null, the piece has previously jumped.
+      if (piece === null) {
+        computerMove = getSmartMove(columns, gameState, boardState, "player2");
+        console.log({ computerMove });
+        coordinates = computerMove.piece;
+        moveTo = computerMove.moveTo;
+      } else {
+        // Prevent the computer player from choosing another piece to move. It must move the active piece
+        computerMove = getMoves(
+          columns,
+          boardState,
+          piece,
+          boardState[piece].isKing,
+          true
+        );
+        coordinates = piece;
+        moveTo =
+          computerMove[0][Math.floor(Math.random() * computerMove[0].length)];
+      }
+
+      const clickedSquare = boardState[coordinates];
+
+      let movesData = getMoves(
+        columns,
+        boardState,
+        coordinates,
+        clickedSquare.isKing,
+        false
+      );
+      // console.log("gg",coordinates,movesData[0],movesData[1])
+
+      setGameState((prevState) => {
+        return {
+          ...prevState,
+          activePiece: coordinates,
+          moves: movesData[0],
+          jumpKills: movesData[1],
+        };
+      });
+
+      setTimeout(() => {
+        console.log({ moveTo: gameState, moveTo });
+        const postMoveState = movePiece(columns, moveTo, gameState);
+        console.log({ postMoveState });
+        if (postMoveState === null) {
+          return;
+        }
+
+        updateStatePostMove(postMoveState);
+
+        // If the computer player has jumped and is still moving, continue jump with active piece
+        if (postMoveState.currentPlayer === false) {
+          computerTurn(postMoveState.activePiece);
+        }
+      }, 500);
+    }, 1000);
+  }
+
+  //update the game state after move
   function updateStatePostMove(postMoveState) {
     setGameState({
       history: gameState.history.concat([
@@ -287,6 +379,7 @@ const Game = () => {
   const playerTwoIp = localStorage.getItem("playerTwoIp");
   const btCoin = localStorage.getItem("bt_coin_amount");
 
+  
   let gameStatus;
   switch (gameState.winner) {
     case "player1pieces":
@@ -372,6 +465,28 @@ const Game = () => {
 
   const drawGame = () => {
     socket.emit("sendDrawGameRequest", { status: "Draw" });
+  };
+
+  //send chat message
+  const sendChatMessage = () => {
+    if (!messageInputRef.current.value) {
+      toast("please write your message");
+      messageInputRef.current.focus();
+      return;
+    }
+  
+    socket.emit("sendChatMessage", {
+      message: messageInputRef.current.value,
+    });
+    setMessageInputOpen(false);
+  };
+  const handleSubmit = (e) => {
+    if (e.key === "Enter") {
+      sendChatMessage();
+    }
+  };
+  const openChatFilled = () => {
+    setMessageInputOpen(true);
   };
 
   const calcPawns = (boardState) => {
@@ -500,10 +615,19 @@ const Game = () => {
           localStorage.getItem(data) && localStorage.removeItem(data);
         });
         navigate("/create-game");
-      }, 1000);
+      }, 10);
+    });
+    //listen for chat message
+    socket.on("getChatMessage", ({ message }) => {
+      setLatestMessage(message);
     });
   }, []);
 
+  useEffect(() => {
+    setTimeout(() => {
+      setLatestMessage(null);
+    }, 4000);
+  }, [latestMessage]);
   function dict_reverse(obj) {
     let new_obj = {};
     let rev_obj = Object.keys(obj).reverse();
@@ -835,6 +959,7 @@ const Game = () => {
           </div>
           <h4 className="text-white capitalize  font-semibold text-xs">
             {/* {secondPlayer?.name} */}
+            {id == 1 && "Computer"}
           </h4>
         </div>
       </section>
@@ -899,21 +1024,25 @@ const Game = () => {
       <div className="game-board  ">
         <div
           className={` shadow-2xl    ${
-            currentPlayer === true
-              ? currentPlayer === true && !firstPlayer
-                ? "pointer-events-none"
-                : ""
-              : currentPlayer === false
-              ? currentPlayer === false && !secondPlayer
-                ? "pointer-events-none"
+            !id
+              ? currentPlayer === true
+                ? currentPlayer === true && !firstPlayer
+                  ? "pointer-events-none"
+                  : ""
+                : currentPlayer === false
+                ? currentPlayer === false && !secondPlayer
+                  ? "pointer-events-none"
+                  : ""
                 : ""
               : ""
           }`}
         >
           <Board
             boardState={
-              localStorage.getItem("playerOne")
-                ? dict_reverse(boardState)
+              !id
+                ? localStorage.getItem("playerOne")
+                  ? dict_reverse(boardState)
+                  : boardState
                 : boardState
             }
             currentPlayer={currentPlayer}
@@ -942,7 +1071,68 @@ const Game = () => {
         </div>
         <p className="text-xs font-bold text-white">Draw</p>
       </div>
+      <div className="absolute right-3 bottom-5 flex items-end justify-end">
+        <BsFillChatFill
+          onClick={openChatFilled}
+          size={30}
+          className="text-orange-color"
+        />
+      </div>
+  
+      {/* message */}
+      {latestMessage && <motion.div
+       initial={{ opacity:0 }}
+       animate={{ opacity:1}}
+       transition={{type: "tween",duration:1,ease:'easeInOut'}}
+      className={`absolute top-36  bg-white max-w-sm  p-1 w-44 ${playerOneIp ? "left-3" : "right-3"}
+       border border-orange-color rounded-lg m-3`}>
+        <div className="text-gray-800">
+          <p className="text-start text-sm pl-2 font-medium">
+            {latestMessage}
+          </p>
 
+          {playerOneIp && (
+            <div className="absolute top-0 left-[39px] transform -translate-x-1/2 -translate-y-1/2 rotate-45 w-4 h-4 bg-white border-l border-t border-orange-color"></div>
+          )}
+
+          {playerTwoIp && (
+            <div className="absolute right-[39px] top-0 transform -translate-x-1/2 -translate-y-1/2 rotate-45 w-4 h-4 bg-white border-l border-t border-orange-color"></div>
+          )}
+        </div>
+      </motion.div>}
+      {messageInputOpen && (
+        <div className="bg-dark-bg absolute bottom-0 left-0 right-0 p-3 flex flex-col space-y-2 transition duration-1000 ease-out">
+          <FaTimes
+            onClick={() => {
+              setMessageInputOpen(false);
+            }}
+            size={22}
+            className="text-white flex items-end justify-end self-end"
+          />
+          <div
+            className="relative flex items-center w-full border  border-orange-color max-w-md mx-auto
+             rounded-md "
+          >
+            <input
+              ref={messageInputRef}
+              autoFocus
+              onKeyDown={handleSubmit}
+              placeholder="write your message..."
+              type="text"
+              className="bg-transparent  p-2 flex-grow w-full
+               text-white focus:outline-none focus:ring-0  font-medium "
+            />
+            <FaTelegramPlane
+              onClick={sendChatMessage}
+              className="text-orange-color absolute right-1 cursor-pointer"
+              size={28}
+            />
+          </div>
+        </div>
+      )}
+       <div>
+       {btCoin && <p className="text-xs font-bold text-white">Bet : {btCoin} coins</p>}
+      </div>
       <ExitWarningModal
         isExitModalOpen={isExitModalOpen}
         set_isExitModalOpen={setIsExitModalOpen}
