@@ -39,7 +39,6 @@ const Game = () => {
       ? localStorage.getItem("dama-sound")
       : true
   );
-  const [play] = useSound(move);
   const [MyTurn, setMyTurn] = useContext(TurnContext);
   const [isWinnerModalOpen, setIsWinnerModalOpen] = useState(false);
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
