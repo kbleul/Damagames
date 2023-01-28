@@ -39,9 +39,11 @@ export function getMoves(columns,boardState, coordinates, isKing = false, hasJum
     let killJumps = {};
 
     const corners = getCorners(columns,coordinates);
+   // console.log("myoo",boardState , coordinates)
 
     const row = utils.getRowAsInt(coordinates);
     const player = boardState[coordinates].player;
+
 
     const advanceRow = player === "player1" ? row - 1 : row + 1;
 
@@ -95,18 +97,20 @@ export function getMoves(columns,boardState, coordinates, isKing = false, hasJum
 
 //move piece
 export function movePiece(columns,coordinates, gameState) {
+  console.log("jumpArray",gameState)
+
     let currentState = Object.assign({}, gameState.history[gameState.stepNumber]);
     let boardState = Object.assign({}, currentState.boardState);
     let movingPiece = Object.assign({}, boardState[gameState.activePiece]);
 
     let jumpArray = [];
-
     for (let key in gameState.jumpKills) {
       if (!gameState.jumpKills.hasOwnProperty(key)) {
         continue;
       }
 
       jumpArray.push(gameState.jumpKills[key]);
+
     }
 
     // Don't move if the coordinates don't match a moveable or jumpable square.
@@ -133,7 +137,7 @@ export function movePiece(columns,coordinates, gameState) {
     let setCurrentPlayer = player === "player2";
     let setActivePiece = null;
 
-    if (jumpArray.indexOf(coordinates) > -1) {
+    if (jumpArray.indexOf(coordinates) > -1) { console.log("kill")
       let opponentPosition = utils.getKeyByValue(gameState.jumpKills, coordinates);
       //remove oponent piece
 

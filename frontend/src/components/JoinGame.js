@@ -19,6 +19,7 @@ const JoinGame = () => {
     "p1",
     "p2",
     "players",
+    "dama-sound"
   ];
   const { user, token } = useAuth();
   const [isVerified, setIsVerified] = useState(false);

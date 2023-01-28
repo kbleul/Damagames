@@ -138,7 +138,7 @@ const NewGame = () => {
             );
             localStorage.setItem("playerOneIp", responseData?.data?.data?.ip);
           },
-          onError: (err) => {},
+          onError: (err) => { console.log("error", err)},
         }
       );
     } catch (err) {

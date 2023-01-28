@@ -8,7 +8,7 @@ import WinnerModal from "./components/WinnerModal";
 import ExitWarningModal from "./components/ExitWarningModal";
 import socket from "../utils/socket.io";
 import { TurnContext } from "../context/TurnContext";
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import RematchModal from "./components/RematchModal";
 import useSound from "use-sound";
@@ -19,12 +19,14 @@ import winSound from "../assets/sounds/win.mp3";
 import loseSound from "../assets/sounds/lose.mp3";
 import moveSound from "../assets/sounds/move.mp3";
 import strikeSound from "../assets/sounds/strike.mp3";
-import { ThreeDots } from "react-loader-spinner";
 
 import { BsFillChatFill } from "react-icons/bs";
 import { FaTimes, FaTelegramPlane } from "react-icons/fa";
 import { getSmartMove } from "./components/Opponent.js";
 import { useHome } from "../context/HomeContext";
+
+
+import { ThreeDots } from "react-loader-spinner";
 
 const Game = () => {
   const { id } = useParams();
@@ -39,6 +41,7 @@ const Game = () => {
       ? localStorage.getItem("dama-sound")
       : true
   );
+
   const [MyTurn, setMyTurn] = useContext(TurnContext);
   const [isWinnerModalOpen, setIsWinnerModalOpen] = useState(false);
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
@@ -57,7 +60,9 @@ const Game = () => {
 
   const [pawns, setPawns] = useState([0, 0]);
   const [moves, setMoves] = useState([0, 0]);
-  // const [playMove] = useSound(require("../assets/sounds/move.mp3"), { volume : 0.25 });
+  const [timer, setTimer] = useState(15);
+
+  
   const messageInputRef = useRef();
   const [messageInputOpen, setMessageInputOpen] = useState(false);
   const [latestMessage, setLatestMessage] = useState(null);
@@ -171,7 +176,7 @@ const Game = () => {
     winner: null,
   });
 
-  useEffect(() => {
+  useEffect(() => { console.log(id === 1 , id === "1" , id == 1)
     if (id == 1) {
       setGameState((prevGameState) => {
         return { ...prevGameState, players: 1 };
@@ -255,58 +260,76 @@ const Game = () => {
 
       updateStatePostMove(postMoveState);
       // if(soundOn) { playMove()}
+      soundOn && playMove()
+console.log("gameState",gameState )
+console.log("postMoveState",postMoveState)
+console.log("current", getCurrentState())
       // Start computer move is the player is finished
-      if (
+      if ( id === "1" &&
         postMoveState.currentPlayer === false &&
         postMoveState.winner === null
       ) {
-        // computerTurn();
+        setMoves([++moves[0], moves[1]])
+        calcPawns(boardState)
+      computerTurn(postMoveState);
       }
     }
   }
 
   //computer turn
-  function computerTurn(piece = null) {
-    if (gameState.players > 1 || id == 1) {
-      return;
-    }
+  function computerTurn(newMoveState , piece = null) { //console.log("gameState",gameState)
+    // if (gameState.players > 1 || id == 1) {
+    //   return;
+    // }
+console.log({newMoveState})
     setTimeout(() => {
-      const currentState = getCurrentState();
-      const boardState = currentState.boardState;
-
+     // const currentState = getCurrentState();
+      const boardState = newMoveState.boardState;
       let computerMove;
-      let coordinates;
       let moveTo;
+      let coordinates;
+      let mergerObj;
 
-      // If var piece != null, the piece has previously jumped.
-      if (piece === null) {
         computerMove = getSmartMove(columns, gameState, boardState, "player2");
         console.log({ computerMove });
+        
         coordinates = computerMove.piece;
         moveTo = computerMove.moveTo;
-      } else {
-        // Prevent the computer player from choosing another piece to move. It must move the active piece
-        computerMove = getMoves(
-          columns,
-          boardState,
-          piece,
-          boardState[piece].isKing,
-          true
-        );
-        coordinates = piece;
-        moveTo =
-          computerMove[0][Math.floor(Math.random() * computerMove[0].length)];
-      }
+
+        let tempHistory = gameState.history
+        tempHistory.push(newMoveState)
+        console.log("SDfds", tempHistory)
+        mergerObj = {...gameState , activePiece : computerMove.piece , 
+          moves : [computerMove.moveTo], players : 1 , stepNumber : ++gameState.stepNumber , 
+          history : tempHistory }
+
+          console.log("newobj", mergerObj )
+  
 
       const clickedSquare = boardState[coordinates];
-
-      let movesData = getMoves(
-        columns,
-        boardState,
-        coordinates,
-        clickedSquare.isKing,
-        false
-      );
+      let movesData 
+      if(!piece) {
+        movesData = getMoves(
+          columns,
+          newMoveState.boardState,
+          coordinates,
+          clickedSquare.isKing,
+          false
+        );
+      } else {
+        movesData = getMoves(
+            columns,
+            newMoveState.boardState,
+            piece,
+            newMoveState.boardState.isKing,
+            true
+          );
+          coordinates = piece;
+          moveTo =
+            movesData[0][Math.floor(Math.random() * movesData[0].length)];
+            
+      }
+     
       // console.log("gg",coordinates,movesData[0],movesData[1])
 
       setGameState((prevState) => {
@@ -317,22 +340,32 @@ const Game = () => {
           jumpKills: movesData[1],
         };
       });
+     
 
       setTimeout(() => {
-        console.log({ moveTo: gameState, moveTo });
-        const postMoveState = movePiece(columns, moveTo, gameState);
+        //console.log({ moveTo: mergerObj });
+        
+        const postMoveState = movesData[1] ? movePiece(columns, mergerObj.moves[0], {...mergerObj , jumpKills : movesData[1]}) : 
+        movePiece(columns, mergerObj.moves[0], mergerObj);
         console.log({ postMoveState });
         if (postMoveState === null) {
           return;
         }
+   
 
         updateStatePostMove(postMoveState);
 
+        setMoves([moves[0], ++moves[1]])
+
+      
+        if(movesData[1] && soundOn) { playStrike(); }
+        else if(!movesData[1] && soundOn) { playMove(); }
+
         // If the computer player has jumped and is still moving, continue jump with active piece
         if (postMoveState.currentPlayer === false) {
-          computerTurn(postMoveState.activePiece);
+          computerTurn(postMoveState,postMoveState.activePiece);
         }
-      }, 500);
+      }, 600);
     }, 1000);
   }
 
@@ -508,6 +541,12 @@ const Game = () => {
       setPawns([12 - player2Counter, 12 - player1Counter]);
       // soundOn && playMove();
     }
+
+    // setPawns([12 - player2Counter, 12 - player1Counter]);
+    // if(12 - player1Counter !== prevP1 || 12 - player2Counter !== prevP2) { 
+    //   soundOn && playStrike() 
+    // }  
+    // console.log([...pawns] , [prevP1 , prevP2]);
   };
   function compareObjects(obj1, obj2) {
     let obj1NullCount = 0;
@@ -563,6 +602,7 @@ const Game = () => {
 
         calcPawns(boardState);
         compareObjects(lastElement?.boardState, boardState);
+        console.log("currentPlayer", currentPlayer);
       }
     );
 
@@ -627,6 +667,8 @@ const Game = () => {
       setLatestMessage(null);
     }, 4000);
   }, [latestMessage]);
+
+  //reverse board
   function dict_reverse(obj) {
     let new_obj = {};
     let rev_obj = Object.keys(obj).reverse();
@@ -823,6 +865,7 @@ const Game = () => {
     localStorage.setItem("dama-sound", !soundOn);
     setSoundOn((prev) => !prev);
   };
+  
 
   return (
     <div
@@ -933,7 +976,7 @@ const Game = () => {
             />
           </div>
           <h4 className="text-white capitalize  font-semibold text-xs">
-            {/* {firstPlayer?.name} */}
+          {id == 1 && "You"}
           </h4>
         </div>
 
@@ -994,6 +1037,15 @@ const Game = () => {
           </div>
         </div>
       </section>
+        { id == 1 && !currentPlayer && <ThreeDots
+            height="20" 
+            width="40"
+            radius="9"
+            color="#f75105"
+            ariaLabel="three-dots-loading"
+            wrapperStyle={{}}
+            wrapperClassName=""
+            visible={true}  />}
 
       {!currentPlayer && localStorage.getItem("playerOne") && (
         <ThreeDots
@@ -1037,13 +1089,13 @@ const Game = () => {
           }`}
         >
           <Board
-            boardState={
-              !id
-                ? localStorage.getItem("playerOne")
-                  ? dict_reverse(boardState)
-                  : boardState
-                : boardState
-            }
+            boardState={id === "1" ? dict_reverse(boardState) :
+              !id  ? localStorage.getItem("playerOne") 
+                      ? dict_reverse(boardState)
+                      : boardState
+                    : boardState
+          }
+            
             currentPlayer={currentPlayer}
             activePiece={gameState.activePiece}
             moves={gameState.moves}
@@ -1070,13 +1122,13 @@ const Game = () => {
         </div>
         <p className="text-xs font-bold text-white">Draw</p>
       </div>
-      <div className="absolute right-3 bottom-5 flex items-end justify-end">
+    {id != 1  &&  <div className="absolute right-3 bottom-5 flex items-end justify-end">
         <BsFillChatFill
           onClick={openChatFilled}
           size={30}
           className="text-orange-color"
         />
-      </div>
+      </div>}
   
       {/* message */}
       {latestMessage && <motion.div
