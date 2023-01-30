@@ -14,11 +14,23 @@ import ErrorPage from "./components/ErrorPage";
 import Login from "./components/Auth/Login";
 import Profile from "./components/Profile/Profile";
 import { useAuth } from "./context/auth";
+import TagManager from 'react-gtm-module'
+
+//'G-YM283P3T0J'
+const tagManagerArgs = {
+  gtmId: process.env.REACT_APP_GTM_ID
+}
+
 const App = () => {
   const { checked } = useHome();
   const {user,token} = useAuth()
   const firstPlayer = JSON.parse(localStorage.getItem("playerOne"));
   const secondPlayer = JSON.parse(localStorage.getItem("playerTwo"));
+
+  useEffect(() => {
+    TagManager.initialize(tagManagerArgs)
+  },[])
+
   useEffect(() => {
     socket.on("connect", () => {
       console.log("Connected to Socket.io server");
