@@ -17,7 +17,7 @@ import ErrorPage from "./components/ErrorPage";
 import Login from "./components/Auth/Login";
 import Profile from "./components/Profile/Profile";
 import { useAuth } from "./context/auth";
-import TagManager from 'react-gtm-module';
+import TagManager from "react-gtm-module";
 
 //'G-YM283P3T0J'
 const tagManagerArgs = {
