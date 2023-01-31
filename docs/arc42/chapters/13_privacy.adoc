@@ -1,0 +1,59 @@
+## Privacy Policy for Damagames
+
+Jaktech Engineering and Trading PLC (“Jaktech”, “we”, “us”, “our”) is committed to protecting the privacy of our users (“users”, “you”, “your”) on Damagames.com. This Privacy Policy applies to the progressive web app for multiplayer games of checkers (“Service”) provided on Damagames.com and explains how we collect, use, share, and protect your personal information. By using our Service, you agree to the terms of this Privacy Policy.
+
+### Information We Collect
+
+We collect information from and about you in a variety of ways:
+
+1. Information you provide directly to us: When you sign up for and use our Service, you may provide us with information such as your name, email address, and password.
+
+2. Information we collect automatically: When you use our Service, we may automatically collect information about your device type and operating system, device ID, IP address, browser type, and usage information.
+
+3. Information from third-party sources: We may receive information about you from third-party sources, such as social media platforms, to personalize your experience and improve our Service.
+
+### Use of Information
+
+We use the information we collect to provide, maintain, and improve our Service, as well as to personalize your experience and communicate with you. This may include:
+
+1. Providing customer support
+
+2. Personalizing content and experiences
+
+3. Analyzing and improving our Service
+
+4. Communicating with you about products, services, and promotions
+
+5. Preventing and detecting fraud or abuse
+
+### Sharing of Information
+
+We may share information about you as follows:
+
+1. With third-party service providers: We may share information with third-party service providers to provide, maintain, and improve our Service.
+
+2. For legal reasons: We may share information about you if we believe it is necessary to comply with the law or to protect the rights, property, or safety of Jaktech, our users, or others.
+
+### Data Retention and Protection
+
+We retain your information for as long as necessary to provide the Service, comply with our legal obligations, resolve disputes, and enforce our agreements. We implement appropriate technical and organizational measures to protect the security of your information.
+
+### Your Rights
+
+Under the General Data Protection Regulation (GDPR) and the California Consumer Privacy Act (CCPA), you have certain rights with respect to your personal information, including:
+
+1. The right to access your information
+
+2. The right to request the correction or deletion of your information
+
+3. The right to request that we stop using or collecting your information
+
+To exercise your rights, please contact us at support@jaktech.et.
+
+### Changes to This Privacy Policy
+
+We may update this Privacy Policy from time to time to reflect changes in our practices or services. If we make any material changes, we will provide notice through the Service or by other means.
+
+### Contact Us
+
+If you have any questions or concerns about this Privacy Policy, please contact us at support@jaktech.et.
