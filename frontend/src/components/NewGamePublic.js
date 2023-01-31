@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import dateFormat, { masks } from "dateformat";
 
 import { useAuth } from "../context/auth";
@@ -155,6 +155,19 @@ const submitName = () => {
         nameMutationSubmitHandler();
     }
     };
+
+  useEffect(() => {
+    socket.on("getMessage", (data) => {
+      if (data.status === "started") {
+        console.log("playerTwo_info ", data.player2);
+        localStorage.setItem("p1", data.player1);
+        localStorage.setItem("p2", data.player2);
+        navigate("/game");
+      }
+    })
+  }, [])
+    
+
 
   return (
     <main 

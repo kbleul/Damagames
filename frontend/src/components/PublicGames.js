@@ -49,6 +49,7 @@ const handleJoin = () => {
     return;
   }
   const gameId =  localStorage.getItem("gameId")
+  console.log({gameId})
   if (gameId) {
     nameMutationWithCode();
   }
@@ -70,13 +71,18 @@ const handleJoin = () => {
   
    //with code
    const nameMutationWithCode = async (values) => {
-    try {
+    try { console.log({gameid2 : localStorage.getItem("gameId")})
       nameMutation.mutate(user && token ? {} : { username: name }, {
         onSuccess: (responseData) => {
-          socket.emit("join-room", localStorage.getItem("gameId"));
 
-          socket.emit("sendMessage", { status: "started" });
-          console.log(responseData?.data);
+          socket.emit("join-room", responseData?.data?.data?.game);
+
+          socket.emit("sendMessage", { 
+            status: "started", 
+            player2: JSON.stringify(responseData?.data?.data?.playerTwo),
+           });
+
+          console.log(responseData?.data.data?.playerTwo);
 
           navigate("/game");
           //first clear local storage

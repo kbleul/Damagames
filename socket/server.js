@@ -59,8 +59,10 @@ const removePublicGame = (code,type) => {
 //returns the difference in time(minutes) b/n two date objects
 const checkDuration = (time) => {
   const result = differenceInMinutes( time, new Date() )
-  console.log({result})
+ // console.log({result})
 }
+
+console.log(`⚡: Server is live! PORT = ` +  7744);
 
 io.on("connection", (socket) => {
   console.log(socket.id)
@@ -73,21 +75,23 @@ io.on("connection", (socket) => {
       socketID : socket.id,
       time : new Date()
     })
-     
+   //  console.log(publicGames)
   })
 
   socket.on("publicGames", ()  => {
       let temparr = []
       let removedArr = []
+     // console.log("length " , publicGames.length)
      publicGames.forEach(game => { 
+    //  console.log(checkDuration(game.time) < 3 ,checkDuration(game.time) >= -3 , typeof checkDuration(game.time) )
 
-      if(checkDuration(game.time) < 3 && checkDuration(game.time) >= -3) 
-      {   temparr.push({...game, time : createReadableDate(game.time) }) }
+    temparr.push({...game, time : createReadableDate(game.time) }) 
 //if public game has been up for 3 minutes remove from public game
-      else { removedArr.push(game.code) }
+   //   else { removedArr.push(game.code) }
     })
+   // console.log("temparr",temparr.length)
 
-    io.to(socket.id).emit("getPublicGames", temparr)
+    socket.emit("getPublicGames", temparr)
 
     if(removedArr.length > 0) {
       removedArr.forEach(code => { removePublicGame(code, "code") })
@@ -102,6 +106,8 @@ io.on("connection", (socket) => {
   })
 
   socket.on("join-room", async (room) => {
+    console.log({"join": room})
+
     const clients = await io.of("/").in(room).fetchSockets();
     if (clients.length == 2) {
       // io.to(room).emit("started","you can play now")
@@ -114,6 +120,7 @@ io.on("connection", (socket) => {
 
 
     socket.on("sendMessage", (data) => {
+      console.log({"started": data})
       io.to(room).emit("getMessage", data);
     });
     socket.on("sendGameMessage", (data) => {
