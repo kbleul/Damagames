@@ -3,6 +3,9 @@ import SplashScreen from "./components/SplashScreen";
 import { useHome } from "./context/HomeContext";
 import { CreateGame, NewGame, JoinGame } from "./components";
 import AlreadyJoined from "./components/AlreadyJoined";
+import PublicGames from "./components/PublicGames";
+import NewGamePublic from "./components/NewGamePublic";
+
 import PlayerBoard from "./Scoreboard/PlayerHistory";
 import ScoreBoard from "./Scoreboard/ScoreBoard";
 import Signup from "./components/Auth/Signup";
@@ -14,12 +17,23 @@ import ErrorPage from "./components/ErrorPage";
 import Login from "./components/Auth/Login";
 import Profile from "./components/Profile/Profile";
 import { useAuth } from "./context/auth";
-import PublicGame from "./components/PublicGame";
+import TagManager from "react-gtm-module";
+
+//'G-YM283P3T0J'
+const tagManagerArgs = {
+  gtmId: process.env.REACT_APP_GTM_ID,
+};
+
 const App = () => {
   const { checked } = useHome();
   const { user, token } = useAuth();
   const firstPlayer = JSON.parse(localStorage.getItem("playerOne"));
   const secondPlayer = JSON.parse(localStorage.getItem("playerTwo"));
+
+  useEffect(() => {
+    TagManager.initialize(tagManagerArgs);
+  }, []);
+
   useEffect(() => {
     socket.on("connect", () => {
       console.log("Connected to Socket.io server");
@@ -35,12 +49,12 @@ const App = () => {
         <Route path="/join-game" element={<JoinGame />} />
         <Route path="/join-game/:id" element={<JoinGame />} />
         <Route path="/game" element={<Game />} />
-        <Route path="/game/:id" element={<Game />} />
         <Route path="/already-joined" element={<AlreadyJoined />} />
         <Route path="/score-board" element={<ScoreBoard />} />
         <Route path="/player-board" element={<PlayerBoard />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/pubic-game" element={<PublicGame />} />
+        <Route path="/join-public" element={<PublicGames />} />
+        <Route path="/new-game-public" element={<NewGamePublic />} />
       </Routes>
     );
   };
@@ -54,14 +68,14 @@ const App = () => {
         <Route path="/join-game" element={<JoinGame />} />
         <Route path="/join-game/:id" element={<JoinGame />} />
         <Route path="/game" element={<Game />} />
-        <Route path="/game/:id" element={<Game />} />
         <Route path="/already-joined" element={<AlreadyJoined />} />
         <Route path="/score-board" element={<ScoreBoard />} />
         <Route path="/player-board" element={<PlayerBoard />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/pubic-game" element={<PublicGame />} />
+        <Route path="/join-public" element={<PublicGames />} />
+        <Route path="/new-game-public" element={<NewGamePublic />} />
       </Routes>
     );
   };

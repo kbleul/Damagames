@@ -40,12 +40,25 @@ const CreateGame = () => {
         >
           Join Game
         </button>
+
         <button
-          onClick={() => navigate("/pubic-game")}
+          onClick={() => navigate("/new-game-public")}
           className="w-3/5 mt-24 border-2 bg-transparent border-orange-color p-2 px-11 font-medium text-orange-color rounded-lg max-w-[20rem]"
         >
-          Play online
+          Public Game
         </button>
+
+        <>
+        {user && token ? <></> :
+          <div className="w-3/5 pb-[5vh]">
+          <button className="w-full  border-2 bg-transparent border-orange-color p-2 px-11 font-medium text-orange-color rounded-lg mb-2 max-w-[20rem]" onClick={() => { navigate("/signup")  }}>
+             <p>Sign Up</p>
+          </button>
+          <p className="text-orange-color text-xs">or</p>
+          <button className="font-bold text-orange-color border-b border-orange-color" onClick={() => { navigate("/login")  }}>Log in</button>
+        </div>
+        }</>
+       
         
         <button 
           onClick={() => navigate(`/game/${1}`)}
