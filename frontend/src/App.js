@@ -10,7 +10,7 @@ import PlayerBoard from "./Scoreboard/PlayerHistory";
 import ScoreBoard from "./Scoreboard/ScoreBoard";
 import Signup from "./components/Auth/Signup";
 import ForgotPassword from "./components/Auth/ForgotPassword";
-import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
+import { Route, Routes, Navigate, NavLink, useNavigate } from "react-router-dom";
 import Game from "./Game/Game";
 import socket from "./utils/socket.io";
 import ErrorPage from "./components/ErrorPage";
@@ -93,3 +93,7 @@ const App = () => {
 };
 
 export default App;
+
+export const Footer = () => (
+  <NavLink to="/privacy.html">Privacy Policy</NavLink>
+)

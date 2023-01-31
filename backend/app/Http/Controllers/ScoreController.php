@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreScoreRequest;
 use App\Http\Requests\UpdateScoreRequest;
+use App\Models\Bet;
 use App\Models\Game;
 use App\Models\Score;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class ScoreController extends GameController
@@ -17,14 +19,9 @@ class ScoreController extends GameController
      */
     public function index()
     {
-        return Score::where('draw', false)
-            ->with('winner')
-            ->select(DB::raw('count(*) * 10 as score, winner'))
-            ->orderByDesc('score')
-            ->groupBy('winner')
+        return User::orderByDesc('current_point')
             ->get()->map(function ($query) {
-                $query->rank = $this->getRanking($query->winner);
-
+                $query->rank = $this->getRanking($query->id);
                 return $query;
             });
     }
@@ -49,7 +46,6 @@ class ScoreController extends GameController
     {
         $game = Game::find($request->game_id);
 
-
         if ($game->playerOne == $request->winner) {
             $winner = $game->playerOne;
             $loser = $game->playerTwo;
@@ -57,6 +53,24 @@ class ScoreController extends GameController
             $loser = $game->playerOne;
             $winner = $game->playerTwo;
         }
+
+        $bet = Bet::where('game_id', $game->id)->first();
+
+        if (!empty($bet)) {
+            $coin = $bet->coin;
+        } else {
+            $coin = 0;
+        }
+
+        $Winer = User::find($winner);
+        $losser = User::find($loser);
+
+        $Winer->update([
+            'current_point' => ($Winer->current_point + 5) + $coin,
+        ]);
+        $losser->update([
+            'current_point' =>  $losser->current_point - $coin,
+        ]);
 
         return Score::create([
             'game_id' => $request->game_id,

@@ -105,6 +105,7 @@ class AuthController extends SendSmsController
         $user = User::create([
             'phone' => $request->phone,
             'password' =>  Hash::make($password),
+            'current_point' =>  30,
         ]);
 
         return response()->json(['message' => 'OTP sent successfully!'], 201);
@@ -115,12 +116,12 @@ class AuthController extends SendSmsController
     public function finish_regster(ResetPasswordRequest $request)
     {
 
-        User::find(auth()->id())->update([
+        $user =  User::find(auth()->id())->update([
             'username' => $request->username,
             'password' => Hash::make($request->password),
         ]);
 
-        return response()->json(['message' => 'User registered successfully!', 'user' => auth()->user()], 201);
+        return response()->json(['message' => 'User registered successfully!', 'user' =>  User::find(auth()->id())], 201);
     }
 
     public function register(RegisterRequest $request, User $user)
@@ -150,6 +151,7 @@ class AuthController extends SendSmsController
         $user = User::create([
             'phone' => $request->phone,
             'password' =>  Hash::make($password),
+            'current_point' =>  30,
         ]);
 
         return response()->json(['message' => 'OTP sent successfully!'], 201);

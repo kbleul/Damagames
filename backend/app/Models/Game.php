@@ -29,6 +29,11 @@ class Game extends Model
         return $this->hasOne(User::class, 'id', 'playerTwo');
     }
 
+    protected $casts = [
+        'status' => 'integer',
+    ];
+
+
     /**
      * Get all of the scores for the Game
      *
@@ -36,6 +41,11 @@ class Game extends Model
      */
     public function scores(): HasMany
     {
-        return $this->hasMany(Score::class, '');
+        return $this->hasMany(Score::class);
+    }
+
+    public function Bet()
+    {
+        return $this->hasOne(Bet::class);
     }
 }
