@@ -9,4 +9,5 @@ export const clearCookie = [
   "p2",
   "players",
   "bt_coin_amount",
+  "dama-sound"
 ];

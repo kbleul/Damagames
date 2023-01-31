@@ -21,7 +21,7 @@ import TagManager from "react-gtm-module";
 
 //'G-YM283P3T0J'
 const tagManagerArgs = {
-  gtmId: process.env.REACT_APP_GTM_ID,
+  gtmId: process.env.REACT_APP_GTM_ID
 };
 
 const App = () => {
@@ -31,8 +31,8 @@ const App = () => {
   const secondPlayer = JSON.parse(localStorage.getItem("playerTwo"));
 
   useEffect(() => {
-    TagManager.initialize(tagManagerArgs);
-  }, []);
+    TagManager.initialize(tagManagerArgs)
+  },[]);
 
   useEffect(() => {
     socket.on("connect", () => {
