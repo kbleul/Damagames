@@ -7,7 +7,7 @@ COPY . .
 COPY --from=composer:2.4 /usr/bin/composer /usr/bin/composer
 RUN docker-php-ext-install pdo pdo_mysql exif
 
-EXPOSE 8082
+EXPOSE 8000
 
 RUN chmod +x /var/www/html/entrypoint.sh
 RUN composer install --ignore-platform-req=php

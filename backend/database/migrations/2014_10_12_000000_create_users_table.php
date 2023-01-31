@@ -20,6 +20,7 @@ return new class extends Migration
             $table->timestamp('phone_verified_at')->nullable();
             $table->string('password')->default('password');
             $table->string('profile_image')->nullable();
+            $table->unsignedInteger('current_point')->default(0);
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

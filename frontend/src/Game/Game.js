@@ -1,27 +1,55 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import Board from "./components/Board.js";
 import { returnPlayerName } from "./components/utils.js";
 import "./game.css";
+import { motion, useAnimation } from "framer-motion";
 import { getMoves, movePiece } from "./components/ReactCheckers";
 import WinnerModal from "./components/WinnerModal";
 import ExitWarningModal from "./components/ExitWarningModal";
 import socket from "../utils/socket.io";
 import { TurnContext } from "../context/TurnContext";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import RematchModal from "./components/RematchModal";
 import useSound from "use-sound";
-import move from "../assets/sounds/move .mp3";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import DrawGameModal from "./components/DrawGameModal.js";
+import winSound from "../assets/sounds/win.mp3";
+import loseSound from "../assets/sounds/lose.mp3";
+import moveSound from "../assets/sounds/move.mp3";
+import strikeSound from "../assets/sounds/strike.mp3";
+
+import { BsFillChatFill } from "react-icons/bs";
+import { FaTimes, FaTelegramPlane } from "react-icons/fa";
+import { getSmartMove } from "./components/Opponent.js";
+import { ThreeDots } from "react-loader-spinner";
 
 const Game = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
-  const [play] = useSound(move);
+  const [playMove] = useSound(moveSound);
+  const [playStrike] = useSound(strikeSound);
+  const [playWin] = useSound(winSound);
+  const [playLose] = useSound(loseSound);
+
+  const [soundOn, setSoundOn] = useState(
+    localStorage.getItem("dama-sound")
+      ? localStorage.getItem("dama-sound")
+      : true
+  );
+
   const [MyTurn, setMyTurn] = useContext(TurnContext);
   const [isWinnerModalOpen, setIsWinnerModalOpen] = useState(false);
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
+
+  const [latestState, setLatestState] = useState({});
+
+  const [timerP1, setTimerP1] = useState(30);
+  const [timerP2, setTimerP2] = useState(30);
+
+  const [passedCounter, setPassedCounter] = useState(0);
+  const intervalRef = useRef(null);
 
   const [isRematchModalOpen, setIsRematchModalOpen] = useState(false);
   const [isDrawModalOpen, setIsDrawModalOpen] = useState(false);
@@ -29,7 +57,11 @@ const Game = () => {
 
   const [pawns, setPawns] = useState([0, 0]);
   const [moves, setMoves] = useState([0, 0]);
-  // const [playMove] = useSound(require("../assets/sounds/move.mp3"), { volume : 0.25 });
+  const [timer, setTimer] = useState(15);
+
+  const messageInputRef = useRef();
+  const [messageInputOpen, setMessageInputOpen] = useState(false);
+  const [latestMessage, setLatestMessage] = useState(null);
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -45,6 +77,8 @@ const Game = () => {
     "p1",
     "p2",
     "players",
+    "bt_coin_amount",
+    "dama-sound",
   ];
   const [columns, setColumns] = useState({
     a: 0,
@@ -121,6 +155,7 @@ const Game = () => {
 
     return board;
   }
+  const [latestBoardState, setLatestBoardState] = useState(createBoard());
   const [gameState, setGameState] = useState({
     players: 2,
     history: [
@@ -136,6 +171,15 @@ const Game = () => {
     stepNumber: 0,
     winner: null,
   });
+
+  useEffect(() => {
+    console.log(id === 1, id === "1", id == 1);
+    if (id == 1) {
+      setGameState((prevGameState) => {
+        return { ...prevGameState, players: 1 };
+      });
+    }
+  }, [id]);
 
   function getCurrentState() {
     const history = gameState?.history?.slice(0, gameState.stepNumber + 1);
@@ -212,31 +256,143 @@ const Game = () => {
       }
 
       updateStatePostMove(postMoveState);
-
+      // if(soundOn) { playMove()}
+      soundOn && playMove();
+      console.log("gameState", gameState);
+      console.log("postMoveState", postMoveState);
+      console.log("current", getCurrentState());
       // Start computer move is the player is finished
       if (
+        id === "1" &&
         postMoveState.currentPlayer === false &&
         postMoveState.winner === null
       ) {
-        // computerTurn();
+        setMoves([++moves[0], moves[1]]);
+        calcPawns(boardState);
+        computerTurn(postMoveState);
       }
     }
   }
 
+  //computer turn
+  function computerTurn(newMoveState, piece = null) {
+    //console.log("gameState",gameState)
+    // if (gameState.players > 1 || id == 1) {
+    //   return;
+    // }
+    console.log({ newMoveState });
+    setTimeout(() => {
+      // const currentState = getCurrentState();
+      const boardState = newMoveState.boardState;
+      let computerMove;
+      let moveTo;
+      let coordinates;
+      let mergerObj;
+
+      computerMove = getSmartMove(columns, gameState, boardState, "player2");
+      console.log({ computerMove });
+
+      coordinates = computerMove.piece;
+      moveTo = computerMove.moveTo;
+
+      let tempHistory = gameState.history;
+      tempHistory.push(newMoveState);
+      console.log("SDfds", tempHistory);
+      mergerObj = {
+        ...gameState,
+        activePiece: computerMove.piece,
+        moves: [computerMove.moveTo],
+        players: 1,
+        stepNumber: ++gameState.stepNumber,
+        history: tempHistory,
+      };
+
+      console.log("newobj", mergerObj);
+
+      const clickedSquare = boardState[coordinates];
+      let movesData;
+      if (!piece) {
+        movesData = getMoves(
+          columns,
+          newMoveState.boardState,
+          coordinates,
+          clickedSquare.isKing,
+          false
+        );
+      } else {
+        movesData = getMoves(
+          columns,
+          newMoveState.boardState,
+          piece,
+          newMoveState.boardState.isKing,
+          true
+        );
+        coordinates = piece;
+        moveTo = movesData[0][Math.floor(Math.random() * movesData[0].length)];
+      }
+
+      // console.log("gg",coordinates,movesData[0],movesData[1])
+
+      setGameState((prevState) => {
+        return {
+          ...prevState,
+          activePiece: coordinates,
+          moves: movesData[0],
+          jumpKills: movesData[1],
+        };
+      });
+
+      setTimeout(() => {
+        //console.log({ moveTo: mergerObj });
+
+        const postMoveState = movesData[1]
+          ? movePiece(columns, mergerObj.moves[0], {
+              ...mergerObj,
+              jumpKills: movesData[1],
+            })
+          : movePiece(columns, mergerObj.moves[0], mergerObj);
+        console.log({ postMoveState });
+        if (postMoveState === null) {
+          return;
+        }
+
+        updateStatePostMove(postMoveState);
+
+        setMoves([moves[0], ++moves[1]]);
+
+        if (movesData[1] && soundOn) {
+          playStrike();
+        } else if (!movesData[1] && soundOn) {
+          playMove();
+        }
+
+        // If the computer player has jumped and is still moving, continue jump with active piece
+        if (postMoveState.currentPlayer === false) {
+          computerTurn(postMoveState, postMoveState.activePiece);
+        }
+      }, 600);
+    }, 1000);
+  }
+
+  //update the game state after move
   function updateStatePostMove(postMoveState) {
-    setGameState({
-      history: gameState.history.concat([
-        {
-          boardState: postMoveState.boardState,
-          currentPlayer: postMoveState.currentPlayer,
-        },
-      ]),
-      activePiece: postMoveState.activePiece,
-      moves: postMoveState.moves,
-      jumpKills: postMoveState.jumpKills,
-      hasJumped: postMoveState.hasJumped,
-      stepNumber: gameState.history.length,
-      winner: postMoveState.winner,
+    setGameState((prevGameState) => {
+      return {
+        ...prevGameState,
+
+        history: gameState.history.concat([
+          {
+            boardState: postMoveState.boardState,
+            currentPlayer: postMoveState.currentPlayer,
+          },
+        ]),
+        activePiece: postMoveState.activePiece,
+        moves: postMoveState.moves,
+        jumpKills: postMoveState.jumpKills,
+        hasJumped: postMoveState.hasJumped,
+        stepNumber: gameState.history.length,
+        winner: postMoveState.winner,
+      };
     });
 
     socket.emit("sendGameMessage", {
@@ -245,6 +401,8 @@ const Game = () => {
       currentPlayer: postMoveState.currentPlayer,
       turnPlayer: postMoveState.currentPlayer ? "player1" : "player2",
     });
+
+    calcPawns(postMoveState.boardState);
 
     // playOff();
     // playActive();
@@ -260,6 +418,8 @@ const Game = () => {
   const secondPlayer = JSON.parse(localStorage.getItem("playerTwo"));
   const playerOneIp = localStorage.getItem("playerOneIp");
   const playerTwoIp = localStorage.getItem("playerTwoIp");
+  const btCoin = localStorage.getItem("bt_coin_amount");
+
   let gameStatus;
   switch (gameState.winner) {
     case "player1pieces":
@@ -286,12 +446,33 @@ const Game = () => {
   useEffect(() => {
     if (gameState.winner || winnerPlayer) {
       setIsWinnerModalOpen(true);
+
+      if (
+        winnerPlayer === "player1pieces" &&
+        localStorage.getItem("playerOne") &&
+        soundOn
+      ) {
+        playWin();
+      } else if (
+        winnerPlayer === "player2pieces" &&
+        localStorage.getItem("playerOne") &&
+        soundOn
+      ) {
+        playLose();
+      } else if (
+        winnerPlayer === "player2pieces" &&
+        localStorage.getItem("playerTwo") &&
+        soundOn
+      ) {
+        playWin();
+      } else if (
+        winnerPlayer === "player1pieces" &&
+        localStorage.getItem("playerTwo") &&
+        soundOn
+      ) {
+        playLose();
+      }
     }
-    // if (gameStatus === "Player One Wins!") {
-    //   setWinnerPlayer(firstPlayer);
-    // } else if (gameStatus === "Player Two Wins!") {
-    //   setWinnerPlayer(secondPlayer);
-    // }
   }, [gameState, gameStatus, winnerPlayer]);
 
   const resetGame = () => {
@@ -321,15 +502,54 @@ const Game = () => {
       isWinnerModalOpen: false,
     });
   };
+  const setNewGameWithComputer = () => {
+    setGameState({
+      players: 1,
+      history: [
+        {
+          boardState: createBoard(),
+          currentPlayer: true,
+        },
+      ],
+      activePiece: null,
+      moves: [],
+      jumpKills: null,
+      hasJumped: null,
+      stepNumber: 0,
+      winner: null,
+    });
+  };
 
   const drawGame = () => {
     socket.emit("sendDrawGameRequest", { status: "Draw" });
   };
 
+  //send chat message
+  const sendChatMessage = () => {
+    if (!messageInputRef.current.value) {
+      toast("please write your message");
+      messageInputRef.current.focus();
+      return;
+    }
+
+    socket.emit("sendChatMessage", {
+      message: messageInputRef.current.value,
+    });
+    setMessageInputOpen(false);
+  };
+  const handleSubmit = (e) => {
+    if (e.key === "Enter") {
+      sendChatMessage();
+    }
+  };
+  const openChatFilled = () => {
+    setMessageInputOpen(true);
+  };
+
   const calcPawns = (boardState) => {
+    let [prevP1, prevP2] = pawns;
     let player1Counter = 0;
     let player2Counter = 0;
-
     Object.keys(boardState).forEach((key) => {
       if (boardState[key]?.player === "player1") {
         ++player1Counter;
@@ -338,27 +558,59 @@ const Game = () => {
         ++player2Counter;
       }
     });
+    // console.log({player1Counter})
+    if (
+      pawns[0] !== 12 - player2Counter ||
+      pawns[1] !== player2Counter - prevP2
+    ) {
+      setPawns([12 - player2Counter, 12 - player1Counter]);
+      // soundOn && playMove();
+    }
 
-    setPawns([12 - player2Counter, 12 - player1Counter]);
-
-    console.log([player1Counter, player2Counter]);
+    // setPawns([12 - player2Counter, 12 - player1Counter]);
+    // if(12 - player1Counter !== prevP1 || 12 - player2Counter !== prevP2) {
+    //   soundOn && playStrike()
+    // }
+    // console.log([...pawns] , [prevP1 , prevP2]);
   };
+  function compareObjects(obj1, obj2) {
+    let obj1NullCount = 0;
+    let obj2NullCount = 0;
+
+    for (let prop in obj1) {
+      if (obj1[prop] === null) {
+        obj1NullCount++;
+      }
+    }
+
+    for (let prop in obj2) {
+      if (obj2[prop] === null) {
+        obj2NullCount++;
+      }
+    }
+    if (obj1NullCount === obj2NullCount) {
+      soundOn && playMove();
+    } else if (obj1NullCount !== obj2NullCount) {
+      soundOn && playStrike();
+    }
+  }
+
+  let array = gameState.history;
+  let lastElement = array[array.length - 1];
 
   useEffect(() => {
     // let cPlayer = currentPlayer
     socket.on(
       "getGameMessage",
       ({ winnerPlayer, boardState, currentPlayer, turnPlayer }) => {
+        stopInterval();
         // setUpdatedState({winnerPlayer,boardState,currentPlayer})
-        play();
+
         const tempMoves = moves;
-        console.log("called");
         turnPlayer === "player2" ? ++tempMoves[0] : ++tempMoves[1];
         setMoves(tempMoves);
 
-        console.log("turnPlayer", turnPlayer);
         setMyTurn(turnPlayer);
-        console.log("board", boardState);
         setWinnerPlayer(winnerPlayer);
         setGameState((prevGameState) => {
           return {
@@ -372,7 +624,10 @@ const Game = () => {
             }),
           };
         });
+
         calcPawns(boardState);
+        compareObjects(lastElement?.boardState, boardState);
+        console.log("currentPlayer", currentPlayer);
       }
     );
 
@@ -387,6 +642,9 @@ const Game = () => {
         setMyTurn("player1");
         setPawns([0, 0]);
         setMoves([0, 0]);
+        setTimerP1(30);
+        setTimerP2(30);
+        setPassedCounter(0);
       }
     );
     socket.on("getResetGameRequest", ({ status }) => {
@@ -422,10 +680,21 @@ const Game = () => {
           localStorage.getItem(data) && localStorage.removeItem(data);
         });
         navigate("/create-game");
-      }, 1000);
+      }, 10);
+    });
+    //listen for chat message
+    socket.on("getChatMessage", ({ message }) => {
+      setLatestMessage(message);
     });
   }, []);
 
+  useEffect(() => {
+    setTimeout(() => {
+      setLatestMessage(null);
+    }, 4000);
+  }, [latestMessage]);
+
+  //reverse board
   function dict_reverse(obj) {
     let new_obj = {};
     let rev_obj = Object.keys(obj).reverse();
@@ -434,7 +703,138 @@ const Game = () => {
     });
     return new_obj;
   }
-  console.log({ winnerPlayer });
+
+  const stopInterval = () => {
+    clearInterval(intervalRef.current);
+    intervalRef.current = null;
+    setTimerP1(30);
+    setTimerP2(30);
+  };
+
+  const timeChecker = () => {
+    let myCounter = 0;
+
+    if (currentPlayer && localStorage.getItem("playerOneIp")) {
+      intervalRef.current = setInterval(() => {
+        if (myCounter === 0) {
+          setTimerP1(30);
+        } else {
+          setTimerP1((prev) => --prev);
+        }
+        ++myCounter;
+
+        if (myCounter >= 30) {
+          stopInterval();
+          setTimerP1(30);
+          myCounter = 0;
+          setMyTurn("player2");
+          setPassedCounter((prev) => ++prev);
+          setGameState({
+            ...gameState,
+            history: [
+              ...gameState.history,
+              {
+                boardState:
+                  gameState.history[gameState.history.length - 1].boardState,
+                currentPlayer:
+                  !gameState.history[gameState.history.length - 1]
+                    .currentPlayer,
+              },
+            ],
+            activePiece: null,
+            moves: [],
+            jumpKills: null,
+            hasJumped: null,
+            stepNumber: 0,
+            winner: null,
+          });
+
+          passedCounter >= 3 && setWinnerPlayer("player2pieces");
+          passedCounter >= 3 && stopInterval();
+          socket.emit("sendGameMessage", {
+            winnerPlayer:
+              passedCounter >= 3 ? "player2pieces" : gameState.winner,
+            boardState:
+              gameState.history[gameState.history.length - 1].boardState,
+            currentPlayer:
+              !gameState.history[gameState.history.length - 1].currentPlayer,
+            turnPlayer: !gameState.history[gameState.history.length - 1]
+              .currentPlayer
+              ? "player1"
+              : "player2",
+          });
+        }
+      }, 1000);
+    } else if (!currentPlayer && localStorage.getItem("playerTwoIp")) {
+      intervalRef.current = setInterval(() => {
+        if (myCounter === 0) {
+          setTimerP2(30);
+        } else {
+          setTimerP2((prev) => --prev);
+        }
+        ++myCounter;
+
+        if (myCounter >= 30) {
+          stopInterval();
+          setTimerP2(30);
+          myCounter = 0;
+          setMyTurn("player1");
+          setPassedCounter((prev) => ++prev);
+
+          setGameState({
+            ...gameState,
+            history: [
+              {
+                boardState:
+                  gameState.history[gameState.history.length - 1].boardState,
+                currentPlayer:
+                  !gameState.history[gameState.history.length - 1]
+                    .currentPlayer,
+              },
+            ],
+            activePiece: null,
+            moves: [],
+            jumpKills: null,
+            hasJumped: null,
+            stepNumber: 0,
+            winner: null,
+          });
+
+          passedCounter >= 3 && setWinnerPlayer("player1pieces");
+          passedCounter >= 3 && stopInterval();
+          socket.emit("sendGameMessage", {
+            winnerPlayer:
+              passedCounter >= 3 ? "player1pieces" : gameState.winner,
+            boardState:
+              gameState.history[gameState.history.length - 1].boardState,
+            currentPlayer:
+              !gameState.history[gameState.history.length - 1].currentPlayer,
+            turnPlayer: !gameState.history[gameState.history.length - 1]
+              .currentPlayer
+              ? "player1"
+              : "player2",
+          });
+        }
+      }, 1000);
+    }
+  };
+
+  useEffect(() => {
+    timeChecker();
+  }, [currentPlayer]);
+
+  //           //  socket.emit("sendGameMessage", {
+  //           //    winnerPlayer: latestState.winner,
+  //           //    boardState: latestState.boardState,
+  //           //    currentPlayer: latestState.currentPlayer,
+  //           //    turnPlayer: latestState.currentPlayer ? "player1" : "player2",
+  //           //   });
+  //          }
+  //       } , 1000);
+  //     }
+
+  // }, [MyTurn])
+
   useEffect(() => {
     if (winnerPlayer) {
       if (winnerPlayer === "player1pieces" || winnerPlayer === "player1moves") {
@@ -451,6 +851,11 @@ const Game = () => {
       }
     }
   }, [winnerPlayer]);
+
+  useEffect(() => {
+    localStorage.setItem("dama-sound", true);
+  }, []);
+
   //send winner
   const gameId = localStorage.getItem("gameId");
   const winnerMutation = useMutation(
@@ -471,22 +876,83 @@ const Game = () => {
         },
         {
           onSuccess: (responseData) => {
-            console.log(responseData?.data);
+            //  console.log(responseData?.data);
           },
           onError: (err) => {},
         }
       );
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
+
+  const changeSound = () => {
+    localStorage.setItem("dama-sound", !soundOn);
+    setSoundOn((prev) => !prev);
+  };
+
   return (
     <div
       className={`
   
     relative  flex flex-col min-h-screen items-center justify-evenly `}
     >
-      <section className="w-full flex items-end justify-end">
+      <section className="w-full flex items-center justify-between">
+        {soundOn ? (
+          <button
+            onClick={changeSound}
+            className="ml-[8%] flex flex-col items-center justify-center"
+          >
+            <svg
+              width="23"
+              height="23"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M15.658 10.057L16.365 9.35C16.4579 9.25716 16.5316 9.14692 16.5819 9.02559C16.6322 8.90426 16.6582 8.7742 16.6582 8.64285C16.6582 8.51151 16.6324 8.38143 16.5822 8.26007C16.532 8.1387 16.4583 8.02841 16.3655 7.9355C16.2727 7.84259 16.1624 7.76888 16.0411 7.71857C15.9198 7.66826 15.7897 7.64234 15.6584 7.6423C15.527 7.64225 15.3969 7.66808 15.2756 7.7183C15.1542 7.76852 15.0439 7.84216 14.951 7.935L14.244 8.643L13.537 7.935C13.3494 7.74749 13.0949 7.6422 12.8296 7.6423C12.5644 7.64239 12.31 7.74786 12.1225 7.9355C11.935 8.12314 11.8297 8.37758 11.8298 8.64285C11.8299 8.90812 11.9354 9.16249 12.123 9.35L12.83 10.057L12.123 10.764C11.9408 10.9526 11.84 11.2052 11.8423 11.4674C11.8446 11.7296 11.9498 11.9804 12.1352 12.1658C12.3206 12.3512 12.5714 12.4564 12.8336 12.4587C13.0958 12.461 13.3484 12.3602 13.537 12.178L14.244 11.471L14.951 12.178C15.1396 12.3602 15.3922 12.461 15.6544 12.4587C15.9166 12.4564 16.1674 12.3512 16.3528 12.1658C16.5382 11.9804 16.6434 11.7296 16.6457 11.4674C16.648 11.2052 16.5472 10.9526 16.365 10.764L15.658 10.057ZM4 0H16C17.0609 0 18.0783 0.421427 18.8284 1.17157C19.5786 1.92172 20 2.93913 20 4V16C20 17.0609 19.5786 18.0783 18.8284 18.8284C18.0783 19.5786 17.0609 20 16 20H4C2.93913 20 1.92172 19.5786 1.17157 18.8284C0.421427 18.0783 0 17.0609 0 16V4C0 2.93913 0.421427 1.92172 1.17157 1.17157C1.92172 0.421427 2.93913 0 4 0ZM5.282 13.287H6.287L8.11 14.997C8.48086 15.3442 8.96997 15.5373 9.478 15.537H9.682C10.1063 15.537 10.5133 15.3684 10.8134 15.0684C11.1134 14.7683 11.282 14.3613 11.282 13.937V6.137C11.282 5.71265 11.1134 5.30569 10.8134 5.00563C10.5133 4.70557 10.1063 4.537 9.682 4.537H9.478C8.96983 4.53699 8.48071 4.73042 8.11 5.078L6.287 6.788H5.282C4.75157 6.788 4.24286 6.99871 3.86779 7.37379C3.49271 7.74886 3.282 8.25757 3.282 8.788V11.288C3.282 11.8184 3.49271 12.3271 3.86779 12.7022C4.24286 13.0773 4.75157 13.288 5.282 13.288V13.287ZM7.078 8.787L9.282 6.72V13.354L7.078 11.287H5.282V8.787H7.078Z"
+                fill="#FF4C01"
+              />
+            </svg>
+            <p className="text-white text-xs">SoundOn</p>
+          </button>
+        ) : (
+          <button
+            onClick={changeSound}
+            className="ml-[8%] flex flex-col items-center justify-center"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M15.658 10.057L16.365 9.35C16.4579 9.25716 16.5316 9.14692 16.5819 9.02559C16.6322 8.90426 16.6582 8.7742 16.6582 8.64285C16.6582 8.51151 16.6324 8.38143 16.5822 8.26007C16.532 8.1387 16.4583 8.02841 16.3655 7.9355C16.2727 7.84259 16.1624 7.76888 16.0411 7.71857C15.9198 7.66826 15.7897 7.64234 15.6584 7.6423C15.527 7.64225 15.3969 7.66808 15.2756 7.7183C15.1542 7.76852 15.0439 7.84216 14.951 7.935L14.244 8.643L13.537 7.935C13.3494 7.74749 13.0949 7.6422 12.8296 7.6423C12.5644 7.64239 12.31 7.74786 12.1225 7.9355C11.935 8.12314 11.8297 8.37758 11.8298 8.64285C11.8299 8.90812 11.9354 9.16249 12.123 9.35L12.83 10.057L12.123 10.764C11.9408 10.9526 11.84 11.2052 11.8423 11.4674C11.8446 11.7296 11.9498 11.9804 12.1352 12.1658C12.3206 12.3512 12.5714 12.4564 12.8336 12.4587C13.0958 12.461 13.3484 12.3602 13.537 12.178L14.244 11.471L14.951 12.178C15.1396 12.3602 15.3922 12.461 15.6544 12.4587C15.9166 12.4564 16.1674 12.3512 16.3528 12.1658C16.5382 11.9804 16.6434 11.7296 16.6457 11.4674C16.648 11.2052 16.5472 10.9526 16.365 10.764L15.658 10.057ZM4 0H16C17.0609 0 18.0783 0.421427 18.8284 1.17157C19.5786 1.92172 20 2.93913 20 4V16C20 17.0609 19.5786 18.0783 18.8284 18.8284C18.0783 19.5786 17.0609 20 16 20H4C2.93913 20 1.92172 19.5786 1.17157 18.8284C0.421427 18.0783 0 17.0609 0 16V4C0 2.93913 0.421427 1.92172 1.17157 1.17157C1.92172 0.421427 2.93913 0 4 0ZM5.282 13.287H6.287L8.11 14.997C8.48086 15.3442 8.96997 15.5373 9.478 15.537H9.682C10.1063 15.537 10.5133 15.3684 10.8134 15.0684C11.1134 14.7683 11.282 14.3613 11.282 13.937V6.137C11.282 5.71265 11.1134 5.30569 10.8134 5.00563C10.5133 4.70557 10.1063 4.537 9.682 4.537H9.478C8.96983 4.53699 8.48071 4.73042 8.11 5.078L6.287 6.788H5.282C4.75157 6.788 4.24286 6.99871 3.86779 7.37379C3.49271 7.74886 3.282 8.25757 3.282 8.788V11.288C3.282 11.8184 3.49271 12.3271 3.86779 12.7022C4.24286 13.0773 4.75157 13.288 5.282 13.288V13.287ZM7.078 8.787L9.282 6.72V13.354L7.078 11.287H5.282V8.787H7.078Z"
+                fill="#FF4C01"
+              />
+            </svg>
+            <p className="text-white text-xs">SoundOff</p>
+          </button>
+        )}
+        {/* currentPlayer && localStorage.getItem("playerOneIp") && 
+      {!currentPlayer && localStorage.getItem("playerTwoIp") && */}
+        <section className="flex flex-col">
+          <div>
+            {currentPlayer && localStorage.getItem("playerOneIp") && (
+              <p className="text-white font-bold text-sm">Timer : {timerP1}</p>
+            )}
+            {!currentPlayer && localStorage.getItem("playerTwoIp") && (
+              <p className="text-white font-bold text-sm">Timer : {timerP2}</p>
+            )}
+          </div>
+          {passedCounter === 3 && (
+            <p className="text-yellow-400 font-bold text-xs">
+              You will lose if you don't move next
+            </p>
+          )}
+        </section>
+
         <button
           className="mr-8"
           onClick={() => setIsExitModalOpen((prev) => !prev)}
@@ -532,7 +998,7 @@ const Game = () => {
             />
           </div>
           <h4 className="text-white capitalize  font-semibold text-xs">
-            {/* {firstPlayer?.name} */}
+            {id == 1 && "You"}
           </h4>
         </div>
 
@@ -557,6 +1023,7 @@ const Game = () => {
           </div>
           <h4 className="text-white capitalize  font-semibold text-xs">
             {/* {secondPlayer?.name} */}
+            {id == 1 && "Computer"}
           </h4>
         </div>
       </section>
@@ -592,25 +1059,68 @@ const Game = () => {
           </div>
         </div>
       </section>
+      {id == 1 && !currentPlayer && (
+        <ThreeDots
+          height="20"
+          width="40"
+          radius="9"
+          color="#f75105"
+          ariaLabel="three-dots-loading"
+          wrapperStyle={{}}
+          wrapperClassName=""
+          visible={true}
+        />
+      )}
+
+      {!currentPlayer && localStorage.getItem("playerOne") && (
+        <ThreeDots
+          height="20"
+          width="40"
+          radius="9"
+          color="#f75105"
+          ariaLabel="three-dots-loading"
+          wrapperStyle={{}}
+          wrapperClassName=""
+          visible={true}
+        />
+      )}
+      {currentPlayer && localStorage.getItem("playerTwo") && (
+        <ThreeDots
+          height="20"
+          width="40"
+          radius="9"
+          color="#f75105"
+          ariaLabel="three-dots-loading"
+          wrapperStyle={{}}
+          wrapperClassName=""
+          visible={true}
+        />
+      )}
 
       <div className="game-board  ">
         <div
           className={` shadow-2xl    ${
-            currentPlayer === true
-              ? currentPlayer === true && !firstPlayer
-                ? "pointer-events-none"
-                : ""
-              : currentPlayer === false
-              ? currentPlayer === false && !secondPlayer
-                ? "pointer-events-none"
+            !id
+              ? currentPlayer === true
+                ? currentPlayer === true && !firstPlayer
+                  ? "pointer-events-none"
+                  : ""
+                : currentPlayer === false
+                ? currentPlayer === false && !secondPlayer
+                  ? "pointer-events-none"
+                  : ""
                 : ""
               : ""
           }`}
         >
           <Board
             boardState={
-              localStorage.getItem("playerOne")
+              id === "1"
                 ? dict_reverse(boardState)
+                : !id
+                ? localStorage.getItem("playerOne")
+                  ? dict_reverse(boardState)
+                  : boardState
                 : boardState
             }
             currentPlayer={currentPlayer}
@@ -639,7 +1149,77 @@ const Game = () => {
         </div>
         <p className="text-xs font-bold text-white">Draw</p>
       </div>
+      {id != 1 && (
+        <div className="absolute right-3 bottom-5 flex items-end justify-end">
+          <BsFillChatFill
+            onClick={openChatFilled}
+            size={30}
+            className="text-orange-color"
+          />
+        </div>
+      )}
 
+      {/* message */}
+      {latestMessage && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ type: "tween", duration: 1, ease: "easeInOut" }}
+          className={`absolute top-36  bg-white max-w-sm  p-1 w-44 ${
+            playerOneIp ? "left-3" : "right-3"
+          }
+       border border-orange-color rounded-lg m-3`}
+        >
+          <div className="text-gray-800">
+            <p className="text-start text-sm pl-2 font-medium">
+              {latestMessage}
+            </p>
+
+            {playerOneIp && (
+              <div className="absolute top-0 left-[39px] transform -translate-x-1/2 -translate-y-1/2 rotate-45 w-4 h-4 bg-white border-l border-t border-orange-color"></div>
+            )}
+
+            {playerTwoIp && (
+              <div className="absolute right-[39px] top-0 transform -translate-x-1/2 -translate-y-1/2 rotate-45 w-4 h-4 bg-white border-l border-t border-orange-color"></div>
+            )}
+          </div>
+        </motion.div>
+      )}
+      {messageInputOpen && (
+        <div className="bg-dark-bg absolute bottom-0 left-0 right-0 p-3 flex flex-col space-y-2 transition duration-1000 ease-out">
+          <FaTimes
+            onClick={() => {
+              setMessageInputOpen(false);
+            }}
+            size={22}
+            className="text-white flex items-end justify-end self-end"
+          />
+          <div
+            className="relative flex items-center w-full border  border-orange-color max-w-md mx-auto
+             rounded-md "
+          >
+            <input
+              ref={messageInputRef}
+              autoFocus
+              onKeyDown={handleSubmit}
+              placeholder="write your message..."
+              type="text"
+              className="bg-transparent  p-2 flex-grow w-full
+               text-white focus:outline-none focus:ring-0  font-medium "
+            />
+            <FaTelegramPlane
+              onClick={sendChatMessage}
+              className="text-orange-color absolute right-1 cursor-pointer"
+              size={28}
+            />
+          </div>
+        </div>
+      )}
+      <div>
+        {btCoin && (
+          <p className="text-xs font-bold text-white">Bet : {btCoin} coins</p>
+        )}
+      </div>
       <ExitWarningModal
         isExitModalOpen={isExitModalOpen}
         set_isExitModalOpen={setIsExitModalOpen}
@@ -651,6 +1231,8 @@ const Game = () => {
         winnerPlayer={winnerPlayer}
         resetGame={resetGame}
         rejectGameRequest={rejectGameRequest}
+        gameState={gameState}
+        setNewGameWithComputer={setNewGameWithComputer}
       />
       <RematchModal
         isRematchModalOpen={isRematchModalOpen}

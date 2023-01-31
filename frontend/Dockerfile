@@ -4,6 +4,7 @@
 FROM node:19-alpine as builder
 WORKDIR /app
 COPY . .
+COPY .env.example .env
 RUN yarn
 RUN yarn build
 # production environment

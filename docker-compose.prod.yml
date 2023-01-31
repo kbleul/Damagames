@@ -2,7 +2,7 @@ version: "3.8"
 services:
     traefik:
         image: "traefik:v2.9"
-        container_name: "traefik"
+        #container_name: "traefik"
         command:
         #- "--log.level=DEBUG"
         - "--api.insecure=true"
@@ -10,28 +10,37 @@ services:
         - "--providers.docker.exposedbydefault=false"
         - "--entrypoints.web.address=:80"
         - "--entrypoints.websecure.address=:443"
-        # - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
-        # - "--certificatesresolvers.myresolver.acme.email=info@damagames.com"
-        # - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+        - "--certificatesresolvers.myresolver.acme.email=info@damagames.com"
+        - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+        - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
         ports:
         - "443:443"
         - "80:80"
         - "8080:8080"
         volumes:
-        - "./letsencrypt:/letsencrypt"
+        #- "/letsencrypt:/letsencrypt"
+        - letsencrypt-data:/letsencrypt
         - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
     frontend:
         build: 
             context: ./frontend/
+        environment:
+            - PUBLIC_URL=${REACT_APP_FRONTEND_URL}
+            - NODE_ENV=${APP_ENV}
+            - REACT_APP_FRONTEND_URL
+            - REACT_APP_BACKEND_URL
         labels:
         - "traefik.frontend.priority=1"
         - "traefik.enable=true"
-        - "traefik.frontend.rule=HostRegexp:{subdomain:[a-z]+}.${REMOTE_HOST}"
-        #- "traefik.http.routers.nginx.rule=Host(`damagames.com`) || (Host(`app.damagames.com`)"
-        - "traefik.http.routers.nginx.entrypoints=websecure"
-        - "traefik.http.routers.nginx.tls.certresolver=myresolver"
-        - "traefik.http.middlewares.nginx-http.redirectscheme.scheme=https"
+        #- "traefik.frontend.rule=HostRegexp:{subdomain:[a-z]+}.${REMOTE_HOST}"
+        - "traefik.http.routers.frontend.rule=Host(`${REMOTE_HOST}`) || (Host(`app.${REMOTE_HOST}`))"
+        #- "traefik.http.routers.frontend.rule=Host(`damagames.com`) || (Host(`app.damagames.com`)"
+        - "traefik.http.routers.frontend.entrypoints=websecure"
+        - "traefik.http.routers.frontend.tls.certresolver=myresolver"
+        - "traefik.http.routers.frontend-http.rule=Host(`${REMOTE_HOST}`) || (Host(`app.${REMOTE_HOST}`))"
+        - "traefik.http.routers.frontend-http.entrypoints=web"
+        - "traefik.http.middlewares.frontend-http.redirectscheme.scheme=https"
 
 
     # PHP services
@@ -50,18 +59,16 @@ services:
             - DB_DATABASE
             - DB_USERNAME
             - DB_PASSWORD
-        ports:
-            - 8082:8082
         depends_on:
             - database
         labels:
         - "traefik.enable=true"
         - "traefik.http.routers.api-http.entrypoints=web"
-        - "traefik.http.routers.api-http.rule=Host(`api.${REMOTE_HOST}`)"
+        #- "traefik.http.routers.api-http.rule=Host(`api.${REMOTE_HOST}`)"
+        - "traefik.http.middlewares.api-http.redirectscheme.scheme=https"
         - "traefik.http.routers.api-https.entrypoints=websecure"
         - "traefik.http.routers.api-https.rule=Host(`api.${REMOTE_HOST}`)"
         - "traefik.http.routers.api-https.tls.certresolver=myresolver"
-        - "traefik.http.middlewares.api-https.redirectscheme.scheme=https"
 
     # Database server
     database:
@@ -78,12 +85,22 @@ services:
             - mysql-data:/var/lib/mysql
 
     # Websockets Server
-    socket:
+    sockets:
         build:
             context: ./socket
         environment:
             - APP_ENV
             - CONTAINER_ROLE=sockets
+            - PORT=3000     # if not set defaults to 7744
+        labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.sockets-http.entrypoints=web"
+        #- "traefik.http.routers.sockets-http.rule=Host(`sockets.${REMOTE_HOST}`)"
+        - "traefik.http.middlewares.sockets-http.redirectscheme.scheme=https"
+        - "traefik.http.routers.sockets-https.entrypoints=websecure"
+        - "traefik.http.routers.sockets-https.rule=Host(`sockets.${REMOTE_HOST}`) || PathPrefix(`/socket.io`)"
+        - "traefik.http.routers.sockets-https.tls.certresolver=myresolver"
 
 volumes:
     mysql-data: ~
+    letsencrypt-data: ~
