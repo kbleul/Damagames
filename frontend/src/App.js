@@ -2,11 +2,11 @@ import React, { useEffect } from "react";
 import SplashScreen from "./components/SplashScreen";
 import { useHome } from "./context/HomeContext";
 import { CreateGame, NewGame, JoinGame } from "./components";
-import AlreadyJoined  from "./components/AlreadyJoined"
-import PublicGames  from "./components/PublicGames"
-import NewGamePublic  from "./components/NewGamePublic"
+import AlreadyJoined from "./components/AlreadyJoined";
+import PublicGames from "./components/PublicGames";
+import NewGamePublic from "./components/NewGamePublic";
 
-import PlayerBoard from "./Scoreboard/PlayerHistory"
+import PlayerBoard from "./Scoreboard/PlayerHistory";
 import ScoreBoard from "./Scoreboard/ScoreBoard";
 import Signup from "./components/Auth/Signup";
 import ForgotPassword from "./components/Auth/ForgotPassword";
@@ -17,12 +17,12 @@ import ErrorPage from "./components/ErrorPage";
 import Login from "./components/Auth/Login";
 import Profile from "./components/Profile/Profile";
 import { useAuth } from "./context/auth";
-import TagManager from 'react-gtm-module'
+import TagManager from 'react-gtm-module';
 
 //'G-YM283P3T0J'
 const tagManagerArgs = {
   gtmId: process.env.REACT_APP_GTM_ID
-}
+};
 
 const App = () => {
   const { checked } = useHome();
@@ -32,7 +32,7 @@ const App = () => {
 
   useEffect(() => {
     TagManager.initialize(tagManagerArgs)
-  },[])
+  },[]);
 
   useEffect(() => {
     socket.on("connect", () => {
