@@ -42,6 +42,13 @@ const CreateGame = () => {
           Join Game
         </button>
 
+        <button
+          onClick={() => navigate("/new-game-public")}
+          className="w-3/5 mt-24 border-2 bg-transparent border-orange-color p-2 px-11 font-medium text-orange-color rounded-lg max-w-[20rem]"
+        >
+          Public Game
+        </button>
+
         <>
         {user && token ? <></> :
           <div className="w-3/5 pb-[5vh]">

@@ -3,6 +3,9 @@ import SplashScreen from "./components/SplashScreen";
 import { useHome } from "./context/HomeContext";
 import { CreateGame, NewGame, JoinGame } from "./components";
 import AlreadyJoined  from "./components/AlreadyJoined"
+import PublicGames  from "./components/PublicGames"
+import NewGamePublic  from "./components/NewGamePublic"
+
 import PlayerBoard from "./Scoreboard/PlayerHistory"
 import ScoreBoard from "./Scoreboard/ScoreBoard";
 import Signup from "./components/Auth/Signup";
@@ -51,6 +54,10 @@ const HomeComp=()=>{
       <Route path="/score-board" element={<ScoreBoard />} />
       <Route path="/player-board" element={<PlayerBoard />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/join-public" element={<PublicGames />} />
+      <Route path="/new-game-public" element={<NewGamePublic />} />
+
+
     </Routes>
     )
 }
@@ -71,6 +78,9 @@ const AuthComp =()=>{
     <Route path="/signup" element={<Signup />} />
     <Route path="/login" element={<Login />} />
     <Route path="/forgot-password" element={<ForgotPassword />} />
+    <Route path="/join-public" element={<PublicGames />} />
+    <Route path="/new-game-public" element={<NewGamePublic />} />
+
   </Routes>
   )
 }
