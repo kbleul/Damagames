@@ -644,6 +644,7 @@ const Game = () => {
         setMoves([0, 0]);
         setTimerP1(30);
         setTimerP2(30);
+        setPassedCounter(0)
       }
     );
     socket.on("getResetGameRequest", ({ status }) => {

@@ -4,7 +4,7 @@ import background from "../assets/backdrop.jpg";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { IoIosCopy } from "react-icons/io";
 import axios from "axios";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import toast, { Toaster } from "react-hot-toast";
 import socket from "../utils/socket.io";
 import "./style.css";
@@ -29,10 +29,10 @@ const NewGame = () => {
   const [codeCopied, setCodeCopied] = useState(false);
   const [name, setName] = useState("");
   const [coinAmount, setCoinAmount] = useState(0);
-  const playerCoins =
-    user && token
-      ? JSON.parse(localStorage.getItem("dama_user_data"))?.user?.coin
-      : null;
+  // const playerCoins =
+  //   user && token
+  //     ? JSON.parse(localStorage.getItem("dama_user_data"))?.user?.coin
+  //     : null;
 
   //coins input
   const [showInput, setShowInput] = useState(false);
@@ -209,7 +209,7 @@ const NewGame = () => {
   const checkCoinAmoute = (e) => {
     setCoinAmount(e.target.value);
 
-    if (e.target.value > playerCoins) {
+    if (e.target.value > profileData?.data?.data?.data?.coins) {
       setCoinError("Amount has to be less than you coins");
     } else if (e.target.value <= 0) {
       setCoinError("Invalid Amount");
@@ -218,6 +218,22 @@ const NewGame = () => {
     }
   };
 
+
+  //profile
+  const profileData = useQuery(
+    ["profileDataApi"],
+    async () =>
+      await axios.get(`${process.env.REACT_APP_BACKEND_URL}match-history`, {
+        headers:header,
+      }),
+    {
+      keepPreviousData: true,
+      refetchOnWindowFocus: false,
+      retry: false,
+      enabled: !!token,
+    }
+  );
+  console.log(profileData?.data?.data?.data);
   return (
     <div
       style={{
@@ -272,8 +288,8 @@ const NewGame = () => {
               Play for coins
             </label>
           </div>
-          {playerCoins !== null && playerCoins !== undefined && (
-            <p className="text-white">Your coins : {playerCoins}</p>
+          {profileData?.data?.data?.data?.coins && (
+            <p className="text-white">Your coins : {profileData?.data?.data?.data?.coins}</p>
           )}
 
           {coinError && <p className="text-red-400 text-sm">{coinError}</p>}
@@ -293,7 +309,7 @@ const NewGame = () => {
 
           {showInput && (
             <>
-              {playerCoins === 0 ? (
+              {profileData?.data?.data?.data?.coins === 0 ? (
                 <p className="text-white">Not enough coins</p>
               ) : (
                 <input
