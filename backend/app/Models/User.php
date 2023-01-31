@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -24,11 +25,14 @@ class User extends Authenticatable
      */
     protected $guarded = [];
 
+    public $appends = ['rank', 'coin'];
+
     /**
      * The attributes that should be hidden for serialization.
      *
      * @var array<int, string>
      */
+
     protected $hidden = [
         'password',
         'remember_token',
@@ -37,12 +41,33 @@ class User extends Authenticatable
         'deleted_at',
     ];
 
+    public function getRankAttribute()
+    {
+        $collection = collect(User::orderByDesc('current_point')
+            ->get());
+
+        $data = $collection->where('id', $this->id);
+
+        if ($data->count() > 0) {
+            return $data->keys()->first() + 1;
+        } else {
+            return 0;
+        }
+    }
+
+    public function getCoinAttribute()
+    {
+
+        return $this->current_point;
+    }
+
     /**
      * The attributes that should be cast.
      *
      * @var array<string, string>
      */
     protected $casts = [
+        'current_point' => 'integer',
         'created_at' => 'datetime:d-m-Y H:i A',
     ];
 

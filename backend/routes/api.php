@@ -34,6 +34,7 @@ Route::post('/sockets/authenticate', [PusherAuthController::class, 'authenticate
 
 
 Route::middleware('response')->group(function () {
+
     Route::post('join-game/{game}', [PlayersController::class, 'join_game']);
     Route::post('join-game-via-code', [PlayersController::class, 'join_game_via_code']);
     Route::post('add-player', [PlayersController::class, 'add_player']);
@@ -51,6 +52,7 @@ Route::middleware('response')->group(function () {
     Route::post('resend-otp', [AuthController::class, 'resend_otp']);
 
     Route::post('reset-password', [ResetPasswordController::class, 'reset_password']);
+
     Route::post('verify-password', ResetPasswordController::class);
 
     Route::post('reset-change-password', [ResetPasswordController::class, 'change_password'])->middleware('auth:sanctum');
@@ -66,17 +68,11 @@ Route::middleware('response', 'auth:sanctum')->group(function () {
 
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('change-password', [AuthController::class, 'change_password']);
-
     Route::get('match-history', [GameController::class, 'match_history']);
     Route::post('update-profile-image', [AuthController::class, 'update_profile_image']);
-
     Route::post('auth-create-game', [AuthPlayerController::class, 'add_player']);
+    Route::post('auth-join-game/{game}', [AuthPlayerController::class, 'join_game']);
     Route::post('auth-join-game-via-code', [AuthPlayerController::class, 'join_game_via_code']);
     Route::post('auth-start-game/{game}', [AuthPlayerController::class, 'start_game']);
     Route::post('security-question-answer', [AuthController::class, 'user_answer']);
 });
-
-
-// Route::get('users', function () {
-//     return User::all();
-// });

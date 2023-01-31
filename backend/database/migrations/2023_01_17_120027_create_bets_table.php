@@ -13,15 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('bets', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('username')->nullable();
-            $table->string('phone')->nullable()->unique();
-            $table->timestamp('phone_verified_at')->nullable();
-            $table->string('password')->default('password');
-            $table->string('profile_image')->nullable();
-            $table->unsignedInteger('current_point')->default(0);
-            $table->rememberToken();
+            $table->foreignUuid('game_id')->constrained('games')->cascadeOnDelete();
+            $table->unsignedInteger('coin')->default(0);
+            $table->unsignedInteger('status')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -34,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('bets');
     }
 };
