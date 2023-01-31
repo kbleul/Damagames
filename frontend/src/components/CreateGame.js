@@ -2,12 +2,12 @@ import SideMenu from "./SideMenu";
 import { useNavigate } from "react-router-dom";
 import background from "../assets/backdrop.jpg";
 import avatar from "../assets/dama-default.jpg";
- import { useAuth } from "../context/auth";
-import {Link } from "react-router-dom";
+import { useAuth } from "../context/auth";
+import { Link } from "react-router-dom";
 
 const CreateGame = () => {
   const navigate = useNavigate();
-  const { user, token  } = useAuth();
+  const { user, token } = useAuth();
 
   return (
     <div
@@ -21,7 +21,6 @@ const CreateGame = () => {
         width: "100%",
       }}
     >
-
       <SideMenu />
 
       <div className="flex flex-col items-center justify-center gap-y-4 min-h-screen space-y-2">
@@ -42,6 +41,13 @@ const CreateGame = () => {
           Join Game
         </button>
 
+        <button
+          onClick={() => navigate("/new-game-public")}
+          className="w-3/5 mt-24 border-2 bg-transparent border-orange-color p-2 px-11 font-medium text-orange-color rounded-lg max-w-[20rem]"
+        >
+          Public Game
+        </button>
+
         <>
         {user && token ? <></> :
           <div className="w-3/5 pb-[5vh]">
@@ -54,8 +60,44 @@ const CreateGame = () => {
         }</>
        
         
+        <button 
+          onClick={() => navigate(`/game/${1}`)}
+          className="w-3/5 mt-24 border-2 bg-transparent whitespace-nowrap
+           border-orange-color p-2 px-11 font-medium text-orange-color rounded-lg max-w-[20rem]"
+        >
+          Play With computer
+        </button>
+        <>
+          {user && token ? (
+            <></>
+          ) : (
+            <div className="w-3/5 pb-[5vh]">
+              <button
+                className="w-full  border-2 bg-transparent border-orange-color p-2 px-11 font-medium text-orange-color rounded-lg mb-2 max-w-[20rem]"
+                onClick={() => {
+                  navigate("/signup");
+                }}
+              >
+                <p>Sign Up</p>
+              </button>
+              <p className="text-orange-color text-xs">or</p>
+              <button
+                className="font-bold text-orange-color border-b border-orange-color"
+                onClick={() => {
+                  navigate("/login");
+                }}
+              >
+                Log in
+              </button>
+            </div>
+          )}
+        </>
+
         <section className="w-4/5 max-w-[30rem] flex items-center justify-evenly mt-[12vh]">
-          <Link to="/score-board" className="flex flex-col justify-evenly items-center">
+          <Link
+            to="/score-board"
+            className="flex flex-col justify-evenly items-center"
+          >
             <div className="h-6 w-8 bg-orange-color px-2 flex justify-center items-center ">
               <svg
                 width="20"
@@ -72,7 +114,7 @@ const CreateGame = () => {
             </div>
             <p className="text-orange-color text-[.7rem]">Score board</p>
           </Link>
-{/* 
+          {/* 
           <div className="flex flex-col justify-evenly items-center">
             <div
               className="h-6 w-8
@@ -93,11 +135,8 @@ const CreateGame = () => {
             </div>
             <p className="text-orange-color text-[.7rem]">Shop</p>
           </div> */}
-
         </section>
       </div>
-
-      
     </div>
   );
 };

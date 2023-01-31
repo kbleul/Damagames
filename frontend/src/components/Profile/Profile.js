@@ -37,7 +37,6 @@ const Profile = () => {
       enabled: !!token,
     }
   );
-  console.log(profileData?.data?.data);
 
   return (
     <article className="">
