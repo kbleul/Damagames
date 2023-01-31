@@ -184,5 +184,5 @@ instrument(io, {
   mode: "production",
 });
 
-const PORT = process.env.PORT || 7744;
+const PORT = process.env.PORT || 443;
 httpServer.listen(PORT);
