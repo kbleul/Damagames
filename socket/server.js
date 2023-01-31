@@ -1,6 +1,6 @@
 import { createServer } from "http";
 import { Server } from "socket.io";
-import { format, formatDistance, formatRelative, subDays } from 'date-fns'
+import { differenceInMinutes, formatDistance } from 'date-fns'
 import { instrument } from "@socket.io/admin-ui";
 import { Console } from "console";
 import { Socket } from "dgram";
@@ -24,29 +24,24 @@ const io = new Server(httpServer, {
   },
 });
 
-console.log("⚡: Server started at port : ",process.env.PORT ? process.env.PORT :7744)
+// console.log("⚡: Server started at port : ",process.env.PORT ? process.env.PORT :7744)
 
 let publicGames = []
 
 const createReadableDate = (date) => {
-  const newdate = formatDistance( date, new Date(),
-  { includeSeconds: true });
-  console.log("date" , newdate)
+  const newdate = formatDistance( date, new Date(), { includeSeconds: true });
   return newdate
 }
 
 //type === "code" || "socketId"  
 // SO WE CAN DELETE USING CODE OR SOCKETID
 const removePublicGame = (code,type) => {
-  console.log({code})
-  console.log(publicGames)
 
   let temparr = []
  // publicGames.filter(game => game.code !== code)
  if(type === "code") {
   publicGames.forEach(game => {
     game.code !== code && temparr.push(game)
-    console.log("------",game , code, game.code === code)
   })
   publicGames = [...temparr]
   temparr = []
@@ -54,15 +49,17 @@ const removePublicGame = (code,type) => {
  else if(type === "socketId") {
   publicGames.forEach(game => {
     game.socketID !== code && temparr.push(game)
-    console.log("------",game , code, game.socketID === code)
   })
   publicGames = [...temparr]
   temparr = []
  }
- 
 
-  console.log("********",publicGames ,"=======", temparr)
+}
 
+//returns the difference in time(minutes) b/n two date objects
+const checkDuration = (time) => {
+  const result = differenceInMinutes( time, new Date() )
+  console.log({result})
 }
 
 io.on("connection", (socket) => {
@@ -71,28 +68,36 @@ io.on("connection", (socket) => {
   console.log("a user connected.");
 
   socket.on("postPublicGame", data => {
-//    console.log({"date" : createReadableDate(new Date(data.time)) })
     publicGames.push({
       ...data, 
       socketID : socket.id,
       time : new Date()
     })
-    
-    console.log("======================================",publicGames)
+     
   })
 
   socket.on("publicGames", ()  => {
-console.log("public")
-let temparr = []
-publicGames.forEach(game => { 
-  temparr.push({...game, time : createReadableDate(game.time) })
-})
+      let temparr = []
+      let removedArr = []
+     publicGames.forEach(game => { 
+
+      if(checkDuration(game.time) < 3 && checkDuration(game.time) >= -3) 
+      {   temparr.push({...game, time : createReadableDate(game.time) }) }
+//if public game has been up for 3 minutes remove from public game
+      else { removedArr.push(game.code) }
+    })
+
     io.to(socket.id).emit("getPublicGames", temparr)
-  })
+
+    if(removedArr.length > 0) {
+      removedArr.forEach(code => { removePublicGame(code, "code") })
+    }
+
+    temparr = []
+    removedArr = []
+})
 
   socket.on("joinPublicGame", codeId => {
-  console.log({codeId})
-
     removePublicGame(codeId , "code")
   })
 
@@ -151,8 +156,10 @@ publicGames.forEach(game => {
     console.log("new", publicGames)
   });
 });
+
 instrument(io, {
   auth: false,
 });
+
 const PORT = process.env.PORT || 7744;
 httpServer.listen(PORT);

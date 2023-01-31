@@ -11,7 +11,6 @@ import toast, { Toaster } from "react-hot-toast";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { IoIosCopy } from "react-icons/io";
 import background from "../assets/backdrop.jpg";
-const formatDistance = require('date-fns/formatDistance')
 
 const ACTION = {  
     "MENU" : "menu",
@@ -133,8 +132,7 @@ console.log("public game")
             link : `${process.env.REACT_APP_FRONTEND_URL}/join-game/` + responseData?.data?.data?.game,
             "createdBy" : responseData?.data?.data?.playerOne.username,
             "rank" : responseData?.data?.data?.playerOne.rank,
-            "coin" : responseData?.data?.data?.playerOne.coin,
-            "time" : dateFormat("longTime"),
+            "coin" : responseData?.data?.data?.playerOne.coin
         });
 
         },
