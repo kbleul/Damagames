@@ -1,8 +1,9 @@
 import { createServer } from "http";
 import { Server } from "socket.io";
-import { format, formatDistance, formatRelative, subDays } from "date-fns";
+import { differenceInMinutes, formatDistance } from 'date-fns'
 import { instrument } from "@socket.io/admin-ui";
-
+import { Console } from "console";
+import { Socket } from "dgram";
 const httpServer = createServer();
 const io = new Server(httpServer, {
   cors: {
@@ -13,12 +14,9 @@ const io = new Server(httpServer, {
       "http://192.168.43.253:3000",
       "http://172.17.104.250:3000",
       "http://172.17.104.248:3000",
-      "http://172.17.104.250:3000",
       "http://172.17.104.251:3000",
       "https://dama-blue.vercel.app",
       "https://admin.socket.io",
-      "https://damagames.com",
-      "https://sockets.damagames.com",
       "http://localhost:3000",
       "http://172.17.104.251:3000",
     ],
@@ -26,90 +24,90 @@ const io = new Server(httpServer, {
   },
 });
 
-const rooms = {};
-// io.on("connection", (socket) => {
-//send list of rooms
-// socket.on("getRooms", () => {
-//   socket.emit("rooms", Object.keys(rooms));
-// });
+// console.log("⚡: Server started at port : ",process.env.PORT ? process.env.PORT :7744)
 
-let publicGames = [];
+let publicGames = []
 
 const createReadableDate = (date) => {
-  const newdate = formatDistance(date, new Date(), { includeSeconds: true });
-  console.log("date", newdate);
-  return newdate;
-};
+  const newdate = formatDistance( date, new Date(), { includeSeconds: true });
+  return newdate
+}
 
-//type === "code" || "socketId"
+//type === "code" || "socketId"  
 // SO WE CAN DELETE USING CODE OR SOCKETID
-const removePublicGame = (code, type) => {
-  console.log({ code });
-  console.log(publicGames);
+const removePublicGame = (code,type) => {
 
-  let temparr = [];
-  // publicGames.filter(game => game.code !== code)
-  if (type === "code") {
-    publicGames.forEach((game) => {
-      game.code !== code && temparr.push(game);
-      console.log("------", game, code, game.code === code);
-    });
-    publicGames = [...temparr];
-    temparr = [];
-  } else if (type === "socketId") {
-    publicGames.forEach((game) => {
-      game.socketID !== code && temparr.push(game);
-      console.log("------", game, code, game.socketID === code);
-    });
-    publicGames = [...temparr];
-    temparr = [];
-  }
+  let temparr = []
+ // publicGames.filter(game => game.code !== code)
+ if(type === "code") {
+  publicGames.forEach(game => {
+    game.code !== code && temparr.push(game)
+  })
+  publicGames = [...temparr]
+  temparr = []
+ }
+ else if(type === "socketId") {
+  publicGames.forEach(game => {
+    game.socketID !== code && temparr.push(game)
+  })
+  publicGames = [...temparr]
+  temparr = []
+ }
 
-  console.log("********", publicGames, "=======", temparr);
-};
+}
+
+//returns the difference in time(minutes) b/n two date objects
+const checkDuration = (time) => {
+  const result = differenceInMinutes( time, new Date() )
+ // console.log({result})
+}
+
+console.log(`⚡: Server is live! PORT = ` +  7744);
 
 io.on("connection", (socket) => {
-  console.log(socket.id);
+  console.log(socket.id)
   //user connection
   console.log("a user connected.");
 
-  socket.on("getRooms", () => {
-    const singleUserRooms = Object.keys(rooms).filter(
-      (room) => rooms[room].size === 1
-    );
-    socket.emit("rooms", singleUserRooms);
-  });
-  socket.on("postPublicGame", (data) => {
-    //    console.log({"date" : createReadableDate(new Date(data.time)) })
+  socket.on("postPublicGame", data => {
     publicGames.push({
-      ...data,
-      socketID: socket.id,
-      time: new Date(),
-    });
+      ...data, 
+      socketID : socket.id,
+      time : new Date()
+    })
+   //  console.log(publicGames)
+  })
 
-    console.log("===", publicGames);
-  });
+  socket.on("publicGames", ()  => {
+      let temparr = []
+      let removedArr = []
+     // console.log("length " , publicGames.length)
+     publicGames.forEach(game => { 
+    //  console.log(checkDuration(game.time) < 3 ,checkDuration(game.time) >= -3 , typeof checkDuration(game.time) )
 
-  socket.on("publicGames", () => {
-    console.log("public");
-    let temparr = [];
-    publicGames.forEach((game) => {
-      temparr.push({ ...game, time: createReadableDate(game.time) });
-    });
-    io.to(socket.id).emit("getPublicGames", temparr);
-  });
+    temparr.push({...game, time : createReadableDate(game.time) }) 
+//if public game has been up for 3 minutes remove from public game
+   //   else { removedArr.push(game.code) }
+    })
+   // console.log("temparr",temparr.length)
 
-  socket.on("joinPublicGame", (codeId) => {
-    console.log({ codeId });
+    socket.emit("getPublicGames", temparr)
 
-    removePublicGame(codeId, "code");
-  });
+    if(removedArr.length > 0) {
+      removedArr.forEach(code => { removePublicGame(code, "code") })
+    }
+
+    temparr = []
+    removedArr = []
+})
+
+  socket.on("joinPublicGame", codeId => {
+    removePublicGame(codeId , "code")
+  })
 
   socket.on("join-room", async (room) => {
-    if (!rooms[room]) {
-      rooms[room] = new Set();
-    }
-    rooms[room].add(socket.id);
+    console.log({"join": room})
+
     const clients = await io.of("/").in(room).fetchSockets();
     if (clients.length == 2) {
       // io.to(room).emit("started","you can play now")
@@ -120,7 +118,9 @@ io.on("connection", (socket) => {
     }
     //send and get messages
 
+
     socket.on("sendMessage", (data) => {
+      console.log({"started": data})
       io.to(room).emit("getMessage", data);
     });
     socket.on("sendGameMessage", (data) => {
@@ -156,6 +156,7 @@ io.on("connection", (socket) => {
     //send message if user left the room
     socket.on("disconnect", () => {
       io.to(room).emit("userLeaveMessage", "Someone has left the room");
+
     });
   });
 
@@ -173,13 +174,15 @@ io.on("connection", (socket) => {
     });
     // io.to(room).emit("userLeaveMessage", "Someone has left the room");
     console.log("a user disconnected!");
-    removePublicGame(socket.id, "socketId");
-    console.log("new", publicGames);
+    removePublicGame(socket.id, "socketId")
+    console.log("new", publicGames)
   });
 });
+
 instrument(io, {
   auth: false,
   mode: "production",
 });
+
 const PORT = process.env.PORT || 7744;
 httpServer.listen(PORT);

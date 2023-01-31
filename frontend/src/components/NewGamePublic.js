@@ -1,4 +1,6 @@
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
+import dateFormat, { masks } from "dateformat";
 
 import { useAuth } from "../context/auth";
 import { useNavigate } from "react-router-dom";
@@ -10,11 +12,11 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { IoIosCopy } from "react-icons/io";
 import background from "../assets/backdrop.jpg";
 
-const ACTION = {
-  MENU: "menu",
-  CREATING: "creating",
-  CREATED: "created",
-};
+const ACTION = {  
+    "MENU" : "menu",
+    "CREATING" : "creating",
+    "CREATED" : "created" 
+}
 
 const NewGamePublic = () => {
   const { user, token } = useAuth();
@@ -160,6 +162,16 @@ const NewGamePublic = () => {
       nameMutationSubmitHandler();
     }
   };
+  useEffect(() => {
+    socket.on("getMessage", (data) => {
+      if (data.status === "started") {
+        console.log("playerTwo_info ", data.player2);
+        localStorage.setItem("p1", data.player1);
+        localStorage.setItem("p2", data.player2);
+        navigate("/game");
+      }
+    })
+  }, [])
 
   return (
     <main
