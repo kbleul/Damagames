@@ -49,6 +49,7 @@ const App = () => {
         <Route path="/join-game" element={<JoinGame />} />
         <Route path="/join-game/:id" element={<JoinGame />} />
         <Route path="/game" element={<Game />} />
+        <Route path="/game/:id" element={<Game />} />
         <Route path="/already-joined" element={<AlreadyJoined />} />
         <Route path="/score-board" element={<ScoreBoard />} />
         <Route path="/player-board" element={<PlayerBoard />} />
@@ -68,6 +69,7 @@ const App = () => {
         <Route path="/join-game" element={<JoinGame />} />
         <Route path="/join-game/:id" element={<JoinGame />} />
         <Route path="/game" element={<Game />} />
+        <Route path="/game/:id" element={<Game />} />
         <Route path="/already-joined" element={<AlreadyJoined />} />
         <Route path="/score-board" element={<ScoreBoard />} />
         <Route path="/player-board" element={<PlayerBoard />} />
