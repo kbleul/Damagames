@@ -18,6 +18,7 @@ class PlayersController extends Controller
         DB::beginTransaction();
         $user = User::create([
             'username' => $request->username,
+            'current_point' =>  30,
         ]);
 
         do {
@@ -45,12 +46,16 @@ class PlayersController extends Controller
 
     public function join_game(Game $game)
     {
-        if ($game->status != 0) {
+        if ($game->status !== 0) {
             return response()
                 ->json([
                     'message' => 'This link is expired or it is not correct!',
                     'game' => $game,
                 ], 400);
+        }
+
+        if ($game->status == 3) {
+            abort(400, "This game requires login because it has bet!");
         }
 
         return response()
@@ -64,7 +69,12 @@ class PlayersController extends Controller
 
     public function join_game_via_code(Request $request)
     {
-        $game = Game::where('code', $request->code)->where('status', 0)->first();
+        $game = Game::where('code', $request->code)->first();
+
+        // return $game->status == 3;
+        if ($game->status == 3) {
+            abort(400, "This game requires login because it has bet!");
+        }
 
         if (!$game) {
             return response()
@@ -91,6 +101,7 @@ class PlayersController extends Controller
 
         $user = User::create([
             'username' => $request->username,
+            'current_point' =>  30,
         ]);
 
         $game->update([
