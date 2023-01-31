@@ -27,7 +27,7 @@ const io = new Server(httpServer, {
 // console.log("⚡: Server started at port : ",process.env.PORT ? process.env.PORT :7744)
 
 let publicGames = []
-
+let rooms=[]
 const createReadableDate = (date) => {
   const newdate = formatDistance( date, new Date(), { includeSeconds: true });
   return newdate
