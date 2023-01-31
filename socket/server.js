@@ -14,6 +14,8 @@ const io = new Server(httpServer, {
       "http://172.17.104.253:3000",
       "https://dama-blue.vercel.app",
       "https://admin.socket.io",
+      "https://damagames.com",
+      "https://sockets.damagames.com",
     ],
     credentials: true,
   },
