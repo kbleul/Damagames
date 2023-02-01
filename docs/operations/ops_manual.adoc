@@ -145,6 +145,18 @@ Set up the following environment variables and secrets
 | api.damagames.com / api.${REMOTE_HOST}
 | Frontend needs the URL to the API
 
+| REACT_APP_GTM_ID
+| https://github.com/jaktechet/damagames/settings/variables/actions/GTAG_ID
+| Google Analytics gtag.js config id from damagamescom@gmail.com https://analytics.google.com/
+
+| REACT_APP_SOCKET_URL
+| damagames.com / ${REMOTE_HOST}
+| URL of the websocket server that the frontend uses
+
+| REACT_APP_SOCKET_PORT
+| 443
+| Port of the websocket server that the frontend uses
+
 |===
 
 ==== CORS
