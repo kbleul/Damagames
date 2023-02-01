@@ -23,7 +23,7 @@ const WinnerModal = ({
       setNewGameWithComputer();
     }
   };
-  console.log(gameState.winner == "player2pieces");
+
   return (
     <>
       <Transition appear show={isWinnerModalOpen} as={Fragment}>
@@ -60,23 +60,30 @@ const WinnerModal = ({
               rounded-2xl bg-dark-bg p-6 text-left align-middle shadow-xl transition-all"
                 >
                   <div className="mt-2">
-                    <h1 className="text-white font-semibold text-2xl text-center capitalize py-5">
-                      {gameState.players > 1
-                        ? winnerPlayer === "player1pieces" ||
-                          winnerPlayer === "player1moves"
-                          ? playerOneIp != null
-                            ? "congratulation!"
-                            : "You Lose!"
-                          : winnerPlayer === "player2pieces" ||
-                            winnerPlayer === "player2moves"
-                          ? playerTwoIp != null
-                            ? "congratulation!"
-                            : "You Lose!"
-                          : ""
-                        : gameState?.winner == "player2pieces" || "player2moves"
-                        ? "You Loose"
-                        : "You Win"}
-                    </h1>
+                    {gameState.players != 1 &&
+                      <h1 className="text-white font-semibold text-2xl text-center capitalize py-5">
+                        {gameState.players > 1
+                          ? winnerPlayer === "player1pieces" ||
+                            winnerPlayer === "player1moves"
+                            ? playerOneIp != null
+                              ? "congratulations! You won 30 coins"
+                              : "You Lost!"
+                            : winnerPlayer === "player2pieces" ||
+                              winnerPlayer === "player2moves"
+                              ? playerTwoIp != null
+                                ? "congratulations! You won 30 coins"
+                                : "You Lost!"
+                              : ""
+                          : gameState?.winner == "player2pieces" || "player2moves"
+                            ? "You Lost"
+                            : "You Win"}
+                      </h1>}
+                    {gameState.players == 1 &&
+                      <h1 className="text-white font-semibold text-2xl text-center capitalize py-5">
+                        {gameState.winner === "player1pieces" || gameState.winner === "player1moves"
+                          ? "congratulations! You won 30 coins" : "You Lost!"}
+                      </h1>
+                    }
                     <img src={wancha} alt="" className="absolute bottom-0 " />
                   </div>
                   {/* button */}
