@@ -173,7 +173,6 @@ const Game = () => {
   });
 
   useEffect(() => {
-    console.log(id === 1, id === "1", id == 1);
     if (id == 1) {
       setGameState((prevGameState) => {
         return { ...prevGameState, players: 1 };
@@ -258,10 +257,9 @@ const Game = () => {
       updateStatePostMove(postMoveState);
       // if(soundOn) { playMove()}
       soundOn && playMove();
-      console.log("gameState", gameState);
-      console.log("postMoveState", postMoveState);
-      console.log("current", getCurrentState());
+
       // Start computer move is the player is finished
+      console.log({ winner: postMoveState.winner })
       if (
         id === "1" &&
         postMoveState.currentPlayer === false &&
@@ -276,11 +274,7 @@ const Game = () => {
 
   //computer turn
   function computerTurn(newMoveState, piece = null) {
-    //console.log("gameState",gameState)
-    // if (gameState.players > 1 || id == 1) {
-    //   return;
-    // }
-    console.log({ newMoveState });
+
     setTimeout(() => {
       // const currentState = getCurrentState();
       const boardState = newMoveState.boardState;
@@ -290,14 +284,12 @@ const Game = () => {
       let mergerObj;
 
       computerMove = getSmartMove(columns, gameState, boardState, "player2");
-      console.log({ computerMove });
 
       coordinates = computerMove.piece;
       moveTo = computerMove.moveTo;
 
       let tempHistory = gameState.history;
       tempHistory.push(newMoveState);
-      console.log("SDfds", tempHistory);
       mergerObj = {
         ...gameState,
         activePiece: computerMove.piece,
@@ -307,7 +299,6 @@ const Game = () => {
         history: tempHistory,
       };
 
-      console.log("newobj", mergerObj);
 
       const clickedSquare = boardState[coordinates];
       let movesData;
@@ -331,7 +322,6 @@ const Game = () => {
         moveTo = movesData[0][Math.floor(Math.random() * movesData[0].length)];
       }
 
-      // console.log("gg",coordinates,movesData[0],movesData[1])
 
       setGameState((prevState) => {
         return {
@@ -343,15 +333,13 @@ const Game = () => {
       });
 
       setTimeout(() => {
-        //console.log({ moveTo: mergerObj });
 
         const postMoveState = movesData[1]
           ? movePiece(columns, mergerObj.moves[0], {
-              ...mergerObj,
-              jumpKills: movesData[1],
-            })
+            ...mergerObj,
+            jumpKills: movesData[1],
+          })
           : movePiece(columns, mergerObj.moves[0], mergerObj);
-        console.log({ postMoveState });
         if (postMoveState === null) {
           return;
         }
@@ -365,9 +353,11 @@ const Game = () => {
         } else if (!movesData[1] && soundOn) {
           playMove();
         }
+        console.log({ winnerComputer: postMoveState.winner })
 
         // If the computer player has jumped and is still moving, continue jump with active piece
         if (postMoveState.currentPlayer === false) {
+
           computerTurn(postMoveState, postMoveState.activePiece);
         }
       }, 600);
@@ -404,9 +394,7 @@ const Game = () => {
 
     calcPawns(postMoveState.boardState);
 
-    // playOff();
-    // playActive();
-    // console.log("first",postMoveState.currentPlayer)
+
   }
 
   const stateHistory = gameState.history;
@@ -558,20 +546,14 @@ const Game = () => {
         ++player2Counter;
       }
     });
-    // console.log({player1Counter})
     if (
       pawns[0] !== 12 - player2Counter ||
       pawns[1] !== player2Counter - prevP2
     ) {
       setPawns([12 - player2Counter, 12 - player1Counter]);
-      // soundOn && playMove();
     }
 
-    // setPawns([12 - player2Counter, 12 - player1Counter]);
-    // if(12 - player1Counter !== prevP1 || 12 - player2Counter !== prevP2) {
-    //   soundOn && playStrike()
-    // }
-    // console.log([...pawns] , [prevP1 , prevP2]);
+
   };
   function compareObjects(obj1, obj2) {
     let obj1NullCount = 0;
@@ -712,9 +694,11 @@ const Game = () => {
   };
 
   const timeChecker = () => {
+    console.log("running")
     let myCounter = 0;
 
     if (currentPlayer && localStorage.getItem("playerOneIp")) {
+
       intervalRef.current = setInterval(() => {
         if (myCounter === 0) {
           setTimerP1(30);
@@ -876,12 +860,11 @@ const Game = () => {
         },
         {
           onSuccess: (responseData) => {
-            //  console.log(responseData?.data);
           },
-          onError: (err) => {},
+          onError: (err) => { },
         }
       );
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const changeSound = () => {
@@ -1099,29 +1082,28 @@ const Game = () => {
 
       <div className="game-board  ">
         <div
-          className={` shadow-2xl    ${
-            !id
-              ? currentPlayer === true
-                ? currentPlayer === true && !firstPlayer
-                  ? "pointer-events-none"
-                  : ""
-                : currentPlayer === false
+          className={` shadow-2xl    ${!id
+            ? currentPlayer === true
+              ? currentPlayer === true && !firstPlayer
+                ? "pointer-events-none"
+                : ""
+              : currentPlayer === false
                 ? currentPlayer === false && !secondPlayer
                   ? "pointer-events-none"
                   : ""
                 : ""
-              : ""
-          }`}
+            : ""
+            }`}
         >
           <Board
             boardState={
               id === "1"
                 ? dict_reverse(boardState)
                 : !id
-                ? localStorage.getItem("playerOne")
-                  ? dict_reverse(boardState)
+                  ? localStorage.getItem("playerOne")
+                    ? dict_reverse(boardState)
+                    : boardState
                   : boardState
-                : boardState
             }
             currentPlayer={currentPlayer}
             activePiece={gameState.activePiece}
@@ -1132,23 +1114,25 @@ const Game = () => {
         </div>
       </div>
 
-      <div onClick={drawGame} className="flex flex-col">
-        <div className="p-2 bg-orange-color rounded-full flex flex-col items-center justify-center">
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 18 18"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M14 13V11H4V13H14ZM16 0C16.5304 0 17.0391 0.210714 17.4142 0.585786C17.7893 0.960859 18 1.46957 18 2V16C18 16.5304 17.7893 17.0391 17.4142 17.4142C17.0391 17.7893 16.5304 18 16 18H2C1.46957 18 0.960859 17.7893 0.585786 17.4142C0.210714 17.0391 0 16.5304 0 16V2C0 0.89 0.89 0 2 0H16ZM14 7V5H4V7H14Z"
-              fill="#181920"
-            />
-          </svg>
+      {id != 1 &&
+        <div onClick={drawGame} className="flex flex-col">
+          <div className="p-2 bg-orange-color rounded-full flex flex-col items-center justify-center">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 18 18"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M14 13V11H4V13H14ZM16 0C16.5304 0 17.0391 0.210714 17.4142 0.585786C17.7893 0.960859 18 1.46957 18 2V16C18 16.5304 17.7893 17.0391 17.4142 17.4142C17.0391 17.7893 16.5304 18 16 18H2C1.46957 18 0.960859 17.7893 0.585786 17.4142C0.210714 17.0391 0 16.5304 0 16V2C0 0.89 0.89 0 2 0H16ZM14 7V5H4V7H14Z"
+                fill="#181920"
+              />
+            </svg>
+          </div>
+          <p className="text-xs font-bold text-white">Draw</p>
         </div>
-        <p className="text-xs font-bold text-white">Draw</p>
-      </div>
+      }
       {id != 1 && (
         <div className="absolute right-3 bottom-5 flex items-end justify-end">
           <BsFillChatFill
@@ -1165,9 +1149,8 @@ const Game = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ type: "tween", duration: 1, ease: "easeInOut" }}
-          className={`absolute top-36  bg-white max-w-sm  p-1 w-44 ${
-            playerOneIp ? "left-3" : "right-3"
-          }
+          className={`absolute top-36  bg-white max-w-sm  p-1 w-44 ${playerOneIp ? "left-3" : "right-3"
+            }
        border border-orange-color rounded-lg m-3`}
         >
           <div className="text-gray-800">

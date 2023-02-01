@@ -18,6 +18,7 @@ import Login from "./components/Auth/Login";
 import Profile from "./components/Profile/Profile";
 import { useAuth } from "./context/auth";
 import TagManager from "react-gtm-module";
+import { Footer } from "./Game/components/Footer";
 
 //'G-YM283P3T0J'
 const tagManagerArgs = {
@@ -32,7 +33,7 @@ const App = () => {
 
   useEffect(() => {
     TagManager.initialize(tagManagerArgs)
-  },[]);
+  }, []);
 
   useEffect(() => {
     socket.on("connect", () => {
@@ -41,7 +42,7 @@ const App = () => {
   });
 
   const HomeComp = () => {
-    return (
+    return (<>
       <Routes>
         <Route path="*" element={<Navigate to="/create-game" />} />
         <Route path="/create-game" element={<CreateGame />} />
@@ -57,11 +58,13 @@ const App = () => {
         <Route path="/join-public" element={<PublicGames />} />
         <Route path="/new-game-public" element={<NewGamePublic />} />
       </Routes>
+      <Footer />
+    </>
     );
   };
 
   const AuthComp = () => {
-    return (
+    return (<>
       <Routes>
         <Route path="" element={<Navigate to="/create-game" />} />
         <Route path="/create-game" element={<CreateGame />} />
@@ -79,6 +82,8 @@ const App = () => {
         <Route path="/join-public" element={<PublicGames />} />
         <Route path="/new-game-public" element={<NewGamePublic />} />
       </Routes>
+      <Footer />
+    </>
     );
   };
 
@@ -94,6 +99,3 @@ const App = () => {
 
 export default App;
 
-export const Footer = () => (
-  <NavLink to="/privacy.html">Privacy Policy</NavLink>
-)
