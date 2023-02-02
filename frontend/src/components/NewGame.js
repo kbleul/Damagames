@@ -65,9 +65,7 @@ const NewGame = () => {
   useEffect(() => {
     socket.on("getMessage", (data) => {
       if (data.status === "started") {
-        console.log("playerTwo_info ", data.player2);
-        localStorage.setItem("p1", data.player1);
-        localStorage.setItem("p2", data.player2);
+        console.log("info ", data.playerOne);
         navigate("/game");
       }
     });
@@ -119,10 +117,11 @@ const NewGame = () => {
           onSuccess: (responseData) => {
             console.log(responseData?.data?.data);
             socket.emit("join-room", responseData?.data?.data?.game);
+            localStorage.setItem("p1", responseData?.data?.data?.playerOne?.username)
             setIsCreated(true);
             setValue(
               `${process.env.REACT_APP_FRONTEND_URL}/join-game/` +
-                responseData?.data?.data?.game
+              responseData?.data?.data?.game
             );
             setCode(responseData?.data?.data?.code);
             //first clear local storage
@@ -138,7 +137,7 @@ const NewGame = () => {
             );
             localStorage.setItem("playerOneIp", responseData?.data?.data?.ip);
           },
-          onError: (err) => { console.log("error", err)},
+          onError: (err) => { console.log("error", err) },
         }
       );
     } catch (err) {
@@ -173,7 +172,7 @@ const NewGame = () => {
             setIsCreated(true);
             setValue(
               `${process.env.REACT_APP_FRONTEND_URL}/join-game/` +
-                responseData?.data?.data?.game
+              responseData?.data?.data?.game
             );
 
             if (betRef.current.checked) {
@@ -187,6 +186,10 @@ const NewGame = () => {
               "playerOne",
               JSON.stringify(responseData?.data?.data?.playerOne)
             );
+            localStorage.setItem("p1", responseData?.data?.data?.playerOne?.username)
+
+            // localStorage.setItem("p1", data.player1);
+            // localStorage.setItem("p2", data.player2);
             // localStorage.setItem("playerOneToken", responseData?.data?.data?.token);
             localStorage.setItem("playerOneIp", responseData?.data?.data?.ip);
           },
@@ -224,7 +227,7 @@ const NewGame = () => {
     ["profileDataApi"],
     async () =>
       await axios.get(`${process.env.REACT_APP_BACKEND_URL}match-history`, {
-        headers:header,
+        headers: header,
       }),
     {
       keepPreviousData: true,
@@ -366,9 +369,8 @@ const NewGame = () => {
                   <p className="text-xs text-green-500">Copied</p>
                 ) : (
                   <IoIosCopy
-                    className={`${
-                      isCopied ? "text-green-500" : "text-gray-300"
-                    }`}
+                    className={`${isCopied ? "text-green-500" : "text-gray-300"
+                      }`}
                   />
                 )}
               </CopyToClipboard>
@@ -392,9 +394,8 @@ const NewGame = () => {
                   <p className="text-xs text-green-500">Copied</p>
                 ) : (
                   <IoIosCopy
-                    className={`${
-                      codeCopied ? "text-green-500" : "text-gray-400"
-                    }`}
+                    className={`${codeCopied ? "text-green-500" : "text-gray-400"
+                      }`}
                   />
                 )}
               </CopyToClipboard>

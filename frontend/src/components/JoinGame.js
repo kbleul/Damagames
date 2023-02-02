@@ -95,16 +95,16 @@ const JoinGame = () => {
             onSuccess: (responseData) => {
               console.log(responseData?.data);
 
-              responseData?.data?.data?.playerOne?.name &&
+              responseData?.data?.data?.playerOne?.username &&
                 setMyFriend(
-                  (prev) => prev + " " + responseData?.data.playerOne.name
+                  (prev) => prev + " " + responseData?.data?.data?.playerOne.username
                 );
 
               localStorage.setItem(
                 "players",
                 JSON.stringify({
-                  player1: responseData?.data?.data?.playerOne?.name,
-                  player2: responseData?.data?.data?.playerTwo?.name,
+                  player1: responseData?.data?.data?.playerOne?.username,
+                  player2: responseData?.data?.data?.playerTwo?.username,
                 })
               );
             },
@@ -121,16 +121,16 @@ const JoinGame = () => {
             onSuccess: (responseData) => {
               console.log(responseData?.data);
 
-              responseData?.data?.data?.playerOne?.name &&
+              responseData?.data?.data?.playerOne?.username &&
                 setMyFriend(
-                  (prev) => prev + " " + responseData?.data.playerOne.name
+                  (prev) => prev + " " + responseData?.data?.data?.playerOne.username
                 );
 
               localStorage.setItem(
                 "players",
                 JSON.stringify({
-                  player1: responseData?.data?.data?.playerOne?.name,
-                  player2: responseData?.data?.data?.playerTwo?.name,
+                  player1: responseData?.data?.data?.playerOne?.username,
+                  player2: responseData?.data?.data?.playerTwo?.username,
                 })
               );
             },
@@ -168,8 +168,8 @@ const JoinGame = () => {
             ? `${process.env.REACT_APP_BACKEND_URL}auth-start-game/${id}`
             : `${process.env.REACT_APP_BACKEND_URL}add-player/${id}`
           : user && token
-          ? `${process.env.REACT_APP_BACKEND_URL}auth-start-game/${gameId}`
-          : `${process.env.REACT_APP_BACKEND_URL}add-player/${gameId}`,
+            ? `${process.env.REACT_APP_BACKEND_URL}auth-start-game/${gameId}`
+            : `${process.env.REACT_APP_BACKEND_URL}add-player/${gameId}`,
         newData,
         {
           headers: user && token ? header : headers,
@@ -234,8 +234,8 @@ const JoinGame = () => {
           savedData.forEach((data) => {
             localStorage.getItem(data) && localStorage.removeItem(data);
           });
-          localStorage.setItem("p1", responseData?.data?.data.playerOne.name);
-          localStorage.setItem("p2", responseData?.data?.data.playerTwo.name);
+          localStorage.setItem("p1", responseData?.data?.data?.playerOne.username);
+          localStorage.setItem("p2", responseData?.data?.data?.playerOne.username);
           localStorage.setItem("playerTwoIp", responseData?.data?.data?.ip);
           localStorage.setItem(
             "playerTwo",
@@ -293,16 +293,16 @@ const JoinGame = () => {
           { code: code },
           {
             onSuccess: (responseData) => {
-              console.log("bet",responseData?.data?.data?.bet_coin)
+              console.log("bet", responseData?.data?.data?.bet_coin)
               localStorage.setItem(
                 "bt_coin_amount",
                 responseData?.data?.data?.bet_coin
               );
 
               setIsVerified(true);
-              responseData?.data?.data?.playerOne?.name &&
+              responseData?.data?.data?.playerOne.username &&
                 setMyFriend(
-                  (prev) => prev + " " + responseData?.data.playerOne.name
+                  (prev) => prev + " " + responseData?.data?.data?.playerOne.username
                 );
               localStorage.setItem("gameId", responseData?.data?.data?.game);
             },
@@ -323,11 +323,12 @@ const JoinGame = () => {
             onSuccess: (responseData) => {
               console.log(responseData?.data);
               setIsVerified(true);
-              responseData?.data?.data?.playerOne?.name &&
+              responseData?.data?.data?.playerOne.username &&
                 setMyFriend(
-                  (prev) => prev + " " + responseData?.data.playerOne.name
+                  (prev) => prev + " " + responseData?.data?.data?.playerOne.username
                 );
               localStorage.setItem("gameId", responseData?.data?.data?.game);
+              localStorage.setItem("p1", responseData?.data?.data?.playerOne.username)
             },
             onError: (err) => {
               console.log(err?.response?.data);

@@ -1228,6 +1228,7 @@ const Game = () => {
         setIsDrawModalOpen={setIsDrawModalOpen}
         acceptGameRequest={acceptGameRequest}
         rejectGameRequest={rejectGameRequest}
+        showResetWaiting={showResetWaiting}
       />
       <Toaster />
     </div>

@@ -56,7 +56,7 @@ const Login = () => {
             navigate('/')
           },
           onError: (err) => {
-            setErrorMessage(err?.response?.data?.data);
+            setErrorMessage("Incorrect phone number or password.");
           },
         }
       );
@@ -101,11 +101,10 @@ const Login = () => {
               <div className="flex flex-col items-start space-y-2 w-full">
                 {/* phone */}
                 <div
-                  className={`input flex items-center h-[42px]  border rounded-[4px]  w-full ${
-                    errors.phone && touched.phone
+                  className={`input flex items-center h-[42px]  border rounded-[4px]  w-full ${errors.phone && touched.phone
                       ? "border border-red-500"
                       : "border border-orange-color "
-                  }`}
+                    }`}
                 >
                   <span
                     className="border-r border-orange-color text-gray-200 font-semibold text-sm
@@ -143,11 +142,10 @@ const Login = () => {
                   placeholder="password"
                   name="password"
                   className={`rounded-[4px] pl-3 w-full h-[42px] bg-transparent font-medium  focus:outline-none focus:ring-0   text-gray-200 
-                  ${
-                    errors.password && touched.password
+                  ${errors.password && touched.password
                       ? "border border-red-500"
                       : "border border-orange-color "
-                  }`}
+                    }`}
                 />
                 {errors.password && touched.password ? (
                   <p className="text-[13px] font-medium text-red-500">
