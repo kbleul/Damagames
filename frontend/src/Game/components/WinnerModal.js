@@ -28,7 +28,8 @@ const WinnerModal = ({
   };
 
   const congraMsg = user ?
-    `congratulations! You won 3 coins.
+    `congratulations!
+      Previous = ${user.coin} coins
       Total = ${parseInt(user.coin) + 3} coins`
     : "congratulations! You won 3 coins"
   const lostMsg = user ?
@@ -73,7 +74,7 @@ const WinnerModal = ({
                 >
                   <div className="mt-2">
                     {gameState.players != 1 &&
-                      <h1 className="w-[70%] ml-[15%] text-white font-semibold text-sm text-center capitalize py-5">
+                      <h1 className="w-[60%] ml-[20%] text-white font-semibold text-center capitalize py-5">
                         {gameState.players > 1
                           ? winnerPlayer === "player1pieces" ||
                             winnerPlayer === "player1moves"
@@ -88,7 +89,7 @@ const WinnerModal = ({
                             ? lostMsg : congraMsg}
                       </h1>}
                     {gameState.players == 1 &&
-                      <h1 className="w-[70%] ml-[15%] text-white font-semibold text-sm text-center capitalize py-5">
+                      <h1 className="w-[60%] ml-[20%] text-white font-semibold  text-center capitalize py-5">
                         {gameState.winner === "player1pieces" || gameState.winner === "player1moves"
                           ? congraMsg : lostMsg}
                       </h1>

@@ -16,7 +16,6 @@ const ForgotPassword = ({ forgotPasswordModal, setForgotPasswordModal }) => {
     Accept: "application/json",
     Authorization: `Bearer ${token}`,
   };
-  console.log(answerRef.current);
   const securityQuestionData = useQuery(
     ["securityQuestionDataApi"],
     async () =>
@@ -31,7 +30,7 @@ const ForgotPassword = ({ forgotPasswordModal, setForgotPasswordModal }) => {
       refetchOnWindowFocus: false,
       retry: false,
       //   enabled: !!token,
-      onSuccess: (res) => {},
+      onSuccess: (res) => { },
     }
   );
   const handleSecurityQuestion = () => {
@@ -64,7 +63,6 @@ const ForgotPassword = ({ forgotPasswordModal, setForgotPasswordModal }) => {
         },
         {
           onSuccess: (responseData) => {
-            console.log(responseData?.data?.data);
 
             toast("profile changed successfully");
           },
@@ -73,9 +71,7 @@ const ForgotPassword = ({ forgotPasswordModal, setForgotPasswordModal }) => {
           },
         }
       );
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) { }
   };
 
   return (

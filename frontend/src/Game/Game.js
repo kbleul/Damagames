@@ -43,7 +43,6 @@ const Game = () => {
   const [isWinnerModalOpen, setIsWinnerModalOpen] = useState(false);
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
 
-  const [latestState, setLatestState] = useState({});
 
   const [timerP1, setTimerP1] = useState(30);
   const [timerP2, setTimerP2] = useState(30);
@@ -56,12 +55,14 @@ const Game = () => {
   const [winnerPlayer, setWinnerPlayer] = useState(null);
 
   const [pawns, setPawns] = useState([0, 0]);
-  const [moves, setMoves] = useState([0, 0]);
-  const [timer, setTimer] = useState(15);
+
+  const moveRef = useRef([0, 0]);
 
   const messageInputRef = useRef();
   const [messageInputOpen, setMessageInputOpen] = useState(false);
   const [latestMessage, setLatestMessage] = useState(null);
+  const [showResetWaiting, setShowResetWaiting] = useState(false);
+
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -186,6 +187,7 @@ const Game = () => {
   }
 
   function handleClick(coordinates) {
+
     if (gameState.winner !== null) {
       return;
     }
@@ -259,13 +261,12 @@ const Game = () => {
       soundOn && playMove();
 
       // Start computer move is the player is finished
-      console.log({ winner: postMoveState.winner })
       if (
         id === "1" &&
         postMoveState.currentPlayer === false &&
         postMoveState.winner === null
       ) {
-        setMoves([++moves[0], moves[1]]);
+        moveRef.current = [++moveRef.current[0], moveRef.current[1]]
         calcPawns(boardState);
         computerTurn(postMoveState);
       }
@@ -346,14 +347,15 @@ const Game = () => {
 
         updateStatePostMove(postMoveState);
 
-        setMoves([moves[0], ++moves[1]]);
+        moveRef.current = [moveRef.current[0], ++moveRef.current[1]]
+
+
 
         if (movesData[1] && soundOn) {
           playStrike();
         } else if (!movesData[1] && soundOn) {
           playMove();
         }
-        console.log({ winnerComputer: postMoveState.winner })
 
         // If the computer player has jumped and is still moving, continue jump with active piece
         if (postMoveState.currentPlayer === false) {
@@ -391,6 +393,7 @@ const Game = () => {
       currentPlayer: postMoveState.currentPlayer,
       turnPlayer: postMoveState.currentPlayer ? "player1" : "player2",
     });
+
 
     calcPawns(postMoveState.boardState);
 
@@ -464,6 +467,8 @@ const Game = () => {
   }, [gameState, gameStatus, winnerPlayer]);
 
   const resetGame = () => {
+    moveRef.current = [0, 0]
+
     socket.emit("sendResetGameRequest", { status: "Pending" });
   };
   const rejectGameRequest = () => {
@@ -489,6 +494,8 @@ const Game = () => {
       },
       isWinnerModalOpen: false,
     });
+    moveRef.current = [0, 0]
+
   };
   const setNewGameWithComputer = () => {
     setGameState({
@@ -509,6 +516,7 @@ const Game = () => {
   };
 
   const drawGame = () => {
+    setShowResetWaiting(true)
     socket.emit("sendDrawGameRequest", { status: "Draw" });
   };
 
@@ -538,6 +546,7 @@ const Game = () => {
     let [prevP1, prevP2] = pawns;
     let player1Counter = 0;
     let player2Counter = 0;
+    console.log({ boardState, currentPlayer })
     Object.keys(boardState).forEach((key) => {
       if (boardState[key]?.player === "player1") {
         ++player1Counter;
@@ -588,9 +597,7 @@ const Game = () => {
         stopInterval();
         // setUpdatedState({winnerPlayer,boardState,currentPlayer})
 
-        const tempMoves = moves;
-        turnPlayer === "player2" ? ++tempMoves[0] : ++tempMoves[1];
-        setMoves(tempMoves);
+
 
         setMyTurn(turnPlayer);
         setWinnerPlayer(winnerPlayer);
@@ -607,9 +614,12 @@ const Game = () => {
           };
         });
 
+        turnPlayer === "player2" ?
+          moveRef.current = [1 + moveRef.current[0], moveRef.current[1]] :
+          moveRef.current = [moveRef.current[0], 1 + moveRef.current[1]]
+
         calcPawns(boardState);
         compareObjects(lastElement?.boardState, boardState);
-        console.log("currentPlayer", currentPlayer);
       }
     );
 
@@ -623,19 +633,22 @@ const Game = () => {
         setIsRematchModalOpen(false);
         setMyTurn("player1");
         setPawns([0, 0]);
-        setMoves([0, 0]);
         setTimerP1(30);
         setTimerP2(30);
         setPassedCounter(0);
+        setShowResetWaiting(false)
+        moveRef.current = [0, 0]
       }
     );
     socket.on("getResetGameRequest", ({ status }) => {
       setIsRematchModalOpen(true);
+      moveRef.current = [0, 0]
     });
     socket.on("getDrawGameRequest", ({ status }) => {
       setIsDrawModalOpen(true);
     });
     socket.on("getRejectGameMessage", ({ status }) => {
+      setShowResetWaiting(false)
       toast("You friend did not accept the request");
       savedData.forEach((data) => {
         localStorage.getItem(data) && localStorage.removeItem(data);
@@ -694,7 +707,6 @@ const Game = () => {
   };
 
   const timeChecker = () => {
-    console.log("running")
     let myCounter = 0;
 
     if (currentPlayer && localStorage.getItem("playerOneIp")) {
@@ -1017,7 +1029,7 @@ const Game = () => {
             <p className="bg-gray-300 text-black pr-[.2rem] w-12 rounded">
               Moves
             </p>
-            <p>{moves[0]}</p>
+            <p>{moveRef.current[0]}</p>
           </div>
           <div className="flex justify-center items-center text-[.7rem] gap-x-2 font-bold mb-2">
             <p className="bg-gray-300 text-black pr-[.2rem] w-12 rounded">
@@ -1029,7 +1041,7 @@ const Game = () => {
 
         <div className="text-white w-1/2 pb-[5vh]">
           <div className="flex justify-center items-center text-[.7rem] gap-x-2 font-bold mb-2">
-            <p>{moves[1]}</p>
+            <p>{moveRef.current[1]}</p>
             <p className="bg-gray-300 text-black pr-[.2rem] w-12 rounded">
               Moves
             </p>

@@ -48,7 +48,6 @@ const Login = () => {
         },
         {
           onSuccess: (responseData) => {
-            console.log(responseData?.data);
             login(
               responseData?.data?.data?.token,
               responseData?.data?.data?.user
@@ -56,13 +55,11 @@ const Login = () => {
             navigate('/')
           },
           onError: (err) => {
-            setErrorMessage("Incorrect phone number or password.");
+            setErrorMessage(err?.response?.data?.data);
           },
         }
       );
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) { }
   };
   return (
     <>
@@ -102,8 +99,8 @@ const Login = () => {
                 {/* phone */}
                 <div
                   className={`input flex items-center h-[42px]  border rounded-[4px]  w-full ${errors.phone && touched.phone
-                      ? "border border-red-500"
-                      : "border border-orange-color "
+                    ? "border border-red-500"
+                    : "border border-orange-color "
                     }`}
                 >
                   <span

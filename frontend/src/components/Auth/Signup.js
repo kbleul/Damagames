@@ -114,14 +114,11 @@ const Signup = () => {
             toast.success("otp is sent to your phone");
           },
           onError: (err) => {
-            console.log(err);
             toast.error(err?.response?.data?.data);
           },
         }
       );
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) { }
   };
 
   const verifyOtpMutation = useMutation(
@@ -151,14 +148,11 @@ const Signup = () => {
             toast.success("success");
           },
           onError: (err) => {
-            console.log(err);
             toast.error(err?.response?.data?.message);
           },
         }
       );
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) { }
   };
   const finishRegisterMutation = useMutation(
     async (newData) =>
@@ -184,12 +178,10 @@ const Signup = () => {
         {
           onSuccess: (responseData) => {
             login(temporaryToken, responseData?.data?.data?.user);
-            console.log(responseData?.data?.data?.user);
             toast.success("success");
             navigate("/login");
           },
           onError: (err) => {
-            console.log(finishRegisterMutation?.error?.response?.data?.message);
             toast.error(
               err?.response?.data?.message,
               { theme: "colored" },
@@ -206,9 +198,7 @@ const Signup = () => {
           },
         }
       );
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) { }
   };
   const props = {
     inputStyle: {

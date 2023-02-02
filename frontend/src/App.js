@@ -58,7 +58,7 @@ const App = () => {
         <Route path="/join-public" element={<PublicGames />} />
         <Route path="/new-game-public" element={<NewGamePublic />} />
       </Routes>
-      <Footer />
+      {/* <Footer /> */}
     </>
     );
   };
@@ -82,7 +82,7 @@ const App = () => {
         <Route path="/join-public" element={<PublicGames />} />
         <Route path="/new-game-public" element={<NewGamePublic />} />
       </Routes>
-      <Footer />
+      {/* <Footer /> */}
     </>
     );
   };
