@@ -19,6 +19,7 @@ const io = new Server(httpServer, {
       "https://admin.socket.io",
       "http://localhost:3000",
       "http://172.17.104.251:3000",
+      "https://damagames.com",
     ],
     credentials: true,
   },
