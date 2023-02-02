@@ -252,6 +252,7 @@ const Game = () => {
       soundOn && playMove();
 
       // Start computer move is the player is finished
+      console.log({ winner: postMoveState.winner })
       if (
         id === "1" &&
         postMoveState.currentPlayer === false &&
@@ -324,9 +325,9 @@ const Game = () => {
       setTimeout(() => {
         const postMoveState = movesData[1]
           ? movePiece(columns, mergerObj.moves[0], {
-              ...mergerObj,
-              jumpKills: movesData[1],
-            })
+            ...mergerObj,
+            jumpKills: movesData[1],
+          })
           : movePiece(columns, mergerObj.moves[0], mergerObj);
         if (postMoveState === null) {
           return;
@@ -343,9 +344,11 @@ const Game = () => {
         } else if (!movesData[1] && soundOn) {
           playMove();
         }
+        console.log({ winnerComputer: postMoveState.winner })
 
         // If the computer player has jumped and is still moving, continue jump with active piece
         if (postMoveState.currentPlayer === false) {
+
           computerTurn(postMoveState, postMoveState.activePiece);
         }
       }, 600);
@@ -711,9 +714,11 @@ const Game = () => {
   };
 
   const timeChecker = () => {
+    console.log("running")
     let myCounter = 0;
 
     if (currentPlayer && localStorage.getItem("playerOneIp")) {
+
       intervalRef.current = setInterval(() => {
         if (myCounter === 0) {
           setTimerP1(30);
@@ -878,7 +883,7 @@ const Game = () => {
           onError: (err) => {},
         }
       );
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const changeSound = () => {
@@ -1117,29 +1122,28 @@ const Game = () => {
 
       <div className="game-board  ">
         <div
-          className={` shadow-2xl    ${
-            !id
-              ? currentPlayer === true
-                ? currentPlayer === true && !firstPlayer
-                  ? "pointer-events-none"
-                  : ""
-                : currentPlayer === false
+          className={` shadow-2xl    ${!id
+            ? currentPlayer === true
+              ? currentPlayer === true && !firstPlayer
+                ? "pointer-events-none"
+                : ""
+              : currentPlayer === false
                 ? currentPlayer === false && !secondPlayer
                   ? "pointer-events-none"
                   : ""
                 : ""
-              : ""
-          }`}
+            : ""
+            }`}
         >
           <Board
             boardState={
               id === "1"
                 ? dict_reverse(boardState)
                 : !id
-                ? localStorage.getItem("playerOne")
-                  ? dict_reverse(boardState)
+                  ? localStorage.getItem("playerOne")
+                    ? dict_reverse(boardState)
+                    : boardState
                   : boardState
-                : boardState
             }
             currentPlayer={currentPlayer}
             activePiece={gameState.activePiece}
@@ -1186,9 +1190,8 @@ const Game = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ type: "tween", duration: 1, ease: "easeInOut" }}
-          className={`absolute top-36  bg-white max-w-sm  p-1 w-44 ${
-            playerOneIp ? "left-3" : "right-3"
-          }
+          className={`absolute top-36  bg-white max-w-sm  p-1 w-44 ${playerOneIp ? "left-3" : "right-3"
+            }
        border border-orange-color rounded-lg m-3`}
         >
           <div className="text-gray-800">

@@ -8,6 +8,7 @@ import ReactCodeInput from "react-code-input";
 import { ThreeDots } from "react-loader-spinner";
 import axios from "axios";
 import { useAuth } from "../../context/auth";
+import { Footer } from "../../Game/components/Footer";
 const Signup = () => {
   const { login } = useAuth();
   const [phone, setPhone, PhoneError] = useValidPhone();
@@ -411,6 +412,7 @@ const Signup = () => {
           )}
         </div>
       </div>
+      <Footer />
       <Toaster />
     </>
   );

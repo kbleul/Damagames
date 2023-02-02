@@ -13,6 +13,7 @@ import "react-spring-bottom-sheet/dist/style.css";
 import { BsFacebook, BsTelegram } from "react-icons/bs";
 import { RiWhatsappFill } from "react-icons/ri";
 import { useAuth } from "../context/auth";
+import { Footer } from "../Game/components/Footer";
 
 const NewGame = () => {
   const { user, token } = useAuth();
@@ -383,7 +384,7 @@ const NewGame = () => {
           </div>
         </div>
       )}
-
+      <Footer />
       <BottomSheet
         open={open}
         onDismiss={() => setOpen(false)}

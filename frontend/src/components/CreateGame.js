@@ -5,6 +5,7 @@ import avatar from "../assets/dama-default.jpg";
 import { useAuth } from "../context/auth";
 import { Link } from "react-router-dom";
 import { clearCookie } from "../utils/data";
+import { Footer } from "../Game/components/Footer";
 const CreateGame = () => {
   const navigate = useNavigate();
   const { user, token } = useAuth();
@@ -101,6 +102,7 @@ const CreateGame = () => {
             <p className="text-orange-color text-[.7rem]">Score board</p>
           </Link>
         </section>
+        <Footer />
       </div>
     </div>
   );

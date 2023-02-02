@@ -6,6 +6,7 @@ import axios from "axios";
 import { useAuth } from "../../context/auth";
 import { ThreeDots } from "react-loader-spinner";
 import { useNavigate } from "react-router-dom";
+import { Footer } from "../../Game/components/Footer";
 const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -192,6 +193,7 @@ const Login = () => {
           Back
         </span>
       </div>
+      <Footer />
     </>
   );
 };

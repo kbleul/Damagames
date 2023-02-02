@@ -18,7 +18,7 @@ import Login from "./components/Auth/Login";
 import Profile from "./components/Profile/Profile";
 import { useAuth } from "./context/auth";
 import TagManager from "react-gtm-module";
-import { Footer } from "./Game/components/Footer";
+
 
 //'G-YM283P3T0J'
 const tagManagerArgs = {
@@ -58,7 +58,7 @@ const App = () => {
         <Route path="/join-public" element={<PublicGames />} />
         <Route path="/new-game-public" element={<NewGamePublic />} />
       </Routes>
-      {/* <Footer /> */}
+   
     </>
     );
   };
@@ -82,7 +82,7 @@ const App = () => {
         <Route path="/join-public" element={<PublicGames />} />
         <Route path="/new-game-public" element={<NewGamePublic />} />
       </Routes>
-      {/* <Footer /> */}
+
     </>
     );
   };

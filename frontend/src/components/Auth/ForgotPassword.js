@@ -7,6 +7,7 @@ import useValidPhone from "../../Hook/useValidPhone";
 import ReactCodeInput from "react-code-input";
 import { ThreeDots } from "react-loader-spinner";
 import axios from "axios";
+import { Footer } from "../../Game/components/Footer";
 
 const ForgotPassword = () => {
   const [temporaryToken, setTemporaryToken] = useState(null);
@@ -103,7 +104,7 @@ const ForgotPassword = () => {
           },
         }
       );
-    } catch (err) { }
+    } catch (err) {}
   };
 
   const forgotOtpMutation = useMutation(
@@ -128,7 +129,7 @@ const ForgotPassword = () => {
         },
         {
           onSuccess: (responseData) => {
-            setTemporaryToken(responseData?.data?.data?.token)
+            setTemporaryToken(responseData?.data?.data?.token);
             sethasCode(true);
             toast.success("success");
           },
@@ -137,7 +138,7 @@ const ForgotPassword = () => {
           },
         }
       );
-    } catch (err) { }
+    } catch (err) {}
   };
   const changePasswordMutation = useMutation(
     async (newData) =>
@@ -181,7 +182,7 @@ const ForgotPassword = () => {
           },
         }
       );
-    } catch (err) { }
+    } catch (err) {}
   };
 
   //resend otp
@@ -212,7 +213,7 @@ const ForgotPassword = () => {
           },
         }
       );
-    } catch (err) { }
+    } catch (err) {}
   };
   const props = {
     inputStyle: {
@@ -419,6 +420,7 @@ const ForgotPassword = () => {
           )}
         </div>
       </div>
+      <Footer />
       <Toaster />
     </>
   );
