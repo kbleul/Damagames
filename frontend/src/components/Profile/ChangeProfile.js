@@ -41,7 +41,6 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
         },
         {
           onSuccess: (responseData) => {
-            // console.log(responseData?.data?.data);
             login(token, responseData?.data?.data);
             setChangeProfileModal(false);
             toast("profile changed successfully");
@@ -51,9 +50,7 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
           },
         }
       );
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) { }
   };
   const images = [
     {

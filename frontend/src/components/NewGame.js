@@ -60,23 +60,15 @@ const NewGame = () => {
     Authorization: `Bearer ${token}`,
   };
 
-  //  console.log(gameId)
 
   useEffect(() => {
     socket.on("getMessage", (data) => {
       if (data.status === "started") {
-        console.log("info ", data.playerOne);
         navigate("/game");
       }
     });
 
-    socket.on("userLeaveMessage", (data) => {
-      console.log("newGame", data);
-    });
-    // socket.on('disconnect',()=>{
-    //   alert("disconnected")
-    // })
-    // socket.emit("join-room", gameId);
+    socket.on("userLeaveMessage", (data) => { });
   }, []);
 
   const submitName = () => {
@@ -115,9 +107,8 @@ const NewGame = () => {
         { username: name, has_bet: false },
         {
           onSuccess: (responseData) => {
-            console.log(responseData?.data?.data);
             socket.emit("join-room", responseData?.data?.data?.game);
-            localStorage.setItem("p1", responseData?.data?.data?.playerOne?.username)
+
             setIsCreated(true);
             setValue(
               `${process.env.REACT_APP_FRONTEND_URL}/join-game/` +
@@ -137,12 +128,10 @@ const NewGame = () => {
             );
             localStorage.setItem("playerOneIp", responseData?.data?.data?.ip);
           },
-          onError: (err) => { console.log("error", err) },
+          onError: (err) => { },
         }
       );
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) { }
   };
 
   //no userName if the user ligged in
@@ -167,7 +156,6 @@ const NewGame = () => {
           : { has_bet: false },
         {
           onSuccess: (responseData) => {
-            console.log(responseData?.data?.data);
             socket.emit("join-room", responseData?.data?.data?.game);
             setIsCreated(true);
             setValue(
@@ -186,28 +174,21 @@ const NewGame = () => {
               "playerOne",
               JSON.stringify(responseData?.data?.data?.playerOne)
             );
-            localStorage.setItem("p1", responseData?.data?.data?.playerOne?.username)
-
-            // localStorage.setItem("p1", data.player1);
-            // localStorage.setItem("p2", data.player2);
             // localStorage.setItem("playerOneToken", responseData?.data?.data?.token);
             localStorage.setItem("playerOneIp", responseData?.data?.data?.ip);
           },
           onError: (err) => {
-            console.log(err.response.data.data);
             setCoinError(err.response.data.data);
           },
         }
       );
     } catch (err) {
-      console.log(err);
     }
   };
   useEffect(() => {
-    socket.on("private-room", (data) => console.log(data));
+    socket.on("private-room", (data) => { });
   }, []);
 
-  console.log(JSON.parse(localStorage.getItem("dama_user_data"))?.user);
 
   const checkCoinAmoute = (e) => {
     setCoinAmount(e.target.value);
@@ -236,7 +217,6 @@ const NewGame = () => {
       enabled: !!token,
     }
   );
-  console.log(profileData?.data?.data?.data);
   return (
     <div
       style={{

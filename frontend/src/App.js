@@ -37,7 +37,7 @@ const App = () => {
 
   useEffect(() => {
     socket.on("connect", () => {
-      console.log("Connected to Socket.io server");
+      //  console.log("Connected to Socket.io server");
     });
   });
 
@@ -58,7 +58,7 @@ const App = () => {
         <Route path="/join-public" element={<PublicGames />} />
         <Route path="/new-game-public" element={<NewGamePublic />} />
       </Routes>
-      <Footer />
+      {/* <Footer /> */}
     </>
     );
   };
@@ -82,7 +82,7 @@ const App = () => {
         <Route path="/join-public" element={<PublicGames />} />
         <Route path="/new-game-public" element={<NewGamePublic />} />
       </Routes>
-      <Footer />
+      {/* <Footer /> */}
     </>
     );
   };

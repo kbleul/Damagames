@@ -31,7 +31,7 @@ const JoinGame = () => {
   const [myFriend, setMyFriend] = useState("Your Friend");
   const { setIsBet, setBetCoin } = useHome();
 
-  console.log({ id });
+
   // alert(gameId)
   // const playerTwo = JSON.parse(localStorage.getItem("playerTwo"))
   const navigate = useNavigate();
@@ -93,7 +93,6 @@ const JoinGame = () => {
           {},
           {
             onSuccess: (responseData) => {
-              console.log(responseData?.data);
 
               responseData?.data?.data?.playerOne?.username &&
                 setMyFriend(
@@ -109,7 +108,6 @@ const JoinGame = () => {
               );
             },
             onError: (err) => {
-              console.log(err?.response?.data?.message);
               navigate("/already-joined");
             },
           }
@@ -119,7 +117,6 @@ const JoinGame = () => {
           {},
           {
             onSuccess: (responseData) => {
-              console.log(responseData?.data);
 
               responseData?.data?.data?.playerOne?.username &&
                 setMyFriend(
@@ -135,15 +132,12 @@ const JoinGame = () => {
               );
             },
             onError: (err) => {
-              console.log(err?.response?.data?.message);
               navigate("/already-joined");
             },
           }
         );
       }
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) { }
   };
 
   const handleJoin = () => {
@@ -193,9 +187,7 @@ const JoinGame = () => {
             player2: JSON.stringify(responseData?.data?.data?.playerTwo),
           });
           socket.emit("join-room", id);
-          // socket.emit("sendMessage", { status: "started" });
-          console.log(responseData?.data);
-          // navigate("/game");
+
           //first clear local storage
           savedData.forEach((data) => {
             localStorage.getItem(data) && localStorage.removeItem(data);
@@ -205,18 +197,11 @@ const JoinGame = () => {
             "playerTwo",
             JSON.stringify(responseData?.data?.data?.playerTwo)
           );
-          // setIsCreated(true)
-          // setValue(responseData?.data?.data?.data?.invitationLink)
           localStorage.setItem("gameId", responseData?.data?.data?.game);
-          // localStorage.setItem('user',responseData?.data?.data?.data?.user)
         },
-        onError: (err) => {
-          console.log(err?.response?.data?.message);
-        },
+        onError: (err) => { },
       });
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) { }
   };
 
   //with code
@@ -227,7 +212,6 @@ const JoinGame = () => {
           socket.emit("join-room", gameId);
 
           socket.emit("sendMessage", { status: "started" });
-          console.log(responseData?.data);
 
           navigate("/game");
           //first clear local storage
@@ -243,13 +227,9 @@ const JoinGame = () => {
           );
           localStorage.setItem("gameId", responseData?.data?.data?.game);
         },
-        onError: (err) => {
-          console.log(err?.response?.data?.message);
-        },
+        onError: (err) => { },
       });
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) { }
   };
 
   const handleSubmitCode = () => {
@@ -293,7 +273,6 @@ const JoinGame = () => {
           { code: code },
           {
             onSuccess: (responseData) => {
-              console.log("bet", responseData?.data?.data?.bet_coin)
               localStorage.setItem(
                 "bt_coin_amount",
                 responseData?.data?.data?.bet_coin
@@ -307,9 +286,6 @@ const JoinGame = () => {
               localStorage.setItem("gameId", responseData?.data?.data?.game);
             },
             onError: (err) => {
-              console.log(err?.response?.data);
-              console.log("token", token);
-
               err?.response?.data?.data
                 ? toast(err?.response?.data?.data)
                 : toast(err?.response?.data?.message);
@@ -321,7 +297,6 @@ const JoinGame = () => {
           { code: code },
           {
             onSuccess: (responseData) => {
-              console.log(responseData?.data);
               setIsVerified(true);
               responseData?.data?.data?.playerOne.username &&
                 setMyFriend(
@@ -331,7 +306,6 @@ const JoinGame = () => {
               localStorage.setItem("p1", responseData?.data?.data?.playerOne.username)
             },
             onError: (err) => {
-              console.log(err?.response?.data);
               err?.response?.data?.data
                 ? toast(err?.response?.data?.data)
                 : toast(err?.response?.data?.message);
@@ -339,9 +313,7 @@ const JoinGame = () => {
           }
         );
       }
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) { }
   };
   return (
     <div

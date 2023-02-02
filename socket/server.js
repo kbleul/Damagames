@@ -24,8 +24,6 @@ const io = new Server(httpServer, {
   },
 });
 
-// console.log("⚡: Server started at port : ",process.env.PORT ? process.env.PORT :7744)
-
 let publicGames = []
 let rooms = []
 const createReadableDate = (date) => {
@@ -57,15 +55,14 @@ const removePublicGame = (code, type) => {
 }
 
 //returns the difference in time(minutes) b/n two date objects
-const checkDuration = (time) => {
-  const result = differenceInMinutes(time, new Date())
-  // console.log({result})
-}
+//for v2 release
+// const checkDuration = (time) => {
+//   const result = differenceInMinutes(time, new Date())
+// }
 
 console.log(`⚡: Server is live! PORT = ` + 7744);
 
 io.on("connection", (socket) => {
-  console.log(socket.id)
   //user connection
   console.log("a user connected.");
 
@@ -75,21 +72,16 @@ io.on("connection", (socket) => {
       socketID: socket.id,
       time: new Date()
     })
-    //  console.log(publicGames)
   })
 
   socket.on("publicGames", () => {
     let temparr = []
     let removedArr = []
-    // console.log("length " , publicGames.length)
     publicGames.forEach(game => {
-      //  console.log(checkDuration(game.time) < 3 ,checkDuration(game.time) >= -3 , typeof checkDuration(game.time) )
-
       temparr.push({ ...game, time: createReadableDate(game.time) })
       //if public game has been up for 3 minutes remove from public game
       //   else { removedArr.push(game.code) }
     })
-    // console.log("temparr",temparr.length)
 
     socket.emit("getPublicGames", temparr)
 
@@ -106,7 +98,6 @@ io.on("connection", (socket) => {
   })
 
   socket.on("join-room", async (room) => {
-    //console.log({ "join": room })
 
     const clients = await io.of("/").in(room).fetchSockets();
     if (clients.length == 2) {
@@ -123,7 +114,6 @@ io.on("connection", (socket) => {
       io.to(room).emit("getMessage", data);
     });
     socket.on("sendGameMessage", (data) => {
-      console.log(data)
       io.to(room).emit("getGameMessage", data)
       // socket.broadcast.to(room).emit("getGameMessage", data);
     });
@@ -175,7 +165,6 @@ io.on("connection", (socket) => {
     // io.to(room).emit("userLeaveMessage", "Someone has left the room");
     console.log("a user disconnected!");
     removePublicGame(socket.id, "socketId")
-    console.log("new", publicGames)
   });
 });
 

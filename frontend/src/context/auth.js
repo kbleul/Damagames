@@ -18,7 +18,6 @@ export function AuthProvider({ children }) {
   const [checked, setChecked] = useState(false);
 
   const login = useCallback((token, user) => {
-    console.log(user);
     setToken(token);
     setUser(user);
     localStorage.setItem(
