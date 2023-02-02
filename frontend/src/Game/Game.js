@@ -24,9 +24,12 @@ import { BsFillChatFill } from "react-icons/bs";
 import { FaTimes, FaTelegramPlane } from "react-icons/fa";
 import { getSmartMove } from "./components/Opponent.js";
 import { ThreeDots } from "react-loader-spinner";
-
+import UserLeavesModal from "./components/UserLeavesModal.js";
+import { clearCookie } from "../utils/data.js";
+import { useAuth } from "../context/auth.js";
 const Game = () => {
   const { id } = useParams();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [playMove] = useSound(moveSound);
   const [playStrike] = useSound(strikeSound);
@@ -52,6 +55,9 @@ const Game = () => {
   const intervalRef = useRef(null);
 
   const [isRematchModalOpen, setIsRematchModalOpen] = useState(false);
+  const [showResetWaiting, setIsShowResetWaiting] = useState(false);
+  const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
+
   const [isDrawModalOpen, setIsDrawModalOpen] = useState(false);
   const [winnerPlayer, setWinnerPlayer] = useState(null);
 
@@ -66,20 +72,6 @@ const Game = () => {
     "Content-Type": "application/json",
     Accept: "application/json",
   };
-
-  const savedData = [
-    "gameId",
-    "playerOne",
-    "playerTwo",
-    "playerOneIp",
-    "playerTwoIp",
-    "playerOneToken",
-    "p1",
-    "p2",
-    "players",
-    "bt_coin_amount",
-    "dama-sound",
-  ];
   const [columns, setColumns] = useState({
     a: 0,
     b: 1,
@@ -103,30 +95,30 @@ const Game = () => {
     const player1 = [
       "a8",
       "c8",
-      "e8",
-      "g8",
-      "b7",
-      "d7",
-      "f7",
-      "h7",
-      "a6",
-      "c6",
-      "e6",
-      "g6",
+      // "e8",
+      // "g8",
+      // "b7",
+      // "d7",
+      // "f7",
+      // "h7",
+      // "a6",
+      // "c6",
+      // "e6",
+      // "g6",
     ];
     const player2 = [
       "b3",
       "d3",
-      "f3",
-      "h3",
-      "a2",
-      "c2",
-      "e2",
-      "g2",
-      "b1",
-      "d1",
-      "f1",
-      "h1",
+      // "f3",
+      // "h3",
+      // "a2",
+      // "c2",
+      // "e2",
+      // "g2",
+      // "b1",
+      // "d1",
+      // "f1",
+      // "h1",
     ];
 
     player1.forEach(function (i) {
@@ -259,7 +251,7 @@ const Game = () => {
       soundOn && playMove();
 
       // Start computer move is the player is finished
-      console.log({ winner: postMoveState.winner })
+      console.log({ winner: postMoveState.winner });
       if (
         id === "1" &&
         postMoveState.currentPlayer === false &&
@@ -274,7 +266,6 @@ const Game = () => {
 
   //computer turn
   function computerTurn(newMoveState, piece = null) {
-
     setTimeout(() => {
       // const currentState = getCurrentState();
       const boardState = newMoveState.boardState;
@@ -299,7 +290,6 @@ const Game = () => {
         history: tempHistory,
       };
 
-
       const clickedSquare = boardState[coordinates];
       let movesData;
       if (!piece) {
@@ -322,7 +312,6 @@ const Game = () => {
         moveTo = movesData[0][Math.floor(Math.random() * movesData[0].length)];
       }
 
-
       setGameState((prevState) => {
         return {
           ...prevState,
@@ -333,12 +322,11 @@ const Game = () => {
       });
 
       setTimeout(() => {
-
         const postMoveState = movesData[1]
           ? movePiece(columns, mergerObj.moves[0], {
-            ...mergerObj,
-            jumpKills: movesData[1],
-          })
+              ...mergerObj,
+              jumpKills: movesData[1],
+            })
           : movePiece(columns, mergerObj.moves[0], mergerObj);
         if (postMoveState === null) {
           return;
@@ -353,11 +341,10 @@ const Game = () => {
         } else if (!movesData[1] && soundOn) {
           playMove();
         }
-        console.log({ winnerComputer: postMoveState.winner })
+        console.log({ winnerComputer: postMoveState.winner });
 
         // If the computer player has jumped and is still moving, continue jump with active piece
         if (postMoveState.currentPlayer === false) {
-
           computerTurn(postMoveState, postMoveState.activePiece);
         }
       }, 600);
@@ -384,6 +371,9 @@ const Game = () => {
         winner: postMoveState.winner,
       };
     });
+    if (gameState.players == 1) {
+      setMyTurn(postMoveState.currentPlayer ? "player1" : "player2");
+    }
 
     socket.emit("sendGameMessage", {
       winnerPlayer: postMoveState.winner,
@@ -393,8 +383,6 @@ const Game = () => {
     });
 
     calcPawns(postMoveState.boardState);
-
-
   }
 
   const stateHistory = gameState.history;
@@ -432,7 +420,7 @@ const Game = () => {
   }
 
   useEffect(() => {
-    if (gameState.winner || winnerPlayer) {
+    if (gameState.players > 1 && (gameState.winner || winnerPlayer)) {
       setIsWinnerModalOpen(true);
 
       if (
@@ -460,9 +448,24 @@ const Game = () => {
       ) {
         playLose();
       }
+    } else {
+      if (gameState.winner || winnerPlayer) {
+        setIsWinnerModalOpen(true);
+        if (
+          gameState.winner === "player1pieces" ||
+          gameState.winner === "player1moves"
+        ) {
+          soundOn && playWin();
+        } else if (
+          gameState.winner === "player2pieces" ||
+          gameState.winner === "player2moves"
+        ) {
+          soundOn && playLose();
+        }
+      }
     }
   }, [gameState, gameStatus, winnerPlayer]);
-
+  console.log({ dfgdg: gameState.winner });
   const resetGame = () => {
     socket.emit("sendResetGameRequest", { status: "Pending" });
   };
@@ -488,6 +491,8 @@ const Game = () => {
         winner: null,
       },
       isWinnerModalOpen: false,
+      pawns: [0, 0],
+      moves: [0, 0],
     });
   };
   const setNewGameWithComputer = () => {
@@ -506,6 +511,9 @@ const Game = () => {
       stepNumber: 0,
       winner: null,
     });
+    setMyTurn("player1");
+    setMoves([0, 0]);
+    setPawns([0, 0]);
   };
 
   const drawGame = () => {
@@ -552,8 +560,6 @@ const Game = () => {
     ) {
       setPawns([12 - player2Counter, 12 - player1Counter]);
     }
-
-
   };
   function compareObjects(obj1, obj2) {
     let obj1NullCount = 0;
@@ -615,7 +621,7 @@ const Game = () => {
 
     socket.on(
       "getResetGameMessage",
-      ({ winnerPlayer, gameState, isWinnerModalOpen }) => {
+      ({ winnerPlayer, gameState, isWinnerModalOpen, pawns, moves }) => {
         setGameState(gameState);
         setWinnerPlayer(winnerPlayer);
         setIsWinnerModalOpen(isWinnerModalOpen);
@@ -637,7 +643,7 @@ const Game = () => {
     });
     socket.on("getRejectGameMessage", ({ status }) => {
       toast("You friend did not accept the request");
-      savedData.forEach((data) => {
+      clearCookie.forEach((data) => {
         localStorage.getItem(data) && localStorage.removeItem(data);
       });
       navigate("/create-game");
@@ -645,24 +651,24 @@ const Game = () => {
 
     //listen for if user left room
     socket.on("userLeaveMessage", (data) => {
-      alert(data);
+      setIsLeaveModalOpen(true);
       setTimeout(() => {
-        savedData.forEach((data) => {
+        clearCookie.forEach((data) => {
           localStorage.getItem(data) && localStorage.removeItem(data);
         });
         navigate("/create-game");
-      }, 1000);
+      }, 5000);
     });
 
     //listen for if the user exit the game
     socket.on("getExitGameRequest", (data) => {
-      alert("you friend has left the game😢");
+      setIsLeaveModalOpen(true);
       setTimeout(() => {
-        savedData.forEach((data) => {
+        clearCookie.forEach((data) => {
           localStorage.getItem(data) && localStorage.removeItem(data);
         });
         navigate("/create-game");
-      }, 10);
+      }, 5000);
     });
     //listen for chat message
     socket.on("getChatMessage", ({ message }) => {
@@ -694,11 +700,10 @@ const Game = () => {
   };
 
   const timeChecker = () => {
-    console.log("running")
+    console.log("running");
     let myCounter = 0;
 
     if (currentPlayer && localStorage.getItem("playerOneIp")) {
-
       intervalRef.current = setInterval(() => {
         if (myCounter === 0) {
           setTimerP1(30);
@@ -859,12 +864,11 @@ const Game = () => {
           game_id: gameId,
         },
         {
-          onSuccess: (responseData) => {
-          },
-          onError: (err) => { },
+          onSuccess: (responseData) => {},
+          onError: (err) => {},
         }
       );
-    } catch (err) { }
+    } catch (err) {}
   };
 
   const changeSound = () => {
@@ -975,13 +979,25 @@ const Game = () => {
             }
           >
             <img
-              src="https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
+              src={playerOneIp &&
+                user?.profile_image
+                  ? user?.profile_image
+                  : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
+              }
               className="h-12 rounded-full"
               alt=""
             />
           </div>
           <h4 className="text-white capitalize  font-semibold text-xs">
-            {id == 1 && "You"}
+            {id == 1
+              ? user
+                ? user.username
+                : "You"
+              : playerOneIp && user
+              ? user?.username
+              : playerOneIp
+              ? firstPlayer?.username
+              : "Your Friend"}
           </h4>
         </div>
 
@@ -999,14 +1015,23 @@ const Game = () => {
             }
           >
             <img
-              src="https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
-              className="h-12 rounded-full"
+              src={playerTwoIp &&
+                user?.profile_image
+                  ? user?.profile_image
+                  : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
+              } className="h-12 rounded-full"
               alt=""
             />
           </div>
           <h4 className="text-white capitalize  font-semibold text-xs">
             {/* {secondPlayer?.name} */}
-            {id == 1 && "Computer"}
+            {id == 1
+              ? "Computer"
+              : playerTwoIp && user
+              ? user?.username
+              : playerTwoIp
+              ? secondPlayer?.username
+              : "Your Friend"}
           </h4>
         </div>
       </section>
@@ -1082,39 +1107,41 @@ const Game = () => {
 
       <div className="game-board  ">
         <div
-          className={` shadow-2xl    ${!id
-            ? currentPlayer === true
-              ? currentPlayer === true && !firstPlayer
-                ? "pointer-events-none"
-                : ""
-              : currentPlayer === false
+          className={` shadow-2xl    ${
+            !id
+              ? currentPlayer === true
+                ? currentPlayer === true && !firstPlayer
+                  ? "pointer-events-none"
+                  : ""
+                : currentPlayer === false
                 ? currentPlayer === false && !secondPlayer
                   ? "pointer-events-none"
                   : ""
                 : ""
-            : ""
-            }`}
+              : ""
+          }`}
         >
           <Board
             boardState={
               id === "1"
                 ? dict_reverse(boardState)
                 : !id
-                  ? localStorage.getItem("playerOne")
-                    ? dict_reverse(boardState)
-                    : boardState
+                ? localStorage.getItem("playerOne")
+                  ? dict_reverse(boardState)
                   : boardState
+                : boardState
             }
             currentPlayer={currentPlayer}
             activePiece={gameState.activePiece}
             moves={gameState.moves}
             columns={columns}
             onClick={(coordinates) => handleClick(coordinates)}
+            numberOfPlayers={gameState.players}
           />
         </div>
       </div>
 
-      {id != 1 &&
+      {id != 1 && (
         <div onClick={drawGame} className="flex flex-col">
           <div className="p-2 bg-orange-color rounded-full flex flex-col items-center justify-center">
             <svg
@@ -1132,7 +1159,7 @@ const Game = () => {
           </div>
           <p className="text-xs font-bold text-white">Draw</p>
         </div>
-      }
+      )}
       {id != 1 && (
         <div className="absolute right-3 bottom-5 flex items-end justify-end">
           <BsFillChatFill
@@ -1149,8 +1176,9 @@ const Game = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ type: "tween", duration: 1, ease: "easeInOut" }}
-          className={`absolute top-36  bg-white max-w-sm  p-1 w-44 ${playerOneIp ? "left-3" : "right-3"
-            }
+          className={`absolute top-36  bg-white max-w-sm  p-1 w-44 ${
+            playerOneIp ? "left-3" : "right-3"
+          }
        border border-orange-color rounded-lg m-3`}
         >
           <div className="text-gray-800">
@@ -1206,6 +1234,7 @@ const Game = () => {
       <ExitWarningModal
         isExitModalOpen={isExitModalOpen}
         set_isExitModalOpen={setIsExitModalOpen}
+        gameState={gameState}
       />
 
       <WinnerModal
@@ -1229,6 +1258,10 @@ const Game = () => {
         acceptGameRequest={acceptGameRequest}
         rejectGameRequest={rejectGameRequest}
         showResetWaiting={showResetWaiting}
+      />
+      <UserLeavesModal
+        setIsLeaveModalOpen={setIsLeaveModalOpen}
+        isLeaveModalOpen={isLeaveModalOpen}
       />
       <Toaster />
     </div>
