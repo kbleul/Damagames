@@ -518,7 +518,6 @@ const Game = () => {
       winner: null,
     });
     setMyTurn("player1");
-    setMoves([0, 0]);
     setPawns([0, 0]);
   };
 
@@ -1078,7 +1077,7 @@ const Game = () => {
           </div>
         </div>
       </section>
-      {id == 1 && !currentPlayer && (
+      {id == 1 && !currentPlayer ? (
         <ThreeDots
           height="20"
           width="40"
@@ -1089,9 +1088,9 @@ const Game = () => {
           wrapperClassName=""
           visible={true}
         />
-      )}
+      ) : ""}
 
-      {!currentPlayer && localStorage.getItem("playerOne") && (
+      {!currentPlayer && localStorage.getItem("playerOne") ? (
         <ThreeDots
           height="20"
           width="40"
@@ -1102,8 +1101,8 @@ const Game = () => {
           wrapperClassName=""
           visible={true}
         />
-      )}
-      {currentPlayer && localStorage.getItem("playerTwo") && (
+      ) : ""}
+      {currentPlayer && localStorage.getItem("playerTwo") ? (
         <ThreeDots
           height="20"
           width="40"
@@ -1114,7 +1113,7 @@ const Game = () => {
           wrapperClassName=""
           visible={true}
         />
-      )}
+      ) : ""}
 
       <div className="game-board  ">
         <div
