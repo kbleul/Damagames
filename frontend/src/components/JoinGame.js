@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import background from "../assets/backdrop.jpg";
 import axios from "axios";
@@ -32,6 +32,11 @@ const JoinGame = () => {
   const [myFriend, setMyFriend] = useState("Your Friend");
   const { setIsBet, setBetCoin } = useHome();
 
+  // to check if  creater and the joining player are the same
+  const sameUser = useRef(false);
+
+  let msgCounter = 0
+
 
   // alert(gameId)
   // const playerTwo = JSON.parse(localStorage.getItem("playerTwo"))
@@ -39,8 +44,20 @@ const JoinGame = () => {
   const [name, setName] = useState(user && token ? user.username : "");
   useEffect(() => {
     socket.on("getMessage", (data) => {
-      navigate("/game");
+
+      setTimeout(() => {
+        if (sameUser.current === false) {
+          navigate("/game")
+        }
+      }, 1500)
+
     });
+
+    socket.on("samePerson", (data) => {
+      msgCounter === 0 && toast(data);
+      sameUser.current = true
+      ++msgCounter
+    })
   }, []);
   const headers = {
     "Content-Type": "application/json",
@@ -214,7 +231,11 @@ const JoinGame = () => {
 
           socket.emit("sendMessage", { status: "started" });
 
-          navigate("/game");
+          setTimeout(() => {
+            if (sameUser.current === false) {
+              navigate("/game")
+            }
+          }, 1500)
           //first clear local storage
           savedData.forEach((data) => {
             localStorage.getItem(data) && localStorage.removeItem(data);

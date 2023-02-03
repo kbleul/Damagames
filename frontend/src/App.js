@@ -18,6 +18,7 @@ import Login from "./components/Auth/Login";
 import Profile from "./components/Profile/Profile";
 import { useAuth } from "./context/auth";
 import TagManager from "react-gtm-module";
+import Store from "./components/Store";
 
 
 //'G-YM283P3T0J'
@@ -37,7 +38,7 @@ const App = () => {
 
   useEffect(() => {
     socket.on("connect", () => {
-       console.log("Connected to Socket.io server");
+      console.log("Connected to Socket.io server");
     });
   });
 
@@ -54,11 +55,14 @@ const App = () => {
         <Route path="/already-joined" element={<AlreadyJoined />} />
         <Route path="/score-board" element={<ScoreBoard />} />
         <Route path="/player-board" element={<PlayerBoard />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile" element={user && token ? <Profile /> : <Navigate to="/login" />} />
         <Route path="/join-public" element={<PublicGames />} />
         <Route path="/new-game-public" element={<NewGamePublic />} />
+        <Route path="/store" element={<Store />} />
+        <Route path="*" element={<CreateGame />} />
+
       </Routes>
-   
+
     </>
     );
   };
@@ -81,6 +85,10 @@ const App = () => {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/join-public" element={<PublicGames />} />
         <Route path="/new-game-public" element={<NewGamePublic />} />
+        <Route path="/store" element={<Store />} />
+        <Route path="/profile" element={user && token ? <Profile /> : <Navigate to="/login" />} />
+        <Route path="*" element={<Navigate to="/create-game" />} />
+
       </Routes>
 
     </>

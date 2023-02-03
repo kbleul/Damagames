@@ -68,6 +68,12 @@ const Game = () => {
   const [latestMessage, setLatestMessage] = useState(null);
   const [showResetWaiting, setShowResetWaiting] = useState(false);
 
+  useEffect(() => {
+    if (!id && !localStorage.getItem("gameId")) { navigate("/create-game") }
+    else if (id && id != 1 && !localStorage.getItem("gameId")) { navigate("/create-game") }
+  }, [])
+
+
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -879,8 +885,8 @@ const Game = () => {
           game_id: gameId,
         },
         {
-          onSuccess: (responseData) => {},
-          onError: (err) => {},
+          onSuccess: (responseData) => { },
+          onError: (err) => { },
         }
       );
     } catch (err) { }
@@ -994,14 +1000,15 @@ const Game = () => {
             }
           >
             <img
-              src={playerOneIp &&
+              src={playerOneIp || id == 1 &&
                 user?.profile_image
-                  ? user?.profile_image
-                  : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
+                ? user?.profile_image
+                : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
               }
               className="h-12 rounded-full"
               alt=""
             />
+
           </div>
           <h4 className="text-white capitalize  font-semibold text-xs">
             {id == 1
@@ -1009,10 +1016,10 @@ const Game = () => {
                 ? user.username
                 : "You"
               : playerOneIp && user
-              ? user?.username
-              : playerOneIp
-              ? firstPlayer?.username
-              : "Your Friend"}
+                ? user?.username
+                : playerOneIp
+                  ? firstPlayer?.username
+                  : "Your Friend"}
           </h4>
         </div>
 
@@ -1032,8 +1039,8 @@ const Game = () => {
             <img
               src={playerTwoIp &&
                 user?.profile_image
-                  ? user?.profile_image
-                  : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
+                ? user?.profile_image
+                : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
               } className="h-12 rounded-full"
               alt=""
             />
@@ -1043,16 +1050,16 @@ const Game = () => {
             {id == 1
               ? "Computer"
               : playerTwoIp && user
-              ? user?.username
-              : playerTwoIp
-              ? secondPlayer?.username
-              : "Your Friend"}
+                ? user?.username
+                : playerTwoIp
+                  ? secondPlayer?.username
+                  : "Your Friend"}
           </h4>
         </div>
       </section>
 
       <section className="flex justify-evenly items-center text-sm w-full">
-        <div className="border-r-[3px] border-gray-400 text-white w-1/2 pb-[5vh]">
+        <div className="border-r-[3px] border-gray-400 text-white w-1/2 ">
           <div className="flex justify-center items-center text-[.7rem] gap-x-2 font-bold mb-2">
             <p className="bg-gray-300 text-black pr-[.2rem] w-12 rounded">
               Moves
@@ -1067,7 +1074,7 @@ const Game = () => {
           </div>
         </div>
 
-        <div className="text-white w-1/2 pb-[5vh]">
+        <div className="text-white w-1/2">
           <div className="flex justify-center items-center text-[.7rem] gap-x-2 font-bold mb-2">
             <p>{moveRef.current[1]}</p>
             <p className="bg-gray-300 text-black pr-[.2rem] w-12 rounded">
@@ -1082,44 +1089,49 @@ const Game = () => {
           </div>
         </div>
       </section>
-      {id == 1 && !currentPlayer ? (
-        <ThreeDots
-          height="20"
-          width="40"
-          radius="9"
-          color="#f75105"
-          ariaLabel="three-dots-loading"
-          wrapperStyle={{}}
-          wrapperClassName=""
-          visible={true}
-        />
-      ) : ""}
+      <div className={id != 1 ? "hidden" : "w-full h-4 flex justify-center items-center"}>
+        {id == 1 && !currentPlayer && (
+          <ThreeDots
+            height="20"
+            width="40"
+            radius="9"
+            color="#f75105"
+            ariaLabel="three-dots-loading"
+            wrapperStyle={{}}
+            wrapperClassName=""
+            visible={true}
+          />
+        )}
+      </div>
 
-      {!currentPlayer && localStorage.getItem("playerOne") ? (
-        <ThreeDots
-          height="20"
-          width="40"
-          radius="9"
-          color="#f75105"
-          ariaLabel="three-dots-loading"
-          wrapperStyle={{}}
-          wrapperClassName=""
-          visible={true}
-        />
-      ) : ""}
-      {currentPlayer && localStorage.getItem("playerTwo") ? (
-        <ThreeDots
-          height="20"
-          width="40"
-          radius="9"
-          color="#f75105"
-          ariaLabel="three-dots-loading"
-          wrapperStyle={{}}
-          wrapperClassName=""
-          visible={true}
-        />
-      ) : ""}
+      <div className={id == 1 ? "hidden" : "w-full h-4 flex justify-center items-center"}>
 
+        {!currentPlayer && localStorage.getItem("playerOne") && (
+          <ThreeDots
+            height="20"
+            width="40"
+            radius="9"
+            color="#f75105"
+            ariaLabel="three-dots-loading"
+            wrapperStyle={{}}
+            wrapperClassName=""
+            visible={true}
+          />
+        )}
+        {currentPlayer && localStorage.getItem("playerTwo") && (
+          <ThreeDots
+            height="20"
+            width="40"
+            radius="9"
+            color="#f75105"
+            ariaLabel="three-dots-loading"
+            wrapperStyle={{}}
+            wrapperClassName=""
+            visible={true}
+          />
+        )}
+
+      </div>
       <div className="game-board  ">
         <div
           className={` shadow-2xl    ${!id

@@ -1,7 +1,7 @@
 import SideMenu from "./SideMenu";
 import { useNavigate } from "react-router-dom";
 import background from "../assets/backdrop.jpg";
-import avatar from "../assets/dama-default.jpg";
+import avatar from "../assets/dama_logo.png";
 import { useAuth } from "../context/auth";
 import { Link } from "react-router-dom";
 import { clearCookie } from "../utils/data";
@@ -30,14 +30,14 @@ const CreateGame = () => {
     >
       <SideMenu />
 
-      <div className="flex flex-col items-center justify-center gap-y-4 min-h-screen space-y-2">
-        <div className="h-[183px] w-[130px] bg-inherit mt-4 ">
+      <div className="flex flex-col items-center justify-center gap-y-2 min-h-screen space-y-2">
+        <div className="h-[180px] w-[200px] bg-inherit mt-18 mb-8 ">
           <img src={avatar} className="" alt="avatar" />
         </div>
 
         <button
           onClick={() => navigate("/new-game")}
-          className="w-3/5 mt-2 bg-orange-bg p-2 px-10 font-bold text-white rounded-lg max-w-[20rem]"
+          className="w-3/5  bg-orange-bg p-2 px-10 font-bold text-white rounded-lg max-w-[20rem]"
         >
           Create Game
         </button>
@@ -100,6 +100,17 @@ const CreateGame = () => {
               </svg>
             </div>
             <p className="text-orange-color text-[.7rem]">Score board</p>
+          </Link>
+          <Link
+            to="/store"
+            className="flex flex-col justify-evenly items-center"
+          >
+            <div className="h-6 w-8 bg-orange-color px-2 flex justify-center items-center ">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6.59977 17.6C5.38981 17.6 4.41085 18.59 4.41085 19.8C4.41085 21.01 5.38981 22 6.59977 22C7.80973 22 8.7997 21.01 8.7997 19.8C8.7997 18.59 7.80973 17.6 6.59977 17.6ZM0 0V2.2H2.19992L6.15979 10.549L4.67484 13.244C4.49885 13.552 4.39985 13.915 4.39985 14.3C4.39985 15.51 5.38981 16.5 6.59977 16.5H19.7993V14.3H7.06176C6.90776 14.3 6.78677 14.179 6.78677 14.025L6.81977 13.893L7.80973 12.1H16.0044C16.8294 12.1 17.5554 11.649 17.9294 10.967L21.8672 3.828C21.958 3.66013 22.0037 3.47158 21.9998 3.28078C21.9959 3.08998 21.9426 2.90346 21.845 2.73943C21.7475 2.5754 21.6091 2.43947 21.4433 2.34492C21.2776 2.25037 21.0901 2.20044 20.8993 2.2H4.63084L3.59688 0H0ZM17.5994 17.6C16.3894 17.6 15.4105 18.59 15.4105 19.8C15.4105 21.01 16.3894 22 17.5994 22C18.8094 22 19.7993 21.01 19.7993 19.8C19.7993 18.59 18.8094 17.6 17.5994 17.6Z" fill="#191921" />
+              </svg>
+            </div>
+            <p className="text-orange-color text-[.7rem]">Store</p>
           </Link>
         </section>
         <Footer />
