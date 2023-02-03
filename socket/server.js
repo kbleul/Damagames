@@ -27,6 +27,8 @@ const io = new Server(httpServer, {
 
 let publicGames = []
 let rooms = []
+let roomSocketObj = {}
+
 const createReadableDate = (date) => {
   const newdate = formatDistance(date, new Date(), { includeSeconds: true });
   return newdate
@@ -79,7 +81,9 @@ io.on("connection", (socket) => {
     let temparr = []
     let removedArr = []
     publicGames.forEach(game => {
-      temparr.push({ ...game, time: createReadableDate(game.time) })
+      if (game.socketID !== socket.id) {
+        temparr.push({ ...game, time: createReadableDate(game.time) })
+      }
       //if public game has been up for 3 minutes remove from public game
       //   else { removedArr.push(game.code) }
     })
@@ -99,14 +103,27 @@ io.on("connection", (socket) => {
   })
 
   socket.on("join-room", async (room) => {
-
     const clients = await io.of("/").in(room).fetchSockets();
+
+    // , { clients, room, id: socket.id }
+    let tempSocketObj = roomSocketObj[room]
+    if (tempSocketObj && tempSocketObj.includes(socket.id)) {
+
+      io.to(room).emit("samePerson", "You can't join a game you created");
+    } else {
+      roomSocketObj = {
+        ...roomSocketObj,
+        [room]: tempSocketObj ? [...tempSocketObj, socket.id] : [socket.id]
+      }
+    }
+
     if (clients.length == 2) {
       // io.to(room).emit("started","you can play now")
       io.to(socket.id).emit("roomTwo", "room is filled");
     } else {
       socket.join(room);
       io.to(room).emit("private-room", "you are now in private room");
+
     }
     //send and get messages
 
@@ -142,6 +159,7 @@ io.on("connection", (socket) => {
     });
     //chat within game
     socket.on("sendChatMessage", (data) => {
+
       io.to(room).emit("getChatMessage", data);
     });
     //send message if user left the room
@@ -163,8 +181,7 @@ io.on("connection", (socket) => {
       rooms[room].delete(socket.id);
       if (rooms[room].size === 0) delete rooms[room];
     });
-    // io.to(room).emit("userLeaveMessage", "Someone has left the room");
-    console.log("a user disconnected!");
+
     removePublicGame(socket.id, "socketId")
   });
 });
