@@ -14,10 +14,11 @@ import { BsFacebook, BsTelegram } from "react-icons/bs";
 import { RiWhatsappFill } from "react-icons/ri";
 import { useAuth } from "../context/auth";
 import { Footer } from "../Game/components/Footer";
+import { useHome } from "../context/HomeContext";
 
 const NewGame = () => {
   const { user, token } = useAuth();
-
+  const { setIsBet, setBetCoin } = useHome();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const [isCreated, setIsCreated] = useState(false);
@@ -40,6 +41,10 @@ const NewGame = () => {
 
   const gameId = localStorage.getItem("gameId");
   const betRef = useRef();
+
+  const playerCoins = (user && token) ?
+    JSON.parse(localStorage.getItem("dama_user_data"))?.user?.coin : null;
+
 
   useEffect(() => {
     setTimeout(() => {
@@ -78,7 +83,9 @@ const NewGame = () => {
         (betRef.current.checked && !coinAmount <= 0) ||
         !betRef.current.checked
       ) {
-        loggedInNameMutationSubmitHandler();
+        if ((betRef.current.checked && !coinAmount <= 0) || !betRef.current.checked) {
+          loggedInNameMutationSubmitHandler();
+        }
       }
     } else {
       if (!name) {
@@ -165,8 +172,13 @@ const NewGame = () => {
             );
 
             if (betRef.current.checked) {
+              setIsBet(true)
+              setBetCoin(coinAmount)
               localStorage.setItem("bt_coin_amount", coinAmount);
+            } else {
+              setIsBet(false);
             }
+
             setCode(responseData?.data?.data?.code);
             //first clear local storage
             // localStorage.clear();
@@ -191,17 +203,16 @@ const NewGame = () => {
   }, []);
 
 
-  const checkCoinAmoute = (e) => {
-    setCoinAmount(e.target.value);
 
-    if (e.target.value > profileData?.data?.data?.data?.coins) {
-      setCoinError("Amount has to be less than you coins");
-    } else if (e.target.value <= 0) {
-      setCoinError("Invalid Amount");
-    } else {
-      setCoinError(null);
-    }
-  };
+  const checkCoinAmoute = e => {
+    setCoinAmount(e.target.value)
+
+    if (e.target.value > playerCoins) { setCoinError("Amount has to be less than you coins") }
+    else if (e.target.value <= 0) { setCoinError("Invalid Amount") }
+
+    else { setCoinError(null) }
+  }
+
 
 
   //profile

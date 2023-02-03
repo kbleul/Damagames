@@ -300,6 +300,14 @@ const JoinGame = () => {
                 responseData?.data?.data?.bet_coin
               );
 
+              if (responseData?.data.data.bet_coin === 0) {
+                setIsBet(false)
+              } else {
+                setIsBet(true);
+                setBetCoin(responseData?.data.data.bet_coin)
+              }
+
+
               setIsVerified(true);
               responseData?.data?.data?.playerOne.username &&
                 setMyFriend(
