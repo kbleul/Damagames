@@ -19,6 +19,7 @@ import Profile from "./components/Profile/Profile";
 import { useAuth } from "./context/auth";
 import TagManager from "react-gtm-module";
 import Store from "./components/Store";
+import PrivacyModal from "./components/PrivacyModal";
 
 
 //'G-YM283P3T0J'
@@ -59,6 +60,7 @@ const App = () => {
         <Route path="/join-public" element={<PublicGames />} />
         <Route path="/new-game-public" element={<NewGamePublic />} />
         <Route path="/store" element={<Store />} />
+        <Route path="/privacy-policy" element={<PrivacyModal />} />
         <Route path="*" element={<CreateGame />} />
 
       </Routes>
@@ -87,6 +89,7 @@ const App = () => {
         <Route path="/new-game-public" element={<NewGamePublic />} />
         <Route path="/store" element={<Store />} />
         <Route path="/profile" element={user && token ? <Profile /> : <Navigate to="/login" />} />
+        <Route path="/privacy-policy" element={<PrivacyModal />} />
         <Route path="*" element={<Navigate to="/create-game" />} />
 
       </Routes>
