@@ -30,7 +30,7 @@ const WinnerModal = ({
   const congraMsg = user ?
     `congratulations!
       Previous = ${user.coin} coins
-      Total = ${parseInt(user.coin) + 3} coins`
+      Total = ${parseInt(user.coin) + 5} coins`
     : "congratulations! You won 3 coins"
   const lostMsg = user ?
     `You Lost! You won 0 coins. 
