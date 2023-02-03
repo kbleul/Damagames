@@ -30,7 +30,7 @@ const JoinGame = () => {
   const [success, setSuccess] = useState(false);
   //store player one name
   const [myFriend, setMyFriend] = useState("Your Friend");
-  const { setIsBet, setBetCoin } = useHome();
+  // const { setIsBet, setBetCoin } = useHome();
 
   // to check if  creater and the joining player are the same
   const sameUser = useRef(false);
@@ -300,12 +300,12 @@ const JoinGame = () => {
                 responseData?.data?.data?.bet_coin
               );
 
-              if (responseData?.data.data.bet_coin === 0) {
-                setIsBet(false)
-              } else {
-                setIsBet(true);
-                setBetCoin(responseData?.data.data.bet_coin)
-              }
+              // if (responseData?.data.data.bet_coin === 0) {
+              //   setIsBet(false)
+              // } else {
+              //   setIsBet(true);
+              //   setBetCoin(responseData?.data.data.bet_coin)
+              // }
 
 
               setIsVerified(true);

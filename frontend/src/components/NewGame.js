@@ -18,7 +18,7 @@ import { useHome } from "../context/HomeContext";
 
 const NewGame = () => {
   const { user, token } = useAuth();
-  const { setIsBet, setBetCoin } = useHome();
+  //const { setIsBet, setBetCoin } = useHome();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const [isCreated, setIsCreated] = useState(false);
@@ -171,13 +171,13 @@ const NewGame = () => {
               responseData?.data?.data?.game
             );
 
-            if (betRef.current.checked) {
-              setIsBet(true)
-              setBetCoin(coinAmount)
-              localStorage.setItem("bt_coin_amount", coinAmount);
-            } else {
-              setIsBet(false);
-            }
+            // if (betRef.current.checked) {
+            //   //setIsBet(true)
+            //  // setBetCoin(coinAmount)
+            //   localStorage.setItem("bt_coin_amount", coinAmount);
+            // } else {
+            //   setIsBet(false);
+            // }
 
             setCode(responseData?.data?.data?.code);
             //first clear local storage
