@@ -15,7 +15,7 @@ import { RiWhatsappFill } from "react-icons/ri";
 import { useAuth } from "../context/auth";
 import { Footer } from "../Game/components/Footer";
 import { useHome } from "../context/HomeContext";
-
+import { clearCookie } from "../utils/data";
 const NewGame = () => {
   const { user, token } = useAuth();
   //const { setIsBet, setBetCoin } = useHome();
@@ -42,9 +42,10 @@ const NewGame = () => {
   const gameId = localStorage.getItem("gameId");
   const betRef = useRef();
 
-  const playerCoins = (user && token) ?
-    JSON.parse(localStorage.getItem("dama_user_data"))?.user?.coin : null;
-
+  const playerCoins =
+    user && token
+      ? JSON.parse(localStorage.getItem("dama_user_data"))?.user?.coin
+      : null;
 
   useEffect(() => {
     setTimeout(() => {
@@ -66,7 +67,6 @@ const NewGame = () => {
     Authorization: `Bearer ${token}`,
   };
 
-
   useEffect(() => {
     socket.on("getMessage", (data) => {
       if (data.status === "started") {
@@ -74,7 +74,7 @@ const NewGame = () => {
       }
     });
 
-    socket.on("userLeaveMessage", (data) => { });
+    socket.on("userLeaveMessage", (data) => {});
   }, []);
 
   const submitName = () => {
@@ -83,7 +83,10 @@ const NewGame = () => {
         (betRef.current.checked && !coinAmount <= 0) ||
         !betRef.current.checked
       ) {
-        if ((betRef.current.checked && !coinAmount <= 0) || !betRef.current.checked) {
+        if (
+          (betRef.current.checked && !coinAmount <= 0) ||
+          !betRef.current.checked
+        ) {
           loggedInNameMutationSubmitHandler();
         }
       }
@@ -120,11 +123,13 @@ const NewGame = () => {
             setIsCreated(true);
             setValue(
               `${process.env.REACT_APP_FRONTEND_URL}/join-game/` +
-              responseData?.data?.data?.game
+                responseData?.data?.data?.game
             );
             setCode(responseData?.data?.data?.code);
             //first clear local storage
-            localStorage.clear();
+            clearCookie.forEach((data) => {
+              localStorage.getItem(data) && localStorage.removeItem(data);
+            });
             localStorage.setItem("gameId", responseData?.data?.data?.game);
             localStorage.setItem(
               "playerOne",
@@ -136,10 +141,10 @@ const NewGame = () => {
             );
             localStorage.setItem("playerOneIp", responseData?.data?.data?.ip);
           },
-          onError: (err) => { },
+          onError: (err) => {},
         }
       );
-    } catch (err) { }
+    } catch (err) {}
   };
 
   //no userName if the user ligged in
@@ -168,7 +173,7 @@ const NewGame = () => {
             setIsCreated(true);
             setValue(
               `${process.env.REACT_APP_FRONTEND_URL}/join-game/` +
-              responseData?.data?.data?.game
+                responseData?.data?.data?.game
             );
 
             // if (betRef.current.checked) {
@@ -179,9 +184,11 @@ const NewGame = () => {
             //   setIsBet(false);
             // }
 
-            setCode(responseData?.data?.data?.code);
             //first clear local storage
-            // localStorage.clear();
+            clearCookie.forEach((data) => {
+              localStorage.getItem(data) && localStorage.removeItem(data);
+            });
+            setCode(responseData?.data?.data?.code);
             localStorage.setItem("gameId", responseData?.data?.data?.game);
             localStorage.setItem(
               "playerOne",
@@ -195,25 +202,23 @@ const NewGame = () => {
           },
         }
       );
-    } catch (err) {
-    }
+    } catch (err) {}
   };
   useEffect(() => {
-    socket.on("private-room", (data) => { });
+    socket.on("private-room", (data) => {});
   }, []);
 
+  const checkCoinAmoute = (e) => {
+    setCoinAmount(e.target.value);
 
-
-  const checkCoinAmoute = e => {
-    setCoinAmount(e.target.value)
-
-    if (e.target.value > playerCoins) { setCoinError("Amount has to be less than you coins") }
-    else if (e.target.value <= 0) { setCoinError("Invalid Amount") }
-
-    else { setCoinError(null) }
-  }
-
-
+    if (e.target.value > playerCoins) {
+      setCoinError("Amount has to be less than you coins");
+    } else if (e.target.value <= 0) {
+      setCoinError("Invalid Amount");
+    } else {
+      setCoinError(null);
+    }
+  };
 
   //profile
   const profileData = useQuery(
@@ -284,7 +289,9 @@ const NewGame = () => {
             </label>
           </div>
           {profileData?.data?.data?.data?.coins && (
-            <p className="text-white">Your coins : {profileData?.data?.data?.data?.coins}</p>
+            <p className="text-white">
+              Your coins : {profileData?.data?.data?.data?.coins}
+            </p>
           )}
 
           {coinError && <p className="text-red-400 text-sm">{coinError}</p>}
@@ -361,8 +368,9 @@ const NewGame = () => {
                   <p className="text-xs text-green-500">Copied</p>
                 ) : (
                   <IoIosCopy
-                    className={`${isCopied ? "text-green-500" : "text-gray-300"
-                      }`}
+                    className={`${
+                      isCopied ? "text-green-500" : "text-gray-300"
+                    }`}
                   />
                 )}
               </CopyToClipboard>
@@ -386,8 +394,9 @@ const NewGame = () => {
                   <p className="text-xs text-green-500">Copied</p>
                 ) : (
                   <IoIosCopy
-                    className={`${codeCopied ? "text-green-500" : "text-gray-400"
-                      }`}
+                    className={`${
+                      codeCopied ? "text-green-500" : "text-gray-400"
+                    }`}
                   />
                 )}
               </CopyToClipboard>

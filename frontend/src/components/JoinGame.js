@@ -8,20 +8,8 @@ import socket from "../utils/socket.io";
 import { useAuth } from "../context/auth";
 import { useHome } from "../context/HomeContext";
 import { Footer } from "../Game/components/Footer";
-
+import { clearCookie } from "../utils/data";
 const JoinGame = () => {
-  const savedData = [
-    "gameId",
-    "playerOne",
-    "playerTwo",
-    "playerOneIp",
-    "playerTwoIp",
-    "playerOneToken",
-    "p1",
-    "p2",
-    "players",
-    "dama-sound"
-  ];
   const { user, token } = useAuth();
   const [isVerified, setIsVerified] = useState(false);
   const { id } = useParams();
@@ -35,29 +23,26 @@ const JoinGame = () => {
   // to check if  creater and the joining player are the same
   const sameUser = useRef(false);
 
-  let msgCounter = 0
+  let msgCounter = 0;
 
-
-  // alert(gameId)
-  // const playerTwo = JSON.parse(localStorage.getItem("playerTwo"))
+  const ipRef = useRef(localStorage.getItem("playerOneIp"));
+  console.log({ ipRef });
   const navigate = useNavigate();
   const [name, setName] = useState(user && token ? user.username : "");
   useEffect(() => {
     socket.on("getMessage", (data) => {
-    
       setTimeout(() => {
         if (sameUser.current === false) {
-          navigate("/game")
+          navigate("/game");
         }
-      }, 1500)
-
+      }, 1500);
     });
 
     socket.on("samePerson", (data) => {
       msgCounter === 0 && toast(data);
-      sameUser.current = true
-      ++msgCounter
-    })
+      sameUser.current = true;
+      ++msgCounter;
+    });
   }, []);
   const headers = {
     "Content-Type": "application/json",
@@ -111,10 +96,10 @@ const JoinGame = () => {
           {},
           {
             onSuccess: (responseData) => {
-
               responseData?.data?.data?.playerOne?.username &&
                 setMyFriend(
-                  (prev) => prev + " " + responseData?.data?.data?.playerOne.username
+                  (prev) =>
+                    prev + " " + responseData?.data?.data?.playerOne.username
                 );
 
               localStorage.setItem(
@@ -135,10 +120,10 @@ const JoinGame = () => {
           {},
           {
             onSuccess: (responseData) => {
-
               responseData?.data?.data?.playerOne?.username &&
                 setMyFriend(
-                  (prev) => prev + " " + responseData?.data?.data?.playerOne.username
+                  (prev) =>
+                    prev + " " + responseData?.data?.data?.playerOne.username
                 );
 
               localStorage.setItem(
@@ -155,7 +140,7 @@ const JoinGame = () => {
           }
         );
       }
-    } catch (err) { }
+    } catch (err) {}
   };
 
   const handleJoin = () => {
@@ -180,8 +165,8 @@ const JoinGame = () => {
             ? `${process.env.REACT_APP_BACKEND_URL}auth-start-game/${id}`
             : `${process.env.REACT_APP_BACKEND_URL}add-player/${id}`
           : user && token
-            ? `${process.env.REACT_APP_BACKEND_URL}auth-start-game/${gameId}`
-            : `${process.env.REACT_APP_BACKEND_URL}add-player/${gameId}`,
+          ? `${process.env.REACT_APP_BACKEND_URL}auth-start-game/${gameId}`
+          : `${process.env.REACT_APP_BACKEND_URL}add-player/${gameId}`,
         newData,
         {
           headers: user && token ? header : headers,
@@ -200,14 +185,16 @@ const JoinGame = () => {
           } else {
             socket.emit("join-room", id);
           }
-          socket.emit("sendMessage", {
-            status: "started",
-            player2: JSON.stringify(responseData?.data?.data?.playerTwo),
-          });
+          if (ipRef.current !== responseData?.data?.data?.ip) {
+            socket.emit("sendMessage", {
+              status: "started",
+              player2: JSON.stringify(responseData?.data?.data?.playerTwo),
+            });
+          }
           socket.emit("join-room", id);
 
           //first clear local storage
-          savedData.forEach((data) => {
+          clearCookie.forEach((data) => {
             localStorage.getItem(data) && localStorage.removeItem(data);
           });
           localStorage.setItem("playerTwoIp", responseData?.data?.data?.ip);
@@ -217,9 +204,9 @@ const JoinGame = () => {
           );
           localStorage.setItem("gameId", responseData?.data?.data?.game);
         },
-        onError: (err) => { },
+        onError: (err) => {},
       });
-    } catch (err) { }
+    } catch (err) {}
   };
 
   //with code
@@ -228,20 +215,22 @@ const JoinGame = () => {
       nameMutation.mutate(user && token ? {} : { username: name }, {
         onSuccess: (responseData) => {
           socket.emit("join-room", gameId);
+          if (ipRef.current !== responseData?.data?.data?.ip) {
+            socket.emit("sendMessage", { status: "started" });
+          }
 
-          socket.emit("sendMessage", { status: "started" });
-
-          setTimeout(() => {
-            if (sameUser.current === false) {
-              navigate("/game")
-            }
-          }, 1500)
           //first clear local storage
-          savedData.forEach((data) => {
+          clearCookie.forEach((data) => {
             localStorage.getItem(data) && localStorage.removeItem(data);
           });
-          localStorage.setItem("p1", responseData?.data?.data?.playerOne.username);
-          localStorage.setItem("p2", responseData?.data?.data?.playerOne.username);
+          localStorage.setItem(
+            "p1",
+            responseData?.data?.data?.playerOne.username
+          );
+          localStorage.setItem(
+            "p2",
+            responseData?.data?.data?.playerOne.username
+          );
           localStorage.setItem("playerTwoIp", responseData?.data?.data?.ip);
           localStorage.setItem(
             "playerTwo",
@@ -249,9 +238,9 @@ const JoinGame = () => {
           );
           localStorage.setItem("gameId", responseData?.data?.data?.game);
         },
-        onError: (err) => { },
+        onError: (err) => {},
       });
-    } catch (err) { }
+    } catch (err) {}
   };
 
   const handleSubmitCode = () => {
@@ -307,11 +296,11 @@ const JoinGame = () => {
               //   setBetCoin(responseData?.data.data.bet_coin)
               // }
 
-
               setIsVerified(true);
               responseData?.data?.data?.playerOne.username &&
                 setMyFriend(
-                  (prev) => prev + " " + responseData?.data?.data?.playerOne.username
+                  (prev) =>
+                    prev + " " + responseData?.data?.data?.playerOne.username
                 );
               localStorage.setItem("gameId", responseData?.data?.data?.game);
             },
@@ -330,10 +319,14 @@ const JoinGame = () => {
               setIsVerified(true);
               responseData?.data?.data?.playerOne.username &&
                 setMyFriend(
-                  (prev) => prev + " " + responseData?.data?.data?.playerOne.username
+                  (prev) =>
+                    prev + " " + responseData?.data?.data?.playerOne.username
                 );
               localStorage.setItem("gameId", responseData?.data?.data?.game);
-              localStorage.setItem("p1", responseData?.data?.data?.playerOne.username)
+              localStorage.setItem(
+                "p1",
+                responseData?.data?.data?.playerOne.username
+              );
             },
             onError: (err) => {
               err?.response?.data?.data
@@ -343,7 +336,7 @@ const JoinGame = () => {
           }
         );
       }
-    } catch (err) { }
+    } catch (err) {}
   };
   return (
     <div
