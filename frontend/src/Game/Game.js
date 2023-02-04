@@ -46,7 +46,6 @@ const Game = () => {
   const [isWinnerModalOpen, setIsWinnerModalOpen] = useState(false);
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
 
-
   const [timerP1, setTimerP1] = useState(30);
   const [timerP2, setTimerP2] = useState(30);
 
@@ -69,10 +68,12 @@ const Game = () => {
   const [showResetWaiting, setShowResetWaiting] = useState(false);
 
   useEffect(() => {
-    if (!id && !localStorage.getItem("gameId")) { navigate("/create-game") }
-    else if (id && id != 1 && !localStorage.getItem("gameId")) { navigate("/create-game") }
-  }, [])
-
+    if (!id && !localStorage.getItem("gameId")) {
+      navigate("/create-game");
+    } else if (id && id != 1 && !localStorage.getItem("gameId")) {
+      navigate("/create-game");
+    }
+  }, []);
 
   const headers = {
     "Content-Type": "application/json",
@@ -184,7 +185,6 @@ const Game = () => {
   }
 
   function handleClick(coordinates) {
-
     if (gameState.winner !== null) {
       return;
     }
@@ -258,13 +258,13 @@ const Game = () => {
       soundOn && playMove();
 
       // Start computer move is the player is finished
-      console.log({ winner: postMoveState.winner })
+      console.log({ winner: postMoveState.winner });
       if (
         id === "1" &&
         postMoveState.currentPlayer === false &&
         postMoveState.winner === null
       ) {
-        moveRef.current = [++moveRef.current[0], moveRef.current[1]]
+        moveRef.current = [++moveRef.current[0], moveRef.current[1]];
         calcPawns(boardState);
         computerTurn(postMoveState);
       }
@@ -331,9 +331,9 @@ const Game = () => {
       setTimeout(() => {
         const postMoveState = movesData[1]
           ? movePiece(columns, mergerObj.moves[0], {
-            ...mergerObj,
-            jumpKills: movesData[1],
-          })
+              ...mergerObj,
+              jumpKills: movesData[1],
+            })
           : movePiece(columns, mergerObj.moves[0], mergerObj);
         if (postMoveState === null) {
           return;
@@ -341,20 +341,17 @@ const Game = () => {
 
         updateStatePostMove(postMoveState);
 
-        moveRef.current = [moveRef.current[0], ++moveRef.current[1]]
-
-
+        moveRef.current = [moveRef.current[0], ++moveRef.current[1]];
 
         if (movesData[1] && soundOn) {
           playStrike();
         } else if (!movesData[1] && soundOn) {
           playMove();
         }
-        console.log({ winnerComputer: postMoveState.winner })
+        console.log({ winnerComputer: postMoveState.winner });
 
         // If the computer player has jumped and is still moving, continue jump with active piece
         if (postMoveState.currentPlayer === false) {
-
           computerTurn(postMoveState, postMoveState.activePiece);
         }
       }, 600);
@@ -391,7 +388,6 @@ const Game = () => {
       currentPlayer: postMoveState.currentPlayer,
       turnPlayer: postMoveState.currentPlayer ? "player1" : "player2",
     });
-
 
     calcPawns(postMoveState.boardState);
   }
@@ -478,7 +474,7 @@ const Game = () => {
   }, [gameState, gameStatus, winnerPlayer]);
   console.log({ dfgdg: gameState.winner });
   const resetGame = () => {
-    moveRef.current = [0, 0]
+    moveRef.current = [0, 0];
 
     socket.emit("sendResetGameRequest", { status: "Pending" });
   };
@@ -507,8 +503,7 @@ const Game = () => {
       pawns: [0, 0],
       moves: [0, 0],
     });
-    moveRef.current = [0, 0]
-
+    moveRef.current = [0, 0];
   };
   const setNewGameWithComputer = () => {
     setGameState({
@@ -531,7 +526,7 @@ const Game = () => {
   };
 
   const drawGame = () => {
-    setShowResetWaiting(true)
+    setShowResetWaiting(true);
     socket.emit("sendDrawGameRequest", { status: "Draw" });
   };
 
@@ -561,7 +556,7 @@ const Game = () => {
     let [prevP1, prevP2] = pawns;
     let player1Counter = 0;
     let player2Counter = 0;
-    console.log({ boardState, currentPlayer })
+    console.log({ boardState, currentPlayer });
     Object.keys(boardState).forEach((key) => {
       if (boardState[key]?.player === "player1") {
         ++player1Counter;
@@ -610,8 +605,6 @@ const Game = () => {
         stopInterval();
         // setUpdatedState({winnerPlayer,boardState,currentPlayer})
 
-
-
         setMyTurn(turnPlayer);
         setWinnerPlayer(winnerPlayer);
         setGameState((prevGameState) => {
@@ -627,9 +620,9 @@ const Game = () => {
           };
         });
 
-        turnPlayer === "player2" ?
-          moveRef.current = [1 + moveRef.current[0], moveRef.current[1]] :
-          moveRef.current = [moveRef.current[0], 1 + moveRef.current[1]]
+        turnPlayer === "player2"
+          ? (moveRef.current = [1 + moveRef.current[0], moveRef.current[1]])
+          : (moveRef.current = [moveRef.current[0], 1 + moveRef.current[1]]);
 
         calcPawns(boardState);
         compareObjects(lastElement?.boardState, boardState);
@@ -649,19 +642,19 @@ const Game = () => {
         setTimerP1(30);
         setTimerP2(30);
         setPassedCounter(0);
-        setShowResetWaiting(false)
-        moveRef.current = [0, 0]
+        setShowResetWaiting(false);
+        moveRef.current = [0, 0];
       }
     );
     socket.on("getResetGameRequest", ({ status }) => {
       setIsRematchModalOpen(true);
-      moveRef.current = [0, 0]
+      moveRef.current = [0, 0];
     });
     socket.on("getDrawGameRequest", ({ status }) => {
       setIsDrawModalOpen(true);
     });
     socket.on("getRejectGameMessage", ({ status }) => {
-      setShowResetWaiting(false)
+      setShowResetWaiting(false);
       toast("You friend did not accept the request");
       clearCookie.forEach((data) => {
         localStorage.getItem(data) && localStorage.removeItem(data);
@@ -694,6 +687,10 @@ const Game = () => {
     socket.on("getChatMessage", ({ message }) => {
       setLatestMessage(message);
     });
+    //if the first player not in the game
+    socket.emit("sendMessage", {
+      status: "started",
+    });
   }, []);
 
   useEffect(() => {
@@ -720,11 +717,10 @@ const Game = () => {
   };
 
   const timeChecker = () => {
-    console.log("running")
+    console.log("running");
     let myCounter = 0;
 
     if (currentPlayer && localStorage.getItem("playerOneIp")) {
-
       intervalRef.current = setInterval(() => {
         if (myCounter === 0) {
           setTimerP1(30);
@@ -885,11 +881,11 @@ const Game = () => {
           game_id: gameId,
         },
         {
-          onSuccess: (responseData) => { },
-          onError: (err) => { },
+          onSuccess: (responseData) => {},
+          onError: (err) => {},
         }
       );
-    } catch (err) { }
+    } catch (err) {}
   };
 
   const changeSound = () => {
@@ -1000,15 +996,14 @@ const Game = () => {
             }
           >
             <img
-              src={playerOneIp || id == 1 &&
-                user?.profile_image
-                ? user?.profile_image
-                : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
+              src={
+                playerOneIp || (id == 1 && user?.profile_image)
+                  ? user?.profile_image
+                  : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
               }
               className="h-12 rounded-full"
               alt=""
             />
-
           </div>
           <h4 className="text-white capitalize  font-semibold text-xs">
             {id == 1
@@ -1016,10 +1011,10 @@ const Game = () => {
                 ? user.username
                 : "You"
               : playerOneIp && user
-                ? user?.username
-                : playerOneIp
-                  ? firstPlayer?.username
-                  : "Your Friend"}
+              ? user?.username
+              : playerOneIp
+              ? firstPlayer?.username
+              : "Your Friend"}
           </h4>
         </div>
 
@@ -1037,11 +1032,12 @@ const Game = () => {
             }
           >
             <img
-              src={playerTwoIp &&
-                user?.profile_image
-                ? user?.profile_image
-                : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
-              } className="h-12 rounded-full"
+              src={
+                playerTwoIp && user?.profile_image
+                  ? user?.profile_image
+                  : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
+              }
+              className="h-12 rounded-full"
               alt=""
             />
           </div>
@@ -1050,10 +1046,10 @@ const Game = () => {
             {id == 1
               ? "Computer"
               : playerTwoIp && user
-                ? user?.username
-                : playerTwoIp
-                  ? secondPlayer?.username
-                  : "Your Friend"}
+              ? user?.username
+              : playerTwoIp
+              ? secondPlayer?.username
+              : "Your Friend"}
           </h4>
         </div>
       </section>
@@ -1089,7 +1085,11 @@ const Game = () => {
           </div>
         </div>
       </section>
-      <div className={id != 1 ? "hidden" : "w-full h-4 flex justify-center items-center"}>
+      <div
+        className={
+          id != 1 ? "hidden" : "w-full h-4 flex justify-center items-center"
+        }
+      >
         {id == 1 && !currentPlayer && (
           <ThreeDots
             height="20"
@@ -1104,8 +1104,11 @@ const Game = () => {
         )}
       </div>
 
-      <div className={id == 1 ? "hidden" : "w-full h-4 flex justify-center items-center"}>
-
+      <div
+        className={
+          id == 1 ? "hidden" : "w-full h-4 flex justify-center items-center"
+        }
+      >
         {!currentPlayer && localStorage.getItem("playerOne") && (
           <ThreeDots
             height="20"
@@ -1130,32 +1133,32 @@ const Game = () => {
             visible={true}
           />
         )}
-
       </div>
       <div className="game-board  ">
         <div
-          className={` shadow-2xl    ${!id
-            ? currentPlayer === true
-              ? currentPlayer === true && !firstPlayer
-                ? "pointer-events-none"
-                : ""
-              : currentPlayer === false
+          className={` shadow-2xl    ${
+            !id
+              ? currentPlayer === true
+                ? currentPlayer === true && !firstPlayer
+                  ? "pointer-events-none"
+                  : ""
+                : currentPlayer === false
                 ? currentPlayer === false && !secondPlayer
                   ? "pointer-events-none"
                   : ""
                 : ""
-            : ""
-            }`}
+              : ""
+          }`}
         >
           <Board
             boardState={
               id === "1"
                 ? dict_reverse(boardState)
                 : !id
-                  ? localStorage.getItem("playerOne")
-                    ? dict_reverse(boardState)
-                    : boardState
+                ? localStorage.getItem("playerOne")
+                  ? dict_reverse(boardState)
                   : boardState
+                : boardState
             }
             currentPlayer={currentPlayer}
             activePiece={gameState.activePiece}
@@ -1195,7 +1198,6 @@ const Game = () => {
               className="text-orange-color"
             />
             <p className="text-xs font-bold text-white">Chat</p>
-
           </div>
         )}
       </div>
@@ -1205,8 +1207,9 @@ const Game = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ type: "tween", duration: 1, ease: "easeInOut" }}
-          className={`absolute top-36  bg-white max-w-sm  p-1 w-44 ${playerOneIp ? "left-3" : "right-3"
-            }
+          className={`absolute top-36  bg-white max-w-sm  p-1 w-44 ${
+            playerOneIp ? "left-3" : "right-3"
+          }
        border border-orange-color rounded-lg m-3`}
         >
           <div className="text-gray-800">
