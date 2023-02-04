@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/auth";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { Footer } from "../Game/components/Footer";
+import { Footer } from "./Footer";
 
 
 

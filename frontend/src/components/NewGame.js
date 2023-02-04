@@ -13,7 +13,7 @@ import "react-spring-bottom-sheet/dist/style.css";
 import { BsFacebook, BsTelegram } from "react-icons/bs";
 import { RiWhatsappFill } from "react-icons/ri";
 import { useAuth } from "../context/auth";
-import { Footer } from "../Game/components/Footer";
+import { Footer } from "./Footer";
 import { useHome } from "../context/HomeContext";
 import { clearCookie } from "../utils/data";
 const NewGame = () => {
@@ -176,13 +176,9 @@ const NewGame = () => {
                 responseData?.data?.data?.game
             );
 
-            // if (betRef.current.checked) {
-            //   //setIsBet(true)
-            //  // setBetCoin(coinAmount)
-            //   localStorage.setItem("bt_coin_amount", coinAmount);
-            // } else {
-            //   setIsBet(false);
-            // }
+            if (betRef.current.checked) {
+              localStorage.setItem("bt_coin_amount", coinAmount);
+            }
 
             //first clear local storage
             clearCookie.forEach((data) => {

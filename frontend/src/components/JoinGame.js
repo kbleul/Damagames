@@ -7,8 +7,10 @@ import toast, { Toaster } from "react-hot-toast";
 import socket from "../utils/socket.io";
 import { useAuth } from "../context/auth";
 import { useHome } from "../context/HomeContext";
-import { Footer } from "../Game/components/Footer";
+
 import { clearCookie } from "../utils/data";
+import { Footer } from "./Footer";
+
 const JoinGame = () => {
   const { user, token } = useAuth();
   const [isVerified, setIsVerified] = useState(false);
@@ -31,11 +33,11 @@ const JoinGame = () => {
   const [name, setName] = useState(user && token ? user.username : "");
   useEffect(() => {
     socket.on("getMessage", (data) => {
-      setTimeout(() => {
-        if (sameUser.current === false) {
-          navigate("/game");
-        }
-      }, 1500);
+      navigate("/game");
+      // setTimeout(() => {
+      //   if (sameUser.current === false) {
+      //   }
+      // }, 1500);
     });
 
     socket.on("samePerson", (data) => {

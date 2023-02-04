@@ -11,6 +11,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { IoIosCopy } from "react-icons/io";
 import background from "../assets/backdrop.jpg";
+import { Footer } from "./Footer";
 
 const ACTION = {
   "MENU": "menu",
@@ -309,6 +310,9 @@ const NewGamePublic = () => {
           </div>
         </div>
       )}
+
+      <Footer />
+
       <Toaster />
     </main>
   );
