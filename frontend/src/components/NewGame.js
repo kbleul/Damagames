@@ -13,7 +13,7 @@ import "react-spring-bottom-sheet/dist/style.css";
 import { BsFacebook, BsTelegram } from "react-icons/bs";
 import { RiWhatsappFill } from "react-icons/ri";
 import { useAuth } from "../context/auth";
-import { Footer } from "../Game/components/Footer";
+import { Footer } from "./Footer";
 import { useHome } from "../context/HomeContext";
 
 const NewGame = () => {
@@ -70,7 +70,7 @@ const NewGame = () => {
   useEffect(() => {
     socket.on("getMessage", (data) => {
       if (data.status === "started") {
-        //navigate("/game");
+        navigate("/game");
       }
     });
 
@@ -171,13 +171,9 @@ const NewGame = () => {
               responseData?.data?.data?.game
             );
 
-            // if (betRef.current.checked) {
-            //   //setIsBet(true)
-            //  // setBetCoin(coinAmount)
-            //   localStorage.setItem("bt_coin_amount", coinAmount);
-            // } else {
-            //   setIsBet(false);
-            // }
+            if (betRef.current.checked) {
+              localStorage.setItem("bt_coin_amount", coinAmount);
+            }
 
             setCode(responseData?.data?.data?.code);
             //first clear local storage

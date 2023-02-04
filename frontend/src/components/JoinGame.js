@@ -7,7 +7,7 @@ import toast, { Toaster } from "react-hot-toast";
 import socket from "../utils/socket.io";
 import { useAuth } from "../context/auth";
 import { useHome } from "../context/HomeContext";
-import { Footer } from "../Game/components/Footer";
+import { Footer } from "./Footer";
 
 const JoinGame = () => {
   const savedData = [

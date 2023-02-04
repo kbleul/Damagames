@@ -5,7 +5,7 @@ import avatar from "../assets/dama_logo.png";
 import { useAuth } from "../context/auth";
 import { Link } from "react-router-dom";
 import { clearCookie } from "../utils/data";
-import { Footer } from "../Game/components/Footer";
+import { Footer } from "./Footer";
 const CreateGame = () => {
   const navigate = useNavigate();
   const { user, token } = useAuth();

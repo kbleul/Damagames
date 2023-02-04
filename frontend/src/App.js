@@ -60,7 +60,7 @@ const App = () => {
         <Route path="/join-public" element={<PublicGames />} />
         <Route path="/new-game-public" element={<NewGamePublic />} />
         <Route path="/store" element={<Store />} />
-        <Route path="/privacy-policy" element={<PrivacyModal />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="*" element={<CreateGame />} />
 
       </Routes>
@@ -89,7 +89,7 @@ const App = () => {
         <Route path="/new-game-public" element={<NewGamePublic />} />
         <Route path="/store" element={<Store />} />
         <Route path="/profile" element={user && token ? <Profile /> : <Navigate to="/login" />} />
-        <Route path="/privacy-policy" element={<PrivacyModal />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="*" element={<Navigate to="/create-game" />} />
 
       </Routes>
