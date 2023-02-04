@@ -216,7 +216,6 @@ export function evaluateWinner(columns, boardState) {
       false
     );
     const moveCount = movesData[0].length;
-    // console.log(boardState[coordinates].player);
     if (boardState[coordinates].player === "player1") {
       ++player1Pieces;
       player1Moves += moveCount;

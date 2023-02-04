@@ -24,9 +24,12 @@ import { BsFillChatFill } from "react-icons/bs";
 import { FaTimes, FaTelegramPlane } from "react-icons/fa";
 import { getSmartMove } from "./components/Opponent.js";
 import { ThreeDots } from "react-loader-spinner";
-
+import UserLeavesModal from "./components/UserLeavesModal.js";
+import { clearCookie } from "../utils/data.js";
+import { useAuth } from "../context/auth.js";
 const Game = () => {
   const { id } = useParams();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [playMove] = useSound(moveSound);
   const [playStrike] = useSound(strikeSound);
@@ -43,8 +46,6 @@ const Game = () => {
   const [isWinnerModalOpen, setIsWinnerModalOpen] = useState(false);
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
 
-  const [latestState, setLatestState] = useState({});
-
   const [timerP1, setTimerP1] = useState(30);
   const [timerP2, setTimerP2] = useState(30);
 
@@ -52,34 +53,32 @@ const Game = () => {
   const intervalRef = useRef(null);
 
   const [isRematchModalOpen, setIsRematchModalOpen] = useState(false);
+  const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
+
   const [isDrawModalOpen, setIsDrawModalOpen] = useState(false);
   const [winnerPlayer, setWinnerPlayer] = useState(null);
 
   const [pawns, setPawns] = useState([0, 0]);
-  const [moves, setMoves] = useState([0, 0]);
-  const [timer, setTimer] = useState(15);
+
+  const moveRef = useRef([0, 0]);
 
   const messageInputRef = useRef();
   const [messageInputOpen, setMessageInputOpen] = useState(false);
   const [latestMessage, setLatestMessage] = useState(null);
+  const [showResetWaiting, setShowResetWaiting] = useState(false);
+
+  useEffect(() => {
+    if (!id && !localStorage.getItem("gameId")) {
+      navigate("/create-game");
+    } else if (id && id != 1 && !localStorage.getItem("gameId")) {
+      navigate("/create-game");
+    }
+  }, []);
+
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
   };
-
-  const savedData = [
-    "gameId",
-    "playerOne",
-    "playerTwo",
-    "playerOneIp",
-    "playerTwoIp",
-    "playerOneToken",
-    "p1",
-    "p2",
-    "players",
-    "bt_coin_amount",
-    "dama-sound",
-  ];
   const [columns, setColumns] = useState({
     a: 0,
     b: 1,
@@ -259,13 +258,13 @@ const Game = () => {
       soundOn && playMove();
 
       // Start computer move is the player is finished
-      console.log({ winner: postMoveState.winner })
+      console.log({ winner: postMoveState.winner });
       if (
         id === "1" &&
         postMoveState.currentPlayer === false &&
         postMoveState.winner === null
       ) {
-        setMoves([++moves[0], moves[1]]);
+        moveRef.current = [++moveRef.current[0], moveRef.current[1]];
         calcPawns(boardState);
         computerTurn(postMoveState);
       }
@@ -274,7 +273,6 @@ const Game = () => {
 
   //computer turn
   function computerTurn(newMoveState, piece = null) {
-
     setTimeout(() => {
       // const currentState = getCurrentState();
       const boardState = newMoveState.boardState;
@@ -299,7 +297,6 @@ const Game = () => {
         history: tempHistory,
       };
 
-
       const clickedSquare = boardState[coordinates];
       let movesData;
       if (!piece) {
@@ -322,7 +319,6 @@ const Game = () => {
         moveTo = movesData[0][Math.floor(Math.random() * movesData[0].length)];
       }
 
-
       setGameState((prevState) => {
         return {
           ...prevState,
@@ -333,12 +329,11 @@ const Game = () => {
       });
 
       setTimeout(() => {
-
         const postMoveState = movesData[1]
           ? movePiece(columns, mergerObj.moves[0], {
-            ...mergerObj,
-            jumpKills: movesData[1],
-          })
+              ...mergerObj,
+              jumpKills: movesData[1],
+            })
           : movePiece(columns, mergerObj.moves[0], mergerObj);
         if (postMoveState === null) {
           return;
@@ -346,18 +341,17 @@ const Game = () => {
 
         updateStatePostMove(postMoveState);
 
-        setMoves([moves[0], ++moves[1]]);
+        moveRef.current = [moveRef.current[0], ++moveRef.current[1]];
 
         if (movesData[1] && soundOn) {
           playStrike();
         } else if (!movesData[1] && soundOn) {
           playMove();
         }
-        console.log({ winnerComputer: postMoveState.winner })
+        console.log({ winnerComputer: postMoveState.winner });
 
         // If the computer player has jumped and is still moving, continue jump with active piece
         if (postMoveState.currentPlayer === false) {
-
           computerTurn(postMoveState, postMoveState.activePiece);
         }
       }, 600);
@@ -384,6 +378,9 @@ const Game = () => {
         winner: postMoveState.winner,
       };
     });
+    if (gameState.players == 1) {
+      setMyTurn(postMoveState.currentPlayer ? "player1" : "player2");
+    }
 
     socket.emit("sendGameMessage", {
       winnerPlayer: postMoveState.winner,
@@ -393,8 +390,6 @@ const Game = () => {
     });
 
     calcPawns(postMoveState.boardState);
-
-
   }
 
   const stateHistory = gameState.history;
@@ -432,7 +427,7 @@ const Game = () => {
   }
 
   useEffect(() => {
-    if (gameState.winner || winnerPlayer) {
+    if (gameState.players > 1 && (gameState.winner || winnerPlayer)) {
       setIsWinnerModalOpen(true);
 
       if (
@@ -460,10 +455,27 @@ const Game = () => {
       ) {
         playLose();
       }
+    } else {
+      if (gameState.winner || winnerPlayer) {
+        setIsWinnerModalOpen(true);
+        if (
+          gameState.winner === "player1pieces" ||
+          gameState.winner === "player1moves"
+        ) {
+          soundOn && playWin();
+        } else if (
+          gameState.winner === "player2pieces" ||
+          gameState.winner === "player2moves"
+        ) {
+          soundOn && playLose();
+        }
+      }
     }
   }, [gameState, gameStatus, winnerPlayer]);
-
+  console.log({ dfgdg: gameState.winner });
   const resetGame = () => {
+    moveRef.current = [0, 0];
+
     socket.emit("sendResetGameRequest", { status: "Pending" });
   };
   const rejectGameRequest = () => {
@@ -488,7 +500,10 @@ const Game = () => {
         winner: null,
       },
       isWinnerModalOpen: false,
+      pawns: [0, 0],
+      moves: [0, 0],
     });
+    moveRef.current = [0, 0];
   };
   const setNewGameWithComputer = () => {
     setGameState({
@@ -506,9 +521,12 @@ const Game = () => {
       stepNumber: 0,
       winner: null,
     });
+    setMyTurn("player1");
+    setPawns([0, 0]);
   };
 
   const drawGame = () => {
+    setShowResetWaiting(true);
     socket.emit("sendDrawGameRequest", { status: "Draw" });
   };
 
@@ -538,6 +556,7 @@ const Game = () => {
     let [prevP1, prevP2] = pawns;
     let player1Counter = 0;
     let player2Counter = 0;
+    console.log({ boardState, currentPlayer });
     Object.keys(boardState).forEach((key) => {
       if (boardState[key]?.player === "player1") {
         ++player1Counter;
@@ -552,8 +571,6 @@ const Game = () => {
     ) {
       setPawns([12 - player2Counter, 12 - player1Counter]);
     }
-
-
   };
   function compareObjects(obj1, obj2) {
     let obj1NullCount = 0;
@@ -588,10 +605,6 @@ const Game = () => {
         stopInterval();
         // setUpdatedState({winnerPlayer,boardState,currentPlayer})
 
-        const tempMoves = moves;
-        turnPlayer === "player2" ? ++tempMoves[0] : ++tempMoves[1];
-        setMoves(tempMoves);
-
         setMyTurn(turnPlayer);
         setWinnerPlayer(winnerPlayer);
         setGameState((prevGameState) => {
@@ -607,15 +620,18 @@ const Game = () => {
           };
         });
 
+        turnPlayer === "player2"
+          ? (moveRef.current = [1 + moveRef.current[0], moveRef.current[1]])
+          : (moveRef.current = [moveRef.current[0], 1 + moveRef.current[1]]);
+
         calcPawns(boardState);
         compareObjects(lastElement?.boardState, boardState);
-        console.log("currentPlayer", currentPlayer);
       }
     );
 
     socket.on(
       "getResetGameMessage",
-      ({ winnerPlayer, gameState, isWinnerModalOpen }) => {
+      ({ winnerPlayer, gameState, isWinnerModalOpen, pawns, moves }) => {
         setGameState(gameState);
         setWinnerPlayer(winnerPlayer);
         setIsWinnerModalOpen(isWinnerModalOpen);
@@ -623,21 +639,24 @@ const Game = () => {
         setIsRematchModalOpen(false);
         setMyTurn("player1");
         setPawns([0, 0]);
-        setMoves([0, 0]);
         setTimerP1(30);
         setTimerP2(30);
         setPassedCounter(0);
+        setShowResetWaiting(false);
+        moveRef.current = [0, 0];
       }
     );
     socket.on("getResetGameRequest", ({ status }) => {
       setIsRematchModalOpen(true);
+      moveRef.current = [0, 0];
     });
     socket.on("getDrawGameRequest", ({ status }) => {
       setIsDrawModalOpen(true);
     });
     socket.on("getRejectGameMessage", ({ status }) => {
+      setShowResetWaiting(false);
       toast("You friend did not accept the request");
-      savedData.forEach((data) => {
+      clearCookie.forEach((data) => {
         localStorage.getItem(data) && localStorage.removeItem(data);
       });
       navigate("/create-game");
@@ -645,28 +664,32 @@ const Game = () => {
 
     //listen for if user left room
     socket.on("userLeaveMessage", (data) => {
-      alert(data);
+      setIsLeaveModalOpen(true);
       setTimeout(() => {
-        savedData.forEach((data) => {
+        clearCookie.forEach((data) => {
           localStorage.getItem(data) && localStorage.removeItem(data);
         });
         navigate("/create-game");
-      }, 1000);
+      }, 5000);
     });
 
     //listen for if the user exit the game
     socket.on("getExitGameRequest", (data) => {
-      alert("you friend has left the game😢");
+      setIsLeaveModalOpen(true);
       setTimeout(() => {
-        savedData.forEach((data) => {
+        clearCookie.forEach((data) => {
           localStorage.getItem(data) && localStorage.removeItem(data);
         });
         navigate("/create-game");
-      }, 10);
+      }, 5000);
     });
     //listen for chat message
     socket.on("getChatMessage", ({ message }) => {
       setLatestMessage(message);
+    });
+    //if the first player not in the game
+    socket.emit("sendMessage", {
+      status: "started",
     });
   }, []);
 
@@ -694,11 +717,10 @@ const Game = () => {
   };
 
   const timeChecker = () => {
-    console.log("running")
+    console.log("running");
     let myCounter = 0;
 
     if (currentPlayer && localStorage.getItem("playerOneIp")) {
-
       intervalRef.current = setInterval(() => {
         if (myCounter === 0) {
           setTimerP1(30);
@@ -859,12 +881,11 @@ const Game = () => {
           game_id: gameId,
         },
         {
-          onSuccess: (responseData) => {
-          },
-          onError: (err) => { },
+          onSuccess: (responseData) => {},
+          onError: (err) => {},
         }
       );
-    } catch (err) { }
+    } catch (err) {}
   };
 
   const changeSound = () => {
@@ -975,13 +996,25 @@ const Game = () => {
             }
           >
             <img
-              src="https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
+              src={
+                playerOneIp || (id == 1 && user?.profile_image)
+                  ? user?.profile_image
+                  : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
+              }
               className="h-12 rounded-full"
               alt=""
             />
           </div>
           <h4 className="text-white capitalize  font-semibold text-xs">
-            {id == 1 && "You"}
+            {id == 1
+              ? user
+                ? user.username
+                : "You"
+              : playerOneIp && user
+              ? user?.username
+              : playerOneIp
+              ? firstPlayer?.username
+              : "Your Friend"}
           </h4>
         </div>
 
@@ -999,25 +1032,35 @@ const Game = () => {
             }
           >
             <img
-              src="https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
+              src={
+                playerTwoIp && user?.profile_image
+                  ? user?.profile_image
+                  : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
+              }
               className="h-12 rounded-full"
               alt=""
             />
           </div>
           <h4 className="text-white capitalize  font-semibold text-xs">
             {/* {secondPlayer?.name} */}
-            {id == 1 && "Computer"}
+            {id == 1
+              ? "Computer"
+              : playerTwoIp && user
+              ? user?.username
+              : playerTwoIp
+              ? secondPlayer?.username
+              : "Your Friend"}
           </h4>
         </div>
       </section>
 
       <section className="flex justify-evenly items-center text-sm w-full">
-        <div className="border-r-[3px] border-gray-400 text-white w-1/2 pb-[5vh]">
+        <div className="border-r-[3px] border-gray-400 text-white w-1/2 ">
           <div className="flex justify-center items-center text-[.7rem] gap-x-2 font-bold mb-2">
             <p className="bg-gray-300 text-black pr-[.2rem] w-12 rounded">
               Moves
             </p>
-            <p>{moves[0]}</p>
+            <p>{moveRef.current[0]}</p>
           </div>
           <div className="flex justify-center items-center text-[.7rem] gap-x-2 font-bold mb-2">
             <p className="bg-gray-300 text-black pr-[.2rem] w-12 rounded">
@@ -1027,9 +1070,9 @@ const Game = () => {
           </div>
         </div>
 
-        <div className="text-white w-1/2 pb-[5vh]">
+        <div className="text-white w-1/2">
           <div className="flex justify-center items-center text-[.7rem] gap-x-2 font-bold mb-2">
-            <p>{moves[1]}</p>
+            <p>{moveRef.current[1]}</p>
             <p className="bg-gray-300 text-black pr-[.2rem] w-12 rounded">
               Moves
             </p>
@@ -1042,115 +1085,131 @@ const Game = () => {
           </div>
         </div>
       </section>
-      {id == 1 && !currentPlayer && (
-        <ThreeDots
-          height="20"
-          width="40"
-          radius="9"
-          color="#f75105"
-          ariaLabel="three-dots-loading"
-          wrapperStyle={{}}
-          wrapperClassName=""
-          visible={true}
-        />
-      )}
+      <div
+        className={
+          id != 1 ? "hidden" : "w-full h-4 flex justify-center items-center"
+        }
+      >
+        {id == 1 && !currentPlayer && (
+          <ThreeDots
+            height="20"
+            width="40"
+            radius="9"
+            color="#f75105"
+            ariaLabel="three-dots-loading"
+            wrapperStyle={{}}
+            wrapperClassName=""
+            visible={true}
+          />
+        )}
+      </div>
 
-      {!currentPlayer && localStorage.getItem("playerOne") && (
-        <ThreeDots
-          height="20"
-          width="40"
-          radius="9"
-          color="#f75105"
-          ariaLabel="three-dots-loading"
-          wrapperStyle={{}}
-          wrapperClassName=""
-          visible={true}
-        />
-      )}
-      {currentPlayer && localStorage.getItem("playerTwo") && (
-        <ThreeDots
-          height="20"
-          width="40"
-          radius="9"
-          color="#f75105"
-          ariaLabel="three-dots-loading"
-          wrapperStyle={{}}
-          wrapperClassName=""
-          visible={true}
-        />
-      )}
-
+      <div
+        className={
+          id == 1 ? "hidden" : "w-full h-4 flex justify-center items-center"
+        }
+      >
+        {!currentPlayer && localStorage.getItem("playerOne") && (
+          <ThreeDots
+            height="20"
+            width="40"
+            radius="9"
+            color="#f75105"
+            ariaLabel="three-dots-loading"
+            wrapperStyle={{}}
+            wrapperClassName=""
+            visible={true}
+          />
+        )}
+        {currentPlayer && localStorage.getItem("playerTwo") && (
+          <ThreeDots
+            height="20"
+            width="40"
+            radius="9"
+            color="#f75105"
+            ariaLabel="three-dots-loading"
+            wrapperStyle={{}}
+            wrapperClassName=""
+            visible={true}
+          />
+        )}
+      </div>
       <div className="game-board  ">
         <div
-          className={` shadow-2xl    ${!id
-            ? currentPlayer === true
-              ? currentPlayer === true && !firstPlayer
-                ? "pointer-events-none"
-                : ""
-              : currentPlayer === false
+          className={` shadow-2xl    ${
+            !id
+              ? currentPlayer === true
+                ? currentPlayer === true && !firstPlayer
+                  ? "pointer-events-none"
+                  : ""
+                : currentPlayer === false
                 ? currentPlayer === false && !secondPlayer
                   ? "pointer-events-none"
                   : ""
                 : ""
-            : ""
-            }`}
+              : ""
+          }`}
         >
           <Board
             boardState={
               id === "1"
                 ? dict_reverse(boardState)
                 : !id
-                  ? localStorage.getItem("playerOne")
-                    ? dict_reverse(boardState)
-                    : boardState
+                ? localStorage.getItem("playerOne")
+                  ? dict_reverse(boardState)
                   : boardState
+                : boardState
             }
             currentPlayer={currentPlayer}
             activePiece={gameState.activePiece}
             moves={gameState.moves}
             columns={columns}
             onClick={(coordinates) => handleClick(coordinates)}
+            numberOfPlayers={gameState.players}
           />
         </div>
       </div>
 
-      {id != 1 &&
-        <div onClick={drawGame} className="flex flex-col">
-          <div className="p-2 bg-orange-color rounded-full flex flex-col items-center justify-center">
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 18 18"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M14 13V11H4V13H14ZM16 0C16.5304 0 17.0391 0.210714 17.4142 0.585786C17.7893 0.960859 18 1.46957 18 2V16C18 16.5304 17.7893 17.0391 17.4142 17.4142C17.0391 17.7893 16.5304 18 16 18H2C1.46957 18 0.960859 17.7893 0.585786 17.4142C0.210714 17.0391 0 16.5304 0 16V2C0 0.89 0.89 0 2 0H16ZM14 7V5H4V7H14Z"
-                fill="#181920"
-              />
-            </svg>
+      <div className="flex justify-evenly items-center w-full">
+        {id != 1 && (
+          <div onClick={drawGame} className="flex flex-col">
+            <div className="p-2 bg-orange-color rounded-full flex flex-col items-center justify-center">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 18 18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M14 13V11H4V13H14ZM16 0C16.5304 0 17.0391 0.210714 17.4142 0.585786C17.7893 0.960859 18 1.46957 18 2V16C18 16.5304 17.7893 17.0391 17.4142 17.4142C17.0391 17.7893 16.5304 18 16 18H2C1.46957 18 0.960859 17.7893 0.585786 17.4142C0.210714 17.0391 0 16.5304 0 16V2C0 0.89 0.89 0 2 0H16ZM14 7V5H4V7H14Z"
+                  fill="#181920"
+                />
+              </svg>
+            </div>
+            <p className="text-xs font-bold text-white">Draw</p>
           </div>
-          <p className="text-xs font-bold text-white">Draw</p>
-        </div>
-      }
-      {id != 1 && (
-        <div className="absolute right-3 bottom-5 flex items-end justify-end">
-          <BsFillChatFill
-            onClick={openChatFilled}
-            size={30}
-            className="text-orange-color"
-          />
-        </div>
-      )}
-
+        )}
+        {id != 1 && (
+          <div className="flex items-end justify-end flex-col">
+            <BsFillChatFill
+              onClick={openChatFilled}
+              size={30}
+              className="text-orange-color"
+            />
+            <p className="text-xs font-bold text-white">Chat</p>
+          </div>
+        )}
+      </div>
       {/* message */}
       {latestMessage && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ type: "tween", duration: 1, ease: "easeInOut" }}
-          className={`absolute top-36  bg-white max-w-sm  p-1 w-44 ${playerOneIp ? "left-3" : "right-3"
-            }
+          className={`absolute top-36  bg-white max-w-sm  p-1 w-44 ${
+            playerOneIp ? "left-3" : "right-3"
+          }
        border border-orange-color rounded-lg m-3`}
         >
           <div className="text-gray-800">
@@ -1206,6 +1265,7 @@ const Game = () => {
       <ExitWarningModal
         isExitModalOpen={isExitModalOpen}
         set_isExitModalOpen={setIsExitModalOpen}
+        gameState={gameState}
       />
 
       <WinnerModal
@@ -1228,6 +1288,11 @@ const Game = () => {
         setIsDrawModalOpen={setIsDrawModalOpen}
         acceptGameRequest={acceptGameRequest}
         rejectGameRequest={rejectGameRequest}
+        showResetWaiting={showResetWaiting}
+      />
+      <UserLeavesModal
+        setIsLeaveModalOpen={setIsLeaveModalOpen}
+        isLeaveModalOpen={isLeaveModalOpen}
       />
       <Toaster />
     </div>

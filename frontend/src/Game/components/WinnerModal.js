@@ -2,6 +2,8 @@ import React, { Component, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import wancha from "../../assets/wancha.svg";
+import { useAuth } from "../../context/auth";
+
 
 const WinnerModal = ({
   isWinnerModalOpen,
@@ -12,6 +14,7 @@ const WinnerModal = ({
   gameState,
   setNewGameWithComputer,
 }) => {
+  const { user, token } = useAuth();
   const navigate = useNavigate();
   const playerOneIp = localStorage.getItem("playerOneIp");
   const playerTwoIp = localStorage.getItem("playerTwoIp");
@@ -23,6 +26,16 @@ const WinnerModal = ({
       setNewGameWithComputer();
     }
   };
+
+  const congraMsg = user ?
+    `congratulations!
+      Previous = ${user.coin} coins
+      Total = ${parseInt(user.coin) + 5} coins`
+    : "congratulations! You won 3 coins"
+  const lostMsg = user ?
+    `You Lost! You won 0 coins. 
+     Total = ` + user.coin + ` coins`
+    : "You Lost! You won 0 coins."
 
   return (
     <>
@@ -61,27 +74,24 @@ const WinnerModal = ({
                 >
                   <div className="mt-2">
                     {gameState.players != 1 &&
-                      <h1 className="text-white font-semibold text-2xl text-center capitalize py-5">
+                      <h1 className="w-[60%] ml-[20%] text-white font-semibold text-center capitalize py-5">
                         {gameState.players > 1
                           ? winnerPlayer === "player1pieces" ||
                             winnerPlayer === "player1moves"
                             ? playerOneIp != null
-                              ? "congratulations! You won 30 coins"
-                              : "You Lost!"
+                              ? congraMsg : lostMsg
                             : winnerPlayer === "player2pieces" ||
                               winnerPlayer === "player2moves"
                               ? playerTwoIp != null
-                                ? "congratulations! You won 30 coins"
-                                : "You Lost!"
+                                ? congraMsg : lostMsg
                               : ""
                           : gameState?.winner == "player2pieces" || "player2moves"
-                            ? "You Lost"
-                            : "You Win"}
+                            ? lostMsg : congraMsg}
                       </h1>}
                     {gameState.players == 1 &&
-                      <h1 className="text-white font-semibold text-2xl text-center capitalize py-5">
+                      <h1 className="w-[60%] ml-[20%] text-white font-semibold  text-center capitalize py-5">
                         {gameState.winner === "player1pieces" || gameState.winner === "player1moves"
-                          ? "congratulations! You won 30 coins" : "You Lost!"}
+                          ? congraMsg : lostMsg}
                       </h1>
                     }
                     <img src={wancha} alt="" className="absolute bottom-0 " />

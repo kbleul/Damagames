@@ -53,7 +53,6 @@ const ChangePassword = ({ changePasswordModal, setChangePasswordModal }) => {
         },
         {
           onSuccess: (responseData) => {
-            console.log(responseData?.data);
             setChangePasswordModal(false);
             toast("password changed successfully");
           },
@@ -62,9 +61,7 @@ const ChangePassword = ({ changePasswordModal, setChangePasswordModal }) => {
           },
         }
       );
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) { }
   };
   return (
     <>
@@ -102,7 +99,7 @@ const ChangePassword = ({ changePasswordModal, setChangePasswordModal }) => {
             rounded-2xl bg-dark-bg p-6 text-left align-middle shadow-xl transition-all"
                 >
                   <div
-                    onClick={()=>setChangePasswordModal(false)}
+                    onClick={() => setChangePasswordModal(false)}
                     className={`absolute right-3 top-2 border-2 rounded-md  p-1 cursor-pointer`}
                   >
                     <FaTimes
@@ -163,14 +160,13 @@ const ChangePassword = ({ changePasswordModal, setChangePasswordModal }) => {
                               placeholder="currentPassword"
                               name="currentPassword"
                               className={`rounded-[4px] pl-3 w-full h-[42px] bg-transparent font-medium  focus:outline-none focus:ring-0   text-gray-200 
-                  ${
-                    errors.currentPassword && touched.currentPassword
-                      ? "border border-red-500"
-                      : "border border-gray-300 "
-                  }`}
+                  ${errors.currentPassword && touched.currentPassword
+                                  ? "border border-red-500"
+                                  : "border border-gray-300 "
+                                }`}
                             />
                             {errors.currentPassword &&
-                            touched.currentPassword ? (
+                              touched.currentPassword ? (
                               <p className="text-[13px] font-medium text-red-500">
                                 {errors.currentPassword}
                               </p>
@@ -182,11 +178,10 @@ const ChangePassword = ({ changePasswordModal, setChangePasswordModal }) => {
                               placeholder="password"
                               name="password"
                               className={`rounded-[4px] pl-3 w-full h-[42px] bg-transparent font-medium  focus:outline-none focus:ring-0   text-gray-200 
-                  ${
-                    errors.password && touched.password
-                      ? "border border-red-500"
-                      : "border border-gray-300 "
-                  }`}
+                  ${errors.password && touched.password
+                                  ? "border border-red-500"
+                                  : "border border-gray-300 "
+                                }`}
                             />
                             {errors.password && touched.password ? (
                               <p className="text-[13px] font-medium text-red-500">
@@ -200,14 +195,13 @@ const ChangePassword = ({ changePasswordModal, setChangePasswordModal }) => {
                               placeholder="confirm Password"
                               name="confirmPassword"
                               className={`rounded-[4px] pl-3 w-full h-[42px] bg-transparent font-medium  focus:outline-none focus:ring-0   text-gray-200 
-                  ${
-                    errors.confirmPassword && touched.confirmPassword
-                      ? "border border-red-500"
-                      : "border border-gray-300 "
-                  }`}
+                  ${errors.confirmPassword && touched.confirmPassword
+                                  ? "border border-red-500"
+                                  : "border border-gray-300 "
+                                }`}
                             />
                             {errors.confirmPassword &&
-                            touched.confirmPassword ? (
+                              touched.confirmPassword ? (
                               <p className="text-[13px] font-medium text-red-500">
                                 {errors.confirmPassword}
                               </p>

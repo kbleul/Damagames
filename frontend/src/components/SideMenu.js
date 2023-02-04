@@ -39,15 +39,11 @@ const SideMenu = () => {
       logOutMutation.mutate(
         {},
         {
-          onSuccess: (responseData) => {
-            console.log(responseData?.data?.data);
-          },
+          onSuccess: (responseData) => { },
           onError: (err) => { },
         }
       );
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) { }
   };
 
   return (<>

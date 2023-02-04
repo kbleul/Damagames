@@ -5,16 +5,16 @@ import {TurnContext} from "../../context/TurnContext"
 
 const Board = (props) => {
   const [MyTurn, setMyTurn] = useContext(TurnContext)
-
+    console.log("board",props.numberOfPlayers)
   function Square(props) {
    // const squareClasses = props["squareClasses"];
     const onClick = props["onClick"];
 
     let squareClasses 
-    if(JSON.parse(localStorage.getItem("playerOne")) && MyTurn === "player1" && props["squareClasses"].includes("player1"))
+    if(props.numberOfPlayers  > 1 ? JSON.parse(localStorage.getItem("playerOne")) && MyTurn === "player1" && props["squareClasses"].includes("player1") : MyTurn === "player1" && props["squareClasses"].includes("player1"))
     { squareClasses = props["squareClasses"] + " myturn" }
 
-    else if(JSON.parse(localStorage.getItem("playerTwo")) && MyTurn === "player2" && props["squareClasses"].includes("player2"))
+    else if(props.numberOfPlayers  > 1 ? JSON.parse(localStorage.getItem("playerTwo")) && MyTurn === "player2" && props["squareClasses"].includes("player2") : MyTurn === "player2" && props["squareClasses"].includes("player2"))
     { squareClasses = props["squareClasses"] + " myturn" }
    
     else {  squareClasses = props["squareClasses"]  }

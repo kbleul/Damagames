@@ -19,112 +19,120 @@ const io = new Server(httpServer, {
       "https://admin.socket.io",
       "http://localhost:3000",
       "http://172.17.104.251:3000",
+      "https://damagames.com",
     ],
     credentials: true,
   },
 });
 
-// console.log("⚡: Server started at port : ",process.env.PORT ? process.env.PORT :7744)
-
 let publicGames = []
-let rooms=[]
+let rooms = []
+let roomSocketObj = {}
+
 const createReadableDate = (date) => {
-  const newdate = formatDistance( date, new Date(), { includeSeconds: true });
+  const newdate = formatDistance(date, new Date(), { includeSeconds: true });
   return newdate
 }
 
 //type === "code" || "socketId"  
 // SO WE CAN DELETE USING CODE OR SOCKETID
-const removePublicGame = (code,type) => {
+const removePublicGame = (code, type) => {
 
   let temparr = []
- // publicGames.filter(game => game.code !== code)
- if(type === "code") {
-  publicGames.forEach(game => {
-    game.code !== code && temparr.push(game)
-  })
-  publicGames = [...temparr]
-  temparr = []
- }
- else if(type === "socketId") {
-  publicGames.forEach(game => {
-    game.socketID !== code && temparr.push(game)
-  })
-  publicGames = [...temparr]
-  temparr = []
- }
+  // publicGames.filter(game => game.code !== code)
+  if (type === "code") {
+    publicGames.forEach(game => {
+      game.code !== code && temparr.push(game)
+    })
+    publicGames = [...temparr]
+    temparr = []
+  }
+  else if (type === "socketId") {
+    publicGames.forEach(game => {
+      game.socketID !== code && temparr.push(game)
+    })
+    publicGames = [...temparr]
+    temparr = []
+  }
 
 }
 
 //returns the difference in time(minutes) b/n two date objects
-const checkDuration = (time) => {
-  const result = differenceInMinutes( time, new Date() )
- // console.log({result})
-}
+//for v2 release
+// const checkDuration = (time) => {
+//   const result = differenceInMinutes(time, new Date())
+// }
 
-console.log(`⚡: Server is live! PORT = ` +  7744);
+console.log(`⚡: Server is live! PORT = ` + 7744);
 
 io.on("connection", (socket) => {
-  console.log(socket.id)
   //user connection
   console.log("a user connected.");
 
   socket.on("postPublicGame", data => {
     publicGames.push({
-      ...data, 
-      socketID : socket.id,
-      time : new Date()
+      ...data,
+      socketID: socket.id,
+      time: new Date()
     })
-   //  console.log(publicGames)
   })
 
-  socket.on("publicGames", ()  => {
-      let temparr = []
-      let removedArr = []
-     // console.log("length " , publicGames.length)
-     publicGames.forEach(game => { 
-    //  console.log(checkDuration(game.time) < 3 ,checkDuration(game.time) >= -3 , typeof checkDuration(game.time) )
-
-    temparr.push({...game, time : createReadableDate(game.time) }) 
-//if public game has been up for 3 minutes remove from public game
-   //   else { removedArr.push(game.code) }
+  socket.on("publicGames", () => {
+    let temparr = []
+    let removedArr = []
+    publicGames.forEach(game => {
+      if (game.socketID !== socket.id) {
+        temparr.push({ ...game, time: createReadableDate(game.time) })
+      }
+      //if public game has been up for 3 minutes remove from public game
+      //   else { removedArr.push(game.code) }
     })
-   // console.log("temparr",temparr.length)
 
     socket.emit("getPublicGames", temparr)
 
-    if(removedArr.length > 0) {
+    if (removedArr.length > 0) {
       removedArr.forEach(code => { removePublicGame(code, "code") })
     }
 
     temparr = []
     removedArr = []
-})
+  })
 
   socket.on("joinPublicGame", codeId => {
-    removePublicGame(codeId , "code")
+    removePublicGame(codeId, "code")
   })
 
   socket.on("join-room", async (room) => {
-    console.log({"join": room})
-
     const clients = await io.of("/").in(room).fetchSockets();
+
+    // , { clients, room, id: socket.id }
+    let tempSocketObj = roomSocketObj[room]
+    if (tempSocketObj && tempSocketObj.includes(socket.id)) {
+
+      io.to(room).emit("samePerson", "You can't join a game you created");
+    } else {
+      roomSocketObj = {
+        ...roomSocketObj,
+        [room]: tempSocketObj ? [...tempSocketObj, socket.id] : [socket.id]
+      }
+    }
+
     if (clients.length == 2) {
       // io.to(room).emit("started","you can play now")
       io.to(socket.id).emit("roomTwo", "room is filled");
     } else {
       socket.join(room);
       io.to(room).emit("private-room", "you are now in private room");
+
     }
     //send and get messages
 
 
     socket.on("sendMessage", (data) => {
-      console.log({"started": data})
       io.to(room).emit("getMessage", data);
     });
     socket.on("sendGameMessage", (data) => {
-      io.to(room).emit("getGameMessage", data);
+      io.to(room).emit("getGameMessage", data)
       // socket.broadcast.to(room).emit("getGameMessage", data);
     });
     socket.on("sendResetGameRequest", (data) => {
@@ -151,6 +159,7 @@ io.on("connection", (socket) => {
     });
     //chat within game
     socket.on("sendChatMessage", (data) => {
+
       io.to(room).emit("getChatMessage", data);
     });
     //send message if user left the room
@@ -172,10 +181,8 @@ io.on("connection", (socket) => {
       rooms[room].delete(socket.id);
       if (rooms[room].size === 0) delete rooms[room];
     });
-    // io.to(room).emit("userLeaveMessage", "Someone has left the room");
-    console.log("a user disconnected!");
+
     removePublicGame(socket.id, "socketId")
-    console.log("new", publicGames)
   });
 });
 
