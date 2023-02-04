@@ -19,7 +19,7 @@ import Profile from "./components/Profile/Profile";
 import { useAuth } from "./context/auth";
 import TagManager from "react-gtm-module";
 import Store from "./components/Store";
-import PrivacyModal from "./components/PrivacyModal";
+import PrivacyPolicy from "./components/PrivacyPolicy"
 
 
 //'G-YM283P3T0J'
