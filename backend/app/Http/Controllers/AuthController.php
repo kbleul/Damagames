@@ -69,12 +69,15 @@ class AuthController extends SendSmsController
     {
         $user = User::where('phone', $request->phone)->first();
 
+        if (!empty($user)) {
+            abort(404, "User not found");
+        }
         $credentials = request(['phone', 'password']);
         if (Auth::attempt($credentials)) {
             $token = $user->createToken('DAMA')->plainTextToken;
             return response()->json(['message' => 'Logged In!', 'token' => $token, 'user' => auth()->user()], 201);
         } else {
-            return response()->json(['message' => 'There was a problem with your login.'], 400);
+            return response()->json(['message' => 'Password is incorrect.'], 400);
         }
     }
 
