@@ -69,8 +69,8 @@ class AuthController extends SendSmsController
     {
         $user = User::where('phone', $request->phone)->first();
 
-        if (!empty($user)) {
-            abort(404, "User not found");
+        if (empty($user)) {
+            abort(404, "Invalid Phone number");
         }
         $credentials = request(['phone', 'password']);
         if (Auth::attempt($credentials)) {
