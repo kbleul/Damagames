@@ -56,7 +56,7 @@ const Login = () => {
             navigate('/')
           },
           onError: (err) => {
-            setErrorMessage("Incorrect username or password");
+            setErrorMessage(err.response.data.data);
           },
         }
       );
