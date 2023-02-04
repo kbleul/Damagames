@@ -19,7 +19,7 @@ class ScoreController extends GameController
      */
     public function index()
     {
-        return User::orderByDesc('current_point')
+        return User::orderByDesc('current_point')->limit(50)
             ->get()->map(function ($query) {
                 $query->rank = $this->getRanking($query->id);
                 return $query;
@@ -126,7 +126,6 @@ class ScoreController extends GameController
 
     public function draw(Game $game)
     {
-
         Score::create([
             'game_id' => $game->id,
             'draw' => true,
