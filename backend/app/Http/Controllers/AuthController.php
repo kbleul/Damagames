@@ -30,9 +30,7 @@ class AuthController extends SendSmsController
         if (!empty($user->phone_verified_at)) {
             return response()->json(['message' => 'Already verified'], 400);
         }
-        if (!empty($user)) {
-            abort(404, "User not found");
-        }
+
         if (Hash::check($request['password'], $user->password)) {
             $credentials = request(['phone', 'password']);
             Auth::attempt($credentials);
@@ -40,7 +38,7 @@ class AuthController extends SendSmsController
             $user->update(['phone_verified_at' => now()]);
             return response()->json(['message' => 'User Created successfully!', 'user' => auth()->user(), 'token' => $token], 201);
         } else {
-            return response()->json(['message' => 'Password is incorrect.'], 400);
+            return response()->json(['message' => 'Something wrong.'], 400);
         }
     }
 
