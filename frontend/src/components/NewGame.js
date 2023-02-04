@@ -70,7 +70,7 @@ const NewGame = () => {
   useEffect(() => {
     socket.on("getMessage", (data) => {
       if (data.status === "started") {
-        //navigate("/game");
+        navigate("/game");
       }
     });
 

@@ -44,7 +44,7 @@ const JoinGame = () => {
   const [name, setName] = useState(user && token ? user.username : "");
   useEffect(() => {
     socket.on("getMessage", (data) => {
-
+    
       setTimeout(() => {
         if (sameUser.current === false) {
           navigate("/game")
