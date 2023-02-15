@@ -22,3 +22,8 @@ jobs:
     uses: ./.github/workflows/docker_deploy.yml
     secrets: inherit
     #needs: 'release'
+
+  e2e-test:
+    uses: ./.github/workflows/playwright.yml
+    secrets: inherit
+    needs: 'deploy'
