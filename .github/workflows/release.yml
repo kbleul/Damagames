@@ -31,6 +31,10 @@ jobs:
         with:
           name: ops_manual.pdf
 
+      - uses: actions/download-artifact@v3
+        with:
+          name: playwright-report
+
       - name: "release candidate"
         if: contains(github.event.ref, '-rc')
         uses: "marvinpinto/action-automatic-releases@latest"
@@ -41,6 +45,7 @@ jobs:
             solution_architecture-${{ env.RELEASE_VERSION }}.zip
             solution_architecture-${{ env.RELEASE_VERSION }}.pdf
             ops_manual-${{ env.RELEASE_VERSION }}.pdf
+            playwright_report-${{ env.RELEASE_VERSION }}.zip
         
       - name: "release"
         if: (!contains(github.event.ref, '-rc'))
@@ -52,3 +57,4 @@ jobs:
             solution_architecture-${{ env.RELEASE_VERSION }}.zip
             solution_architecture-${{ env.RELEASE_VERSION }}.pdf
             ops_manual-${{ env.RELEASE_VERSION }}.pdf
+            playwright_report-${{ env.RELEASE_VERSION }}.zip

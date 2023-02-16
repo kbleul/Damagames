@@ -20,6 +20,7 @@ const io = new Server(httpServer, {
       "http://localhost:3000",
       "http://172.17.104.251:3000",
       "https://damagames.com",
+      "https://test.damagames.com",
     ],
     credentials: true,
   },

@@ -33,6 +33,7 @@ services:
             - NODE_ENV=${APP_ENV}
             - REACT_APP_FRONTEND_URL
             - REACT_APP_BACKEND_URL
+            - RELEASE_VERSION
         labels:
         - "traefik.frontend.priority=1"
         - "traefik.enable=true"
@@ -63,7 +64,7 @@ services:
         - "traefik.enable=true"
         - "traefik.api.priority=2"
         - "traefik.http.routers.api-https.entrypoints=websecure"
-        - "traefik.http.routers.api-https.rule=Host(`api.${REMOTE_HOST}`)"
+        - "traefik.http.routers.api-https.rule=Host(`api.${REMOTE_HOST}`) || PathPrefix(`/api`)"
         - "traefik.http.routers.api-https.tls.certresolver=myresolver"
 
     # Database server
