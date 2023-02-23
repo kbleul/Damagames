@@ -9,6 +9,7 @@ use App\Http\Controllers\PusherAuthController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\ScoreController;
 use App\Http\Controllers\SecurityQuestionController;
+use App\Http\Controllers\StoreController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
@@ -57,6 +58,8 @@ Route::middleware('response')->group(function () {
 
     Route::post('reset-change-password', [ResetPasswordController::class, 'change_password'])->middleware('auth:sanctum');
     Route::post('finish-regster', [AuthController::class, 'finish_regster'])->middleware('auth:sanctum');
+
+    Route::get('store-items', [StoreController::class, 'index']);
 });
 
 Route::resource('security-questions', SecurityQuestionController::class);
