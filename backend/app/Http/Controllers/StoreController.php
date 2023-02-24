@@ -46,9 +46,33 @@ class StoreController extends Controller
     public function my_items()
     {
         return [
-            'avatars' => auth()->user()->items->where('type', 'Avatar'),
-            'boards' => auth()->user()->items->where('type', 'Board'),
-            'crowns' => auth()->user()->items->where('type', 'Crown')
+            'avatars' => auth()->user()->items->where('type', 'Avatar')->map(function ($query) {
+                $userItem = UserItem::where('user_id', auth()->id())->where('item_id', $query->id)->first();
+                if ($userItem->status == 1) {
+                    $query->is_selected = true;
+                } else {
+                    $query->is_selected = false;
+                }
+                return $query;
+            }),
+            'boards' => auth()->user()->items->where('type', 'Board')->map(function ($query) {
+                $userItem = UserItem::where('user_id', auth()->id())->where('item_id', $query->id)->first();
+                if ($userItem->status == 1) {
+                    $query->is_selected = true;
+                } else {
+                    $query->is_selected = false;
+                }
+                return $query;
+            }),
+            'crowns' => auth()->user()->items->where('type', 'Crown')->map(function ($query) {
+                $userItem = UserItem::where('user_id', auth()->id())->where('item_id', $query->id)->first();
+                if ($userItem->status == 1) {
+                    $query->is_selected = true;
+                } else {
+                    $query->is_selected = false;
+                }
+                return $query;
+            })
         ];
     }
 
