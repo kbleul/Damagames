@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PurchaseItemRequest;
 use App\Http\Requests\StoreStoreRequest;
 use App\Http\Requests\UpdateStoreRequest;
 use App\Models\Store;
+use App\Models\User;
+use App\Models\UserItem;
+use GrahamCampbell\ResultType\Success;
 
 class StoreController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
         return [
@@ -22,69 +22,75 @@ class StoreController extends Controller
         ];
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function purchase(PurchaseItemRequest $request)
     {
-        //
+        $item = Store::find($request->item_id);
+
+        $userItem = UserItem::where('user_id', auth()->id())->where('item_id', $request->item_id)->first();
+
+        if (!empty($userItem)) {
+            abort(400, "Already Purchased!");
+        } elseif ($item->price > auth()->user()->current_point) {
+            abort(400, "Insufficent Funds!");
+        } else {
+            User::find(auth()->id())->update([
+                'current_point' => auth()->user()->current_point - $item->price,
+            ]);
+            return UserItem::create([
+                'item_id' => $request->item_id,
+                'user_id' =>  auth()->id(),
+            ]);
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreStoreRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreStoreRequest $request)
+    public function my_items()
     {
-        //
+        return [
+            'avatars' => auth()->user()->items->where('type', 'Avatar'),
+            'boards' => auth()->user()->items->where('type', 'Board'),
+            'crowns' => auth()->user()->items->where('type', 'Crown')
+        ];
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Store  $store
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Store $store)
+    public function select_avatar($itemId)
     {
-        //
+        $userItem = UserItem::where('user_id', auth()->id())->where('item_id', $itemId)->first();
+        if (empty($userItem) || $userItem->item->type !== "Avatar") {
+            abort(400, "Avatar Not Found!");
+        }
+        UserItem::where('user_id', auth()->id())
+            ->whereRelation('item', 'type', 'Avatar')->update(['status' => 0]);
+        $userItem->update([
+            'status' => 1,
+        ]);
+        return "Avatar Selected";
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Store  $store
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Store $store)
+    public function select_crown($itemId)
     {
-        //
+        $userItem = UserItem::where('user_id', auth()->id())->where('item_id', $itemId)->first();
+        if (empty($userItem) || $userItem->item->type !== "Crown") {
+            abort(400, "Crown Not Found!");
+        }
+        UserItem::where('user_id', auth()->id())
+            ->whereRelation('item', 'type', 'Crown')->update(['status' => 0]);
+        $userItem->update([
+            'status' => 1,
+        ]);
+        return "Crown Selected";
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateStoreRequest  $request
-     * @param  \App\Models\Store  $store
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateStoreRequest $request, Store $store)
+    public function select_board($itemId)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Store  $store
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Store $store)
-    {
-        //
+        $userItem = UserItem::where('user_id', auth()->id())->where('item_id', $itemId)->first();
+        if (empty($userItem) || $userItem->item->type !== "Board") {
+            abort(400, "Board Not Found!");
+        }
+        UserItem::where('user_id', auth()->id())
+            ->whereRelation('item', 'type', 'Board')->update(['status' => 0]);
+        $userItem->update([
+            'status' => 1,
+        ]);
+        return "Board Selected";
     }
 }

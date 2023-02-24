@@ -78,4 +78,12 @@ Route::middleware('response', 'auth:sanctum')->group(function () {
     Route::post('auth-join-game-via-code', [AuthPlayerController::class, 'join_game_via_code']);
     Route::post('auth-start-game/{game}', [AuthPlayerController::class, 'start_game']);
     Route::post('security-question-answer', [AuthController::class, 'user_answer']);
+
+
+    Route::post('purchase-item', [StoreController::class, 'purchase']);
+    Route::get('my-items', [StoreController::class, 'my_items']);
+
+    Route::post('select-board/{itemId}', [StoreController::class, 'select_board']);
+    Route::post('select-avatar/{itemId}', [StoreController::class, 'select_avatar']);
+    Route::post('select-crown/{itemId}', [StoreController::class, 'select_crown']);
 });
