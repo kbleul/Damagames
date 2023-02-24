@@ -1,9 +1,4 @@
-import {
-  createContext,
-  useState,
-  useEffect,
-  useContext,
-} from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 
 const HomeContext = createContext();
 
@@ -13,7 +8,7 @@ export function useHome() {
 
 export function HomeProvider({ children }) {
   const [checked, setChecked] = useState(false);
-
+ 
   // const [tokenExpirationDate, setTokenExpirationDate] = useState();
 
   useEffect(() => {
@@ -22,6 +17,10 @@ export function HomeProvider({ children }) {
 
   //Return
   return (
-    <HomeContext.Provider value={{ checked }}>{children}</HomeContext.Provider>
+    <HomeContext.Provider
+      value={{ checked,  }}
+    >
+      {children}
+    </HomeContext.Provider>
   );
 }

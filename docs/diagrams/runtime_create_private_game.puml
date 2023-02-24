@@ -1,0 +1,13 @@
+@startuml
+autonumber
+boundary messenger as "WhatsApp/Telegram"
+actor Player as Player
+boundary Frontend as Frontend
+participant game_endpoint as "/games"
+
+Player -> Frontend : Clicks "Create private game"
+Frontend -> game_endpoint : POST create game
+game_endpoint -> Frontend : 201 /games/{id}
+Frontend -> Player : shareable link to game
+Player -> messenger : shares link with friend
+@enduml

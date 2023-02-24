@@ -2,13 +2,19 @@ import SideMenu from "./SideMenu";
 import { useNavigate } from "react-router-dom";
 import background from "../assets/backdrop.jpg";
 import avatar from "../assets/dama-default.jpg";
- import { useAuth } from "../context/auth";
-import {Link } from "react-router-dom";
-
+import { useAuth } from "../context/auth";
+import { Link } from "react-router-dom";
+import { clearCookie } from "../utils/data";
 const CreateGame = () => {
   const navigate = useNavigate();
-  const { user, token  } = useAuth();
+  const { user, token } = useAuth();
 
+  const handleNavigate = (url) => {
+    clearCookie.forEach((data) => {
+      localStorage.getItem(data) && localStorage.removeItem(data);
+      navigate(url);
+    });
+  };
   return (
     <div
       style={{
@@ -21,7 +27,6 @@ const CreateGame = () => {
         width: "100%",
       }}
     >
-
       <SideMenu />
 
       <div className="flex flex-col items-center justify-center gap-y-4 min-h-screen space-y-2">
@@ -42,20 +47,43 @@ const CreateGame = () => {
           Join Game
         </button>
 
+        <button
+          onClick={() => navigate("/new-game-public")}
+          className="w-3/5 mt-24 border-2 bg-transparent border-orange-color p-2 px-11 font-medium text-orange-color rounded-lg max-w-[20rem]"
+        >
+          Public Game
+        </button>
+
         <>
-        {user && token ? <></> :
-          <div className="w-3/5 pb-[5vh]">
-          <button className="w-full  border-2 bg-transparent border-orange-color p-2 px-11 font-medium text-orange-color rounded-lg mb-2 max-w-[20rem]" onClick={() => { navigate("/signup")  }}>
-             <p>Sign Up</p>
-          </button>
-          <p className="text-orange-color text-xs">or</p>
-          <button className="font-bold text-orange-color border-b border-orange-color" onClick={() => { navigate("/login")  }}>Log in</button>
-        </div>
-        }</>
-       
-        
+          {!user && !token && (
+            <div className=" absolute right-4 top-4">
+              <button
+                className="w-full bg-orange-color 
+           p-2 px-5 font-medium text-white 
+           rounded-lg text-sm"
+                onClick={() => {
+                  navigate("/login");
+                }}
+              >
+                Log in
+              </button>
+            </div>
+          )}
+        </>
+
+        <button
+          onClick={() => handleNavigate(`/game/${1}`)}
+          className="w-3/5 mt-24 border-2 bg-transparent whitespace-nowrap
+           border-orange-color p-2 px-11 font-medium text-orange-color rounded-lg max-w-[20rem]"
+        >
+          Play With computer
+        </button>
+
         <section className="w-4/5 max-w-[30rem] flex items-center justify-evenly mt-[12vh]">
-          <Link to="/score-board" className="flex flex-col justify-evenly items-center">
+          <Link
+            to="/score-board"
+            className="flex flex-col justify-evenly items-center"
+          >
             <div className="h-6 w-8 bg-orange-color px-2 flex justify-center items-center ">
               <svg
                 width="20"
@@ -72,32 +100,8 @@ const CreateGame = () => {
             </div>
             <p className="text-orange-color text-[.7rem]">Score board</p>
           </Link>
-{/* 
-          <div className="flex flex-col justify-evenly items-center">
-            <div
-              className="h-6 w-8
-          flex justify-center items-center  bg-orange-color px-2"
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M6 16C4.9 16 4.01 16.9 4.01 18C4.01 19.1 4.9 20 6 20C7.1 20 8 19.1 8 18C8 16.9 7.1 16 6 16ZM0 0V2H2L5.6 9.59L4.25 12.04C4.09 12.32 4 12.65 4 13C4 14.1 4.9 15 6 15H18V13H6.42C6.28 13 6.17 12.89 6.17 12.75L6.2 12.63L7.1 11H14.55C15.3 11 15.96 10.59 16.3 9.97L19.88 3.48C19.9625 3.32739 20.004 3.15598 20.0005 2.98253C19.9969 2.80908 19.9485 2.63951 19.8598 2.49039C19.7711 2.34127 19.6453 2.2177 19.4946 2.13175C19.3439 2.04579 19.1735 2.0004 19 2H4.21L3.27 0H0ZM16 16C14.9 16 14.01 16.9 14.01 18C14.01 19.1 14.9 20 16 20C17.1 20 18 19.1 18 18C18 16.9 17.1 16 16 16Z"
-                  fill="#191921"
-                />
-              </svg>
-            </div>
-            <p className="text-orange-color text-[.7rem]">Shop</p>
-          </div> */}
-
         </section>
       </div>
-
-      
     </div>
   );
 };
