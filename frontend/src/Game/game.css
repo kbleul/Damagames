@@ -17,6 +17,7 @@ body {
   background-size: cover;
   background-repeat: no-repeat;
   width: 100%;
+  overflow: hidden;
 }
 
 .players > div {
@@ -129,7 +130,6 @@ body {
   background-image: url("/src/assets/yellow-coin-white.svg");
 }
 
-
 .square.player1.king {
   background-image: url("/src/assets/redNegus.svg");
 }
@@ -147,7 +147,6 @@ body {
 .vs {
   background-image: url("/src/assets/vs.svg");
 }
-
 
 @media only screen and (max-width: 700px) {
   .board-col {
@@ -180,7 +179,6 @@ body {
   }
 }
 
-
 @media only screen and (max-width: 370px) {
   .board-col {
     max-width: 35px;
@@ -190,3 +188,27 @@ body {
     width: 35px;
   }
 }
+
+/* .game-board {
+  position: relative;
+  display: inline-block;
+  -webkit-perspective: 1000px;
+  -moz-perspective: 1000px;
+  persepctive: 1000px;
+  margin: 20px;
+  margin-top: 50px;
+  border: none;
+}
+.game-board .box {
+  transform: rotateX(51deg);
+  background-color: black;
+}
+.game-board:before {
+  content: "";
+  top: -15px;
+  position: absolute;
+  width: 50px;
+  height: 375px;
+  background-color: grey;
+  transform: translateX(215px) translateY(2.7px) rotateY(55deg);
+} */

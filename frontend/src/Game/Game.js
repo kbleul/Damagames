@@ -67,6 +67,8 @@ const Game = () => {
   const [latestMessage, setLatestMessage] = useState(null);
   const [showResetWaiting, setShowResetWaiting] = useState(false);
 
+  const [threeD, setthreeD] = useState(false)
+
   useEffect(() => {
     if (!id && !localStorage.getItem("gameId")) {
       navigate("/create-game");
@@ -331,9 +333,9 @@ const Game = () => {
       setTimeout(() => {
         const postMoveState = movesData[1]
           ? movePiece(columns, mergerObj.moves[0], {
-              ...mergerObj,
-              jumpKills: movesData[1],
-            })
+            ...mergerObj,
+            jumpKills: movesData[1],
+          })
           : movePiece(columns, mergerObj.moves[0], mergerObj);
         if (postMoveState === null) {
           return;
@@ -881,16 +883,17 @@ const Game = () => {
           game_id: gameId,
         },
         {
-          onSuccess: (responseData) => {},
-          onError: (err) => {},
+          onSuccess: (responseData) => { },
+          onError: (err) => { },
         }
       );
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const changeSound = () => {
     localStorage.setItem("dama-sound", !soundOn);
     setSoundOn((prev) => !prev);
+    setthreeD(prev => !prev)
   };
 
   return (
@@ -1011,10 +1014,10 @@ const Game = () => {
                 ? user.username
                 : "You"
               : playerOneIp && user
-              ? user?.username
-              : playerOneIp
-              ? firstPlayer?.username
-              : "Your Friend"}
+                ? user?.username
+                : playerOneIp
+                  ? firstPlayer?.username
+                  : "Your Friend"}
           </h4>
         </div>
 
@@ -1046,10 +1049,10 @@ const Game = () => {
             {id == 1
               ? "Computer"
               : playerTwoIp && user
-              ? user?.username
-              : playerTwoIp
-              ? secondPlayer?.username
-              : "Your Friend"}
+                ? user?.username
+                : playerTwoIp
+                  ? secondPlayer?.username
+                  : "Your Friend"}
           </h4>
         </div>
       </section>
@@ -1134,31 +1137,33 @@ const Game = () => {
           />
         )}
       </div>
-      <div className="game-board  ">
-        <div
-          className={` shadow-2xl    ${
-            !id
-              ? currentPlayer === true
-                ? currentPlayer === true && !firstPlayer
-                  ? "pointer-events-none"
-                  : ""
-                : currentPlayer === false
+      <div className={threeD ? "game-board" : ""}>
+        <div style={{
+          transform: 'rotateX(49deg)',
+          backgroundColor: "black"
+        }}
+          className={`box shadow-2xl    ${!id
+            ? currentPlayer === true
+              ? currentPlayer === true && !firstPlayer
+                ? "pointer-events-none"
+                : ""
+              : currentPlayer === false
                 ? currentPlayer === false && !secondPlayer
                   ? "pointer-events-none"
                   : ""
                 : ""
-              : ""
-          }`}
+            : ""
+            }`}
         >
           <Board
             boardState={
               id === "1"
                 ? dict_reverse(boardState)
                 : !id
-                ? localStorage.getItem("playerOne")
-                  ? dict_reverse(boardState)
+                  ? localStorage.getItem("playerOne")
+                    ? dict_reverse(boardState)
+                    : boardState
                   : boardState
-                : boardState
             }
             currentPlayer={currentPlayer}
             activePiece={gameState.activePiece}
@@ -1207,9 +1212,8 @@ const Game = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ type: "tween", duration: 1, ease: "easeInOut" }}
-          className={`absolute top-36  bg-white max-w-sm  p-1 w-44 ${
-            playerOneIp ? "left-3" : "right-3"
-          }
+          className={`absolute top-36  bg-white max-w-sm  p-1 w-44 ${playerOneIp ? "left-3" : "right-3"
+            }
        border border-orange-color rounded-lg m-3`}
         >
           <div className="text-gray-800">
