@@ -87,6 +87,10 @@ class StoreController extends Controller
         $userItem->update([
             'status' => 1,
         ]);
+        $user =  User::find(auth()->id());
+        $user->update([
+            'profile_image' => $userItem->item->item,
+        ]);
         return "Avatar Selected";
     }
 
