@@ -127,13 +127,13 @@ export function movePiece(columns, coordinates, gameState) {
   // Move piece to new coordinates
   boardState[gameState.activePiece] = null;
   boardState[coordinates] = movingPiece;
+
   // Remove opponent piece if jump is made
   const player = movingPiece.player;
   let hasJumped = null;
   let newMoves = [];
   let setCurrentPlayer = player === "player2";
   let setActivePiece = null;
-
   if (jumpArray.indexOf(coordinates) > -1) {
     let opponentPosition = utils.getKeyByValue(gameState.jumpKills, coordinates);
     //remove oponent piece
@@ -148,6 +148,7 @@ export function movePiece(columns, coordinates, gameState) {
     );
 
     if (newMoves[0].length > 0) {
+
       hasJumped = true;
       setCurrentPlayer = currentState.currentPlayer;
       setActivePiece = coordinates;
@@ -158,6 +159,7 @@ export function movePiece(columns, coordinates, gameState) {
 
   if (hasJumped === true) {
     if (newMoves[0].length > 0) {
+
       setCurrentPlayer = currentState.currentPlayer;
       setActivePiece = coordinates;
     }
@@ -172,6 +174,8 @@ export function movePiece(columns, coordinates, gameState) {
   stateOut.jumpKills = hasJumped === true ? newMoves[1] : null;
   stateOut.hasJumped = hasJumped === true ? player : null;
   stateOut.winner = evaluateWinner(columns, boardState);
+
+
 
   return stateOut;
 }

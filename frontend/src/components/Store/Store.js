@@ -170,15 +170,6 @@ const Store = () => {
                             background: `linear-gradient(120deg, rgb(39, 138, 134) 1%, rgba(11, 42, 43, 0.32) 10%, rgb(22, 85, 82) 98%) repeat scroll 0% 0%`,
                         }} className={(isOn && showCrown) ? "grid grid-cols-3 w-[90%] ml-[4%] border rounded-lg  overflow-scroll scrollbar-hide" : "grid grid-cols-3 w-[90%] ml-[5%] border rounded-lg max-h-[20vh] md:max-h-fit overflow-scroll scrollbar-hide"}>
                             {storeItems.crowns.map(crown => (<Crown id={crown.id} crown={crown} set_isShowModalOpen={set_isShowModalOpen} setSelectedItem={setSelectedItem} setShowLoginModal={setShowLoginModal} isOn={isOn} myCrownsId={myCrownsId} />))}
-                            {storeItems.crowns.map(crown => (<Crown id={crown.id} crown={crown} set_isShowModalOpen={set_isShowModalOpen} setSelectedItem={setSelectedItem} setShowLoginModal={setShowLoginModal} isOn={isOn} myCrownsId={myCrownsId} />))}
-                            {storeItems.crowns.map(crown => (<Crown id={crown.id} crown={crown} set_isShowModalOpen={set_isShowModalOpen} setSelectedItem={setSelectedItem} setShowLoginModal={setShowLoginModal} isOn={isOn} myCrownsId={myCrownsId} />))}
-                            {storeItems.crowns.map(crown => (<Crown id={crown.id} crown={crown} set_isShowModalOpen={set_isShowModalOpen} setSelectedItem={setSelectedItem} setShowLoginModal={setShowLoginModal} isOn={isOn} myCrownsId={myCrownsId} />))}
-                            {storeItems.crowns.map(crown => (<Crown id={crown.id} crown={crown} set_isShowModalOpen={set_isShowModalOpen} setSelectedItem={setSelectedItem} setShowLoginModal={setShowLoginModal} isOn={isOn} myCrownsId={myCrownsId} />))}
-                            {storeItems.crowns.map(crown => (<Crown id={crown.id} crown={crown} set_isShowModalOpen={set_isShowModalOpen} setSelectedItem={setSelectedItem} setShowLoginModal={setShowLoginModal} isOn={isOn} myCrownsId={myCrownsId} />))}
-                            {storeItems.crowns.map(crown => (<Crown id={crown.id} crown={crown} set_isShowModalOpen={set_isShowModalOpen} setSelectedItem={setSelectedItem} setShowLoginModal={setShowLoginModal} isOn={isOn} myCrownsId={myCrownsId} />))}
-                            {storeItems.crowns.map(crown => (<Crown id={crown.id} crown={crown} set_isShowModalOpen={set_isShowModalOpen} setSelectedItem={setSelectedItem} setShowLoginModal={setShowLoginModal} isOn={isOn} myCrownsId={myCrownsId} />))}
-                            {storeItems.crowns.map(crown => (<Crown id={crown.id} crown={crown} set_isShowModalOpen={set_isShowModalOpen} setSelectedItem={setSelectedItem} setShowLoginModal={setShowLoginModal} isOn={isOn} myCrownsId={myCrownsId} />))}
-                            {storeItems.crowns.map(crown => (<Crown id={crown.id} crown={crown} set_isShowModalOpen={set_isShowModalOpen} setSelectedItem={setSelectedItem} setShowLoginModal={setShowLoginModal} isOn={isOn} myCrownsId={myCrownsId} />))}
 
                         </section>
                     </article>
@@ -204,20 +195,7 @@ const Store = () => {
         <StoreItemView isShowModalOpen={isShowModalOpen} set_isShowModalOpen={set_isShowModalOpen} item={selectedItem} />
         <LoginPromptModal isShowModalOpen={ShowLoginModal} set_isShowModalOpen={setShowLoginModal} />
 
-        {/* 
-        {!storeItemsFetch.isFetched &&
-            <div className="text-white flex items-center justify-center min-h-screen">
-                <Circles
-                    height="60"
-                    width="90"
-                    radius="9"
-                    color="#FF4C01"
-                    ariaLabel="three-dots-loading"
-                    wrapperStyle={{}}
-                    wrapperClassName=""
-                    visible={true}
-                />
-            </div>} */}
+
     </main>)
 }
 
@@ -238,10 +216,8 @@ const Avatar = ({ avatar, set_isShowModalOpen, setSelectedItem, setShowLoginModa
 
             if (myAvatarsId.includes(avatar.id)) { return; }
 
-            if (parseInt(user.coin) >= avatar.price) {
-                setSelectedItem(avatar)
-                set_isShowModalOpen(true)
-            }
+            setSelectedItem(avatar)
+            set_isShowModalOpen(true)
         }}>
         <section className="w-[20%] border rounded-lg mr-2">
             <img src={avatar.item} alt="" />
@@ -283,7 +259,7 @@ const Avatar = ({ avatar, set_isShowModalOpen, setSelectedItem, setShowLoginModa
             </>
         }
 
-        {user && token && myAvatarsId.includes(avatar.id) && <p className="absolute bottom-0 right-0 text-white text-xs bg-orange-500 text-black font-extrabold px-2 ">Own</p>}
+        {user && token && myAvatarsId.includes(avatar.id) && <p className="absolute bottom-0 right-0 text-white text-xs bg-orange-500 text-black font-extrabold px-2 ">Purchased</p>}
 
 
     </article>)
@@ -302,10 +278,8 @@ const Board = ({ board, isOn, set_isShowModalOpen, setSelectedItem, setShowLogin
 
             if (myBoardsId.includes(board.id)) { return; }
 
-            if (parseInt(user.coin) >= board.price) {
-                setSelectedItem(board)
-                set_isShowModalOpen(true)
-            }
+            setSelectedItem(board)
+            set_isShowModalOpen(true)
         }}>
 
         {isOn && <h4 className="text-sm ">{board.name}</h4>}
@@ -344,7 +318,7 @@ const Board = ({ board, isOn, set_isShowModalOpen, setSelectedItem, setShowLogin
             }
         </>}
 
-        {user && token && myBoardsId.includes(board.id) && <p className="absolute top-0 right-0 text-white text-xs bg-orange-500 text-black font-extrabold px-2 ">Own</p>}
+        {user && token && myBoardsId.includes(board.id) && <p className="absolute top-0 right-0 text-white text-xs bg-orange-500 text-black font-extrabold px-2 ">Purchased</p>}
 
     </article >)
 }
@@ -362,10 +336,8 @@ const Crown = ({ crown, set_isShowModalOpen, setSelectedItem, setShowLoginModal,
 
         if (myCrownsId.includes(crown.id)) { return; }
 
-        if (parseInt(user.coin) >= crown.price) {
-            setSelectedItem(crown)
-            set_isShowModalOpen(true)
-        }
+        setSelectedItem(crown)
+        set_isShowModalOpen(true)
     }}>
 
         {isOn && <h4 className="text-sm ">{crown.name}</h4>}
@@ -406,7 +378,7 @@ const Crown = ({ crown, set_isShowModalOpen, setSelectedItem, setShowLoginModal,
                 </svg>
             </p>
         </section>}
-        {user && token && myCrownsId.includes(crown.id) && <p className={isOn ? "absolute bottom-6 right-0 text-white text-xs bg-orange-500 text-black font-extrabold px-2 " : "absolute top-2 right-0 text-white text-xs bg-orange-500 text-black font-extrabold px-2 "}>Own</p>}
+        {user && token && myCrownsId.includes(crown.id) && <p className={isOn ? "absolute bottom-6 right-0 text-white text-xs bg-orange-500 text-black font-extrabold px-2 " : "absolute top-2 right-0 text-white text-xs bg-orange-500 text-black font-extrabold px-2 "}>Purchased</p>}
 
 
 

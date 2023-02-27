@@ -4,6 +4,7 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom';
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
+import { MdOutlineCancel } from "react-icons/md";
 
 const LoginPromptModal = ({ isShowModalOpen, set_isShowModalOpen }) => {
 
@@ -42,13 +43,12 @@ const LoginPromptModal = ({ isShowModalOpen, set_isShowModalOpen }) => {
                                 <Dialog.Panel className="border border-orange-500 bg-[#181920] w-full max-w-md transform overflow-hidden rounded-2xl  p-6 text-left align-middle shadow-xl transition-all">
                                     <Dialog.Title
                                         as="h3"
-                                        className="text-lg font-medium leading-6 text-white text-center"
+                                        className="text-md font-medium leading-6 text-white text-center"
                                     >
-                                        You need to login to use the store.
+                                        You need to login to buy items.
                                     </Dialog.Title>
 
-                                    <p className="text-orange-color text-center mb-4">Login right now and get all you need</p>
-
+                                    <MdOutlineCancel onClick={() => set_isShowModalOpen(false)} className="absolute top-2 right-2 text-orange-color w-6 h-6" />
 
                                     <div className="mt-4 flex w-full items-center space-x-5 justify-center">
                                         <button
@@ -59,13 +59,18 @@ const LoginPromptModal = ({ isShowModalOpen, set_isShowModalOpen }) => {
                                         >
                                             Login
                                         </button>
+
+                                        <p className='text-sm text-white'>or</p>
+
                                         <button
                                             type="button"
-                                            className=" rounded-md  px-6 p-2 bg-gray-500 text-white text-sm font-medium hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                                            onClick={() => set_isShowModalOpen(false)}
+                                            className="rounded-md bg-gray-300 px-6  p-2
+                   text-sm font-medium text-black hover:bg-orange-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                                            onClick={() => navigate("/signup")}
                                         >
-                                            No
+                                            Signup
                                         </button>
+
                                     </div>
 
                                 </Dialog.Panel>

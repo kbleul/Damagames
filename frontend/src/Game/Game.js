@@ -203,7 +203,6 @@ const Game = () => {
       ) {
         return;
       }
-
       // Unset active piece if it's clicked
       if (
         gameState.activePiece === coordinates &&
@@ -231,7 +230,6 @@ const Game = () => {
         clickedSquare.isKing,
         false
       );
-
       setGameState({
         ...gameState,
         activePiece: coordinates,
@@ -258,9 +256,6 @@ const Game = () => {
       updateStatePostMove(postMoveState);
       // if(soundOn) { playMove()}
       soundOn && playMove();
-
-      // Start computer move is the player is finished
-      console.log({ winner: postMoveState.winner });
       if (
         id === "1" &&
         postMoveState.currentPlayer === false &&
@@ -350,7 +345,6 @@ const Game = () => {
         } else if (!movesData[1] && soundOn) {
           playMove();
         }
-        console.log({ winnerComputer: postMoveState.winner });
 
         // If the computer player has jumped and is still moving, continue jump with active piece
         if (postMoveState.currentPlayer === false) {
@@ -362,6 +356,20 @@ const Game = () => {
 
   //update the game state after move
   function updateStatePostMove(postMoveState) {
+    localStorage.getItem("playerOne") && console.log("normal", dict_reverse(gameState))
+    !localStorage.getItem("playerOne") && console.log("Rever: ", gameState)
+
+    let track
+    if (gameState.moves.length === 1) {
+      track = { moved: gameState.activePiece, to: gameState.moves[0] }
+    } else {
+      if (postMoveState[gameState.moves[0]]) { track = { moved: gameState.activePiece, to: gameState.moves[0] } }
+      else {
+        track = { moved: gameState.activePiece, to: gameState.moves[1] }
+      }
+    }
+
+    console.log("Rever: ", postMoveState.boardState)
     setGameState((prevGameState) => {
       return {
         ...prevGameState,
@@ -389,6 +397,7 @@ const Game = () => {
       boardState: postMoveState.boardState,
       currentPlayer: postMoveState.currentPlayer,
       turnPlayer: postMoveState.currentPlayer ? "player1" : "player2",
+      tracker: track
     });
 
     calcPawns(postMoveState.boardState);
@@ -473,8 +482,12 @@ const Game = () => {
         }
       }
     }
+
+    gameState.tracker && console.log(gameState, gameState.tracker?.moved)
+    // gameState.tracker && document.getElementsByClassName(gameState.tracker.moved)[0].setAttribute("id", "white")
+
+
   }, [gameState, gameStatus, winnerPlayer]);
-  console.log({ dfgdg: gameState.winner });
   const resetGame = () => {
     moveRef.current = [0, 0];
 
@@ -482,6 +495,8 @@ const Game = () => {
   };
   const rejectGameRequest = () => {
     socket.emit("sendRejectGameMessage", { status: "Reject" });
+    setShowResetWaiting(false);
+    setIsDrawModalOpen(false)
   };
   const acceptGameRequest = () => {
     socket.emit("sendResetGameMessage", {
@@ -558,7 +573,6 @@ const Game = () => {
     let [prevP1, prevP2] = pawns;
     let player1Counter = 0;
     let player2Counter = 0;
-    console.log({ boardState, currentPlayer });
     Object.keys(boardState).forEach((key) => {
       if (boardState[key]?.player === "player1") {
         ++player1Counter;
@@ -603,12 +617,27 @@ const Game = () => {
     // let cPlayer = currentPlayer
     socket.on(
       "getGameMessage",
-      ({ winnerPlayer, boardState, currentPlayer, turnPlayer }) => {
+      ({ winnerPlayer, boardState, currentPlayer, turnPlayer, tracker }) => {
         stopInterval();
         // setUpdatedState({winnerPlayer,boardState,currentPlayer})
 
         setMyTurn(turnPlayer);
         setWinnerPlayer(winnerPlayer);
+
+        console.log("from get", {
+          ...gameState, history: gameState.history?.map((item) => {
+            return {
+              ...item,
+              boardState: boardState,
+              currentPlayer: currentPlayer,
+            };
+          }),
+          tracker
+        })
+
+        tracker && tracker.moved && console.log(document.getElementsByClassName(tracker.moved))
+
+
         setGameState((prevGameState) => {
           return {
             ...prevGameState,
@@ -619,6 +648,7 @@ const Game = () => {
                 currentPlayer: currentPlayer,
               };
             }),
+            tracker
           };
         });
 
@@ -628,6 +658,7 @@ const Game = () => {
 
         calcPawns(boardState);
         compareObjects(lastElement?.boardState, boardState);
+
       }
     );
 
@@ -655,13 +686,18 @@ const Game = () => {
     socket.on("getDrawGameRequest", ({ status }) => {
       setIsDrawModalOpen(true);
     });
-    socket.on("getRejectGameMessage", ({ status }) => {
+    socket.on("getRejectGameMessage", (status) => {
       setShowResetWaiting(false);
       toast("You friend did not accept the request");
-      clearCookie.forEach((data) => {
-        localStorage.getItem(data) && localStorage.removeItem(data);
-      });
-      navigate("/create-game");
+
+      if (!status.type) {
+
+        clearCookie.forEach((data) => {
+          localStorage.getItem(data) && localStorage.removeItem(data);
+        });
+        navigate("/create-game");
+      }
+
     });
 
     //listen for if user left room
@@ -719,7 +755,6 @@ const Game = () => {
   };
 
   const timeChecker = () => {
-    console.log("running");
     let myCounter = 0;
 
     if (currentPlayer && localStorage.getItem("playerOneIp")) {
@@ -830,18 +865,6 @@ const Game = () => {
   useEffect(() => {
     timeChecker();
   }, [currentPlayer]);
-
-  //           //  socket.emit("sendGameMessage", {
-  //           //    winnerPlayer: latestState.winner,
-  //           //    boardState: latestState.boardState,
-  //           //    currentPlayer: latestState.currentPlayer,
-  //           //    turnPlayer: latestState.currentPlayer ? "player1" : "player2",
-  //           //   });
-  //          }
-  //       } , 1000);
-  //     }
-
-  // }, [MyTurn])
 
   useEffect(() => {
     if (winnerPlayer) {
@@ -1138,10 +1161,7 @@ const Game = () => {
         )}
       </div>
       <div className={threeD ? "game-board" : ""}>
-        <div style={{
-          transform: 'rotateX(49deg)',
-          backgroundColor: "black"
-        }}
+        <div
           className={`box shadow-2xl    ${!id
             ? currentPlayer === true
               ? currentPlayer === true && !firstPlayer
@@ -1171,6 +1191,7 @@ const Game = () => {
             columns={columns}
             onClick={(coordinates) => handleClick(coordinates)}
             numberOfPlayers={gameState.players}
+            tracker={gameState.tracker ? gameState.tracker : null}
           />
         </div>
       </div>

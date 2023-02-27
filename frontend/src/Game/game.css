@@ -148,6 +148,10 @@ body {
   background-image: url("/src/assets/vs.svg");
 }
 
+.square.tracker {
+  background-color: #858484;
+}
+
 @media only screen and (max-width: 700px) {
   .board-col {
     max-width: 60px;

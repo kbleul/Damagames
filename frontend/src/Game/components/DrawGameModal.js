@@ -49,7 +49,7 @@ const DrawGameModal = ({
                 >
                   <div className="p-2 flex flex-col items-center space-y-2">
                     <h1 className="text-white font-medium capitalize text-center">
-                      You friend is request for Draw for this match ?
+                      You friend has requested for a draw ?
                     </h1>
 
                     <button
@@ -64,11 +64,7 @@ const DrawGameModal = ({
                       className="w-[60%] justify-center rounded-md 
                     bg-orange-bg px-4 py-2 text-sm text-white font-medium
                     hover:opacity-80"
-                      onClick={() => {
-                        rejectGameRequest();
-                        localStorage.clear();
-                        navigate("/create-game");
-                      }}
+                      onClick={rejectGameRequest}
                     >
                       Reject
                     </button>

@@ -146,7 +146,7 @@ io.on("connection", (socket) => {
 
     socket.on("sendRejectGameMessage", (data) => {
       // io.to(room).emit("getRejectGameMessage", data);
-      socket.broadcast.to(room).emit("getRejectGameMessage", data);
+      socket.to(room).emit("getRejectGameMessage", { data, type: "draw-rejected" });
     });
     //send draw game message
     socket.on("sendDrawGameRequest", (data) => {

@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import Pic1 from "../../assets/pic1.jpg";
 import Pic2 from "../../assets/pic2.png";
@@ -12,13 +12,10 @@ import { BsFillPatchCheckFill } from "react-icons/bs";
 import { RiLock2Fill } from "react-icons/ri";
 import { ImUnlocked } from "react-icons/im";
 import { AiFillStar } from "react-icons/ai";
-
-
 import ChangeBoard from "./changeSettings/ChangeBoard";
 import ChangeCrown from "./changeSettings/ChangeCrown";
 
 const SHOWiTEM = { "AVATAR": "avatar", "BOARD": "board", "CROWN": "crown" }
-
 const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
   const { login, token, user } = useAuth();
 
@@ -173,6 +170,13 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
   );
 
 
+  useEffect(() => {
+    console.log(showItems, showItems === SHOWiTEM.AVATAR)
+    console.log(showItems === SHOWiTEM.BOARD, showItems === SHOWiTEM.CROWN)
+
+
+  }, [showItems])
+
   return (
     <>
       <Transition appear show={changeProfileModal} as={Fragment}>
@@ -216,7 +220,6 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
                       setSelected(null)
                       setSelectedItem([])
                       setErrorMessage("")
-                      setShowItems(SHOWiTEM.AVATAR)
                     }}
                     className={`absolute right-3 top-2 border-2 rounded-md  p-1 cursor-pointer`}
                   >
@@ -256,10 +259,13 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
                     )}
                     {/* profiles */}
 
-                    <section className="w-full border-b flex items-center justify-center gap-8 text-sm font-bold">
-                      <button className={showItems === SHOWiTEM.AVATAR ? "text-orange-color hover:text-white" : "text-white hover:text-orange-color"} onClick={() => setShowItems(SHOWiTEM.AVATAR)}>Avatars</button>
-                      <button className={showItems === SHOWiTEM.BOARD ? "text-orange-color hover:text-white" : "text-white hover:text-orange-color"} onClick={() => setShowItems(SHOWiTEM.BOARD)}>Boards</button>
-                      <button className={showItems === SHOWiTEM.CROWN ? "text-orange-color hover:text-white" : "text-white hover:text-orange-color"} onClick={() => setShowItems(SHOWiTEM.CROWN)}>Crown / King</button>
+                    <section className="w-full border-b border-gray-600 flex items-center justify-center gap-8 text-sm font-bold pb-1 ">
+                      <button className={showItems === SHOWiTEM.AVATAR ? "border-b-2 border-orange-600 text-orange-600 hover:text-white cursor-pointer" : "text-white hover:text-orange-color cursor-pointer"}
+                        onClick={() => setShowItems(SHOWiTEM.AVATAR)}>Avatars</button>
+                      <button className={showItems === SHOWiTEM.BOARD ? "border-b-2 border-orange-600 text-orange-600 hover:text-white cursor-pointer" : "text-white hover:text-orange-color cursor-pointer"}
+                        onClick={() => setShowItems(SHOWiTEM.BOARD)}>Boards</button>
+                      <button className={showItems === SHOWiTEM.CROWN ? "border-b-2 border-orange-600 text-orange-600 hover:text-white cursor-pointer" : "text-white hover:text-orange-color cursor-pointer"}
+                        onClick={() => setShowItems(SHOWiTEM.CROWN)}>Crown / King</button>
                     </section>
 
                     {showItems === SHOWiTEM.AVATAR && <div className="flex flex-col items-center space-y-2 w-full">
@@ -307,13 +313,6 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
                               <AiFillStar className="absolute bottom-2 right-2 text-orange-color" />
                             }
 
-                            {/* {parseInt(user.coin) < avatar.price &&
-                              <RiLock2Fill className="absolute top-2 right-2 text-orange-color" />
-                            }
-
-                            {(parseInt(user.coin) > avatar.price || parseInt(user.coin) === avatar.price) &&
-                              <ImUnlocked className="absolute top-2 right-2 text-white" />
-                            } */}
 
                             <img
                               src={avatar.item}
@@ -327,25 +326,6 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
 
                       </div>
 
-                      {/* {pricePrompt &&
-                        <section className="w-4/5 ml-[5%] text-xs font-light">
-                          <div className="text-white  flex justify-between items-center">
-                            <p>Your coins</p>
-                            <p>{user.coin} coins</p>
-                          </div>
-                          <div className="text-white flex justify-between items-center">
-                            <p>Avatar Price</p>
-                            <p>{pricePrompt} coins</p>
-                          </div>
-
-                          <div className="text-white flex justify-between items-center mt-[3vh] border-t border-gray-700 py-2">
-                            <p>After Purchase</p>
-                            <p>{parseInt(user.coin) - pricePrompt} coins</p>
-                          </div>
-
-                        </section>
-
-                      } */}
                       {selected !== null && (
                         <button
                           disabled={profileMutation.isLoading}
