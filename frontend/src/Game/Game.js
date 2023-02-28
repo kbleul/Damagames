@@ -1162,7 +1162,7 @@ const Game = () => {
           />
         )}
       </div>
-      <div className={threeD ? "game-board" : ""}>
+      <div className={threeD ? "" : ""}>
         <div
           className={`box   ${!id
             ? currentPlayer === true
