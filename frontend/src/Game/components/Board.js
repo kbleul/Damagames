@@ -21,13 +21,13 @@ const Board = (props) => {
 
     else { squareClasses = props["squareClasses"] }
 
-    // props.tracker && console.log(props.tracker.moved)
-    if (tracker && squareClasses.includes(tracker.moved)) {
-      console.log("squareClasses", squareClasses, "---------------------")
+    // // props.tracker && console.log(props.tracker.moved)
+    // if (tracker && squareClasses.includes(tracker.moved)) {
+    //   console.log("squareClasses", squareClasses, "---------------------")
 
-    } else {
-      console.log("squareClasses", squareClasses)
-    }
+    // } else {
+    //   console.log("squareClasses", squareClasses)
+    // }
 
     //console.log(tracker)
 
