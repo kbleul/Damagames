@@ -196,7 +196,7 @@ const PubicGames = () => {
             </div>
             <a
               onClick={() => { setCode(game.code); handleSubmitCode(game.code) }}
-              className="w-[20%] mr-4 bg-orange-color hover:bg-orange-600 text-black font-bold px-12 flex items-center justify-center">Join</a>
+              className="w-[20%] mr-4 bg-orange-color hover:bg-orange-600 text-black font-bold px-12 flex items-center justify-center">Play</a>
           </section>
           <section className="flex justify-between mt-2">
           </section>

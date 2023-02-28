@@ -1,6 +1,6 @@
 
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { useAuth } from "../../context/auth";
 import toast, { Toaster } from "react-hot-toast";
 import { MdOutlineCancel } from "react-icons/md";
@@ -10,9 +10,9 @@ import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 
-const StoreItemView = ({ isShowModalOpen, set_isShowModalOpen, item }) => {
+const StoreItemView = ({ isShowModalOpen, set_isShowModalOpen, item, myAvatarsId, myBoardsId, myCrownsId }) => {
+
     const { user, token } = useAuth();
-    const [errorMessage, setErrorMessage] = useState(null)
     const navigate = useNavigate();
     const [showPurchasedItemModal, setShowPurchasedItemModal] = useState(false)
 
@@ -45,9 +45,12 @@ const StoreItemView = ({ isShowModalOpen, set_isShowModalOpen, item }) => {
                 },
                 {
                     onSuccess: (responseData) => {
-                        console.log(responseData)
                         set_isShowModalOpen(false)
                         setShowPurchasedItemModal(true)
+                        item.type === "Avatar" && myAvatarsId.push(item.id)
+                        item.type === "Board" && myBoardsId.push(item.id)
+                        item.type === "Crown" && myCrownsId.push(item.id)
+
                     },
                     onError: (err) => {
                         set_isShowModalOpen(false)
@@ -73,9 +76,9 @@ const StoreItemView = ({ isShowModalOpen, set_isShowModalOpen, item }) => {
         }
     };
 
-    // useEffect(() => {
-    //     showPurchasedItemModal && setTimeout(3000, () => setShowPurchasedItemModal(false))
-    // }, [showPurchasedItemModal])
+    useEffect(() => {
+        showPurchasedItemModal && setTimeout(() => setShowPurchasedItemModal(false), 2000)
+    }, [showPurchasedItemModal])
 
     return (
         <>
