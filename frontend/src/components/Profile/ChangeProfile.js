@@ -170,13 +170,6 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
   );
 
 
-  useEffect(() => {
-    console.log(showItems, showItems === SHOWiTEM.AVATAR)
-    console.log(showItems === SHOWiTEM.BOARD, showItems === SHOWiTEM.CROWN)
-
-
-  }, [showItems])
-
   return (
     <>
       <Transition appear show={changeProfileModal} as={Fragment}>

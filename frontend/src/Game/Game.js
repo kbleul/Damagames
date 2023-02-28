@@ -356,20 +356,19 @@ const Game = () => {
 
   //update the game state after move
   function updateStatePostMove(postMoveState) {
-    localStorage.getItem("playerOne") && console.log("normal", dict_reverse(gameState))
-    !localStorage.getItem("playerOne") && console.log("Rever: ", gameState)
 
     let track
     if (gameState.moves.length === 1) {
       track = { moved: gameState.activePiece, to: gameState.moves[0] }
     } else {
-      if (postMoveState[gameState.moves[0]]) { track = { moved: gameState.activePiece, to: gameState.moves[0] } }
+      console.log({ active: gameState.activePiece, to: gameState.moves }, postMoveState)
+      if (postMoveState[gameState.moves[0]]) { track = { moved: gameState.activePiece, to: gameState.moves[1] } }
       else {
-        track = { moved: gameState.activePiece, to: gameState.moves[1] }
+        track = { moved: gameState.activePiece, to: gameState.moves[0] }
       }
     }
 
-    console.log("Rever: ", postMoveState.boardState)
+    // console.log("Rever: ", postMoveState.boardState)
     setGameState((prevGameState) => {
       return {
         ...prevGameState,
@@ -483,7 +482,7 @@ const Game = () => {
       }
     }
 
-    gameState.tracker && console.log(gameState, gameState.tracker?.moved)
+    // gameState.tracker && console.log(gameState, gameState.tracker)
     // gameState.tracker && document.getElementsByClassName(gameState.tracker.moved)[0].setAttribute("id", "white")
 
 
@@ -624,18 +623,18 @@ const Game = () => {
         setMyTurn(turnPlayer);
         setWinnerPlayer(winnerPlayer);
 
-        console.log("from get", {
-          ...gameState, history: gameState.history?.map((item) => {
-            return {
-              ...item,
-              boardState: boardState,
-              currentPlayer: currentPlayer,
-            };
-          }),
-          tracker
-        })
+        //console.log("from get", {
+        //   ...gameState, history: gameState.history?.map((item) => {
+        //     return {
+        //       ...item,
+        //       boardState: boardState,
+        //       currentPlayer: currentPlayer,
+        //     };
+        //   }),
+        //   tracker
+        // })
 
-        tracker && tracker.moved && console.log(document.getElementsByClassName(tracker.moved))
+        //tracker && tracker.moved && console.log(document.getElementsByClassName(tracker.moved))
 
 
         setGameState((prevGameState) => {
