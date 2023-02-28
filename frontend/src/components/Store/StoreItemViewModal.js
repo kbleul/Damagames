@@ -47,18 +47,6 @@ const StoreItemView = ({ isShowModalOpen, set_isShowModalOpen, item }) => {
                     onSuccess: (responseData) => {
                         console.log(responseData)
                         set_isShowModalOpen(false)
-                        // toast.success('Purchase made successfully', {
-                        //     style: {
-                        //         border: '1px solid #713200',
-                        //         padding: '16px',
-                        //         color: 'white',
-                        //         backgroundColor: 'black'
-                        //     },
-                        //     iconTheme: {
-                        //         primary: '#713200',
-                        //         secondary: '#FFFAEE',
-                        //     },
-                        // });
                         setShowPurchasedItemModal(true)
                     },
                     onError: (err) => {
@@ -84,6 +72,10 @@ const StoreItemView = ({ isShowModalOpen, set_isShowModalOpen, item }) => {
 
         }
     };
+
+    // useEffect(() => {
+    //     showPurchasedItemModal && setTimeout(3000, () => setShowPurchasedItemModal(false))
+    // }, [showPurchasedItemModal])
 
     return (
         <>

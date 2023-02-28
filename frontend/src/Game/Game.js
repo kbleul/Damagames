@@ -361,10 +361,13 @@ const Game = () => {
     if (gameState.moves.length === 1) {
       track = { moved: gameState.activePiece, to: gameState.moves[0] }
     } else {
-      console.log({ active: gameState.activePiece, to: gameState.moves }, postMoveState)
-      if (postMoveState[gameState.moves[0]]) { track = { moved: gameState.activePiece, to: gameState.moves[1] } }
+      // console.log({ active: gameState.activePiece, to: gameState.moves }, postMoveState)
+      console.log(postMoveState.boardState[gameState.moves[0]])
+      console.log(postMoveState.boardState[gameState.moves[0]])
+
+      if (postMoveState.boardState[gameState.moves[0]]) { track = { moved: gameState.activePiece, to: gameState.moves[0] } }
       else {
-        track = { moved: gameState.activePiece, to: gameState.moves[0] }
+        track = { moved: gameState.activePiece, to: gameState.moves[1] }
       }
     }
 
