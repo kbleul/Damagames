@@ -10,6 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    
+    - name: Set version
+      run: |
+        echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> frontend/.env.example
+        echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
     - name: Install SSH key
       uses: shimataro/ssh-key-action@v2
@@ -21,7 +26,7 @@ jobs:
         #if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
 
     - name: Create docker context
-      run: docker context create prod --docker "host=ssh://${{ vars.REMOTE_USER }}@${{ vars.REMOTE_HOST }}"
+      run: docker context create test --docker "host=ssh://${{ vars.REMOTE_USER }}@${{ vars.REMOTE_HOST }}"
 
     # - name: Remove old php container to force build
     #   run: docker-compose --context prod -f docker-compose.prod.yml rm -s -f
@@ -31,7 +36,7 @@ jobs:
 
     - name: Deploy Docker Containers
       run: |
-        docker-compose --context prod -f docker-compose.prod.yml up --build --remove-orphans -d
+        docker-compose --context test -f docker-compose.prod.yml up --build --remove-orphans -d
       env:
         DOCKER_HOST: ssh://${{ vars.REMOTE_USER }}@${{ vars.REMOTE_HOST }}
         REMOTE_HOST: ${{ vars.REMOTE_HOST }}
@@ -44,3 +49,4 @@ jobs:
         DB_DATABASE: ${{ vars.DB_DATABASE }}
         DB_USERNAME: ${{ vars.DB_USERNAME }}
         DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        RELEASE_VERSION: ${{ env.RELEASE_VERSION }}

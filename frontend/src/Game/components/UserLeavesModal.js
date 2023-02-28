@@ -62,7 +62,12 @@ export default function UserLeavesModal({
 
                   <button
                     type="button"
-                    className="rounded-md  p-2 w-full text-white font-medium bg-orange-bg"
+                    className="w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+                    active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
+                    active:border-b-[0px]
+                    transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+                    border-b-[1px] border-gray-300/50 font-medium text-white
+                  "
                     onClick={handleExit}
                     >
                     Leave

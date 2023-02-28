@@ -20,6 +20,7 @@ const io = new Server(httpServer, {
       "http://localhost:3000",
       "http://172.17.104.251:3000",
       "https://damagames.com",
+      "https://test.damagames.com",
     ],
     credentials: true,
   },
@@ -145,7 +146,7 @@ io.on("connection", (socket) => {
 
     socket.on("sendRejectGameMessage", (data) => {
       // io.to(room).emit("getRejectGameMessage", data);
-      socket.broadcast.to(room).emit("getRejectGameMessage", data);
+      socket.to(room).emit("getRejectGameMessage", { data, type: "draw-rejected" });
     });
     //send draw game message
     socket.on("sendDrawGameRequest", (data) => {

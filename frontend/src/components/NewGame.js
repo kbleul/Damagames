@@ -326,7 +326,12 @@ const NewGame = () => {
           <button
             disabled={nameMutation.isLoading}
             onClick={submitName}
-            className="bg-orange-bg hover:opacity-70  p-2 px-10 font-semibold text-white rounded-md w-full"
+            className="w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+            active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
+            active:border-b-[0px]
+            transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+            border-b-[1px] border-gray-300/50 font-semibold text-white
+          "
           >
             {nameMutation.isLoading || loggedInMutation.isLoading
               ? "Creating..."

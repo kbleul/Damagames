@@ -28,16 +28,11 @@ const JoinGame = () => {
   let msgCounter = 0;
 
   const ipRef = useRef(localStorage.getItem("playerOneIp"));
-  console.log({ ipRef });
   const navigate = useNavigate();
   const [name, setName] = useState(user && token ? user.username : "");
   useEffect(() => {
     socket.on("getMessage", (data) => {
       navigate("/game");
-      // setTimeout(() => {
-      //   if (sameUser.current === false) {
-      //   }
-      // }, 1500);
     });
 
     socket.on("samePerson", (data) => {
@@ -142,7 +137,7 @@ const JoinGame = () => {
           }
         );
       }
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const handleJoin = () => {
@@ -167,8 +162,8 @@ const JoinGame = () => {
             ? `${process.env.REACT_APP_BACKEND_URL}auth-start-game/${id}`
             : `${process.env.REACT_APP_BACKEND_URL}add-player/${id}`
           : user && token
-          ? `${process.env.REACT_APP_BACKEND_URL}auth-start-game/${gameId}`
-          : `${process.env.REACT_APP_BACKEND_URL}add-player/${gameId}`,
+            ? `${process.env.REACT_APP_BACKEND_URL}auth-start-game/${gameId}`
+            : `${process.env.REACT_APP_BACKEND_URL}add-player/${gameId}`,
         newData,
         {
           headers: user && token ? header : headers,
@@ -206,9 +201,9 @@ const JoinGame = () => {
           );
           localStorage.setItem("gameId", responseData?.data?.data?.game);
         },
-        onError: (err) => {},
+        onError: (err) => { },
       });
-    } catch (err) {}
+    } catch (err) { }
   };
 
   //with code
@@ -240,9 +235,9 @@ const JoinGame = () => {
           );
           localStorage.setItem("gameId", responseData?.data?.data?.game);
         },
-        onError: (err) => {},
+        onError: (err) => { },
       });
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const handleSubmitCode = () => {
@@ -338,7 +333,7 @@ const JoinGame = () => {
           }
         );
       }
-    } catch (err) {}
+    } catch (err) { }
   };
   return (
     <div
@@ -399,7 +394,12 @@ const JoinGame = () => {
               <button
                 onClick={handleJoin}
                 disabled={nameMutation.isLoading}
-                className="bg-orange-bg p-2 px-10 font-medium text-white rounded-sm w-full"
+                className="w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+                active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
+                active:border-b-[0px]
+                transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+                border-b-[1px] border-gray-300/50 font-semibold text-white
+              "
               >
                 {nameMutation.isLoading ? "Loading.." : "Join"}
               </button>
@@ -448,7 +448,12 @@ const JoinGame = () => {
             <button
               onClick={handleJoin}
               disabled={nameMutation.isLoading}
-              className="bg-orange-bg p-2 px-10 font-medium text-white rounded-sm w-full"
+              className="w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+              active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
+              active:border-b-[0px]
+              transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+              border-b-[1px] border-gray-300/50 font-semibold text-white
+            "
             >
               {nameMutation.isLoading ? "Loading.." : "Join"}
             </button>
@@ -485,7 +490,12 @@ const JoinGame = () => {
                 joinBetViaCodeMutation.isLoading
               }
               onClick={handleSubmitCode}
-              className="bg-orange-bg p-2 px-10 font-medium text-white rounded-sm w-full"
+              className="w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+              active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
+              active:border-b-[0px]
+              transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+              border-b-[1px] border-gray-300/50 font-semibold text-white
+            "
             >
               {joinViaCodeMutation.isLoading || joinBetViaCodeMutation.isLoading
                 ? "Loading..."

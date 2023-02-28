@@ -13,7 +13,7 @@ jobs:
 
   release:
     uses: ./.github/workflows/release.yml
-    needs: 'build_arc_docs'
+    needs: ['build_arc_docs','e2e-test']
   # with:
   #   secrets:
   #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
