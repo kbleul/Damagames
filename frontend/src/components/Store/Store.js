@@ -192,7 +192,8 @@ const Store = () => {
         }
 
 
-        <StoreItemView isShowModalOpen={isShowModalOpen} set_isShowModalOpen={set_isShowModalOpen} item={selectedItem} />
+        <StoreItemView isShowModalOpen={isShowModalOpen} set_isShowModalOpen={set_isShowModalOpen}
+            item={selectedItem} myAvatarsId={myAvatarsId} myBoardsId={myBoardsId} myCrownsId={myCrownsId} />
         <LoginPromptModal isShowModalOpen={ShowLoginModal} set_isShowModalOpen={setShowLoginModal} />
 
 
@@ -259,7 +260,7 @@ const Avatar = ({ avatar, set_isShowModalOpen, setSelectedItem, setShowLoginModa
             </>
         }
 
-        {user && token && myAvatarsId.includes(avatar.id) && <p className="absolute bottom-0 right-0 text-white text-xs bg-orange-500 text-black font-extrabold px-2 ">Purchased</p>}
+        {user && token && myAvatarsId.includes(avatar.id) && <p className="absolute bottom-0 right-0 text-black text-xs bg-orange-50 font-extrabold px-2 ">Purchased</p>}
 
 
     </article>)
@@ -318,7 +319,7 @@ const Board = ({ board, isOn, set_isShowModalOpen, setSelectedItem, setShowLogin
             }
         </>}
 
-        {user && token && myBoardsId.includes(board.id) && <p className="absolute top-0 right-0 text-white text-xs bg-orange-500 text-black font-extrabold px-2 ">Purchased</p>}
+        {user && token && myBoardsId.includes(board.id) && <p className="absolute top-0 right-0 text-black text-xs bg-orange-50 font-extrabold px-2 ">Purchased</p>}
 
     </article >)
 }
@@ -378,7 +379,7 @@ const Crown = ({ crown, set_isShowModalOpen, setSelectedItem, setShowLoginModal,
                 </svg>
             </p>
         </section>}
-        {user && token && myCrownsId.includes(crown.id) && <p className={isOn ? "absolute bottom-6 right-0 text-white text-xs bg-orange-500 text-black font-extrabold px-2 " : "absolute top-2 right-0 text-white text-xs bg-orange-500 text-black font-extrabold px-2 "}>Purchased</p>}
+        {user && token && myCrownsId.includes(crown.id) && <p className={isOn ? "absolute bottom-6 right-0 text-black text-xs bg-orange-50 font-extrabold px-2 " : "absolute top-2 right-0 text-black text-xs bg-orange-50 font-extrabold px-2 "}>Purchased</p>}
 
 
 
