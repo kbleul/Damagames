@@ -19,7 +19,7 @@ const JoinGame = () => {
   const [code, setCode] = useState("");
   const [success, setSuccess] = useState(false);
   //store player one name
-  const [myFriend, setMyFriend] = useState("Your Friend");
+  const [myFriend, setMyFriend] = useState("");
   // const { setIsBet, setBetCoin } = useHome();
 
   // to check if  creater and the joining player are the same
@@ -94,9 +94,7 @@ const JoinGame = () => {
           {
             onSuccess: (responseData) => {
               responseData?.data?.data?.playerOne?.username &&
-                setMyFriend(
-                  (prev) =>
-                    prev + " " + responseData?.data?.data?.playerOne.username
+                setMyFriend( responseData?.data?.data?.playerOne.username
                 );
 
               localStorage.setItem(
@@ -118,9 +116,7 @@ const JoinGame = () => {
           {
             onSuccess: (responseData) => {
               responseData?.data?.data?.playerOne?.username &&
-                setMyFriend(
-                  (prev) =>
-                    prev + " " + responseData?.data?.data?.playerOne.username
+                setMyFriend( responseData?.data?.data?.playerOne.username
                 );
 
               localStorage.setItem(
@@ -177,6 +173,7 @@ const JoinGame = () => {
     try {
       nameMutation.mutate(user && token ? {} : { username: name }, {
         onSuccess: (responseData) => {
+       
           if (gameId) {
             socket.emit("join-room", gameId);
           } else {
@@ -211,9 +208,10 @@ const JoinGame = () => {
     try {
       nameMutation.mutate(user && token ? {} : { username: name }, {
         onSuccess: (responseData) => {
+          console.log("zzzzz",responseData?.data?.data?.playerOne)
           socket.emit("join-room", gameId);
           if (ipRef.current !== responseData?.data?.data?.ip) {
-            socket.emit("sendMessage", { status: "started" });
+            socket.emit("sendMessage", { status: "started", player2: JSON.stringify(responseData?.data?.data?.playerTwo), });
           }
 
           //first clear local storage
@@ -295,9 +293,7 @@ const JoinGame = () => {
 
               setIsVerified(true);
               responseData?.data?.data?.playerOne.username &&
-                setMyFriend(
-                  (prev) =>
-                    prev + " " + responseData?.data?.data?.playerOne.username
+                setMyFriend(responseData?.data?.data?.playerOne.username
                 );
               localStorage.setItem("gameId", responseData?.data?.data?.game);
             },
@@ -315,9 +311,7 @@ const JoinGame = () => {
             onSuccess: (responseData) => {
               setIsVerified(true);
               responseData?.data?.data?.playerOne.username &&
-                setMyFriend(
-                  (prev) =>
-                    prev + " " + responseData?.data?.data?.playerOne.username
+                setMyFriend( responseData?.data?.data?.playerOne.username
                 );
               localStorage.setItem("gameId", responseData?.data?.data?.game);
               localStorage.setItem(
@@ -369,12 +363,9 @@ const JoinGame = () => {
                 {!user && !token && " Tell Us Your Name"}
               </h2>
               <p className="text-gray-400 pb-2">
+                Your Friend {" "}
                 <span
-                  className={
-                    myFriend === "Your Friend"
-                      ? ""
-                      : "font-bold text-orange-400"
-                  }
+                  className={"text-orange-color"}
                 >
                   {myFriend}
                 </span>{" "}
@@ -425,10 +416,9 @@ const JoinGame = () => {
               Tell Us Your Name
             </h2>
             <p className="text-gray-400 pb-2">
+              Your Friend {" "}
               <span
-                className={
-                  myFriend === "Your Friend" ? "" : "font-bold text-orange-400"
-                }
+                   className={"text-orange-color"}
               >
                 {myFriend}
               </span>{" "}

@@ -132,13 +132,17 @@ body {
 .square.player1 {
   /* background-image: url("img/orange-coin.svg"); */
   background-image: url("/src/assets/orange-coin.svg");
+  /* background-image: url("/src/assets/3d.svg"); */
   background-size: cover;
   background-position: center;
 }
 .square.player2 {
   background-image: url("/src/assets/yellow-coin.svg");
-  background-size: cover;
+  /* background-image: url("/src/assets/3d.svg"); */
+  
+  background-size: contain;
   background-position: center;
+  
 }
 
 .square.player1.myturn {

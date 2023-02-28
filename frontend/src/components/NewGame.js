@@ -66,11 +66,13 @@ const NewGame = () => {
     Accept: "application/json",
     Authorization: `Bearer ${token}`,
   };
-
+  const playerOneIp = localStorage.getItem("playerOneIp");
   useEffect(() => {
     socket.on("getMessage", (data) => {
-      if (data.status === "started") {
+      console.log(data?.player2)
+      if (data.status === "started" && data?.player2) {
         navigate("/game");
+       localStorage.setItem("p2Info",data?.player2)
       }
     });
 

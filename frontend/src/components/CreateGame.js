@@ -70,15 +70,15 @@ const CreateGame = () => {
         </div>
         <button
           onClick={() => handleSecond(`game/${1}`)}
-          class="w-full flex flex-col items-center justify-center p-2 bg-gradient-to-r from-[#1EB0B9] to-[#05484E] rounded-md cursor-pointer select-none
-    active:translate-y-2  active:[box-shadow:0_0px_0_0_#1EB0B9,0_0px_0_0_#05484E]
+          className="w-full flex flex-col items-center justify-center p-2 bg-orange-color rounded-md cursor-pointer select-none
+    active:translate-y-2  active:[box-shadow:0_0px_0_0_#c93b00,0_0px_0_0_#c93b00]
     active:border-b-[0px]
-    transition-all duration-150 [box-shadow:0_5px_0_0_#05484E,0_5px_0_0_#1EB0B9]
-    border-b-[1px] border-gray-300/50 font-semibold text-white
+    transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+    border-b-[1px] border-gray-300/50 font-medium text-white
   "
         >
-          <span>vs computer</span>
-          <span>offline</span>
+          <span>Play with Computer</span>
+          {/* <span>offline</span> */}
         </button>
 
         <button
