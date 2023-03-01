@@ -46,8 +46,8 @@ const Game = () => {
   const [isWinnerModalOpen, setIsWinnerModalOpen] = useState(false);
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
 
-  const [timerP1, setTimerP1] = useState(30);
-  const [timerP2, setTimerP2] = useState(30);
+  const [timerP1, setTimerP1] = useState(15);
+  const [timerP2, setTimerP2] = useState(15);
 
   const [passedCounter, setPassedCounter] = useState(0);
   const intervalRef = useRef(null);
@@ -67,7 +67,7 @@ const Game = () => {
   const [latestMessage, setLatestMessage] = useState(null);
   const [showResetWaiting, setShowResetWaiting] = useState(false);
 
-  const [threeD, setthreeD] = useState(false)
+  const [threeD, setthreeD] = useState(false);
 
   useEffect(() => {
     if (!id && !localStorage.getItem("gameId")) {
@@ -328,9 +328,9 @@ const Game = () => {
       setTimeout(() => {
         const postMoveState = movesData[1]
           ? movePiece(columns, mergerObj.moves[0], {
-            ...mergerObj,
-            jumpKills: movesData[1],
-          })
+              ...mergerObj,
+              jumpKills: movesData[1],
+            })
           : movePiece(columns, mergerObj.moves[0], mergerObj);
         if (postMoveState === null) {
           return;
@@ -356,18 +356,18 @@ const Game = () => {
 
   //update the game state after move
   function updateStatePostMove(postMoveState) {
-
-    let track
+    let track;
     if (gameState.moves.length === 1) {
-      track = { moved: gameState.activePiece, to: gameState.moves[0] }
+      track = { moved: gameState.activePiece, to: gameState.moves[0] };
     } else {
       // console.log({ active: gameState.activePiece, to: gameState.moves }, postMoveState)
-      console.log(postMoveState.boardState[gameState.moves[0]])
-      console.log(postMoveState.boardState[gameState.moves[0]])
+      console.log(postMoveState.boardState[gameState.moves[0]]);
+      console.log(postMoveState.boardState[gameState.moves[0]]);
 
-      if (postMoveState.boardState[gameState.moves[0]]) { track = { moved: gameState.activePiece, to: gameState.moves[0] } }
-      else {
-        track = { moved: gameState.activePiece, to: gameState.moves[1] }
+      if (postMoveState.boardState[gameState.moves[0]]) {
+        track = { moved: gameState.activePiece, to: gameState.moves[0] };
+      } else {
+        track = { moved: gameState.activePiece, to: gameState.moves[1] };
       }
     }
 
@@ -399,7 +399,7 @@ const Game = () => {
       boardState: postMoveState.boardState,
       currentPlayer: postMoveState.currentPlayer,
       turnPlayer: postMoveState.currentPlayer ? "player1" : "player2",
-      tracker: track
+      tracker: track,
     });
 
     calcPawns(postMoveState.boardState);
@@ -415,9 +415,9 @@ const Game = () => {
   const playerOneIp = localStorage.getItem("playerOneIp");
   const playerTwoIp = localStorage.getItem("playerTwoIp");
   const btCoin = localStorage.getItem("bt_coin_amount");
-  const p2Info = JSON.parse(localStorage.getItem("p2Info"))
-  const p1Info = localStorage.getItem("p1")
-  console.log({p2Info:p1Info})
+  const p2Info = JSON.parse(localStorage.getItem("p2Info"));
+  const p1Info = localStorage.getItem("p1");
+  console.log({ p2Info: p1Info });
   let gameStatus;
   switch (gameState.winner) {
     case "player1pieces":
@@ -489,8 +489,6 @@ const Game = () => {
 
     // gameState.tracker && console.log(gameState, gameState.tracker)
     // gameState.tracker && document.getElementsByClassName(gameState.tracker.moved)[0].setAttribute("id", "white")
-
-
   }, [gameState, gameStatus, winnerPlayer]);
   const resetGame = () => {
     moveRef.current = [0, 0];
@@ -500,7 +498,7 @@ const Game = () => {
   const rejectGameRequest = () => {
     socket.emit("sendRejectGameMessage", { status: "Reject" });
     setShowResetWaiting(false);
-    setIsDrawModalOpen(false)
+    setIsDrawModalOpen(false);
   };
   const acceptGameRequest = () => {
     socket.emit("sendResetGameMessage", {
@@ -641,7 +639,6 @@ const Game = () => {
 
         //tracker && tracker.moved && console.log(document.getElementsByClassName(tracker.moved))
 
-
         setGameState((prevGameState) => {
           return {
             ...prevGameState,
@@ -652,7 +649,7 @@ const Game = () => {
                 currentPlayer: currentPlayer,
               };
             }),
-            tracker
+            tracker,
           };
         });
 
@@ -662,7 +659,6 @@ const Game = () => {
 
         calcPawns(boardState);
         compareObjects(lastElement?.boardState, boardState);
-
       }
     );
 
@@ -676,8 +672,8 @@ const Game = () => {
         setIsRematchModalOpen(false);
         setMyTurn("player1");
         setPawns([0, 0]);
-        setTimerP1(30);
-        setTimerP2(30);
+        setTimerP1(15);
+        setTimerP2(15);
         setPassedCounter(0);
         setShowResetWaiting(false);
         moveRef.current = [0, 0];
@@ -695,13 +691,11 @@ const Game = () => {
       toast("You friend did not accept the request");
 
       if (!status.type) {
-
         clearCookie.forEach((data) => {
           localStorage.getItem(data) && localStorage.removeItem(data);
         });
         navigate("/create-game");
       }
-
     });
 
     //listen for if user left room
@@ -754,8 +748,8 @@ const Game = () => {
   const stopInterval = () => {
     clearInterval(intervalRef.current);
     intervalRef.current = null;
-    setTimerP1(30);
-    setTimerP2(30);
+    setTimerP1(15);
+    setTimerP2(15);
   };
 
   const timeChecker = () => {
@@ -764,15 +758,15 @@ const Game = () => {
     if (currentPlayer && localStorage.getItem("playerOneIp")) {
       intervalRef.current = setInterval(() => {
         if (myCounter === 0) {
-          setTimerP1(30);
+          setTimerP1(15);
         } else {
           setTimerP1((prev) => --prev);
         }
         ++myCounter;
 
-        if (myCounter >= 30) {
+        if (myCounter >= 15) {
           stopInterval();
-          setTimerP1(30);
+          setTimerP1(15);
           myCounter = 0;
           setMyTurn("player2");
           setPassedCounter((prev) => ++prev);
@@ -815,15 +809,15 @@ const Game = () => {
     } else if (!currentPlayer && localStorage.getItem("playerTwoIp")) {
       intervalRef.current = setInterval(() => {
         if (myCounter === 0) {
-          setTimerP2(30);
+          setTimerP2(15);
         } else {
           setTimerP2((prev) => --prev);
         }
         ++myCounter;
 
-        if (myCounter >= 30) {
+        if (myCounter >= 15) {
           stopInterval();
-          setTimerP2(30);
+          setTimerP2(15);
           myCounter = 0;
           setMyTurn("player1");
           setPassedCounter((prev) => ++prev);
@@ -910,20 +904,18 @@ const Game = () => {
           game_id: gameId,
         },
         {
-          onSuccess: (responseData) => { },
-          onError: (err) => { },
+          onSuccess: (responseData) => {},
+          onError: (err) => {},
         }
       );
-    } catch (err) { }
+    } catch (err) {}
   };
 
   const changeSound = () => {
     localStorage.setItem("dama-sound", !soundOn);
     setSoundOn((prev) => !prev);
-    setthreeD(prev => !prev)
+    setthreeD((prev) => !prev);
   };
-
-
 
   return (
     <div
@@ -1030,7 +1022,9 @@ const Game = () => {
             <img
               src={
                 playerOneIp || (id == 1 && user?.profile_image)
-                  ? user?.profile_image ? user.profile_image : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg" 
+                  ? user?.profile_image
+                    ? user.profile_image
+                    : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
                   : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
               }
               className="h-12 rounded-full"
@@ -1043,10 +1037,10 @@ const Game = () => {
                 ? user.username
                 : "You"
               : playerOneIp && user
-                ? user?.username
-                : playerOneIp
-                  ? firstPlayer?.username
-                  : p1Info}
+              ? user?.username
+              : playerOneIp
+              ? firstPlayer?.username
+              : p1Info}
           </h4>
         </div>
 
@@ -1078,10 +1072,12 @@ const Game = () => {
             {id == 1
               ? "Computer"
               : playerTwoIp && user
-                ? user?.username
-                : playerTwoIp
-                  ? secondPlayer?.username
-                  : p1Info ? p1Info : p2Info?.username }
+              ? user?.username
+              : playerTwoIp
+              ? secondPlayer?.username
+              : p1Info
+              ? p1Info
+              : p2Info?.username}
           </h4>
         </div>
       </section>
@@ -1168,28 +1164,29 @@ const Game = () => {
       </div>
       <div className={threeD ? "" : ""}>
         <div
-          className={`box   ${!id
-            ? currentPlayer === true
-              ? currentPlayer === true && !firstPlayer
-                ? "pointer-events-none"
-                : ""
-              : currentPlayer === false
+          className={`box   ${
+            !id
+              ? currentPlayer === true
+                ? currentPlayer === true && !firstPlayer
+                  ? "pointer-events-none"
+                  : ""
+                : currentPlayer === false
                 ? currentPlayer === false && !secondPlayer
                   ? "pointer-events-none"
                   : ""
                 : ""
-            : ""
-            }`}
+              : ""
+          }`}
         >
           <Board
             boardState={
               id === "1"
                 ? dict_reverse(boardState)
                 : !id
-                  ? localStorage.getItem("playerOne")
-                    ? dict_reverse(boardState)
-                    : boardState
+                ? localStorage.getItem("playerOne")
+                  ? dict_reverse(boardState)
                   : boardState
+                : boardState
             }
             currentPlayer={currentPlayer}
             activePiece={gameState.activePiece}
@@ -1239,8 +1236,9 @@ const Game = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ type: "tween", duration: 1, ease: "easeInOut" }}
-          className={`absolute top-36  bg-white max-w-sm  p-1 w-44 ${playerOneIp ? "left-3" : "right-3"
-            }
+          className={`absolute top-36  bg-white max-w-sm  p-1 w-44 ${
+            playerOneIp ? "left-3" : "right-3"
+          }
        border border-orange-color rounded-lg m-3`}
         >
           <div className="text-gray-800">
