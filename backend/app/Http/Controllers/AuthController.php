@@ -15,8 +15,11 @@ use App\Models\SecurityQuestionAnswer;
 use App\Models\SQUser;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class AuthController extends SendSmsController
 {
@@ -80,12 +83,11 @@ class AuthController extends SendSmsController
 
 
 
+
     public function register_new(RegisterRequest $request)
     {
         $password = rand(1000, 9999);
-
         $user = User::where('phone', $request->phone)->first();
-
         if (!empty($user) && !empty($user->phone_verified_at)) {
             if (empty($user->username)) {
                 $this->sendSMS($request->phone, $password);

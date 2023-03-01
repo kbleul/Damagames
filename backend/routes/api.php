@@ -10,6 +10,7 @@ use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\ScoreController;
 use App\Http\Controllers\SecurityQuestionController;
 use App\Http\Controllers\StoreController;
+use App\Http\Controllers\TelebirrController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
@@ -31,7 +32,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/sockets/authenticate', [PusherAuthController::class, 'authenticate']);
-
+Route::post('telebirr/response', [TelebirrController::class, 'response']);
 
 
 Route::middleware('response')->group(function () {
