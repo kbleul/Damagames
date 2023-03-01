@@ -1,7 +1,6 @@
 import Avatar from "../assets/Avatar.png";
 
 const Score = ({ score, hasBadge, index }) => {
-  console.log({score})
   return (
     <article className="w-4/5 max-w-[50rem] relative">
       <section
@@ -21,9 +20,8 @@ const Score = ({ score, hasBadge, index }) => {
             alt="avatar"
           />
         </div>
-        <div className="w-[70%] font-bold self-center text-white text-left ml-4 text-sm">{`${++index}- ${
-          score?.username
-        }`}</div>
+        <div className="w-[70%] font-bold self-center text-white text-left ml-4 text-sm">{`${++index}- ${score?.username
+          }`}</div>
 
         {hasBadge && (
           <div className="w-[10%]  ">

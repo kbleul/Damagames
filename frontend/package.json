@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
     "@headlessui/react": "^1.7.4",
+    "@mui/material": "^5.11.11",
     "@tanstack/react-query": "^4.18.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
@@ -23,6 +26,7 @@
     "react-hot-toast": "^2.4.0",
     "react-icons": "^4.7.1",
     "react-loader-spinner": "^5.3.4",
+    "react-mobile-share": "^1.0.30",
     "react-router-dom": "^6.4.3",
     "react-scripts": "5.0.1",
     "react-spring-bottom-sheet": "^3.4.1",

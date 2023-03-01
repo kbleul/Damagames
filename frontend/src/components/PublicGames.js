@@ -36,7 +36,7 @@ const PubicGames = () => {
 
   useEffect(() => {
     socket.on("getPublicGames", (data) => {
-      console.log("ola", data)
+      // console.log("ola", data)
       setPublicGames([...data])
     });
 
@@ -72,7 +72,7 @@ const PubicGames = () => {
   //with code
   const nameMutationWithCode = async (values) => {
     try {
-      console.log({ gameid2: localStorage.getItem("gameId") })
+      //console.log({ gameid2: localStorage.getItem("gameId") })
       nameMutation.mutate(user && token ? {} : { username: name }, {
         onSuccess: (responseData) => {
 
@@ -83,7 +83,7 @@ const PubicGames = () => {
             player2: JSON.stringify(responseData?.data?.data?.playerTwo),
           });
 
-          console.log(responseData?.data.data?.playerTwo);
+          //   console.log(responseData?.data.data?.playerTwo);
 
           navigate("/game");
           //first clear local storage
@@ -98,11 +98,11 @@ const PubicGames = () => {
           localStorage.setItem("gameId", responseData?.data?.data?.game);
         },
         onError: (err) => {
-          console.log(err?.response?.data?.message);
+          //   console.log(err?.response?.data?.message);
         },
       });
     } catch (err) {
-      console.log(err);
+      //  console.log(err);
     }
   };
 
@@ -133,25 +133,25 @@ const PubicGames = () => {
         { code: code },
         {
           onSuccess: (responseData) => {
-            console.log(responseData?.data);
+            //  console.log(responseData?.data);
             setIsVerified(true);
             responseData?.data?.data?.playerOne?.username && setMyFriend(prev => prev + " " + responseData?.data?.data?.playerOne?.username);
             localStorage.setItem("gameId", responseData?.data?.data?.game);
           },
           onError: (err) => {
-            console.log(err?.response?.data);
+            //    console.log(err?.response?.data);
             toast(err?.response?.data?.message);
           },
         }
       );
     } catch (err) {
-      console.log(err);
+      //  console.log(err);
     }
   };
   return (<>{!isVerified ?
     <main className="flex flex-col items-center h-[100vh] overflow-y-scroll ">
       <button
-        className="z-10 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 fixed right-0 md:right-4"
+        className="z-10 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 fixed left-2 md:left-4"
         onClick={() => navigate("/create-game")}
       >
         <svg
@@ -196,7 +196,7 @@ const PubicGames = () => {
             </div>
             <a
               onClick={() => { setCode(game.code); handleSubmitCode(game.code) }}
-              className="w-[20%] mr-4 bg-orange-color hover:bg-orange-600 text-black font-bold px-12 flex items-center justify-center">Join</a>
+              className="w-[20%] mr-4 bg-orange-color hover:bg-orange-600 text-black font-bold px-12 flex items-center justify-center">Play</a>
           </section>
           <section className="flex justify-between mt-2">
           </section>

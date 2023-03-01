@@ -10,6 +10,8 @@ import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { IoIosCopy } from "react-icons/io";
+import { IoIosShareAlt } from "react-icons/io";
+
 import background from "../assets/backdrop.jpg";
 import { Footer } from "./Footer";
 
@@ -41,6 +43,8 @@ const NewGamePublic = () => {
     Accept: "application/json",
     Authorization: `Bearer ${token}`,
   };
+
+
 
   //no userName if the user logged in
   const loggedInMutation = useMutation(
@@ -158,6 +162,31 @@ const NewGamePublic = () => {
       nameMutationSubmitHandler();
     }
   };
+
+  const shareLink = async () => {
+    const tempurl = value.split("/").splice(-1)[0]
+    // console.log(tempurl[0])
+    if (navigator.share) {
+      try {
+        await navigator
+          .share({
+            url: `join-game/${tempurl}`,
+          })
+          .then(() =>
+            console.log("")
+          );
+      } catch (error) {
+        //  console.log(`Oops! I couldn't share to the world because: ${error}`);
+      }
+    } else {
+      // fallback code
+      // console.log(
+      //   "Web share is currently not supported on this browser. Please provide a callback"
+      // );
+    }
+
+  }
+
   useEffect(() => {
     socket.on("getMessage", (data) => {
       if (data.status === "started") {
@@ -182,7 +211,7 @@ const NewGamePublic = () => {
       }}
     >
       <button
-        className="z-10 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 fixed right-0 md:right-4"
+        className="z-10 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 fixed left-2 md:left-4"
         onClick={() => navigate("/create-game")}
       >
         <svg
@@ -201,20 +230,34 @@ const NewGamePublic = () => {
         </svg>
       </button>
       {action === ACTION.MENU && (
-        <section className="flex flex-col items-center justify-between">
+        <section className="flex flex-col items-center justify-center h-[100vh] w-4/5 ml-[10%]">
           <button
             onClick={() => setAction(ACTION.CREATING)}
-            className="w-3/5 mt-[40vh] border-2 bg-transparent border-orange-color p-2 px-11 font-medium text-orange-color rounded-lg max-w-[20rem]"
+            className="relative w-full max-w-[400px] p-2 bg-orange-bg rounded-md cursor-pointer select-none
+          active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
+          active:border-b-[0px] flex items-center justify-center
+          transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+          border-b-[1px] border-gray-400/50 font-semibold text-white mb-8
+              "
           >
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
             Create Game
           </button>
 
           <button
             onClick={() => navigate("/join-public")}
-            className="w-3/5 mt-4 border-2 bg-transparent border-orange-color p-2 px-11 font-medium text-orange-color rounded-lg max-w-[20rem]"
+            className="relative w-full max-w-[400px] p-2 bg-orange-bg rounded-md cursor-pointer select-none
+          active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
+          active:border-b-[0px] flex items-center justify-center
+          transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+          border-b-[1px] border-gray-400/50 font-semibold text-white
+              "
           >
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
+
             Join Game
           </button>
+
         </section>
       )}
       {action === ACTION.CREATING && (
@@ -236,18 +279,19 @@ const NewGamePublic = () => {
           />
           <button
             onClick={submitName}
-            className="bg-orange-bg hover:opacity-70  p-2 px-10 font-semibold text-white rounded-md w-full"
+            className="relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+          active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
+          active:border-b-[0px] flex items-center justify-center
+          transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+          border-b-[1px] border-gray-400/50 font-semibold text-white
+        "
           >
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
             {nameMutation.isLoading || loggedInMutation.isLoading
               ? "Creating..."
               : "Create"}
           </button>
-          <p
-            onClick={() => setAction(ACTION.MENU)}
-            className="text-orange-color font-medium  text-center pt-3  cursor-pointer"
-          >
-            Back
-          </p>
+
         </div>
       )}
 
@@ -306,6 +350,14 @@ const NewGamePublic = () => {
                   />
                 )}
               </CopyToClipboard>
+            </div>
+
+            <div
+              className="text-black  mt-4 text-center flex items-center px-4 py-2 pr-5 font-bold bg-orange-color"
+              onClick={shareLink}
+            >
+              <IoIosShareAlt className="w-6 h-6" />
+              <p>Share</p>
             </div>
           </div>
         </div>

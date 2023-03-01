@@ -1,6 +1,6 @@
 import { createServer } from "http";
 import { Server } from "socket.io";
-import { differenceInMinutes, formatDistance } from 'date-fns'
+import { differenceInMinutes, formatDistance } from "date-fns";
 import { instrument } from "@socket.io/admin-ui";
 import { Console } from "console";
 import { Socket } from "dgram";
@@ -26,37 +26,34 @@ const io = new Server(httpServer, {
   },
 });
 
-let publicGames = []
-let rooms = []
-let roomSocketObj = {}
+let publicGames = [];
+let rooms = [];
+let roomSocketObj = {};
 
 const createReadableDate = (date) => {
   const newdate = formatDistance(date, new Date(), { includeSeconds: true });
-  return newdate
-}
+  return newdate;
+};
 
-//type === "code" || "socketId"  
+//type === "code" || "socketId"
 // SO WE CAN DELETE USING CODE OR SOCKETID
 const removePublicGame = (code, type) => {
-
-  let temparr = []
+  let temparr = [];
   // publicGames.filter(game => game.code !== code)
   if (type === "code") {
-    publicGames.forEach(game => {
-      game.code !== code && temparr.push(game)
-    })
-    publicGames = [...temparr]
-    temparr = []
+    publicGames.forEach((game) => {
+      game.code !== code && temparr.push(game);
+    });
+    publicGames = [...temparr];
+    temparr = [];
+  } else if (type === "socketId") {
+    publicGames.forEach((game) => {
+      game.socketID !== code && temparr.push(game);
+    });
+    publicGames = [...temparr];
+    temparr = [];
   }
-  else if (type === "socketId") {
-    publicGames.forEach(game => {
-      game.socketID !== code && temparr.push(game)
-    })
-    publicGames = [...temparr]
-    temparr = []
-  }
-
-}
+};
 
 //returns the difference in time(minutes) b/n two date objects
 //for v2 release
@@ -70,52 +67,53 @@ io.on("connection", (socket) => {
   //user connection
   console.log("a user connected.");
 
-  socket.on("postPublicGame", data => {
+  socket.on("postPublicGame", (data) => {
     publicGames.push({
       ...data,
       socketID: socket.id,
-      time: new Date()
-    })
-  })
+      time: new Date(),
+    });
+  });
 
   socket.on("publicGames", () => {
-    let temparr = []
-    let removedArr = []
-    publicGames.forEach(game => {
+    let temparr = [];
+    let removedArr = [];
+    publicGames.forEach((game) => {
       if (game.socketID !== socket.id) {
-        temparr.push({ ...game, time: createReadableDate(game.time) })
+        temparr.push({ ...game, time: createReadableDate(game.time) });
       }
       //if public game has been up for 3 minutes remove from public game
       //   else { removedArr.push(game.code) }
-    })
+    });
 
-    socket.emit("getPublicGames", temparr)
+    socket.emit("getPublicGames", temparr);
 
     if (removedArr.length > 0) {
-      removedArr.forEach(code => { removePublicGame(code, "code") })
+      removedArr.forEach((code) => {
+        removePublicGame(code, "code");
+      });
     }
 
-    temparr = []
-    removedArr = []
-  })
+    temparr = [];
+    removedArr = [];
+  });
 
-  socket.on("joinPublicGame", codeId => {
-    removePublicGame(codeId, "code")
-  })
+  socket.on("joinPublicGame", (codeId) => {
+    removePublicGame(codeId, "code");
+  });
 
   socket.on("join-room", async (room) => {
     const clients = await io.of("/").in(room).fetchSockets();
 
     // , { clients, room, id: socket.id }
-    let tempSocketObj = roomSocketObj[room]
+    let tempSocketObj = roomSocketObj[room];
     if (tempSocketObj && tempSocketObj.includes(socket.id)) {
-
       io.to(room).emit("samePerson", "You can't join a game you created");
     } else {
       roomSocketObj = {
         ...roomSocketObj,
-        [room]: tempSocketObj ? [...tempSocketObj, socket.id] : [socket.id]
-      }
+        [room]: tempSocketObj ? [...tempSocketObj, socket.id] : [socket.id],
+      };
     }
 
     if (clients.length == 2) {
@@ -124,16 +122,14 @@ io.on("connection", (socket) => {
     } else {
       socket.join(room);
       io.to(room).emit("private-room", "you are now in private room");
-
     }
     //send and get messages
-
 
     socket.on("sendMessage", (data) => {
       io.to(room).emit("getMessage", data);
     });
     socket.on("sendGameMessage", (data) => {
-      io.to(room).emit("getGameMessage", data)
+      io.to(room).emit("getGameMessage", data);
       // socket.broadcast.to(room).emit("getGameMessage", data);
     });
     socket.on("sendResetGameRequest", (data) => {
@@ -146,7 +142,9 @@ io.on("connection", (socket) => {
 
     socket.on("sendRejectGameMessage", (data) => {
       // io.to(room).emit("getRejectGameMessage", data);
-      socket.broadcast.to(room).emit("getRejectGameMessage", data);
+      socket
+        .to(room)
+        .emit("getRejectGameMessage", { data, type: "draw-rejected" });
     });
     //send draw game message
     socket.on("sendDrawGameRequest", (data) => {
@@ -160,13 +158,11 @@ io.on("connection", (socket) => {
     });
     //chat within game
     socket.on("sendChatMessage", (data) => {
-
       io.to(room).emit("getChatMessage", data);
     });
     //send message if user left the room
     socket.on("disconnect", () => {
       io.to(room).emit("userLeaveMessage", "Someone has left the room");
-
     });
   });
 
@@ -183,7 +179,7 @@ io.on("connection", (socket) => {
       if (rooms[room].size === 0) delete rooms[room];
     });
 
-    removePublicGame(socket.id, "socketId")
+    removePublicGame(socket.id, "socketId");
   });
 });
 
