@@ -90,4 +90,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Store::class, 'user_items', 'user_id', 'item_id');
     }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'role_users');
+    }
 }

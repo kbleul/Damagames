@@ -50,7 +50,7 @@ class StoreSeeder extends Seeder
 
 
         $av5 = Store::create([
-            'name' => "Eagemakelo",
+            'name' => "Jagemakelo",
             'nickname' => "Nick Name",
             'price' => 3000.00,
             'type' => "Avatar",
@@ -91,7 +91,7 @@ class StoreSeeder extends Seeder
         $av9->addMediaFromUrl(asset('store/avatar/balcha_abanefso.png'))->toMediaCollection('item');
 
         $av10 = Store::create([
-            'name' => "Etye Menen",
+            'name' => "Etege Menen",
             'nickname' => "Nick Name",
             'price' => 1500.00,
             'type' => "Avatar",

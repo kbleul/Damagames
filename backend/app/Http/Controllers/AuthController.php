@@ -32,6 +32,11 @@ class AuthController extends SendSmsController
             return response()->json(['message' => 'Already verified'], 400);
         }
 
+        if (empty($user)) {
+            abort(404, "User not found");
+        }
+
+
         if (Hash::check($request['password'], $user->password)) {
             $credentials = request(['phone', 'password']);
             Auth::attempt($credentials);
@@ -39,7 +44,11 @@ class AuthController extends SendSmsController
             $user->update(['phone_verified_at' => now()]);
             return response()->json(['message' => 'User Created successfully!', 'user' => auth()->user(), 'token' => $token], 201);
         } else {
+
+            return response()->json(['message' => 'Password is incorrect.'], 400);
+
             return response()->json(['message' => 'Something wrong.'], 400);
+
         }
     }
 
@@ -68,14 +77,14 @@ class AuthController extends SendSmsController
     {
         $user = User::where('phone', $request->phone)->first();
 
+        if (empty($user)) {
+            abort(404, "Invalid Phone number");
+        }
+
         $credentials = request(['phone', 'password']);
         if (Auth::attempt($credentials)) {
             $token = $user->createToken('DAMA')->plainTextToken;
             $user = auth()->user();
-
-            // dd(UserItem::where('user_id', auth()->id())->where('status', 0)->whereRelation('item', 'type', 'Board')->first());
-            // $user->default_board = UserItem::where('user_id', auth()->id())->where('status', 1)->whereRelation('item', 'type', 'Board')->first()->item->item;
-            // $user->default_crown = UserItem::where('user_id', auth()->id())->where('status', 1)->whereRelation('item', 'type', 'Crown')->first()->item->item;
 
             return response()->json([
                 'message' => 'Logged In!',
