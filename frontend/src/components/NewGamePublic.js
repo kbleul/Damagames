@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import dateFormat, { masks } from "dateformat";
 
@@ -16,10 +15,10 @@ import background from "../assets/backdrop.jpg";
 import { Footer } from "./Footer";
 
 const ACTION = {
-  "MENU": "menu",
-  "CREATING": "creating",
-  "CREATED": "created"
-}
+  MENU: "menu",
+  CREATING: "creating",
+  CREATED: "created",
+};
 
 const NewGamePublic = () => {
   const { user, token } = useAuth();
@@ -43,8 +42,6 @@ const NewGamePublic = () => {
     Accept: "application/json",
     Authorization: `Bearer ${token}`,
   };
-
-
 
   //no userName if the user logged in
   const loggedInMutation = useMutation(
@@ -71,7 +68,7 @@ const NewGamePublic = () => {
             setAction(ACTION.CREATED);
             setValue(
               `${process.env.REACT_APP_FRONTEND_URL}/join-game/` +
-              responseData?.data?.data?.game
+                responseData?.data?.data?.game
             );
             setCode(responseData?.data?.data?.code);
             //first clear local storage
@@ -84,11 +81,10 @@ const NewGamePublic = () => {
             // localStorage.setItem("playerOneToken", responseData?.data?.data?.token);
             localStorage.setItem("playerOneIp", responseData?.data?.data?.ip);
           },
-          onError: (err) => { },
+          onError: (err) => {},
         }
       );
-    } catch (err) {
-    }
+    } catch (err) {}
   };
 
   const nameMutation = useMutation(
@@ -115,7 +111,7 @@ const NewGamePublic = () => {
             setAction(ACTION.CREATED);
             setValue(
               `${process.env.REACT_APP_FRONTEND_URL}/join-game/` +
-              responseData?.data?.data?.game
+                responseData?.data?.data?.game
             );
             setCode(responseData?.data?.data?.code);
             //first clear local storage
@@ -144,11 +140,10 @@ const NewGamePublic = () => {
               coin: responseData?.data?.data?.playerOne.coin,
             });
           },
-          onError: (err) => { },
+          onError: (err) => {},
         }
       );
-    } catch (err) {
-    }
+    } catch (err) {}
   };
 
   const submitName = () => {
@@ -164,7 +159,7 @@ const NewGamePublic = () => {
   };
 
   const shareLink = async () => {
-    const tempurl = value.split("/").splice(-1)[0]
+    const tempurl = value.split("/").splice(-1)[0];
     // console.log(tempurl[0])
     if (navigator.share) {
       try {
@@ -172,9 +167,7 @@ const NewGamePublic = () => {
           .share({
             url: `join-game/${tempurl}`,
           })
-          .then(() =>
-            console.log("")
-          );
+          .then(() => console.log(""));
       } catch (error) {
         //  console.log(`Oops! I couldn't share to the world because: ${error}`);
       }
@@ -184,8 +177,7 @@ const NewGamePublic = () => {
       //   "Web share is currently not supported on this browser. Please provide a callback"
       // );
     }
-
-  }
+  };
 
   useEffect(() => {
     socket.on("getMessage", (data) => {
@@ -194,8 +186,8 @@ const NewGamePublic = () => {
         localStorage.setItem("p2", data.player2);
         navigate("/game");
       }
-    })
-  }, [])
+    });
+  }, []);
 
   return (
     <main
@@ -254,10 +246,8 @@ const NewGamePublic = () => {
               "
           >
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-
             Join Game
           </button>
-
         </section>
       )}
       {action === ACTION.CREATING && (
@@ -291,7 +281,6 @@ const NewGamePublic = () => {
               ? "Creating..."
               : "Create"}
           </button>
-
         </div>
       )}
 
@@ -320,8 +309,9 @@ const NewGamePublic = () => {
                   <p className="text-xs text-green-500">Copied</p>
                 ) : (
                   <IoIosCopy
-                    className={`${isCopied ? "text-green-500" : "text-gray-300"
-                      }`}
+                    className={`${
+                      isCopied ? "text-green-500" : "text-gray-300"
+                    }`}
                   />
                 )}
               </CopyToClipboard>
@@ -345,17 +335,24 @@ const NewGamePublic = () => {
                   <p className="text-xs text-green-500">Copied</p>
                 ) : (
                   <IoIosCopy
-                    className={`${codeCopied ? "text-green-500" : "text-gray-400"
-                      }`}
+                    className={`${
+                      codeCopied ? "text-green-500" : "text-gray-400"
+                    }`}
                   />
                 )}
               </CopyToClipboard>
             </div>
 
             <div
-              className="text-black  mt-4 text-center flex items-center px-4 py-2 pr-5 font-bold bg-orange-color"
               onClick={shareLink}
+              className="relative w-4/5 mt-10 p-2 bg-orange-bg rounded-md cursor-pointer select-none
+              active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
+              active:border-b-[0px] flex items-center justify-center
+              transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+              border-b-[1px] border-gray-400/50 font-semibold text-white
+            "
             >
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
               <IoIosShareAlt className="w-6 h-6" />
               <p>Share</p>
             </div>

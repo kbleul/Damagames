@@ -14,7 +14,7 @@ import { BsTelegram } from "react-icons/bs";
 import { IoIosShareAlt } from "react-icons/io";
 
 import { Slider } from "@mui/material";
-import { Checkbox } from '@mui/material';
+import { Checkbox } from "@mui/material";
 
 import { useAuth } from "../context/auth";
 import { Footer } from "./Footer";
@@ -82,7 +82,7 @@ const NewGame = () => {
       }
     });
 
-    socket.on("userLeaveMessage", (data) => { });
+    socket.on("userLeaveMessage", (data) => {});
   }, []);
 
   const submitName = () => {
@@ -131,7 +131,7 @@ const NewGame = () => {
             setIsCreated(true);
             setValue(
               `${process.env.REACT_APP_FRONTEND_URL}/join-game/` +
-              responseData?.data?.data?.game
+                responseData?.data?.data?.game
             );
             setCode(responseData?.data?.data?.code);
             //first clear local storage
@@ -149,10 +149,10 @@ const NewGame = () => {
             );
             localStorage.setItem("playerOneIp", responseData?.data?.data?.ip);
           },
-          onError: (err) => { },
+          onError: (err) => {},
         }
       );
-    } catch (err) { }
+    } catch (err) {}
   };
 
   //no userName if the user ligged in
@@ -181,7 +181,7 @@ const NewGame = () => {
             setIsCreated(true);
             setValue(
               `${process.env.REACT_APP_FRONTEND_URL}/join-game/` +
-              responseData?.data?.data?.game
+                responseData?.data?.data?.game
             );
 
             if (betRef.current.checked) {
@@ -206,10 +206,10 @@ const NewGame = () => {
           },
         }
       );
-    } catch (err) { }
+    } catch (err) {}
   };
   useEffect(() => {
-    socket.on("private-room", (data) => { });
+    socket.on("private-room", (data) => {});
   }, []);
 
   const checkCoinAmoute = (e) => {
@@ -240,7 +240,7 @@ const NewGame = () => {
   );
 
   const shareLink = async () => {
-    const tempurl = value.split("/").splice(-1)[0]
+    const tempurl = value.split("/").splice(-1)[0];
     // console.log(tempurl[0])
     if (navigator.share) {
       try {
@@ -248,20 +248,15 @@ const NewGame = () => {
           .share({
             url: `join-game/${tempurl}`,
           })
-          .then(() =>
-            console.log("")
-          );
+          .then(() => console.log(""));
       } catch (error) {
         console.log(``);
       }
     } else {
       // fallback code
-      console.log(
-        ""
-      );
+      console.log("");
     }
-
-  }
+  };
   return (
     <div
       style={{
@@ -275,9 +270,12 @@ const NewGame = () => {
         overflow: "hidden",
       }}
     >
-
       <button
-        className={isCreated ? "hidden" : "z-10 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 fixed left-2 md:left-4"}
+        className={
+          isCreated
+            ? "hidden"
+            : "z-10 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 fixed left-2 md:left-4"
+        }
         onClick={() => navigate("/create-game")}
       >
         <svg
@@ -319,7 +317,8 @@ const NewGame = () => {
             placeholder="Tell Us Your name"
           />
           <div className="flex justify-evenly items-center  w-3/5 accent-orange-600">
-            <input className="w-6 h-4 accent-orange-color"
+            <input
+              className="w-6 h-4 accent-orange-color"
               onChange={() => {
                 if (betRef.current.checked) {
                   if (user && token) {
@@ -370,7 +369,10 @@ const NewGame = () => {
                 <p className="text-white">Not enough coins</p>
               ) : (
                 <div className=" w-4/5">
-                  <Slider aria-label="Default" valueLabelDisplay="auto" defaultValue={profileData?.data?.data?.data?.coins / 10}
+                  <Slider
+                    aria-label="Default"
+                    valueLabelDisplay="auto"
+                    defaultValue={profileData?.data?.data?.data?.coins / 10}
                     step={10}
                     min={1}
                     max={profileData?.data?.data?.data?.coins}
@@ -409,16 +411,12 @@ const NewGame = () => {
               ? "Creating..."
               : "Create"}
           </button>
-
-
-
         </div>
       ) : (
         <div
           className="absolute  w-full flex flex-col items-center justify-center 
         min-h-screen space-y-2 p-5"
         >
-
           {/* <MdOutlineCancel onClick={() => setIsCreated(false)} className="absolute top-2 left-2 text-orange-color w-8 h-8" /> */}
 
           <div
@@ -438,10 +436,13 @@ const NewGame = () => {
                 className="w-[90%] bg-transparent flex flex-grow text-white focus:outline-none focus:ring-0 p-2 border-r-2"
               />
 
-
               <div className="flex items-center">
                 <CopyToClipboard
-                  className={isCopied ? "w-12 h-full text-green-500 text-xs" : "w-5 h-5 text-orange-color "}
+                  className={
+                    isCopied
+                      ? "w-12 h-full text-green-500 text-xs"
+                      : "w-5 h-5 text-orange-color "
+                  }
                   text={value}
                   onCopy={() => setIsCopied(true)}
                 >
@@ -449,13 +450,19 @@ const NewGame = () => {
                     <p className="w-6 h-6 text-xs text-green-500">Copied</p>
                   ) : (
                     <IoIosCopy
-                      className={`${isCopied ? "text-green-500" : "text-red-500"
-                        }`}
+                      className={`${
+                        isCopied ? "text-green-500" : "text-red-500"
+                      }`}
                     />
                   )}
                 </CopyToClipboard>
-                <p className={isCopied ? "hidden" : "text-white text-sm font-bold pr-1"}>{isCopied ? "Copied" : "Copy"}</p>
-
+                <p
+                  className={
+                    isCopied ? "hidden" : "text-white text-sm font-bold pr-1"
+                  }
+                >
+                  {isCopied ? "Copied" : "Copy"}
+                </p>
               </div>
 
               {/* <input
@@ -466,7 +473,6 @@ const NewGame = () => {
               />
 
               <button onClick={() => setCodeCopied(true)} className={codeCopied ? "text-green-500 text-sm border-l-2 p-2 font-bold" : "text-white text-sm border-l-2 p-2 font-bold"}>{codeCopied ? "Copied" : "Copy"}</button> */}
-
 
               {/* <CopyToClipboard
                 className="w-8 h-5 text-orange-color border-2 border-orange-color p-2"
@@ -513,10 +519,13 @@ const NewGame = () => {
                 )}
               </CopyToClipboard> */}
 
-
               <div className="flex items-center">
                 <CopyToClipboard
-                  className={codeCopied ? "w-12 h-full text-green-500 text-xs" : "w-5 h-5 text-orange-color "}
+                  className={
+                    codeCopied
+                      ? "w-12 h-full text-green-500 text-xs"
+                      : "w-5 h-5 text-orange-color "
+                  }
                   text={code}
                   onCopy={() => setCodeCopied(true)}
                 >
@@ -524,24 +533,30 @@ const NewGame = () => {
                     <p className="w-6 h-6 text-xs text-green-500">Copied</p>
                   ) : (
                     <IoIosCopy
-                      className={`${codeCopied ? "text-green-500" : "text-red-500"
-                        }`}
+                      className={`${
+                        codeCopied ? "text-green-500" : "text-red-500"
+                      }`}
                     />
                   )}
                 </CopyToClipboard>
-                <p className={codeCopied ? "hidden" : "text-white text-sm font-bold pr-1"}>{codeCopied ? "Copied" : "Copy"}</p>
-
+                <p
+                  className={
+                    codeCopied ? "hidden" : "text-white text-sm font-bold pr-1"
+                  }
+                >
+                  {codeCopied ? "Copied" : "Copy"}
+                </p>
               </div>
             </div>
 
             <div
+              onClick={shareLink}
               className="relative w-4/5 mt-10 p-2 bg-orange-bg rounded-md cursor-pointer select-none
     active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
     active:border-b-[0px] flex items-center justify-center
     transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
     border-b-[1px] border-gray-400/50 font-semibold text-white
-  "
-              onClick={shareLink}
+     "
             >
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
               <IoIosShareAlt className="w-6 h-6" />
@@ -572,8 +587,5 @@ const NewGame = () => {
     </div>
   );
 };
-
-
-
 
 export default NewGame;
