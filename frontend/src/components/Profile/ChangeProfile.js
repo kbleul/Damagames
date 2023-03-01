@@ -94,7 +94,7 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
 
   const profileSelectSubmitHandler = async (values) => {
     try {
-      profileMutation.mutate(
+      profileSelectMutation.mutate(
         {},
         {
           onSuccess: (responseData) => {
@@ -321,11 +321,11 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
 
                       {selected !== null && (
                         <button
-                          disabled={profileMutation.isLoading}
+                          disabled={profileSelectMutation.isLoading}
                           onClick={selected < 3 ? profileMutationSubmitHandler : profileSelectSubmitHandler}
                           className="rounded-md bg-orange-bg text-white font-medium w-[70%] p-2"
                         >
-                          {profileMutation.isLoading ? "Loading..." : "Update"}
+                          {profileSelectMutation.isLoading ? "Loading..." : "Update"}
                         </button>
                       )}
 

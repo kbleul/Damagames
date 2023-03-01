@@ -29,7 +29,7 @@ const ScoreBoard = () => {
     }
   );
 
-
+  console.log(scoreBoardData)
   return (
     <div className="h-[100vh] overflow-y-scroll flex flex-col items-center">
       <button
