@@ -110,9 +110,9 @@ const Store = () => {
     );
 
 
-    return (<main className=" text-white flex flex-col md:grid md:grid-cols-3  md:h-[100vh] ">
+    return (<main className={itemIsLoading ? "md:h-[100vh] flex justify-center items-center" : " text-white flex flex-col md:grid md:grid-cols-3  md:h-[100vh] "}>
         <button
-            className={isOn ? "hidden" : "z-10 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 fixed right-0 md:right-4"}
+            className={isOn || itemIsLoading ? "hidden" : "z-10 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 fixed left-2 md:left-4"}
             onClick={() => navigate("/create-game")}
         >
             <svg
@@ -138,10 +138,10 @@ const Store = () => {
         </button>
 
         {
-            !itemIsLoading ? <>
+            !itemIsLoading && <>
                 <div>
                     <article className={(isOn && showAvatars) ? "h-[89vh] overflow-y-scroll scrollbar-hide  md:mt-[5vh] mb-2" : isOn ? "hidden" : "h-[45vh] md:h-[93vh] pt-1 overflow-y-hidden md:overflow-y-scroll scrollbar-hide md:mt-[3vh]"}>
-                        <h2 className="md:text-xl text-left font-bold text-sm ml-[6%] pb-1">Board</h2>
+                        <h2 className="md:text-xl py-1  text-white font-bold text-sm w-[90%] ml-[5%] text-center pb-1">Avatar</h2>
                         <section>
                             {storeItems.avatars?.map(avatar => <Avatar id={avatar.id} avatar={avatar} set_isShowModalOpen={set_isShowModalOpen} setSelectedItem={setSelectedItem} setShowLoginModal={setShowLoginModal} myAvatarsId={myAvatarsId} />)}
                         </section>
@@ -151,7 +151,7 @@ const Store = () => {
                 </div>
                 <div>
                     <article className={(isOn && showBoard) ? "h-[89vh]  overflow-y-scroll scrollbar-hide  md:mt-[3vh]" : isOn ? "hidden" : "h-[20vh] md:h-[91vh] overflow-y-hidden md:overflow-y-scroll scrollbar-hide md:mt-[5vh]"}>
-                        <h2 className="md:text-xl py-1 text-left font-bold text-sm ml-[6%] ">Boards</h2>
+                        <h2 className="md:text-xl py-1 font-bold text-sm  w-[90%] ml-[5%] text-center pb-1">Boards</h2>
                         <section style={{
                             background: `linear-gradient(120deg, rgb(39, 138, 134) 1%, rgba(11, 42, 43, 0.32) 10%, rgb(22, 85, 82) 98%) repeat scroll 0% 0%`,
                         }} className={(isOn && showBoard) ? "grid grid-cols-2 w-[90%] ml-[5%] border rounded-lg" : "grid grid-cols-2 w-[90%] ml-[5%] border rounded-lg max-h-[15vh] md:max-h-fit overflow-hidden"}>
@@ -165,7 +165,7 @@ const Store = () => {
 
                 <div>
                     <article className={(isOn && showCrown) ? "h-[89vh]  overflow-y-scroll scrollbar-hide  md:mt-[5vh]" : isOn ? "hidden" : "h-[25vh] md:h-[91vh] overflow-y-hidden scrollbar-hide md:mt-[5vh]"}>
-                        <h2 className="md:text-xl pt-1 text-left font-bold text-sm ml-[6%] pb-1">Crowns</h2>
+                        <h2 className="md:text-xl pt-1 font-bold text-sm  w-[90%] ml-[5%] text-center pb-1">Crowns</h2>
                         <section style={{
                             background: `linear-gradient(120deg, rgb(39, 138, 134) 1%, rgba(11, 42, 43, 0.32) 10%, rgb(22, 85, 82) 98%) repeat scroll 0% 0%`,
                         }} className={(isOn && showCrown) ? "grid grid-cols-3 w-[90%] ml-[4%] border rounded-lg  overflow-scroll scrollbar-hide" : "grid grid-cols-3 w-[90%] ml-[5%] border rounded-lg max-h-[20vh] md:max-h-fit overflow-scroll scrollbar-hide"}>
@@ -176,25 +176,27 @@ const Store = () => {
                     {!isOn && <FaChevronCircleDown className={(isOn && !showCrown) ? "hidden" : "md:hidden w-1/5 ml-[40%] h-[3vh] text-orange-color"} onClick={() => { setIsOn(prev => !prev); setShowCrown(prev => !prev) }} />}
                     {showCrown && <FaChevronCircleUp className="w-1/5 ml-[40%] h-[5vh] text-orange-color mt-4" onClick={() => { setIsOn(false); setShowCrown(false); setShowAvatars(false); setShowBoard(false) }} />}
                 </div>
-            </> :
-                <div className="text-white flex items-center justify-center min-h-screen">
-                    <Circles
-                        height="60"
-                        width="90"
-                        radius="9"
-                        color="#FF4C01"
-                        ariaLabel="three-dots-loading"
-                        wrapperStyle={{}}
-                        wrapperClassName=""
-                        visible={true}
-                    />
-                </div>
+            </>
+
         }
 
 
         <StoreItemView isShowModalOpen={isShowModalOpen} set_isShowModalOpen={set_isShowModalOpen}
             item={selectedItem} myAvatarsId={myAvatarsId} myBoardsId={myBoardsId} myCrownsId={myCrownsId} />
         <LoginPromptModal isShowModalOpen={ShowLoginModal} set_isShowModalOpen={setShowLoginModal} />
+
+        {itemIsLoading && <div className="text-white flex items-center justify-center min-h-screen">
+            <Circles
+                height="60"
+                width="90"
+                radius="9"
+                color="#FF4C01"
+                ariaLabel="three-dots-loading"
+                wrapperStyle={{}}
+                wrapperClassName=""
+                visible={true}
+            />
+        </div>}
 
 
     </main>)

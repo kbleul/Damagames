@@ -151,7 +151,7 @@ const PubicGames = () => {
   return (<>{!isVerified ?
     <main className="flex flex-col items-center h-[100vh] overflow-y-scroll ">
       <button
-        className="z-10 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 fixed right-0 md:right-4"
+        className="z-10 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 fixed left-2 md:left-4"
         onClick={() => navigate("/create-game")}
       >
         <svg

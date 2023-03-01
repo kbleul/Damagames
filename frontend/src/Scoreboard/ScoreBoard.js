@@ -25,14 +25,15 @@ const ScoreBoard = () => {
       refetchOnWindowFocus: false,
       retry: false,
       //   enabled: !!token,
-      onSuccess: (res) => {},
+      onSuccess: (res) => { },
     }
   );
+
 
   return (
     <div className="h-[100vh] overflow-y-scroll flex flex-col items-center">
       <button
-        className="z-10 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 fixed right-0 md:right-4"
+        className="z-10 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 fixed left-2 md:right-4"
         onClick={() => navigate("/create-game")}
       >
         <svg
@@ -65,16 +66,16 @@ const ScoreBoard = () => {
         ))
       ) : (
         <div className="text-white flex items-center justify-center min-h-screen">
-            <Circles
-                    height="60"
-                    width="90"
-                    radius="9"
-                    color="#FF4C01"
-                    ariaLabel="three-dots-loading"
-                    wrapperStyle={{}}
-                    wrapperClassName=""
-                    visible={true}
-                  />
+          <Circles
+            height="60"
+            width="90"
+            radius="9"
+            color="#FF4C01"
+            ariaLabel="three-dots-loading"
+            wrapperStyle={{}}
+            wrapperClassName=""
+            visible={true}
+          />
         </div>
       )}
     </div>

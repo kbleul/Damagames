@@ -11,12 +11,16 @@ import "./style.css";
 import { BottomSheet } from "react-spring-bottom-sheet";
 import "react-spring-bottom-sheet/dist/style.css";
 import { BsTelegram } from "react-icons/bs";
+import { IoIosShareAlt } from "react-icons/io";
+
 import { Slider } from "@mui/material";
+import { Checkbox } from '@mui/material';
 
 import { useAuth } from "../context/auth";
 import { Footer } from "./Footer";
 import { useHome } from "../context/HomeContext";
 import { clearCookie } from "../utils/data";
+import { MdOutlineCancel } from "react-icons/md";
 
 const NewGame = () => {
   const { user, token } = useAuth();
@@ -126,7 +130,7 @@ const NewGame = () => {
 
             setIsCreated(true);
             setValue(
-              `${process.env.REACT_APP_FRONTEND_URL}join-game/` +
+              `${process.env.REACT_APP_FRONTEND_URL}/join-game/` +
               responseData?.data?.data?.game
             );
             setCode(responseData?.data?.data?.code);
@@ -176,7 +180,7 @@ const NewGame = () => {
             socket.emit("join-room", responseData?.data?.data?.game);
             setIsCreated(true);
             setValue(
-              `${process.env.REACT_APP_FRONTEND_URL}join-game/` +
+              `${process.env.REACT_APP_FRONTEND_URL}/join-game/` +
               responseData?.data?.data?.game
             );
 
@@ -289,7 +293,7 @@ const NewGame = () => {
             placeholder="Tell Us Your name"
           />
           <div className="flex justify-evenly items-center  w-3/5 accent-orange-600">
-            <input
+            <input className="w-6 h-4 accent-orange-color"
               onChange={() => {
                 if (betRef.current.checked) {
                   if (user && token) {
@@ -308,6 +312,7 @@ const NewGame = () => {
               name="bet"
               value="Bet"
             />
+
             <label for="bet" className="text-white">
               Play for coins
             </label>
@@ -390,25 +395,58 @@ const NewGame = () => {
           className="absolute  w-full flex flex-col items-center justify-center 
         min-h-screen space-y-2 p-5"
         >
+
+          {/* <MdOutlineCancel onClick={() => setIsCreated(false)} className="absolute top-2 left-2 text-orange-color w-8 h-8" /> */}
+
           <div
             className="flex flex-col items-center justify-center max-w-xl mx-auto w-full 
-           border-2 border-orange-color p-3 rounded-md"
+            p-3 rounded-md"
           >
             <h2 className="font-medium text-white text-lg ">Great Work!</h2>
-            <p className="text-gray-200 pb-2 capitalize ">
-              Now send this link to your friend
+            <p className="text-gray-200 pb-2  ">
+              Now send this Link to your Friend
             </p>
 
-            <div className="z-40 flex items-center border border-gray-400 p-2 rounded-sm w-full">
+            <div className="z-40 flex items-center border border-gray-400  w-full rounded-xl">
               <input
                 type="text"
                 value={value}
                 disabled
-                className=" bg-transparent text-white focus:outline-none focus:ring-0  w-full pr-2"
+                className="w-[90%] bg-transparent flex flex-grow text-white focus:outline-none focus:ring-0 p-2 border-r-2"
               />
 
-              <CopyToClipboard
-                className="w-8 h-5 text-white border-l-2 border-orange-color pl-2"
+
+              <div className="flex items-center">
+                <CopyToClipboard
+                  className={isCopied ? "w-12 h-full text-green-500 text-xs" : "w-5 h-5 text-orange-color "}
+                  text={value}
+                  onCopy={() => setIsCopied(true)}
+                >
+                  {isCopied ? (
+                    <p className="w-6 h-6 text-xs text-green-500">Copied</p>
+                  ) : (
+                    <IoIosCopy
+                      className={`${isCopied ? "text-green-500" : "text-red-500"
+                        }`}
+                    />
+                  )}
+                </CopyToClipboard>
+                <p className={isCopied ? "hidden" : "text-white text-sm font-bold pr-1"}>{isCopied ? "Copied" : "Copy"}</p>
+
+              </div>
+
+              {/* <input
+                type="text"
+                value={value}
+                disabled
+                className=" bg-transparent text-white focus:outline-none focus:ring-0  w-full pr-2 "
+              />
+
+              <button onClick={() => setCodeCopied(true)} className={codeCopied ? "text-green-500 text-sm border-l-2 p-2 font-bold" : "text-white text-sm border-l-2 p-2 font-bold"}>{codeCopied ? "Copied" : "Copy"}</button> */}
+
+
+              {/* <CopyToClipboard
+                className="w-8 h-5 text-orange-color border-2 border-orange-color p-2"
                 text={value}
                 onCopy={() => setIsCopied(true)}
               >
@@ -420,7 +458,7 @@ const NewGame = () => {
                       }`}
                   />
                 )}
-              </CopyToClipboard>
+              </CopyToClipboard> */}
             </div>
             {/* via code */}
             <div className="flex items-center space-x-2 justify-center">
@@ -429,16 +467,16 @@ const NewGame = () => {
               <div className="bg-orange-bg w-20 h-[1px]" />
             </div>
             {/* code */}
-            <div className="flex items-center  border border-gray-400 p-2 rounded-sm  w-full">
+            <div className="flex items-center  border border-gray-400    w-full rounded-xl">
               <input
                 type="text"
                 value={code}
                 disabled
-                className="w-[90%] bg-transparent flex flex-grow text-white focus:outline-none focus:ring-0 "
+                className="border-r-2 w-[90%] bg-transparent flex flex-grow text-white focus:outline-none focus:ring-0 p-2 rounded-"
               />
 
-              <CopyToClipboard
-                className="w-8 h-5 text-white border-l-2 border-orange-color pl-2"
+              {/* <CopyToClipboard
+                className="w-8 h-5 text-white border-l-2 text-orange-color pl-2"
                 text={code}
                 onCopy={() => setCodeCopied(true)}
               >
@@ -450,15 +488,42 @@ const NewGame = () => {
                       }`}
                   />
                 )}
-              </CopyToClipboard>
+              </CopyToClipboard> */}
+
+
+              <div className="flex items-center">
+                <CopyToClipboard
+                  className={codeCopied ? "w-12 h-full text-green-500 text-xs" : "w-5 h-5 text-orange-color "}
+                  text={code}
+                  onCopy={() => setCodeCopied(true)}
+                >
+                  {codeCopied ? (
+                    <p className="w-6 h-6 text-xs text-green-500">Copied</p>
+                  ) : (
+                    <IoIosCopy
+                      className={`${codeCopied ? "text-green-500" : "text-red-500"
+                        }`}
+                    />
+                  )}
+                </CopyToClipboard>
+                <p className={codeCopied ? "hidden" : "text-white text-sm font-bold pr-1"}>{codeCopied ? "Copied" : "Copy"}</p>
+
+              </div>
             </div>
 
-            <p
-              className="text-white w-14 h-12 rounded-full mt-4 text-center"
+            <div
+              className="relative w-4/5 mt-10 p-2 bg-orange-bg rounded-md cursor-pointer select-none
+    active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
+    active:border-b-[0px] flex items-center justify-center
+    transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+    border-b-[1px] border-gray-400/50 font-semibold text-white
+  "
               onClick={shareLink}
             >
-              Share
-            </p>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
+              <IoIosShareAlt className="w-6 h-6" />
+              <p>Share</p>
+            </div>
           </div>
         </div>
       )}
@@ -484,5 +549,8 @@ const NewGame = () => {
     </div>
   );
 };
+
+
+
 
 export default NewGame;
