@@ -415,7 +415,9 @@ const Game = () => {
   const playerOneIp = localStorage.getItem("playerOneIp");
   const playerTwoIp = localStorage.getItem("playerTwoIp");
   const btCoin = localStorage.getItem("bt_coin_amount");
-
+  const p2Info = JSON.parse(localStorage.getItem("p2Info"))
+  const p1Info = localStorage.getItem("p1")
+  console.log({p2Info:p1Info})
   let gameStatus;
   switch (gameState.winner) {
     case "player1pieces":
@@ -921,6 +923,8 @@ const Game = () => {
     setthreeD(prev => !prev)
   };
 
+
+
   return (
     <div
       className={`
@@ -1026,7 +1030,7 @@ const Game = () => {
             <img
               src={
                 playerOneIp || (id == 1 && user?.profile_image)
-                  ? user?.profile_image
+                  ? user?.profile_image ? user.profile_image : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg" 
                   : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
               }
               className="h-12 rounded-full"
@@ -1042,7 +1046,7 @@ const Game = () => {
                 ? user?.username
                 : playerOneIp
                   ? firstPlayer?.username
-                  : "Your Friend"}
+                  : p1Info}
           </h4>
         </div>
 
@@ -1077,7 +1081,7 @@ const Game = () => {
                 ? user?.username
                 : playerTwoIp
                   ? secondPlayer?.username
-                  : "Your Friend"}
+                  : p1Info ? p1Info : p2Info?.username }
           </h4>
         </div>
       </section>
@@ -1162,9 +1166,9 @@ const Game = () => {
           />
         )}
       </div>
-      <div className={threeD ? "game-board" : ""}>
+      <div className={threeD ? "" : ""}>
         <div
-          className={`box shadow-2xl    ${!id
+          className={`box   ${!id
             ? currentPlayer === true
               ? currentPlayer === true && !firstPlayer
                 ? "pointer-events-none"

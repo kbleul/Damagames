@@ -104,7 +104,7 @@ const ForgotPassword = () => {
           },
         }
       );
-    } catch (err) { }
+    } catch (err) {}
   };
 
   const forgotOtpMutation = useMutation(
@@ -138,7 +138,7 @@ const ForgotPassword = () => {
           },
         }
       );
-    } catch (err) { }
+    } catch (err) {}
   };
   const changePasswordMutation = useMutation(
     async (newData) =>
@@ -182,7 +182,7 @@ const ForgotPassword = () => {
           },
         }
       );
-    } catch (err) { }
+    } catch (err) {}
   };
 
   //resend otp
@@ -213,7 +213,7 @@ const ForgotPassword = () => {
           },
         }
       );
-    } catch (err) { }
+    } catch (err) {}
   };
   const props = {
     inputStyle: {
@@ -283,8 +283,12 @@ const ForgotPassword = () => {
 
               <button
                 onClick={forgotPasswordHandler}
-                className="w-full p-2 rounded-md flex items-center justify-center
-               bg-orange-bg font-medium text-white"
+                className="w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none px-5
+                active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
+                active:border-b-[0px]
+                transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+                border-b-[1px] border-gray-300/50 font-semibold text-white
+              "
               >
                 {forgotPasswordMutation.isLoading ? (
                   <ThreeDots

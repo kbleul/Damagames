@@ -20,6 +20,13 @@ jobs:
       run: yarn playwright install --with-deps
     - name: Run Playwright tests
       run: yarn playwright test
+<<<<<<< HEAD
+    - uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: playwright-report
+        path: playwright-report/
+=======
     - name: zip report folder
       uses: montudor/action-zip@v1
       with:
@@ -30,4 +37,5 @@ jobs:
       with:
         name: playwright-report
         path: playwright_report-${{ env.RELEASE_VERSION }}.zip
+>>>>>>> 1d2d8b3d3812a36082b0828ecfe8add7575b947d
         retention-days: 30

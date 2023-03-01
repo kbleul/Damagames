@@ -11,13 +11,12 @@ import "./style.css";
 import { BottomSheet } from "react-spring-bottom-sheet";
 import "react-spring-bottom-sheet/dist/style.css";
 import { BsTelegram } from "react-icons/bs";
-import { Slider } from '@mui/material';
+import { Slider } from "@mui/material";
 
 import { useAuth } from "../context/auth";
 import { Footer } from "./Footer";
 import { useHome } from "../context/HomeContext";
 import { clearCookie } from "../utils/data";
-
 
 const NewGame = () => {
   const { user, token } = useAuth();
@@ -69,11 +68,13 @@ const NewGame = () => {
     Accept: "application/json",
     Authorization: `Bearer ${token}`,
   };
-
+  const playerOneIp = localStorage.getItem("playerOneIp");
   useEffect(() => {
     socket.on("getMessage", (data) => {
-      if (data.status === "started") {
+      console.log(data?.player2);
+      if (data.status === "started" && data?.player2) {
         navigate("/game");
+        localStorage.setItem("p2Info", data?.player2);
       }
     });
 
@@ -334,20 +335,19 @@ const NewGame = () => {
 
           {showInput && (
             <>
-              {profileData?.data?.data?.data?.coins === 0 ?
+              {profileData?.data?.data?.data?.coins === 0 ? (
                 <p className="text-white">Not enough coins</p>
-                :
+              ) : (
                 <div className=" w-4/5">
                   <Slider aria-label="Default" valueLabelDisplay="auto" defaultValue={profileData?.data?.data?.data?.coins / 10}
                     step={10}
                     min={1}
                     max={profileData?.data?.data?.data?.coins}
                     color="warning"
-                    onChange={e => setCoinAmount(e.target.value)} />
+                    onChange={(e) => setCoinAmount(e.target.value)}
+                  />
                 </div>
-              }
-
-
+              )}
 
               {/* (
                 <input
@@ -366,8 +366,14 @@ const NewGame = () => {
           <button
             disabled={nameMutation.isLoading}
             onClick={submitName}
-            className="bg-orange-bg hover:opacity-70  p-2 px-10 font-semibold text-white rounded-md w-full"
+            className="relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+            active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
+            active:border-b-[0px] flex items-center justify-center
+            transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+            border-b-[1px] border-gray-400/50 font-semibold text-white
+          "
           >
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
             {nameMutation.isLoading || loggedInMutation.isLoading
               ? "Creating..."
               : "Create"}
@@ -401,11 +407,11 @@ const NewGame = () => {
                 className=" bg-transparent text-white focus:outline-none focus:ring-0  w-full pr-2"
               />
 
-
-
-              <CopyToClipboard className="w-8 h-5 text-white border-l-2 border-orange-color pl-2" text={value} onCopy={() => setIsCopied(true)}>
-
-
+              <CopyToClipboard
+                className="w-8 h-5 text-white border-l-2 border-orange-color pl-2"
+                text={value}
+                onCopy={() => setIsCopied(true)}
+              >
                 {isCopied ? (
                   <p className="text-xs text-green-500">Copied</p>
                 ) : (
@@ -431,8 +437,11 @@ const NewGame = () => {
                 className="w-[90%] bg-transparent flex flex-grow text-white focus:outline-none focus:ring-0 "
               />
 
-
-              <CopyToClipboard className="w-8 h-5 text-white border-l-2 border-orange-color pl-2" text={code} onCopy={() => setCodeCopied(true)}>
+              <CopyToClipboard
+                className="w-8 h-5 text-white border-l-2 border-orange-color pl-2"
+                text={code}
+                onCopy={() => setCodeCopied(true)}
+              >
                 {codeCopied ? (
                   <p className="text-xs text-green-500">Copied</p>
                 ) : (
@@ -442,19 +451,17 @@ const NewGame = () => {
                   />
                 )}
               </CopyToClipboard>
-
             </div>
 
-
-            <p className="text-white w-14 h-12 rounded-full mt-4 text-center"
-              onClick={shareLink}>
+            <p
+              className="text-white w-14 h-12 rounded-full mt-4 text-center"
+              onClick={shareLink}
+            >
               Share
             </p>
-
           </div>
         </div>
-      )
-      }
+      )}
       <Footer />
       <BottomSheet
         open={open}
@@ -474,7 +481,7 @@ const NewGame = () => {
         </div>
       </BottomSheet>
       <Toaster />
-    </div >
+    </div>
   );
 };
 

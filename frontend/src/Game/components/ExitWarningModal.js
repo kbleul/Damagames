@@ -69,16 +69,26 @@ export default function ExitWarningModal({
                   <div className="mt-4 flex w-full items-center space-x-5 justify-center">
                     <button
                       type="button"
-                      className="rounded-md  bg-blue-100 px-6  p-2
-                       text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                      onClick={handleExit}
+                      className="w-full p-2  bg-sky-700 rounded-md cursor-pointer select-none
+                       active:translate-y-2  active:[box-shadow:0_0px_0_0_#026ca4,0_0px_0_0_#026ca4]
+                       active:border-b-[0px]
+                       transition-all duration-150 [box-shadow:0_5px_0_0_#026ca4,0_5px_0_0_#026ca4]
+                       border-b-[1px] border-gray-300/50 font-semibold text-white
+                     "
+                       onClick={handleExit}
                     >
                       Yes
                     </button>
                     <button
                       type="button"
-                      className=" rounded-md  px-6 p-2 bg-orange-600 text-white text-sm font-medium hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                       onClick={() => set_isExitModalOpen(false)}
+                      className="w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+                      active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
+                      active:border-b-[0px]
+                      transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+                      border-b-[1px] border-gray-300/50 font-medium text-white
+                    "
+                    
                     >
                       No
                     </button>

@@ -88,6 +88,21 @@ body {
   padding: 10px;
   background-origin: content-box;
   background-size: contain;
+  /*  */
+  /* transform:
+  perspective(600px)
+  rotateX(20deg); */
+  box-shadow: rgba(22, 31, 39, 1) 0px 60px 123px -25px,
+    rgba(19, 26, 32, 1) 0px 35px 75px -35px;
+}
+.box {
+  /* transform: rotateX(51deg); */
+  background-color: black;
+  border: 1px solid white;
+  /* transform: perspective(750px) translate3d(0px, 0px, -250px) rotateX(27deg)
+    scale(1.4, 1.4);
+  border-radius: 5px;
+  box-shadow: 0 70px 40px -20px rgba(0, 0, 0, 0.2); */
 }
 
 .isActive {
@@ -117,31 +132,50 @@ body {
 .square.player1 {
   /* background-image: url("img/orange-coin.svg"); */
   background-image: url("/src/assets/orange-coin.svg");
+  /* background-image: url("/src/assets/3d.svg"); */
+  background-size: cover;
+  background-position: center;
 }
 .square.player2 {
   background-image: url("/src/assets/yellow-coin.svg");
+  /* background-image: url("/src/assets/3d.svg"); */
+  
+  background-size: contain;
+  background-position: center;
+  
 }
 
 .square.player1.myturn {
-  /* background-image: url("img/orange-coin.svg"); */
   background-image: url("/src/assets/orange-coin-white.svg");
+  background-size: cover;
+  background-position: center;
 }
 .square.player2.myturn {
   background-image: url("/src/assets/yellow-coin-white.svg");
+  background-size: cover;
+  background-position: center;
 }
 
 .square.player1.king {
   background-image: url("/src/assets/redNegus.svg");
+  background-size: cover;
+  background-position: center;
 }
 .square.player2.king {
   background-image: url("/src/assets/YellowNegus.svg");
+  background-size: cover;
+  background-position: center;
 }
 
 .square.player1.king.myturn {
   background-image: url("/src/assets/redNegus-white.svg");
+  background-size: cover;
+  background-position: center;
 }
 .square.player2.king.myturn {
   background-image: url("/src/assets/YellowNegus-white.svg");
+  background-size: cover;
+  background-position: center;
 }
 
 .vs {

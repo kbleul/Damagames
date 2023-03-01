@@ -143,7 +143,7 @@ const Store = () => {
                     <article className={(isOn && showAvatars) ? "h-[89vh] overflow-y-scroll scrollbar-hide  md:mt-[5vh] mb-2" : isOn ? "hidden" : "h-[45vh] md:h-[93vh] pt-1 overflow-y-hidden md:overflow-y-scroll scrollbar-hide md:mt-[3vh]"}>
                         <h2 className="md:text-xl text-left font-bold text-sm ml-[6%] pb-1">Board</h2>
                         <section>
-                            {storeItems.avatars.map(avatar => <Avatar id={avatar.id} avatar={avatar} set_isShowModalOpen={set_isShowModalOpen} setSelectedItem={setSelectedItem} setShowLoginModal={setShowLoginModal} myAvatarsId={myAvatarsId} />)}
+                            {storeItems.avatars?.map(avatar => <Avatar id={avatar.id} avatar={avatar} set_isShowModalOpen={set_isShowModalOpen} setSelectedItem={setSelectedItem} setShowLoginModal={setShowLoginModal} myAvatarsId={myAvatarsId} />)}
                         </section>
                     </article>
                     {!isOn && <FaChevronCircleDown className={(isOn && !showAvatars) ? "hidden" : "md:hidden w-1/5 ml-[40%] h-[3vh]  text-orange-color"} onClick={() => { setIsOn(prev => !prev); setShowAvatars(prev => !prev) }} />}
@@ -155,7 +155,7 @@ const Store = () => {
                         <section style={{
                             background: `linear-gradient(120deg, rgb(39, 138, 134) 1%, rgba(11, 42, 43, 0.32) 10%, rgb(22, 85, 82) 98%) repeat scroll 0% 0%`,
                         }} className={(isOn && showBoard) ? "grid grid-cols-2 w-[90%] ml-[5%] border rounded-lg" : "grid grid-cols-2 w-[90%] ml-[5%] border rounded-lg max-h-[15vh] md:max-h-fit overflow-hidden"}>
-                            {storeItems.boards.map(board => <Board id={board.id} board={board} isOn={isOn} set_isShowModalOpen={set_isShowModalOpen} setSelectedItem={setSelectedItem} setShowLoginModal={setShowLoginModal} myBoardsId={myBoardsId} />)}
+                            {storeItems.boards?.map(board => <Board id={board.id} board={board} isOn={isOn} set_isShowModalOpen={set_isShowModalOpen} setSelectedItem={setSelectedItem} setShowLoginModal={setShowLoginModal} myBoardsId={myBoardsId} />)}
 
                         </section>
                     </article>
@@ -169,7 +169,7 @@ const Store = () => {
                         <section style={{
                             background: `linear-gradient(120deg, rgb(39, 138, 134) 1%, rgba(11, 42, 43, 0.32) 10%, rgb(22, 85, 82) 98%) repeat scroll 0% 0%`,
                         }} className={(isOn && showCrown) ? "grid grid-cols-3 w-[90%] ml-[4%] border rounded-lg  overflow-scroll scrollbar-hide" : "grid grid-cols-3 w-[90%] ml-[5%] border rounded-lg max-h-[20vh] md:max-h-fit overflow-scroll scrollbar-hide"}>
-                            {storeItems.crowns.map(crown => (<Crown id={crown.id} crown={crown} set_isShowModalOpen={set_isShowModalOpen} setSelectedItem={setSelectedItem} setShowLoginModal={setShowLoginModal} isOn={isOn} myCrownsId={myCrownsId} />))}
+                            {storeItems?.crowns?.map(crown => (<Crown id={crown.id} crown={crown} set_isShowModalOpen={set_isShowModalOpen} setSelectedItem={setSelectedItem} setShowLoginModal={setShowLoginModal} isOn={isOn} myCrownsId={myCrownsId} />))}
 
                         </section>
                     </article>

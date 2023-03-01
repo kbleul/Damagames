@@ -80,4 +80,14 @@ class User extends Authenticatable
     {
         return $this->hasOne(SecurityQuestionAnswer::class);
     }
+
+    /**
+     * The items that belong to the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function items(): BelongsToMany
+    {
+        return $this->belongsToMany(Store::class, 'user_items', 'user_id', 'item_id');
+    }
 }

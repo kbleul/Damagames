@@ -9,7 +9,7 @@ const DrawGameModal = ({
   setIsDrawModalOpen,
   acceptGameRequest,
   rejectGameRequest,
-  showResetWaiting
+  showResetWaiting,
 }) => {
   const navigate = useNavigate();
   return (
@@ -52,22 +52,30 @@ const DrawGameModal = ({
                       You friend has requested for a draw ?
                     </h1>
 
-                    <button
-                      className="w-[60%] justify-center rounded-md 
-                    bg-orange-bg px-4 py-2 text-sm text-white font-medium
-                    hover:opacity-80"
-                      onClick={acceptGameRequest}
-                    >
-                      Accept
-                    </button>
-                    <button
-                      className="w-[60%] justify-center rounded-md 
-                    bg-orange-bg px-4 py-2 text-sm text-white font-medium
-                    hover:opacity-80"
-                      onClick={rejectGameRequest}
-                    >
-                      Reject
-                    </button>
+                    <div className="grid grid-cols-2 gap-3 w-full">
+                      <button
+                        className="w-full p-2 bg-sky-700 rounded-md cursor-pointer select-none
+active:translate-y-2  active:[box-shadow:0_0px_0_0_#026ca4,0_0px_0_0_#026ca4]
+active:border-b-[0px]
+transition-all duration-150 [box-shadow:0_5px_0_0_#026ca4,0_5px_0_0_#026ca4]
+border-b-[1px] border-gray-300/50 font-medium text-white
+"
+                        onClick={acceptGameRequest}
+                      >
+                        Accept
+                      </button>
+                      <button
+                        className="w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
+active:border-b-[0px]
+transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+border-b-[1px] border-gray-300/50 font-medium text-white
+"
+                        onClick={rejectGameRequest}
+                      >
+                        Reject
+                      </button>
+                    </div>
                   </div>
                 </Dialog.Panel>
               </Transition.Child>
@@ -115,7 +123,6 @@ const DrawGameModal = ({
                     </h1>
 
                     <ThreeDots />
-
                   </div>
                 </Dialog.Panel>
               </Transition.Child>
