@@ -1,6 +1,7 @@
 <?php
 
 use App\Events\TestEvent;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AuthPlayerController;
 use App\Http\Controllers\GameController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\PusherAuthController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\ScoreController;
 use App\Http\Controllers\SecurityQuestionController;
+use App\Http\Controllers\StoreController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
@@ -57,6 +59,8 @@ Route::middleware('response')->group(function () {
 
     Route::post('reset-change-password', [ResetPasswordController::class, 'change_password'])->middleware('auth:sanctum');
     Route::post('finish-regster', [AuthController::class, 'finish_regster'])->middleware('auth:sanctum');
+
+    Route::get('store-items', [StoreController::class, 'index']);
 });
 
 Route::resource('security-questions', SecurityQuestionController::class);
@@ -75,4 +79,17 @@ Route::middleware('response', 'auth:sanctum')->group(function () {
     Route::post('auth-join-game-via-code', [AuthPlayerController::class, 'join_game_via_code']);
     Route::post('auth-start-game/{game}', [AuthPlayerController::class, 'start_game']);
     Route::post('security-question-answer', [AuthController::class, 'user_answer']);
+
+
+    Route::post('purchase-item', [StoreController::class, 'purchase']);
+    Route::get('my-items', [StoreController::class, 'my_items']);
+
+    Route::post('select-board/{itemId}', [StoreController::class, 'select_board']);
+    Route::post('select-avatar/{itemId}', [StoreController::class, 'select_avatar']);
+    Route::post('select-crown/{itemId}', [StoreController::class, 'select_crown']);
+});
+
+Route::middleware(['response', 'auth:sanctum', 'admin'])->prefix('admin')->group(function () {
+    Route::get('dashboard', [AdminController::class, 'dashboard']);
+    Route::get('users', [AdminController::class, 'users']);
 });

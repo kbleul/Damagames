@@ -10,9 +10,9 @@ class SendSmsController extends Controller
     public function sendSMS($phone, $otp)
     {
         try {
-            $result = Http::post("http://197.156.70.196:9095/api/send_sms", [
-                "username" => "Teret68438",
-                "password" => "K0,yo%4!Q*'k1w<>RV)UOI`(4+xkkw",
+            $result = Http::post(config('app.otp_url'), [
+                "username" => config('app.otp_username'),
+                "password" => config('app.otp_password'),
                 'to' => $phone,
                 'text' => "Your verification number is: " . $otp
             ]);

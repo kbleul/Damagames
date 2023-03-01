@@ -14,6 +14,7 @@ use App\Models\SecurityQuestion;
 use App\Models\SecurityQuestionAnswer;
 use App\Models\SQUser;
 use App\Models\User;
+use App\Models\UserItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -31,6 +32,11 @@ class AuthController extends SendSmsController
             return response()->json(['message' => 'Already verified'], 400);
         }
 
+        if (empty($user)) {
+            abort(404, "User not found");
+        }
+
+
         if (Hash::check($request['password'], $user->password)) {
             $credentials = request(['phone', 'password']);
             Auth::attempt($credentials);
@@ -38,7 +44,11 @@ class AuthController extends SendSmsController
             $user->update(['phone_verified_at' => now()]);
             return response()->json(['message' => 'User Created successfully!', 'user' => auth()->user(), 'token' => $token], 201);
         } else {
+
+            return response()->json(['message' => 'Password is incorrect.'], 400);
+
             return response()->json(['message' => 'Something wrong.'], 400);
+
         }
     }
 
@@ -70,10 +80,19 @@ class AuthController extends SendSmsController
         if (empty($user)) {
             abort(404, "Invalid Phone number");
         }
+
         $credentials = request(['phone', 'password']);
         if (Auth::attempt($credentials)) {
             $token = $user->createToken('DAMA')->plainTextToken;
-            return response()->json(['message' => 'Logged In!', 'token' => $token, 'user' => auth()->user()], 201);
+            $user = auth()->user();
+
+            return response()->json([
+                'message' => 'Logged In!',
+                'token' => $token,
+                'user' => $user,
+                'default_board' => UserItem::where('user_id', auth()->id())->whereRelation('item', 'type', 'Board')->first()->item->item ?? null,
+                'default_crown' => UserItem::where('user_id', auth()->id())->whereRelation('item', 'type', 'Crown')->first()->item->item ?? null,
+            ], 201);
         } else {
             return response()->json(['message' => 'Password is incorrect.'], 400);
         }
