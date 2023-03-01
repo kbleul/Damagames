@@ -291,12 +291,7 @@ const NewGamePublic = () => {
               ? "Creating..."
               : "Create"}
           </button>
-          <p
-            onClick={() => setAction(ACTION.MENU)}
-            className="text-orange-color font-medium  text-center pt-3  cursor-pointer"
-          >
-            Back
-          </p>
+
         </div>
       )}
 
