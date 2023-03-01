@@ -57,6 +57,22 @@ Using the values provided by default, two sites should now be available for you 
 
 If you'd like to change those domains, take a look at the **labels** attribute values in the `docker-compose.yml` file. Specifically, the value for `Host()` and `PathPrefix()`.
 
+## End-to-end Testing with Playwright
+
+### install
+
+```sh
+yarn
+
+```
+
+### run tests
+
+in VS Code with Playwright Extension or
+```sh
+yarn playwright test
+```
+
 ## Problem?
 
 Having a problem getting this set up? Feel free to [open an issue](https://github.com/aschmelyun/docker-compose-traefik/issues/new), or reach out to me on [Twitter](https://twitter.com/aschmelyun)!
