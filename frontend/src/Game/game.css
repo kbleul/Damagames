@@ -99,10 +99,10 @@ body {
   /* transform: rotateX(51deg); */
   background-color: black;
   border: 1px solid white;
-  transform: perspective(750px) translate3d(0px, 0px, -250px) rotateX(27deg)
-    scale(1.3, 1.3);
+  /* transform: perspective(750px) translate3d(0px, 0px, -250px) rotateX(27deg)
+    scale(1.4, 1.4);
   border-radius: 5px;
-  box-shadow: 0 70px 40px -20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 70px 40px -20px rgba(0, 0, 0, 0.2); */
 }
 
 .isActive {

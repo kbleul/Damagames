@@ -47,49 +47,53 @@ const CreateGame = () => {
         <div className="w-full grid grid-cols-2 gap-3">
           <button
             onClick={() => handleSecond("new-game")}
-            className="w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+            className="relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
     active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
-    active:border-b-[0px]
+    active:border-b-[0px] flex items-center justify-center
     transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
-    border-b-[1px] border-gray-300/50 font-semibold text-white
+    border-b-[1px] border-gray-400/50 font-semibold text-white
   "
           >
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
             Create Game
           </button>
           <button
             onClick={() => handleSecond("join-game")}
-            className="w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
-    active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
-    active:border-b-[0px]
-    transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
-    border-b-[1px] border-gray-300/50 font-semibold text-white
-  "
+            className="relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+            active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
+            active:border-b-[0px] flex items-center justify-center
+            transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+            border-b-[1px] border-gray-400/50 font-semibold text-white
+          "
           >
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
             Join Game
           </button>
         </div>
         <button
           onClick={() => handleSecond(`game/${1}`)}
-          className="w-full flex flex-col items-center justify-center p-2 bg-orange-color rounded-md cursor-pointer select-none
-    active:translate-y-2  active:[box-shadow:0_0px_0_0_#c93b00,0_0px_0_0_#c93b00]
-    active:border-b-[0px]
-    transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
-    border-b-[1px] border-gray-300/50 font-medium text-white
-  "
+          className="relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+          active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
+          active:border-b-[0px] flex items-center justify-center
+          transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+          border-b-[1px] border-gray-400/50 font-semibold text-white
+        "
         >
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
           <span>Play with Computer</span>
           {/* <span>offline</span> */}
         </button>
 
         <button
           onClick={() => handleSecond("new-game-public")}
-          className="w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+          className="relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
           active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
-          active:border-b-[0px]
+          active:border-b-[0px] flex items-center justify-center
           transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
-          border-b-[1px] border-gray-300/50 font-semibold text-white
+          border-b-[1px] border-gray-400/50 font-semibold text-white
         "
         >
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
           Public Game
         </button>
 
@@ -97,13 +101,17 @@ const CreateGame = () => {
           {!user && !token && (
             <div className=" absolute right-4 top-4">
               <button
-                className="w-full bg-orange-color 
-           p-2 px-5 font-medium text-white 
-           rounded-lg text-sm"
                 onClick={() => {
-                  navigate("/login");
+                  handleSecond("login");
                 }}
+                className="relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none px-5
+    active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
+    active:border-b-[0px] flex items-center justify-center
+    transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+    border-b-[1px] border-gray-400/50 font-semibold text-white
+  "
               >
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
                 Log in
               </button>
             </div>
@@ -113,9 +121,9 @@ const CreateGame = () => {
         <section className="w-4/5 max-w-[30rem] flex items-center justify-evenly mt-[12vh]">
           <Link
             to="/score-board"
-            className="flex flex-col justify-evenly items-center"
+            className="flex flex-col justify-evenly items-center "
           >
-            <div className="h-6 w-8 bg-orange-color px-2 flex justify-center items-center ">
+            <div className="h-6 w-8 bg-orange-color px-2 flex justify-center items-center rounded-sm">
               <svg
                 width="20"
                 height="18"

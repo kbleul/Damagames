@@ -94,8 +94,7 @@ const JoinGame = () => {
           {
             onSuccess: (responseData) => {
               responseData?.data?.data?.playerOne?.username &&
-                setMyFriend( responseData?.data?.data?.playerOne.username
-                );
+                setMyFriend(responseData?.data?.data?.playerOne.username);
 
               localStorage.setItem(
                 "players",
@@ -116,8 +115,7 @@ const JoinGame = () => {
           {
             onSuccess: (responseData) => {
               responseData?.data?.data?.playerOne?.username &&
-                setMyFriend( responseData?.data?.data?.playerOne.username
-                );
+                setMyFriend(responseData?.data?.data?.playerOne.username);
 
               localStorage.setItem(
                 "players",
@@ -133,7 +131,7 @@ const JoinGame = () => {
           }
         );
       }
-    } catch (err) { }
+    } catch (err) {}
   };
 
   const handleJoin = () => {
@@ -158,8 +156,8 @@ const JoinGame = () => {
             ? `${process.env.REACT_APP_BACKEND_URL}auth-start-game/${id}`
             : `${process.env.REACT_APP_BACKEND_URL}add-player/${id}`
           : user && token
-            ? `${process.env.REACT_APP_BACKEND_URL}auth-start-game/${gameId}`
-            : `${process.env.REACT_APP_BACKEND_URL}add-player/${gameId}`,
+          ? `${process.env.REACT_APP_BACKEND_URL}auth-start-game/${gameId}`
+          : `${process.env.REACT_APP_BACKEND_URL}add-player/${gameId}`,
         newData,
         {
           headers: user && token ? header : headers,
@@ -173,7 +171,6 @@ const JoinGame = () => {
     try {
       nameMutation.mutate(user && token ? {} : { username: name }, {
         onSuccess: (responseData) => {
-       
           if (gameId) {
             socket.emit("join-room", gameId);
           } else {
@@ -198,9 +195,9 @@ const JoinGame = () => {
           );
           localStorage.setItem("gameId", responseData?.data?.data?.game);
         },
-        onError: (err) => { },
+        onError: (err) => {},
       });
-    } catch (err) { }
+    } catch (err) {}
   };
 
   //with code
@@ -208,10 +205,13 @@ const JoinGame = () => {
     try {
       nameMutation.mutate(user && token ? {} : { username: name }, {
         onSuccess: (responseData) => {
-          console.log("zzzzz",responseData?.data?.data?.playerOne)
+          console.log("zzzzz", responseData?.data?.data?.playerOne);
           socket.emit("join-room", gameId);
           if (ipRef.current !== responseData?.data?.data?.ip) {
-            socket.emit("sendMessage", { status: "started", player2: JSON.stringify(responseData?.data?.data?.playerTwo), });
+            socket.emit("sendMessage", {
+              status: "started",
+              player2: JSON.stringify(responseData?.data?.data?.playerTwo),
+            });
           }
 
           //first clear local storage
@@ -233,9 +233,9 @@ const JoinGame = () => {
           );
           localStorage.setItem("gameId", responseData?.data?.data?.game);
         },
-        onError: (err) => { },
+        onError: (err) => {},
       });
-    } catch (err) { }
+    } catch (err) {}
   };
 
   const handleSubmitCode = () => {
@@ -293,8 +293,7 @@ const JoinGame = () => {
 
               setIsVerified(true);
               responseData?.data?.data?.playerOne.username &&
-                setMyFriend(responseData?.data?.data?.playerOne.username
-                );
+                setMyFriend(responseData?.data?.data?.playerOne.username);
               localStorage.setItem("gameId", responseData?.data?.data?.game);
             },
             onError: (err) => {
@@ -311,8 +310,7 @@ const JoinGame = () => {
             onSuccess: (responseData) => {
               setIsVerified(true);
               responseData?.data?.data?.playerOne.username &&
-                setMyFriend( responseData?.data?.data?.playerOne.username
-                );
+                setMyFriend(responseData?.data?.data?.playerOne.username);
               localStorage.setItem("gameId", responseData?.data?.data?.game);
               localStorage.setItem(
                 "p1",
@@ -327,7 +325,7 @@ const JoinGame = () => {
           }
         );
       }
-    } catch (err) { }
+    } catch (err) {}
   };
   return (
     <div
@@ -363,13 +361,9 @@ const JoinGame = () => {
                 {!user && !token && " Tell Us Your Name"}
               </h2>
               <p className="text-gray-400 pb-2">
-                Your Friend {" "}
-                <span
-                  className={"text-orange-color"}
-                >
-                  {myFriend}
-                </span>{" "}
-                is waiting for you. <br />
+                Your Friend{" "}
+                <span className={"text-orange-color"}>{myFriend}</span> is
+                waiting for you. <br />
                 Join Now !!
               </p>
 
@@ -385,13 +379,14 @@ const JoinGame = () => {
               <button
                 onClick={handleJoin}
                 disabled={nameMutation.isLoading}
-                className="w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+                className="relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
                 active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
-                active:border-b-[0px]
+                active:border-b-[0px] flex items-center justify-center
                 transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
-                border-b-[1px] border-gray-300/50 font-semibold text-white
+                border-b-[1px] border-gray-400/50 font-semibold text-white
               "
               >
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
                 {nameMutation.isLoading ? "Loading.." : "Join"}
               </button>
               <p
@@ -416,13 +411,9 @@ const JoinGame = () => {
               Tell Us Your Name
             </h2>
             <p className="text-gray-400 pb-2">
-              Your Friend {" "}
-              <span
-                   className={"text-orange-color"}
-              >
-                {myFriend}
-              </span>{" "}
-              is waiting for you. <br />
+              Your Friend{" "}
+              <span className={"text-orange-color"}>{myFriend}</span> is waiting
+              for you. <br />
               Join Now !
             </p>
 
@@ -438,13 +429,14 @@ const JoinGame = () => {
             <button
               onClick={handleJoin}
               disabled={nameMutation.isLoading}
-              className="w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+              className="relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
               active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
-              active:border-b-[0px]
+              active:border-b-[0px] flex items-center justify-center
               transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
-              border-b-[1px] border-gray-300/50 font-semibold text-white
+              border-b-[1px] border-gray-400/50 font-semibold text-white
             "
             >
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
               {nameMutation.isLoading ? "Loading.." : "Join"}
             </button>
             <p
@@ -461,11 +453,11 @@ const JoinGame = () => {
           min-h-screen  p-5 "
         >
           <div
-            className="flex flex-col items-center justify-center space-y-2  border
-             border-orange-color p-3 rounded-sm w-full bg-dark-bg max-w-[600px]"
+            className="flex flex-col items-center justify-center space-y-4  
+             p-3 rounded-sm w-full bg-dark-bg max-w-[600px] "
           >
-            <h2 className="font-medium text-white text-lg">Enter Code</h2>
-
+            <h2 className="font-medium text-white text-lg capitalize">enter code</h2>
+              
             <input
               type="text"
               placeholder="Enter code"
@@ -480,13 +472,14 @@ const JoinGame = () => {
                 joinBetViaCodeMutation.isLoading
               }
               onClick={handleSubmitCode}
-              className="w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+              className="relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
               active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
-              active:border-b-[0px]
+              active:border-b-[0px] flex items-center justify-center
               transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
-              border-b-[1px] border-gray-300/50 font-semibold text-white
+              border-b-[1px] border-gray-400/50 font-semibold text-white
             "
             >
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
               {joinViaCodeMutation.isLoading || joinBetViaCodeMutation.isLoading
                 ? "Loading..."
                 : "Submit"}
