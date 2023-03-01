@@ -235,29 +235,27 @@ const NewGame = () => {
   );
 
   const shareLink = async () => {
-    {
-      const tempurl = value.split("/").splice(-1)[0]
-      console.log(tempurl[0])
-      if (navigator.share) {
-        try {
-          await navigator
-            .share({
-              url: `${tempurl}`,
-            })
-            .then(() =>
-              console.log("Hooray! Your content was shared to tha world")
-            );
-        } catch (error) {
-          console.log(`Oops! I couldn't share to the world because: ${error}`);
-        }
-      } else {
-        // fallback code
-        console.log(
-          "Web share is currently not supported on this browser. Please provide a callback"
-        );
+    const tempurl = value.split("/").splice(-1)[0]
+    console.log(tempurl[0])
+    if (navigator.share) {
+      try {
+        await navigator
+          .share({
+            url: `join-game/${tempurl}`,
+          })
+          .then(() =>
+            console.log("Hooray! Your content was shared to tha world")
+          );
+      } catch (error) {
+        console.log(`Oops! I couldn't share to the world because: ${error}`);
       }
-
+    } else {
+      // fallback code
+      console.log(
+        "Web share is currently not supported on this browser. Please provide a callback"
+      );
     }
+
   }
   return (
     <div
@@ -340,10 +338,10 @@ const NewGame = () => {
                 <p className="text-white">Not enough coins</p>
                 :
                 <div className=" w-4/5">
-                  <Slider aria-label="Default" valueLabelDisplay="auto" defaultValue={parseInt(playerCoins) / 10}
+                  <Slider aria-label="Default" valueLabelDisplay="auto" defaultValue={profileData?.data?.data?.data?.coins / 10}
                     step={10}
                     min={1}
-                    max={parseInt(playerCoins)}
+                    max={profileData?.data?.data?.data?.coins}
                     color="warning"
                     onChange={e => setCoinAmount(e.target.value)} />
                 </div>
