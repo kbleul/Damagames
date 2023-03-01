@@ -31,7 +31,7 @@ class AuthController extends SendSmsController
         if (!empty($user->phone_verified_at)) {
             return response()->json(['message' => 'Already verified'], 400);
         }
-        if (!empty($user)) {
+        if (empty($user)) {
             abort(404, "User not found");
         }
         if (Hash::check($request['password'], $user->password)) {
@@ -71,14 +71,11 @@ class AuthController extends SendSmsController
         $user = User::where('phone', $request->phone)->first();
 
 
+        // dd($user);
         $credentials = request(['phone', 'password']);
         if (Auth::attempt($credentials)) {
             $token = $user->createToken('DAMA')->plainTextToken;
             $user = auth()->user();
-
-            // dd(UserItem::where('user_id', auth()->id())->where('status', 0)->whereRelation('item', 'type', 'Board')->first());
-            // $user->default_board = UserItem::where('user_id', auth()->id())->where('status', 1)->whereRelation('item', 'type', 'Board')->first()->item->item;
-            // $user->default_crown = UserItem::where('user_id', auth()->id())->where('status', 1)->whereRelation('item', 'type', 'Crown')->first()->item->item;
 
             return response()->json([
                 'message' => 'Logged In!',

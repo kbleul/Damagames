@@ -1,6 +1,7 @@
 <?php
 
 use App\Events\TestEvent;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AuthPlayerController;
 use App\Http\Controllers\GameController;
@@ -86,4 +87,9 @@ Route::middleware('response', 'auth:sanctum')->group(function () {
     Route::post('select-board/{itemId}', [StoreController::class, 'select_board']);
     Route::post('select-avatar/{itemId}', [StoreController::class, 'select_avatar']);
     Route::post('select-crown/{itemId}', [StoreController::class, 'select_crown']);
+});
+
+Route::middleware(['response', 'auth:sanctum', 'admin'])->prefix('admin')->group(function () {
+    Route::get('dashboard', [AdminController::class, 'dashboard']);
+    Route::get('users', [AdminController::class, 'users']);
 });
