@@ -94,8 +94,18 @@ plantuml::../diagrams/overview.puml[png]
 
 Ubuntu 20.04 with following packages installed
 
-* docker-ce
-* docker-compose-plugin
+apt install docker.io docker-compose
+
+=== DNS Setup 
+
+System needs domain and subdomai wildcard
+
+for example 
+
+damagames.com and *.damagames.com or test.damagames.com & *.test.damagames.com
+
+DNS is hoted on namecheap.com by username damagames 
+
 
 
 === Non-default Systems Parameters
@@ -145,6 +155,18 @@ Set up the following environment variables and secrets
 | api.damagames.com / api.${REMOTE_HOST}
 | Frontend needs the URL to the API
 
+| REACT_APP_GTM_ID
+| https://github.com/jaktechet/damagames/settings/variables/actions/GTAG_ID
+| Google Analytics gtag.js config id from damagamescom@gmail.com https://analytics.google.com/
+
+| REACT_APP_SOCKET_URL
+| damagames.com / ${REMOTE_HOST}
+| URL of the websocket server that the frontend uses
+
+| REACT_APP_SOCKET_PORT
+| 443
+| Port of the websocket server that the frontend uses
+
 |===
 
 ==== CORS
@@ -153,6 +175,8 @@ needs setting up of backend/ cors.php
 socket/server.js
 also
 socket.io.js in frontend
+
+.env.example 
 
 === Storage
 
@@ -173,11 +197,11 @@ socket.io.js in frontend
 
 | SSH_FINGERPRINT
 |
-| ssh-keyscan damagames.com
+| ssh-keyscan damagames.com excute your terminal so you can generate fingerprint
 
-| SSH_PRIVATE_KEY
+| SSH_PRIVATE_KEY 
 | SECRET
-| ssh-keygen -m PEM -t rsa -b 4096 + ~/.ssh/authorized_keys
+| ssh-keygen -m PEM -t rsa -b 4096 && cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 
 |
 |

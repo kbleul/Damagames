@@ -18,6 +18,9 @@ import Login from "./components/Auth/Login";
 import Profile from "./components/Profile/Profile";
 import { useAuth } from "./context/auth";
 import TagManager from "react-gtm-module";
+import Store from "./components/Store";
+import PrivacyPolicy from "./components/PrivacyPolicy"
+
 
 //'G-YM283P3T0J'
 const tagManagerArgs = {
@@ -32,7 +35,7 @@ const App = () => {
 
   useEffect(() => {
     TagManager.initialize(tagManagerArgs)
-  },[]);
+  }, []);
 
   useEffect(() => {
     socket.on("connect", () => {
@@ -41,7 +44,7 @@ const App = () => {
   });
 
   const HomeComp = () => {
-    return (
+    return (<>
       <Routes>
         <Route path="*" element={<Navigate to="/create-game" />} />
         <Route path="/create-game" element={<CreateGame />} />
@@ -53,15 +56,21 @@ const App = () => {
         <Route path="/already-joined" element={<AlreadyJoined />} />
         <Route path="/score-board" element={<ScoreBoard />} />
         <Route path="/player-board" element={<PlayerBoard />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile" element={user && token ? <Profile /> : <Navigate to="/login" />} />
         <Route path="/join-public" element={<PublicGames />} />
         <Route path="/new-game-public" element={<NewGamePublic />} />
+        <Route path="/store" element={<Store />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="*" element={<CreateGame />} />
+
       </Routes>
+
+    </>
     );
   };
 
   const AuthComp = () => {
-    return (
+    return (<>
       <Routes>
         <Route path="" element={<Navigate to="/create-game" />} />
         <Route path="/create-game" element={<CreateGame />} />
@@ -78,7 +87,14 @@ const App = () => {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/join-public" element={<PublicGames />} />
         <Route path="/new-game-public" element={<NewGamePublic />} />
+        <Route path="/store" element={<Store />} />
+        <Route path="/profile" element={user && token ? <Profile /> : <Navigate to="/login" />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="*" element={<Navigate to="/create-game" />} />
+
       </Routes>
+
+    </>
     );
   };
 
@@ -94,6 +110,3 @@ const App = () => {
 
 export default App;
 
-export const Footer = () => (
-  <NavLink to="/privacy.html">Privacy Policy</NavLink>
-)

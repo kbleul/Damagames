@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import background from "../assets/backdrop.jpg";
 import axios from "axios";
@@ -8,19 +8,10 @@ import socket from "../utils/socket.io";
 import { useAuth } from "../context/auth";
 import { useHome } from "../context/HomeContext";
 
+import { clearCookie } from "../utils/data";
+import { Footer } from "./Footer";
+
 const JoinGame = () => {
-  const savedData = [
-    "gameId",
-    "playerOne",
-    "playerTwo",
-    "playerOneIp",
-    "playerTwoIp",
-    "playerOneToken",
-    "p1",
-    "p2",
-    "players",
-    "dama-sound"
-  ];
   const { user, token } = useAuth();
   const [isVerified, setIsVerified] = useState(false);
   const { id } = useParams();
@@ -29,16 +20,30 @@ const JoinGame = () => {
   const [success, setSuccess] = useState(false);
   //store player one name
   const [myFriend, setMyFriend] = useState("Your Friend");
-  const { setIsBet, setBetCoin } = useHome();
+  // const { setIsBet, setBetCoin } = useHome();
 
-  console.log({ id });
-  // alert(gameId)
-  // const playerTwo = JSON.parse(localStorage.getItem("playerTwo"))
+  // to check if  creater and the joining player are the same
+  const sameUser = useRef(false);
+
+  let msgCounter = 0;
+
+  const ipRef = useRef(localStorage.getItem("playerOneIp"));
+  console.log({ ipRef });
   const navigate = useNavigate();
   const [name, setName] = useState(user && token ? user.username : "");
   useEffect(() => {
     socket.on("getMessage", (data) => {
       navigate("/game");
+      // setTimeout(() => {
+      //   if (sameUser.current === false) {
+      //   }
+      // }, 1500);
+    });
+
+    socket.on("samePerson", (data) => {
+      msgCounter === 0 && toast(data);
+      sameUser.current = true;
+      ++msgCounter;
     });
   }, []);
   const headers = {
@@ -93,23 +98,21 @@ const JoinGame = () => {
           {},
           {
             onSuccess: (responseData) => {
-              console.log(responseData?.data);
-
-              responseData?.data?.data?.playerOne?.name &&
+              responseData?.data?.data?.playerOne?.username &&
                 setMyFriend(
-                  (prev) => prev + " " + responseData?.data.playerOne.name
+                  (prev) =>
+                    prev + " " + responseData?.data?.data?.playerOne.username
                 );
 
               localStorage.setItem(
                 "players",
                 JSON.stringify({
-                  player1: responseData?.data?.data?.playerOne?.name,
-                  player2: responseData?.data?.data?.playerTwo?.name,
+                  player1: responseData?.data?.data?.playerOne?.username,
+                  player2: responseData?.data?.data?.playerTwo?.username,
                 })
               );
             },
             onError: (err) => {
-              console.log(err?.response?.data?.message);
               navigate("/already-joined");
             },
           }
@@ -119,31 +122,27 @@ const JoinGame = () => {
           {},
           {
             onSuccess: (responseData) => {
-              console.log(responseData?.data);
-
-              responseData?.data?.data?.playerOne?.name &&
+              responseData?.data?.data?.playerOne?.username &&
                 setMyFriend(
-                  (prev) => prev + " " + responseData?.data.playerOne.name
+                  (prev) =>
+                    prev + " " + responseData?.data?.data?.playerOne.username
                 );
 
               localStorage.setItem(
                 "players",
                 JSON.stringify({
-                  player1: responseData?.data?.data?.playerOne?.name,
-                  player2: responseData?.data?.data?.playerTwo?.name,
+                  player1: responseData?.data?.data?.playerOne?.username,
+                  player2: responseData?.data?.data?.playerTwo?.username,
                 })
               );
             },
             onError: (err) => {
-              console.log(err?.response?.data?.message);
               navigate("/already-joined");
             },
           }
         );
       }
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   const handleJoin = () => {
@@ -188,16 +187,16 @@ const JoinGame = () => {
           } else {
             socket.emit("join-room", id);
           }
-          socket.emit("sendMessage", {
-            status: "started",
-            player2: JSON.stringify(responseData?.data?.data?.playerTwo),
-          });
+          if (ipRef.current !== responseData?.data?.data?.ip) {
+            socket.emit("sendMessage", {
+              status: "started",
+              player2: JSON.stringify(responseData?.data?.data?.playerTwo),
+            });
+          }
           socket.emit("join-room", id);
-          // socket.emit("sendMessage", { status: "started" });
-          console.log(responseData?.data);
-          // navigate("/game");
+
           //first clear local storage
-          savedData.forEach((data) => {
+          clearCookie.forEach((data) => {
             localStorage.getItem(data) && localStorage.removeItem(data);
           });
           localStorage.setItem("playerTwoIp", responseData?.data?.data?.ip);
@@ -205,18 +204,11 @@ const JoinGame = () => {
             "playerTwo",
             JSON.stringify(responseData?.data?.data?.playerTwo)
           );
-          // setIsCreated(true)
-          // setValue(responseData?.data?.data?.data?.invitationLink)
           localStorage.setItem("gameId", responseData?.data?.data?.game);
-          // localStorage.setItem('user',responseData?.data?.data?.data?.user)
         },
-        onError: (err) => {
-          console.log(err?.response?.data?.message);
-        },
+        onError: (err) => {},
       });
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   //with code
@@ -225,17 +217,22 @@ const JoinGame = () => {
       nameMutation.mutate(user && token ? {} : { username: name }, {
         onSuccess: (responseData) => {
           socket.emit("join-room", gameId);
+          if (ipRef.current !== responseData?.data?.data?.ip) {
+            socket.emit("sendMessage", { status: "started" });
+          }
 
-          socket.emit("sendMessage", { status: "started" });
-          console.log(responseData?.data);
-
-          navigate("/game");
           //first clear local storage
-          savedData.forEach((data) => {
+          clearCookie.forEach((data) => {
             localStorage.getItem(data) && localStorage.removeItem(data);
           });
-          localStorage.setItem("p1", responseData?.data?.data.playerOne.name);
-          localStorage.setItem("p2", responseData?.data?.data.playerTwo.name);
+          localStorage.setItem(
+            "p1",
+            responseData?.data?.data?.playerOne.username
+          );
+          localStorage.setItem(
+            "p2",
+            responseData?.data?.data?.playerOne.username
+          );
           localStorage.setItem("playerTwoIp", responseData?.data?.data?.ip);
           localStorage.setItem(
             "playerTwo",
@@ -243,13 +240,9 @@ const JoinGame = () => {
           );
           localStorage.setItem("gameId", responseData?.data?.data?.game);
         },
-        onError: (err) => {
-          console.log(err?.response?.data?.message);
-        },
+        onError: (err) => {},
       });
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   const handleSubmitCode = () => {
@@ -293,23 +286,27 @@ const JoinGame = () => {
           { code: code },
           {
             onSuccess: (responseData) => {
-              console.log("bet",responseData?.data?.data?.bet_coin)
               localStorage.setItem(
                 "bt_coin_amount",
                 responseData?.data?.data?.bet_coin
               );
 
+              // if (responseData?.data.data.bet_coin === 0) {
+              //   setIsBet(false)
+              // } else {
+              //   setIsBet(true);
+              //   setBetCoin(responseData?.data.data.bet_coin)
+              // }
+
               setIsVerified(true);
-              responseData?.data?.data?.playerOne?.name &&
+              responseData?.data?.data?.playerOne.username &&
                 setMyFriend(
-                  (prev) => prev + " " + responseData?.data.playerOne.name
+                  (prev) =>
+                    prev + " " + responseData?.data?.data?.playerOne.username
                 );
               localStorage.setItem("gameId", responseData?.data?.data?.game);
             },
             onError: (err) => {
-              console.log(err?.response?.data);
-              console.log("token", token);
-
               err?.response?.data?.data
                 ? toast(err?.response?.data?.data)
                 : toast(err?.response?.data?.message);
@@ -321,16 +318,19 @@ const JoinGame = () => {
           { code: code },
           {
             onSuccess: (responseData) => {
-              console.log(responseData?.data);
               setIsVerified(true);
-              responseData?.data?.data?.playerOne?.name &&
+              responseData?.data?.data?.playerOne.username &&
                 setMyFriend(
-                  (prev) => prev + " " + responseData?.data.playerOne.name
+                  (prev) =>
+                    prev + " " + responseData?.data?.data?.playerOne.username
                 );
               localStorage.setItem("gameId", responseData?.data?.data?.game);
+              localStorage.setItem(
+                "p1",
+                responseData?.data?.data?.playerOne.username
+              );
             },
             onError: (err) => {
-              console.log(err?.response?.data);
               err?.response?.data?.data
                 ? toast(err?.response?.data?.data)
                 : toast(err?.response?.data?.message);
@@ -338,9 +338,7 @@ const JoinGame = () => {
           }
         );
       }
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
   return (
     <div
@@ -502,6 +500,7 @@ const JoinGame = () => {
           </div>
         </div>
       )}
+      <Footer />
 
       <Toaster />
     </div>

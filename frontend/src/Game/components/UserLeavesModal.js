@@ -1,21 +1,16 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import socket from "../../utils/socket.io";
 import { clearCookie } from "../../utils/data";
 
-export default function ExitWarningModal({
-  isExitModalOpen,
-  set_isExitModalOpen,
-  gameState,
+export default function UserLeavesModal({
+  isLeaveModalOpen,
+  setIsLeaveModalOpen,
 }) {
   const navigate = useNavigate();
 
   const handleExit = () => {
-    //exit socket code here
-    if (gameState?.players > 1) {
-      socket.emit("sendExitGameRequest", { status: "Exit" });
-    }
     clearCookie.forEach((data) => {
       localStorage.getItem(data) && localStorage.removeItem(data);
     });
@@ -24,11 +19,11 @@ export default function ExitWarningModal({
   };
   return (
     <>
-      <Transition appear show={isExitModalOpen} as={Fragment}>
+      <Transition appear show={isLeaveModalOpen} as={Fragment}>
         <Dialog
           as="div"
           className="relative z-10"
-          onClose={() => set_isExitModalOpen(true)}
+          onClose={() => setIsLeaveModalOpen(true)}
         >
           <Transition.Child
             as={Fragment}
@@ -58,31 +53,21 @@ export default function ExitWarningModal({
                     as="h3"
                     className="text-lg font-medium leading-6 text-white text-center"
                   >
-                    You are about to leave this game !
+                    Your friend has left out the game !
                   </Dialog.Title>
-                  <div className="mt-2">
+                  <div className="mt-2 flex flex-col items-center space-y-3">
                     <p className="text-sm text-gray-500 text-center ">
-                      Are you sure you want to leave and lose this game ?
+                      You can't continue playing the game!
                     </p>
-                  </div>
 
-                  <div className="mt-4 flex w-full items-center space-x-5 justify-center">
-                    <button
-                      type="button"
-                      className="rounded-md  bg-blue-100 px-6  p-2
-                       text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                      onClick={handleExit}
+                  <button
+                    type="button"
+                    className="rounded-md  p-2 w-full text-white font-medium bg-orange-bg"
+                    onClick={handleExit}
                     >
-                      Yes
-                    </button>
-                    <button
-                      type="button"
-                      className=" rounded-md  px-6 p-2 bg-orange-600 text-white text-sm font-medium hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                      onClick={() => set_isExitModalOpen(false)}
-                    >
-                      No
-                    </button>
-                  </div>
+                    Leave
+                  </button>
+                    </div>
                 </Dialog.Panel>
               </Transition.Child>
             </div>

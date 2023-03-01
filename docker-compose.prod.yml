@@ -10,6 +10,9 @@ services:
         - "--providers.docker.exposedbydefault=false"
         - "--entrypoints.web.address=:80"
         - "--entrypoints.websecure.address=:443"
+        - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+        - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+        - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
         - "--certificatesresolvers.myresolver.acme.email=info@damagames.com"
         - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
         - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
@@ -33,14 +36,9 @@ services:
         labels:
         - "traefik.frontend.priority=1"
         - "traefik.enable=true"
-        #- "traefik.frontend.rule=HostRegexp:{subdomain:[a-z]+}.${REMOTE_HOST}"
         - "traefik.http.routers.frontend.rule=Host(`${REMOTE_HOST}`) || (Host(`app.${REMOTE_HOST}`))"
-        #- "traefik.http.routers.frontend.rule=Host(`damagames.com`) || (Host(`app.damagames.com`)"
         - "traefik.http.routers.frontend.entrypoints=websecure"
         - "traefik.http.routers.frontend.tls.certresolver=myresolver"
-        - "traefik.http.routers.frontend-http.rule=Host(`${REMOTE_HOST}`) || (Host(`app.${REMOTE_HOST}`))"
-        - "traefik.http.routers.frontend-http.entrypoints=web"
-        - "traefik.http.middlewares.frontend-http.redirectscheme.scheme=https"
 
 
     # PHP services
@@ -63,9 +61,7 @@ services:
             - database
         labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.api-http.entrypoints=web"
-        #- "traefik.http.routers.api-http.rule=Host(`api.${REMOTE_HOST}`)"
-        - "traefik.http.middlewares.api-http.redirectscheme.scheme=https"
+        - "traefik.api.priority=2"
         - "traefik.http.routers.api-https.entrypoints=websecure"
         - "traefik.http.routers.api-https.rule=Host(`api.${REMOTE_HOST}`)"
         - "traefik.http.routers.api-https.tls.certresolver=myresolver"
@@ -94,9 +90,7 @@ services:
             - PORT=3000     # if not set defaults to 7744
         labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.sockets-http.entrypoints=web"
-        #- "traefik.http.routers.sockets-http.rule=Host(`sockets.${REMOTE_HOST}`)"
-        - "traefik.http.middlewares.sockets-http.redirectscheme.scheme=https"
+        - "traefik.sockets.priority=3"
         - "traefik.http.routers.sockets-https.entrypoints=websecure"
         - "traefik.http.routers.sockets-https.rule=Host(`sockets.${REMOTE_HOST}`) || PathPrefix(`/socket.io`)"
         - "traefik.http.routers.sockets-https.tls.certresolver=myresolver"

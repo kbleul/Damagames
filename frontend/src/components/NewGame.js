@@ -13,10 +13,12 @@ import "react-spring-bottom-sheet/dist/style.css";
 import { BsFacebook, BsTelegram } from "react-icons/bs";
 import { RiWhatsappFill } from "react-icons/ri";
 import { useAuth } from "../context/auth";
-
+import { Footer } from "./Footer";
+import { useHome } from "../context/HomeContext";
+import { clearCookie } from "../utils/data";
 const NewGame = () => {
   const { user, token } = useAuth();
-
+  //const { setIsBet, setBetCoin } = useHome();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const [isCreated, setIsCreated] = useState(false);
@@ -40,6 +42,11 @@ const NewGame = () => {
   const gameId = localStorage.getItem("gameId");
   const betRef = useRef();
 
+  const playerCoins =
+    user && token
+      ? JSON.parse(localStorage.getItem("dama_user_data"))?.user?.coin
+      : null;
+
   useEffect(() => {
     setTimeout(() => {
       setIsCopied(false);
@@ -60,25 +67,14 @@ const NewGame = () => {
     Authorization: `Bearer ${token}`,
   };
 
-  //  console.log(gameId)
-
   useEffect(() => {
     socket.on("getMessage", (data) => {
       if (data.status === "started") {
-        console.log("playerTwo_info ", data.player2);
-        localStorage.setItem("p1", data.player1);
-        localStorage.setItem("p2", data.player2);
         navigate("/game");
       }
     });
 
-    socket.on("userLeaveMessage", (data) => {
-      console.log("newGame", data);
-    });
-    // socket.on('disconnect',()=>{
-    //   alert("disconnected")
-    // })
-    // socket.emit("join-room", gameId);
+    socket.on("userLeaveMessage", (data) => {});
   }, []);
 
   const submitName = () => {
@@ -87,7 +83,12 @@ const NewGame = () => {
         (betRef.current.checked && !coinAmount <= 0) ||
         !betRef.current.checked
       ) {
-        loggedInNameMutationSubmitHandler();
+        if (
+          (betRef.current.checked && !coinAmount <= 0) ||
+          !betRef.current.checked
+        ) {
+          loggedInNameMutationSubmitHandler();
+        }
       }
     } else {
       if (!name) {
@@ -117,8 +118,8 @@ const NewGame = () => {
         { username: name, has_bet: false },
         {
           onSuccess: (responseData) => {
-            console.log(responseData?.data?.data);
             socket.emit("join-room", responseData?.data?.data?.game);
+
             setIsCreated(true);
             setValue(
               `${process.env.REACT_APP_FRONTEND_URL}/join-game/` +
@@ -126,7 +127,9 @@ const NewGame = () => {
             );
             setCode(responseData?.data?.data?.code);
             //first clear local storage
-            localStorage.clear();
+            clearCookie.forEach((data) => {
+              localStorage.getItem(data) && localStorage.removeItem(data);
+            });
             localStorage.setItem("gameId", responseData?.data?.data?.game);
             localStorage.setItem(
               "playerOne",
@@ -138,12 +141,10 @@ const NewGame = () => {
             );
             localStorage.setItem("playerOneIp", responseData?.data?.data?.ip);
           },
-          onError: (err) => { console.log("error", err)},
+          onError: (err) => {},
         }
       );
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   //no userName if the user ligged in
@@ -168,7 +169,6 @@ const NewGame = () => {
           : { has_bet: false },
         {
           onSuccess: (responseData) => {
-            console.log(responseData?.data?.data);
             socket.emit("join-room", responseData?.data?.data?.game);
             setIsCreated(true);
             setValue(
@@ -179,9 +179,12 @@ const NewGame = () => {
             if (betRef.current.checked) {
               localStorage.setItem("bt_coin_amount", coinAmount);
             }
-            setCode(responseData?.data?.data?.code);
+
             //first clear local storage
-            // localStorage.clear();
+            clearCookie.forEach((data) => {
+              localStorage.getItem(data) && localStorage.removeItem(data);
+            });
+            setCode(responseData?.data?.data?.code);
             localStorage.setItem("gameId", responseData?.data?.data?.game);
             localStorage.setItem(
               "playerOne",
@@ -191,25 +194,20 @@ const NewGame = () => {
             localStorage.setItem("playerOneIp", responseData?.data?.data?.ip);
           },
           onError: (err) => {
-            console.log(err.response.data.data);
             setCoinError(err.response.data.data);
           },
         }
       );
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
   useEffect(() => {
-    socket.on("private-room", (data) => console.log(data));
+    socket.on("private-room", (data) => {});
   }, []);
-
-  console.log(JSON.parse(localStorage.getItem("dama_user_data"))?.user);
 
   const checkCoinAmoute = (e) => {
     setCoinAmount(e.target.value);
 
-    if (e.target.value > profileData?.data?.data?.data?.coins) {
+    if (e.target.value > playerCoins) {
       setCoinError("Amount has to be less than you coins");
     } else if (e.target.value <= 0) {
       setCoinError("Invalid Amount");
@@ -218,13 +216,12 @@ const NewGame = () => {
     }
   };
 
-
   //profile
   const profileData = useQuery(
     ["profileDataApi"],
     async () =>
       await axios.get(`${process.env.REACT_APP_BACKEND_URL}match-history`, {
-        headers:header,
+        headers: header,
       }),
     {
       keepPreviousData: true,
@@ -233,7 +230,6 @@ const NewGame = () => {
       enabled: !!token,
     }
   );
-  console.log(profileData?.data?.data?.data);
   return (
     <div
       style={{
@@ -289,7 +285,9 @@ const NewGame = () => {
             </label>
           </div>
           {profileData?.data?.data?.data?.coins && (
-            <p className="text-white">Your coins : {profileData?.data?.data?.data?.coins}</p>
+            <p className="text-white">
+              Your coins : {profileData?.data?.data?.data?.coins}
+            </p>
           )}
 
           {coinError && <p className="text-red-400 text-sm">{coinError}</p>}
@@ -402,7 +400,7 @@ const NewGame = () => {
           </div>
         </div>
       )}
-
+      <Footer />
       <BottomSheet
         open={open}
         onDismiss={() => setOpen(false)}

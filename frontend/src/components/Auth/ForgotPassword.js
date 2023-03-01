@@ -7,6 +7,7 @@ import useValidPhone from "../../Hook/useValidPhone";
 import ReactCodeInput from "react-code-input";
 import { ThreeDots } from "react-loader-spinner";
 import axios from "axios";
+import { Footer } from "../Footer";
 
 const ForgotPassword = () => {
   const [temporaryToken, setTemporaryToken] = useState(null);
@@ -99,14 +100,11 @@ const ForgotPassword = () => {
             toast.success("otp is sent to your phone");
           },
           onError: (err) => {
-            console.log(err);
             toast.error(err?.response?.data?.data);
           },
         }
       );
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) { }
   };
 
   const forgotOtpMutation = useMutation(
@@ -131,20 +129,16 @@ const ForgotPassword = () => {
         },
         {
           onSuccess: (responseData) => {
-            console.log(responseData?.data?.data?.token);
-            setTemporaryToken(responseData?.data?.data?.token)
+            setTemporaryToken(responseData?.data?.data?.token);
             sethasCode(true);
             toast.success("success");
           },
           onError: (err) => {
-            console.log(err);
             toast.error(err?.response?.data?.message);
           },
         }
       );
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) { }
   };
   const changePasswordMutation = useMutation(
     async (newData) =>
@@ -152,7 +146,7 @@ const ForgotPassword = () => {
         `${process.env.REACT_APP_BACKEND_URL}reset-change-password`,
         newData,
         {
-          headers:header,
+          headers: header,
         }
       ),
     {
@@ -168,12 +162,10 @@ const ForgotPassword = () => {
         },
         {
           onSuccess: (responseData) => {
-            // console.log(responseData);
             toast.success("password has been successfully changed");
             navigate("/login");
           },
           onError: (err) => {
-            console.log(changePasswordMutation?.error?.response?.data?.message);
             toast.error(
               err?.response?.data?.message,
               { theme: "colored" },
@@ -190,9 +182,7 @@ const ForgotPassword = () => {
           },
         }
       );
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) { }
   };
 
   //resend otp
@@ -219,14 +209,11 @@ const ForgotPassword = () => {
             toast.success("otp is sent to your phone");
           },
           onError: (err) => {
-            console.log(err);
             toast.error(err?.response?.data?.data);
           },
         }
       );
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) { }
   };
   const props = {
     inputStyle: {
@@ -433,6 +420,7 @@ const ForgotPassword = () => {
           )}
         </div>
       </div>
+      <Footer />
       <Toaster />
     </>
   );
