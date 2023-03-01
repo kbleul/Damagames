@@ -75,7 +75,7 @@ const NewGame = () => {
   const playerOneIp = localStorage.getItem("playerOneIp");
   useEffect(() => {
     socket.on("getMessage", (data) => {
-      console.log(data?.player2);
+      // console.log(data?.player2);
       if (data.status === "started" && data?.player2) {
         navigate("/game");
         localStorage.setItem("p2Info", data?.player2);
@@ -241,7 +241,7 @@ const NewGame = () => {
 
   const shareLink = async () => {
     const tempurl = value.split("/").splice(-1)[0]
-    console.log(tempurl[0])
+    // console.log(tempurl[0])
     if (navigator.share) {
       try {
         await navigator
@@ -249,15 +249,15 @@ const NewGame = () => {
             url: `join-game/${tempurl}`,
           })
           .then(() =>
-            console.log("Hooray! Your content was shared to tha world")
+            console.log("")
           );
       } catch (error) {
-        console.log(`Oops! I couldn't share to the world because: ${error}`);
+        console.log(``);
       }
     } else {
       // fallback code
       console.log(
-        "Web share is currently not supported on this browser. Please provide a callback"
+        ""
       );
     }
 
@@ -409,12 +409,7 @@ const NewGame = () => {
               ? "Creating..."
               : "Create"}
           </button>
-          <p
-            onClick={() => navigate("/create-game")}
-            className="text-orange-color font-medium  text-center pt-3  cursor-pointer"
-          >
-            Back
-          </p>
+
 
 
         </div>

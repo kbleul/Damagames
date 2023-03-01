@@ -36,7 +36,7 @@ const PubicGames = () => {
 
   useEffect(() => {
     socket.on("getPublicGames", (data) => {
-      console.log("ola", data)
+      // console.log("ola", data)
       setPublicGames([...data])
     });
 
@@ -72,7 +72,7 @@ const PubicGames = () => {
   //with code
   const nameMutationWithCode = async (values) => {
     try {
-      console.log({ gameid2: localStorage.getItem("gameId") })
+      //console.log({ gameid2: localStorage.getItem("gameId") })
       nameMutation.mutate(user && token ? {} : { username: name }, {
         onSuccess: (responseData) => {
 
@@ -83,7 +83,7 @@ const PubicGames = () => {
             player2: JSON.stringify(responseData?.data?.data?.playerTwo),
           });
 
-          console.log(responseData?.data.data?.playerTwo);
+          //   console.log(responseData?.data.data?.playerTwo);
 
           navigate("/game");
           //first clear local storage
@@ -98,11 +98,11 @@ const PubicGames = () => {
           localStorage.setItem("gameId", responseData?.data?.data?.game);
         },
         onError: (err) => {
-          console.log(err?.response?.data?.message);
+          //   console.log(err?.response?.data?.message);
         },
       });
     } catch (err) {
-      console.log(err);
+      //  console.log(err);
     }
   };
 
@@ -133,19 +133,19 @@ const PubicGames = () => {
         { code: code },
         {
           onSuccess: (responseData) => {
-            console.log(responseData?.data);
+            //  console.log(responseData?.data);
             setIsVerified(true);
             responseData?.data?.data?.playerOne?.username && setMyFriend(prev => prev + " " + responseData?.data?.data?.playerOne?.username);
             localStorage.setItem("gameId", responseData?.data?.data?.game);
           },
           onError: (err) => {
-            console.log(err?.response?.data);
+            //    console.log(err?.response?.data);
             toast(err?.response?.data?.message);
           },
         }
       );
     } catch (err) {
-      console.log(err);
+      //  console.log(err);
     }
   };
   return (<>{!isVerified ?
