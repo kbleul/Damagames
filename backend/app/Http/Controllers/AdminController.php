@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Game;
+use App\Models\Store;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -60,5 +61,14 @@ class AdminController extends Controller
         } else {
             return 0;
         }
+    }
+
+    public function store_items()
+    {
+        return [
+            'avatars' =>  Store::where('type', "Avatar")->orderBy('price', 'ASC')->get(),
+            'boards' =>  Store::where('type', "Board")->orderBy('price', 'ASC')->get(),
+            'crowns' =>  Store::where('type', "Crown")->get(),
+        ];
     }
 }

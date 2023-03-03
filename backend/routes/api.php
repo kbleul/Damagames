@@ -93,4 +93,5 @@ Route::middleware('response', 'auth:sanctum')->group(function () {
 Route::middleware(['response', 'auth:sanctum', 'admin'])->prefix('admin')->group(function () {
     Route::get('dashboard', [AdminController::class, 'dashboard']);
     Route::get('users', [AdminController::class, 'users']);
+    Route::get('store-items', [AdminController::class, 'store_items']);
 });
