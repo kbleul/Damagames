@@ -35,7 +35,6 @@ Route::post('/sockets/authenticate', [PusherAuthController::class, 'authenticate
 Route::post('telebirr/response', [TelebirrController::class, 'response']);
 
 Route::middleware('response')->group(function () {
-
     Route::post('join-game/{game}', [PlayersController::class, 'join_game']);
     Route::post('join-game-via-code', [PlayersController::class, 'join_game_via_code']);
     Route::post('add-player', [PlayersController::class, 'add_player']);
@@ -55,10 +54,8 @@ Route::middleware('response')->group(function () {
     Route::post('reset-password', [ResetPasswordController::class, 'reset_password']);
 
     Route::post('verify-password', ResetPasswordController::class);
-
     Route::post('reset-change-password', [ResetPasswordController::class, 'change_password'])->middleware('auth:sanctum');
     Route::post('finish-regster', [AuthController::class, 'finish_regster'])->middleware('auth:sanctum');
-
     Route::get('store-items', [StoreController::class, 'index']);
 });
 
@@ -86,4 +83,8 @@ Route::middleware('response', 'auth:sanctum')->group(function () {
     Route::post('select-board/{itemId}', [StoreController::class, 'select_board']);
     Route::post('select-avatar/{itemId}', [StoreController::class, 'select_avatar']);
     Route::post('select-crown/{itemId}', [StoreController::class, 'select_crown']);
+    Route::post('select-crown/{itemId}', [StoreController::class, 'select_crown']);
+
+    // TELEBIRR
+    Route::post('telebirr/pay', [TelebirrController::class, 'telebirr']);
 });

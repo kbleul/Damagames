@@ -20,12 +20,12 @@ class TelebirrController extends Controller
 
         $data = [
             'outTradeNo' => $outTradeNo,
-            'subject' => 'Dama',
-            'totalAmount' => '100',
+            'subject' => config('telebirr.subject'),
+            'totalAmount' => $request->price,
             'shortCode' => config('telebirr.short_code'),
-            'notifyUrl' => 'http://196.189.180.194:8007/telebirr/response',
-            'returnUrl' => 'http://backend.test/success',
-            'receiveName' => 'Dama',
+            'notifyUrl' => config('telebirr.notify_url'),
+            'returnUrl' => config('telebirr.return_url'),
+            'receiveName' => config('telebirr.receive_name'),
             'appId' => config('telebirr.app_id'),
             'timeoutExpress' => '30',
             'nonce' => $nonce,
@@ -151,6 +151,6 @@ class TelebirrController extends Controller
         }
 
         Log::info("\n\ndecrypted_message: " . $decrypted);
-        // return json_decode($decrypted);
+        return $decrypted;
     }
 }
