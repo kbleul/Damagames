@@ -200,7 +200,7 @@ const Store = () => {
     // </main>
     <div className="relative flex w-full  min-h-screen">
       <div className="sticky top-0 w-full max-w-2xl mx-auto flex flex-col items-center justify-center px-2 py-16 sm:px-0 h-full">
-        <Tab.Group >
+        <Tab.Group>
           <Tab.List className="flex space-x-1 rounded-xl bg-orange-bg/20 p-1 w-full">
             {categories.map((category) => (
               <Tab

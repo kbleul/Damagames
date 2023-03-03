@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import CoinModal from "./CoinModal";
 
 const StoreItemView = ({
   isShowModalOpen,
@@ -19,7 +20,7 @@ const StoreItemView = ({
   const { user, token } = useAuth();
   const navigate = useNavigate();
   const [showPurchasedItemModal, setShowPurchasedItemModal] = useState(false);
-
+  const [isCoinModalOpen, setIsCoinModalOpen] = useState(false);
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -194,30 +195,39 @@ const StoreItemView = ({
                           </button>
                         ) : (
                           <div>
-                            <p className="text-center">
+                            <p className="text-center capitalize">
                               You don't have sufficient coins. Play more games
-                              to purchase this item.
+                              or buy coins.
                             </p>
 
-                            <div className="w-full flex justify-center mt-4">
-                              {/* <button
-                                type="button"
-                                className="rounded-md bg-orange-600 px-6  p-2
-                           text-sm font-medium text-white hover:bg-orange-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                                onClick={() => navigate("/create-game")}
-                              >
-                                Play Game
-                              </button> */}
+                            <div className="w-full flex flex-col space-y-2  justify-center mt-4">
                               <button
+                                type="button"
+                                onClick={() => navigate("/create-game")}
                                 className="relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
-    active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
-    active:border-b-[0px] flex items-center justify-center
-    transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
-    border-b-[1px] border-gray-400/50 font-semibold text-white
-  "
+                                active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
+                                active:border-b-[0px] flex items-center justify-center
+                                transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+                                border-b-[1px] border-gray-400/50 font-semibold text-white
+                              "
                               >
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-                                pay with tele birr
+                                Play Game
+                              </button>
+                              <button
+                                onClick={() => {
+                                  set_isShowModalOpen(false);
+                                  setIsCoinModalOpen(true);
+                                }}
+                                className="relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+                                active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
+                                active:border-b-[0px] flex items-center justify-center
+                                transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+                                border-b-[1px] border-gray-400/50 font-semibold text-white
+                                "
+                              >
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
+                                Buy Coins
                               </button>
                             </div>
                           </div>
@@ -241,6 +251,10 @@ const StoreItemView = ({
           type={item.type}
         />
       )}
+      <CoinModal
+        isCoinModalOpen={isCoinModalOpen}
+        setIsCoinModalOpen={setIsCoinModalOpen}
+      />
     </>
   );
 };
