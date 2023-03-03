@@ -51,13 +51,26 @@ services:
                 - APP_ENV
         environment:
             - APP_ENV
+            - APP_URL
             - CONTAINER_ROLE=app
             - DB_CONNECTION
             - DB_HOST
-            - DB_PORT
+            - DB_PORTs
             - DB_DATABASE
             - DB_USERNAME
             - DB_PASSWORD
+            - APP_ID
+            - APP_KEY
+            - PUBLIC_KEY
+            - SHORT_CODE
+            - TB_APP_URL
+            - TB_WEB_URL
+            - TB_SDK_URL
+            - SUBJECT
+            - RECIEVE_NAME
+            - OTP_URL
+            - OTP_USERNAME
+            - OTP_PASSWORD
         depends_on:
             - database
         labels:
