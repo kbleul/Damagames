@@ -11,6 +11,7 @@ class TelebirrController extends Controller
 {
     public function telebirr(Request $request)
     {
+        $outTradeNo = uniqid();
         $data = [
             'outTradeNo' => uniqid(),
             'subject' => config('telebirr.subject'),
@@ -76,6 +77,11 @@ class TelebirrController extends Controller
             'ussd' => $ussd
         ]);
 
+        Telebirr::create([
+            'user_id' => auth()->id(),
+            'outTradeNo' => $outTradeNo,
+        ]);
+
         return $returnContent->json();
     }
 
@@ -100,6 +106,8 @@ class TelebirrController extends Controller
 
         Log::info("\n\ndecrypted_message: " . $decrypted);
 
-        return $decrypted;;
+        $telebirr = Telebirr::where('outTradeNo', json_decode($decrypted)->outTradeNo)->first();
+
+        return $decrypted;
     }
 }

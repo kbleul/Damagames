@@ -432,8 +432,8 @@
                 <form action="{{route('telebirr.pay')}}" method="post">
                     @csrf
                     <div class="form-group">
-                        <label for="amount" class="text-light">Amount</label>
-                        <input type="text" class="form-control" class="amount">
+                        <label for="price" class="text-light">Amount</label>
+                        <input type="text" class="form-control" name="price" id="price" class="amount" required>
                     </div>
                     <div class="d-flex justify-content-center">
                         <button type="submit" class="btn btn-primary px-5 my-2">

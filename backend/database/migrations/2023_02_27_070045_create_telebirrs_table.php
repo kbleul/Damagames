@@ -15,13 +15,13 @@ return new class extends Migration
     {
         Schema::create('telebirrs', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('transactionNo');
-            $table->string('msisdn');
+            $table->string('transactionNo')->nullable();
+            $table->string('msisdn')->nullable();
             $table->string('outTradeNo');
-            $table->string('totalAmount');
-            $table->string('tradeDate');
-            $table->string('tradeNo');
-            $table->string('tradeStatus');
+            $table->string('totalAmount')->nullable();
+            $table->string('tradeDate')->nullable();
+            $table->string('tradeNo')->nullable();
+            $table->string('tradeStatus')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
