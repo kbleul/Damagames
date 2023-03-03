@@ -82,7 +82,8 @@ const NewGame = () => {
       }
     });
 
-    socket.on("userLeaveMessage", (data) => {});
+    socket.on("userLeaveMessage", (data) => { });
+
   }, []);
 
   const submitName = () => {
@@ -131,7 +132,7 @@ const NewGame = () => {
             setIsCreated(true);
             setValue(
               `${process.env.REACT_APP_FRONTEND_URL}/join-game/` +
-                responseData?.data?.data?.game
+              responseData?.data?.data?.game
             );
             setCode(responseData?.data?.data?.code);
             //first clear local storage
@@ -149,10 +150,10 @@ const NewGame = () => {
             );
             localStorage.setItem("playerOneIp", responseData?.data?.data?.ip);
           },
-          onError: (err) => {},
+          onError: (err) => { },
         }
       );
-    } catch (err) {}
+    } catch (err) { }
   };
 
   //no userName if the user ligged in
@@ -181,7 +182,7 @@ const NewGame = () => {
             setIsCreated(true);
             setValue(
               `${process.env.REACT_APP_FRONTEND_URL}/join-game/` +
-                responseData?.data?.data?.game
+              responseData?.data?.data?.game
             );
 
             if (betRef.current.checked) {
@@ -206,10 +207,10 @@ const NewGame = () => {
           },
         }
       );
-    } catch (err) {}
+    } catch (err) { }
   };
   useEffect(() => {
-    socket.on("private-room", (data) => {});
+    socket.on("private-room", (data) => { });
   }, []);
 
   const checkCoinAmoute = (e) => {
@@ -323,6 +324,7 @@ const NewGame = () => {
                 if (betRef.current.checked) {
                   if (user && token) {
                     setShowInput(true);
+                    setCoinAmount(profileData?.data?.data?.data?.coins / 10)
                   } else {
                     //show sign in promp
                     setLoginPromt(true);
@@ -450,9 +452,8 @@ const NewGame = () => {
                     <p className="w-6 h-6 text-xs text-green-500">Copied</p>
                   ) : (
                     <IoIosCopy
-                      className={`${
-                        isCopied ? "text-green-500" : "text-red-500"
-                      }`}
+                      className={`${isCopied ? "text-green-500" : "text-red-500"
+                        }`}
                     />
                   )}
                 </CopyToClipboard>
@@ -533,9 +534,8 @@ const NewGame = () => {
                     <p className="w-6 h-6 text-xs text-green-500">Copied</p>
                   ) : (
                     <IoIosCopy
-                      className={`${
-                        codeCopied ? "text-green-500" : "text-red-500"
-                      }`}
+                      className={`${codeCopied ? "text-green-500" : "text-red-500"
+                        }`}
                     />
                   )}
                 </CopyToClipboard>

@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component, Fragment, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import wancha from "../../assets/wancha.svg";
@@ -13,7 +13,7 @@ const WinnerModal = ({
   gameState,
   setNewGameWithComputer,
 }) => {
-  const { user, token } = useAuth();
+  const { user, token, login } = useAuth();
   const navigate = useNavigate();
   const playerOneIp = localStorage.getItem("playerOneIp");
   const playerTwoIp = localStorage.getItem("playerTwoIp");
@@ -29,8 +29,8 @@ const WinnerModal = ({
   const congraMsg = user
     ? `congratulations!
       Previous = ${user.coin} coins
-      Total = ${parseInt(user.coin) + 30} coins`
-    : "congratulations! You won 30 coins";
+      Total = ${parseInt(user.coin) + 50} coins`
+    : "congratulations! You won 50 coins";
   const lostMsg = user
     ? `You Lost! You won 0 coins. 
      Total = ` +
@@ -38,6 +38,9 @@ const WinnerModal = ({
     ` coins`
     : "You Lost! You won 0 coins.";
 
+  useEffect(() => {
+    login(token, { ...user, coin: parseInt(user.coin) + 50 })
+  }, [])
   return (
     <>
       <Transition appear show={isWinnerModalOpen} as={Fragment}>

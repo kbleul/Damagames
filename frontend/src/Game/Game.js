@@ -324,7 +324,6 @@ const Game = () => {
         };
       });
 
-      console.log({ activePiece: coordinates, move: mergerObj.moves[0] })
       setTimeout(() => {
         const postMoveState = movesData[1]
           ? movePiece(columns, mergerObj.moves[0], {
