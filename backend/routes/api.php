@@ -98,4 +98,6 @@ Route::middleware(['response', 'auth:sanctum', 'admin'])->prefix('admin')->group
     Route::patch('update-store-item/{store}', [AdminController::class, 'store_item_update']);
     Route::delete('delete-store-item/{store}', [AdminController::class, 'store_item_delete']);
     Route::post('store-item-status/{store}', [AdminController::class, 'store_item_status']);
+    Route::get('coin-settings', [AdminController::class, 'coin_settings']);
+    Route::patch('coin-setting-update/{coinSetting}', [AdminController::class, 'coin_setting']);
 });

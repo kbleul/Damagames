@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreItemRequest;
 use App\Http\Requests\StoreItemStatusRequest;
 use App\Http\Requests\StoreItemUpdateRequest;
+use App\Models\CoinSetting;
 use App\Models\Game;
 use App\Models\Store;
 use App\Models\User;
@@ -115,6 +116,7 @@ class AdminController extends Controller
             ]);
             return  "Active";
         } else {
+
             $store->update([
                 'status' => 1,
             ]);
@@ -130,5 +132,20 @@ class AdminController extends Controller
             'boards' =>  Store::where('type', "Board")->orderBy('price', 'ASC')->get(),
             'crowns' =>  Store::where('type', "Crown")->get(),
         ];
+    }
+
+    public function coin_settings()
+    {
+        return CoinSetting::first();
+    }
+
+    public function coin_setting(Request $request, CoinSetting $coinSetting)
+    {
+        return $coinSetting->update([
+            'newUserCoins' =>  $request->newUserCoins ?? $coinSetting->drawCoins,
+            'winnerCoins' => $request->winnerCoins ?? $coinSetting->winnerCoins,
+            'looserCoins' => $request->looserCoins ?? $coinSetting->looserCoins,
+            'drawCoins' => $request->drawCoins ?? $coinSetting->drawCoins
+        ]);
     }
 }
