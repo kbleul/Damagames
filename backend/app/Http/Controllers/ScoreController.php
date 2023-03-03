@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreScoreRequest;
 use App\Http\Requests\UpdateScoreRequest;
 use App\Models\Bet;
+use App\Models\CoinSetting;
 use App\Models\Game;
 use App\Models\Score;
 use App\Models\User;
@@ -66,10 +67,11 @@ class ScoreController extends GameController
         $losser = User::find($loser);
 
         $Winer->update([
-            'current_point' => ($Winer->current_point + 5) + $coin,
+            'current_point' => ($Winer->current_point + CoinSetting::first()->winnerCoins) + $coin,
         ]);
+
         $losser->update([
-            'current_point' =>  $losser->current_point - $coin,
+            'current_point' =>  $losser->current_point - CoinSetting::first()->looserCoins - $coin,
         ]);
 
         return Score::create([

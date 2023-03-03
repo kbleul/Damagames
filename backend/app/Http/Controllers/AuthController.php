@@ -10,6 +10,7 @@ use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Requests\StoreSecurityQuestionAnswerRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UserAnswerRequest;
+use App\Models\CoinSetting;
 use App\Models\SecurityQuestion;
 use App\Models\SecurityQuestionAnswer;
 use App\Models\SQUser;
@@ -128,7 +129,7 @@ class AuthController extends SendSmsController
         $user = User::create([
             'phone' => $request->phone,
             'password' =>  Hash::make($password),
-            'current_point' =>  30,
+            'current_point' =>   CoinSetting::first()->newUserCoins,
         ]);
 
         return response()->json(['message' => 'OTP sent successfully!'], 201);
@@ -174,7 +175,7 @@ class AuthController extends SendSmsController
         $user = User::create([
             'phone' => $request->phone,
             'password' =>  Hash::make($password),
-            'current_point' =>  30,
+            'current_point' =>  CoinSetting::first()->newUserCoins,
         ]);
 
         return response()->json(['message' => 'OTP sent successfully!'], 201);
