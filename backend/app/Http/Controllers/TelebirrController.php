@@ -133,8 +133,24 @@ class TelebirrController extends Controller
 
     public function response(Request $request)
     {
-        Log::info("It returned " . $request);
+        $pubPem = chunk_split(config('telebirr.public_key'), 64, "\n");
+        $pubPem = "-----BEGIN PUBLIC KEY-----\n" . $pubPem . "-----END PUBLIC KEY-----\n";
+        $public_key = openssl_pkey_get_public($pubPem);
+        if (!$public_key) {
+            die('invalid public key');
+        }
+        $decrypted = ''; //decode must be done before spliting for getting the binary String
+        $data = str_split(base64_decode($request->getContent()), 256);
+        foreach ($data as $chunk) {
+            $partial = ''; //be sure to match padding
+            $decryptionOK = openssl_public_decrypt($chunk, $partial, $public_key, OPENSSL_PKCS1_PADDING);
+            if ($decryptionOK === false) {
+                die('fail');
+            }
+            $decrypted .= $partial;
+        }
 
-        // return "sdfvas";
+        Log::info("\n\ndecrypted_message: " . $decrypted);
+        // return json_decode($decrypted);
     }
 }

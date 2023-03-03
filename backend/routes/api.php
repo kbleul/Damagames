@@ -34,7 +34,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/sockets/authenticate', [PusherAuthController::class, 'authenticate']);
 Route::post('telebirr/response', [TelebirrController::class, 'response']);
 
-
 Route::middleware('response')->group(function () {
 
     Route::post('join-game/{game}', [PlayersController::class, 'join_game']);
