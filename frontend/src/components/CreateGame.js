@@ -1,7 +1,7 @@
 import SideMenu from "./SideMenu";
 import { useNavigate } from "react-router-dom";
 import background from "../assets/backdrop.jpg";
-import avatar from "../assets/dama_logo.png";
+import avatar from "../assets/Logo.svg";
 import { useAuth } from "../context/auth";
 import { Link } from "react-router-dom";
 import { clearCookie } from "../utils/data";
