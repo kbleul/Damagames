@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreItemRequest;
+use App\Http\Requests\StoreItemStatusRequest;
+use App\Http\Requests\StoreItemUpdateRequest;
 use App\Models\Game;
 use App\Models\Store;
 use App\Models\User;
+use GrahamCampbell\ResultType\Success;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -60,6 +64,62 @@ class AdminController extends Controller
             return $data->keys()->first() + 1;
         } else {
             return 0;
+        }
+    }
+
+    public function create_store_items(StoreItemRequest $request)
+    {
+        $item = Store::create([
+            'name' => $request->name,
+            'nickname' => $request->nickname,
+            'price' => $request->price,
+            'discount' => $request->discount,
+            'type' => $request->type,
+        ]);
+
+        $item->addMediaFromRequest('item')->toMediaCollection('item');
+
+        return "Success";
+    }
+
+    public function store_item_update(StoreItemUpdateRequest $request, Store $store)
+    {
+        $store->update([
+            'name' => $request->name ?? $store->name,
+            'nickname' => $request->nickname ?? $store->nickname,
+            'price' => $request->price ?? $store->price,
+            'discount' => $request->discount ?? $store->discount,
+            'type' => $request->type ?? $store->type,
+        ]);
+
+        if ($request->hasFile('item') && $request->file('item')->isValid()) {
+            $store->clearMediaCollection();
+            $store->addMediaFromRequest('item')->toMediaCollection('item');
+        }
+
+        return "Updated";
+    }
+
+    public function store_item_delete(Request $request, Store $store)
+    {
+        $store->clearMediaCollection();
+        return $store->delete();
+    }
+
+    public function store_item_status(StoreItemStatusRequest $request, Store $store)
+    {
+        // dd($request->active);
+        if ($request->active) {
+            $store->update([
+                'status' => 0,
+            ]);
+            return  "Active";
+        } else {
+            $store->update([
+                'status' => 1,
+            ]);
+
+            return  "Hidden";
         }
     }
 

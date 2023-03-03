@@ -93,5 +93,9 @@ Route::middleware('response', 'auth:sanctum')->group(function () {
 Route::middleware(['response', 'auth:sanctum', 'admin'])->prefix('admin')->group(function () {
     Route::get('dashboard', [AdminController::class, 'dashboard']);
     Route::get('users', [AdminController::class, 'users']);
+    Route::post('create-store-items', [AdminController::class, 'create_store_items']);
     Route::get('store-items', [AdminController::class, 'store_items']);
+    Route::patch('update-store-item/{store}', [AdminController::class, 'store_item_update']);
+    Route::delete('delete-store-item/{store}', [AdminController::class, 'store_item_delete']);
+    Route::post('store-item-status/{store}', [AdminController::class, 'store_item_status']);
 });

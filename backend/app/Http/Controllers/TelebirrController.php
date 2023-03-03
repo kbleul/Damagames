@@ -76,7 +76,7 @@ class TelebirrController extends Controller
             'ussd' => $ussd
         ]);
 
-        return json_decode($returnContent)->data->toPayUrl  ;
+        return $returnContent->json();
     }
 
     public function response(Request $request)
@@ -100,6 +100,6 @@ class TelebirrController extends Controller
 
         Log::info("\n\ndecrypted_message: " . $decrypted);
 
-        return json_decode($decrypted)->msisdn;
+        return $decrypted;;
     }
 }

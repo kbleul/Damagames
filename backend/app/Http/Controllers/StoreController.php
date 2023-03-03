@@ -16,9 +16,9 @@ class StoreController extends Controller
     public function index()
     {
         return [
-            'avatars' =>  Store::where('type', "Avatar")->orderBy('price', 'ASC')->get(),
-            'boards' =>  Store::where('type', "Board")->orderBy('price', 'ASC')->get(),
-            'crowns' =>  Store::where('type', "Crown")->get(),
+            'avatars' =>  Store::where('type', "Avatar")->where('status', 0)->orderBy('price', 'ASC')->get(),
+            'boards' =>  Store::where('type', "Board")->where('status', 0)->orderBy('price', 'ASC')->get(),
+            'crowns' =>  Store::where('type', "Crown")->where('status', 0)->get(),
         ];
     }
 

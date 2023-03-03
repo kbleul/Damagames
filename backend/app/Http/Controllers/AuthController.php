@@ -51,7 +51,6 @@ class AuthController extends SendSmsController
             return response()->json(['message' => 'Password is incorrect.'], 400);
 
             return response()->json(['message' => 'Something wrong.'], 400);
-
         }
     }
 
