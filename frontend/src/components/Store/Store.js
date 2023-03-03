@@ -80,7 +80,7 @@ const Store = () => {
                 // myItemsMutationSubmitHandler()
             },
             onError: err => {
-                console.log(err)
+                // console.log(err)
 
                 // setItemIsLoading(false)
                 // setitemsError(true)

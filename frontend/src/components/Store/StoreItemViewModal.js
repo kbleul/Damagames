@@ -71,7 +71,7 @@ const StoreItemView = ({ isShowModalOpen, set_isShowModalOpen, item, myAvatarsId
                 }
             );
         } catch (err) {
-            console.log(err.response?.data?.data.data)
+            // console.log(err.response?.data?.data.data)
 
         }
     };
