@@ -69,6 +69,7 @@ class TelebirrController extends Controller
             }
             $crypto .= $cryptoItem;
         }
+
         $ussd = base64_encode($crypto);
 
         $returnContent = Http::post(config('telebirr.web_url'), [
@@ -77,10 +78,10 @@ class TelebirrController extends Controller
             'ussd' => $ussd
         ]);
 
-        Telebirr::create([
-            'user_id' => auth()->id(),
-            'outTradeNo' => $outTradeNo,
-        ]);
+        // Telebirr::create([
+        //     'user_id' => auth()->id(),
+        //     'outTradeNo' => $outTradeNo,
+        // ]);
 
         return $returnContent->json();
     }
@@ -106,8 +107,8 @@ class TelebirrController extends Controller
 
         Log::info("\n\ndecrypted_message: " . $decrypted);
 
-        $telebirr = Telebirr::where('outTradeNo', json_decode($decrypted)->outTradeNo)->first();
+        // $telebirr = Telebirr::where('outTradeNo', json_decode($decrypted)->outTradeNo)->first();
 
-        return $decrypted;
+        return  response()->json(['code' => '0', 'msg' => 'success'], 200);
     }
 }
