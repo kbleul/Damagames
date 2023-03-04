@@ -15,6 +15,7 @@ const io = new Server(httpServer, {
       "http://172.17.104.250:3000",
       "http://172.17.104.248:3000",
       "http://172.17.104.251:3000",
+      "http://172.17.104.246:3000",
       "https://dama-blue.vercel.app",
       "https://admin.socket.io",
       "http://localhost:3000",
@@ -126,6 +127,7 @@ io.on("connection", (socket) => {
     //send and get messages
 
     socket.on("sendMessage", (data) => {
+      console.log("send")
       io.to(room).emit("getMessage", data);
     });
     socket.on("sendGameMessage", (data) => {

@@ -27,9 +27,10 @@ import { ThreeDots } from "react-loader-spinner";
 import UserLeavesModal from "./components/UserLeavesModal.js";
 import { clearCookie } from "../utils/data.js";
 import { useAuth } from "../context/auth.js";
+import { IoMdLogIn } from "react-icons/io";
 const Game = () => {
   const { id } = useParams();
-  const { user } = useAuth();
+  const { user, token, login, setUser } = useAuth();
   const navigate = useNavigate();
   const [playMove] = useSound(moveSound);
   const [playStrike] = useSound(strikeSound);
@@ -69,6 +70,8 @@ const Game = () => {
 
   const [threeD, setthreeD] = useState(false)
 
+
+
   useEffect(() => {
     if (!id && !localStorage.getItem("gameId")) {
       navigate("/create-game");
@@ -104,30 +107,30 @@ const Game = () => {
     const player1 = [
       "a8",
       "c8",
-      "e8",
-      "g8",
-      "b7",
-      "d7",
-      "f7",
-      "h7",
-      "a6",
-      "c6",
-      "e6",
-      "g6",
+      // "e8",
+      // "g8",
+      // "b7",
+      // "d7",
+      // "f7",
+      // "h7",
+      // "a6",
+      // "c6",
+      // "e6",
+      // "g6",
     ];
     const player2 = [
       "b3",
       "d3",
-      "f3",
-      "h3",
-      "a2",
-      "c2",
-      "e2",
-      "g2",
-      "b1",
-      "d1",
-      "f1",
-      "h1",
+      // "f3",
+      // "h3",
+      // "a2",
+      // "c2",
+      // "e2",
+      // "g2",
+      // "b1",
+      // "d1",
+      // "f1",
+      // "h1",
     ];
 
     player1.forEach(function (i) {
@@ -471,6 +474,15 @@ const Game = () => {
         soundOn
       ) {
         playWin();
+
+        localStorage.setItem(
+          "dama_user_data",
+          JSON.stringify({
+            token,
+            user: { ...user, coin: user.coin + 50 },
+          })
+        );
+
       } else if (
         winnerPlayer === "player2pieces" &&
         localStorage.getItem("playerOne") &&
@@ -483,6 +495,15 @@ const Game = () => {
         soundOn
       ) {
         playWin();
+
+        localStorage.setItem(
+          "dama_user_data",
+          JSON.stringify({
+            token,
+            user: { ...user, coin: user.coin + 50 },
+          })
+        );
+
       } else if (
         winnerPlayer === "player1pieces" &&
         localStorage.getItem("playerTwo") &&
@@ -490,6 +511,9 @@ const Game = () => {
       ) {
         playLose();
       }
+
+      setIsWinnerModalOpen(true);
+
     } else {
       if (gameState.winner || winnerPlayer) {
         setIsWinnerModalOpen(true);
@@ -925,6 +949,7 @@ const Game = () => {
     setSoundOn((prev) => !prev);
     setthreeD(prev => !prev)
   };
+
 
 
 
