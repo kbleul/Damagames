@@ -10,7 +10,13 @@ import PlayerBoard from "./Scoreboard/PlayerHistory";
 import ScoreBoard from "./Scoreboard/ScoreBoard";
 import Signup from "./components/Auth/Signup";
 import ForgotPassword from "./components/Auth/ForgotPassword";
-import { Route, Routes, Navigate, NavLink, useNavigate } from "react-router-dom";
+import {
+  Route,
+  Routes,
+  Navigate,
+  NavLink,
+  useNavigate,
+} from "react-router-dom";
 import Game from "./Game/Game";
 import socket from "./utils/socket.io";
 import ErrorPage from "./components/ErrorPage";
@@ -19,12 +25,11 @@ import Profile from "./components/Profile/Profile";
 import { useAuth } from "./context/auth";
 import TagManager from "react-gtm-module";
 import Store from "./components/Store/Store";
-import PrivacyPolicy from "./components/PrivacyPolicy"
-
+import PrivacyPolicy from "./components/PrivacyPolicy";
 
 //'G-YM283P3T0J'
 const tagManagerArgs = {
-  gtmId: process.env.REACT_APP_GTM_ID
+  gtmId: process.env.REACT_APP_GTM_ID,
 };
 
 const App = () => {
@@ -34,7 +39,7 @@ const App = () => {
   const secondPlayer = JSON.parse(localStorage.getItem("playerTwo"));
 
   useEffect(() => {
-    TagManager.initialize(tagManagerArgs)
+    TagManager.initialize(tagManagerArgs);
   }, []);
 
   useEffect(() => {
@@ -44,57 +49,61 @@ const App = () => {
   });
 
   const HomeComp = () => {
-    return (<>
-      <Routes>
-        <Route path="*" element={<Navigate to="/create-game" />} />
-        <Route path="/create-game" element={<CreateGame />} />
-        <Route path="/new-game" element={<NewGame />} />
-        <Route path="/join-game" element={<JoinGame />} />
-        <Route path="/join-game/:id" element={<JoinGame />} />
-        <Route path="/game" element={<Game />} />
-        <Route path="/game/:id" element={<Game />} />
-        <Route path="/already-joined" element={<AlreadyJoined />} />
-        <Route path="/score-board" element={<ScoreBoard />} />
-        <Route path="/player-board" element={<PlayerBoard />} />
-        <Route path="/profile" element={user && token ? <Profile /> : <Navigate to="/login" />} />
-        <Route path="/join-public" element={<PublicGames />} />
-        <Route path="/new-game-public" element={<NewGamePublic />} />
-        <Route path="/store" element={<Store />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="*" element={<CreateGame />} />
-
-      </Routes>
-
-    </>
+    return (
+      <>
+        <Routes>
+          <Route path="*" element={<Navigate to="/create-game" />} />
+          <Route path="/create-game" element={<CreateGame />} />
+          <Route path="/new-game" element={<NewGame />} />
+          <Route path="/join-game" element={<JoinGame />} />
+          <Route path="/join-game/:id" element={<JoinGame />} />
+          <Route path="/game" element={<Game />} />
+          <Route path="/game/:id" element={<Game />} />
+          <Route path="/already-joined" element={<AlreadyJoined />} />
+          <Route path="/score-board" element={<ScoreBoard />} />
+          <Route path="/player-board" element={<PlayerBoard />} />
+          <Route
+            path="/profile"
+            element={user && token ? <Profile /> : <Navigate to="/login" />}
+          />
+          <Route path="/join-public" element={<PublicGames />} />
+          <Route path="/new-game-public" element={<NewGamePublic />} />
+          <Route path="/store" element={<Store />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="*" element={<CreateGame />} />
+        </Routes>
+      </>
     );
   };
 
   const AuthComp = () => {
-    return (<>
-      <Routes>
-        <Route path="" element={<Navigate to="/create-game" />} />
-        <Route path="/create-game" element={<CreateGame />} />
-        <Route path="/new-game" element={<NewGame />} />
-        <Route path="/join-game" element={<JoinGame />} />
-        <Route path="/join-game/:id" element={<JoinGame />} />
-        <Route path="/game" element={<Game />} />
-        <Route path="/game/:id" element={<Game />} />
-        <Route path="/already-joined" element={<AlreadyJoined />} />
-        <Route path="/score-board" element={<ScoreBoard />} />
-        <Route path="/player-board" element={<PlayerBoard />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/join-public" element={<PublicGames />} />
-        <Route path="/new-game-public" element={<NewGamePublic />} />
-        <Route path="/store" element={<Store />} />
-        <Route path="/profile" element={user && token ? <Profile /> : <Navigate to="/login" />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="*" element={<Navigate to="/create-game" />} />
-
-      </Routes>
-
-    </>
+    return (
+      <>
+        <Routes>
+          <Route path="" element={<Navigate to="/create-game" />} />
+          <Route path="/create-game" element={<CreateGame />} />
+          <Route path="/new-game" element={<NewGame />} />
+          <Route path="/join-game" element={<JoinGame />} />
+          <Route path="/join-game/:id" element={<JoinGame />} />
+          <Route path="/game" element={<Game />} />
+          <Route path="/game/:id" element={<Game />} />
+          <Route path="/already-joined" element={<AlreadyJoined />} />
+          <Route path="/score-board" element={<ScoreBoard />} />
+          <Route path="/player-board" element={<PlayerBoard />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/join-public" element={<PublicGames />} />
+          <Route path="/new-game-public" element={<NewGamePublic />} />
+          <Route path="/store" element={<Store />} />
+          <Route
+            path="/profile"
+            element={user && token ? <Profile /> : <Navigate to="/login" />}
+          />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="*" element={<Navigate to="/create-game" />} />
+        </Routes>
+      </>
     );
   };
 
@@ -109,4 +118,3 @@ const App = () => {
 };
 
 export default App;
-
