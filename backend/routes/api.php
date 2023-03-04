@@ -11,6 +11,7 @@ use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\ScoreController;
 use App\Http\Controllers\SecurityQuestionController;
 use App\Http\Controllers\StoreController;
+use App\Http\Controllers\TelebirrController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
@@ -32,11 +33,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/sockets/authenticate', [PusherAuthController::class, 'authenticate']);
-
-
+Route::post('telebirr/response', [TelebirrController::class, 'response']);
 
 Route::middleware('response')->group(function () {
-
     Route::post('join-game/{game}', [PlayersController::class, 'join_game']);
     Route::post('join-game-via-code', [PlayersController::class, 'join_game_via_code']);
     Route::post('add-player', [PlayersController::class, 'add_player']);
@@ -56,10 +55,8 @@ Route::middleware('response')->group(function () {
     Route::post('reset-password', [ResetPasswordController::class, 'reset_password']);
 
     Route::post('verify-password', ResetPasswordController::class);
-
     Route::post('reset-change-password', [ResetPasswordController::class, 'change_password'])->middleware('auth:sanctum');
     Route::post('finish-regster', [AuthController::class, 'finish_regster'])->middleware('auth:sanctum');
-
     Route::get('store-items', [StoreController::class, 'index']);
 });
 
@@ -87,9 +84,20 @@ Route::middleware('response', 'auth:sanctum')->group(function () {
     Route::post('select-board/{itemId}', [StoreController::class, 'select_board']);
     Route::post('select-avatar/{itemId}', [StoreController::class, 'select_avatar']);
     Route::post('select-crown/{itemId}', [StoreController::class, 'select_crown']);
+    Route::post('select-crown/{itemId}', [StoreController::class, 'select_crown']);
+
+    // TELEBIRR
+    Route::post('telebirr/pay', [TelebirrController::class, 'telebirr']);
 });
 
 Route::middleware(['response', 'auth:sanctum', 'admin'])->prefix('admin')->group(function () {
     Route::get('dashboard', [AdminController::class, 'dashboard']);
     Route::get('users', [AdminController::class, 'users']);
+    Route::post('create-store-items', [AdminController::class, 'create_store_items']);
+    Route::get('store-items', [AdminController::class, 'store_items']);
+    Route::patch('update-store-item/{store}', [AdminController::class, 'store_item_update']);
+    Route::delete('delete-store-item/{store}', [AdminController::class, 'store_item_delete']);
+    Route::post('store-item-status/{store}', [AdminController::class, 'store_item_status']);
+    Route::get('coin-settings', [AdminController::class, 'coin_settings']);
+    Route::patch('coin-setting-update/{coinSetting}', [AdminController::class, 'coin_setting']);
 });

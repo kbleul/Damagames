@@ -54,7 +54,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'https://test.damagames.com'),
+    'url' => env('APP_URL', 'https://api.test.damagames.com'),
 
     'asset_url' => env('ASSET_URL'),
 
