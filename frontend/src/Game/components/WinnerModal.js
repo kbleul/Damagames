@@ -28,19 +28,19 @@ const WinnerModal = ({
 
   const congraMsg = user
     ? `congratulations!
-      Previous = ${user.coin} coins
-      Total = ${parseInt(user.coin) + 50} coins`
+      Previous = ${JSON.parse(localStorage.getItem("dama_user_data")).user.coin} coins
+      Total = ${parseInt(JSON.parse(localStorage.getItem("dama_user_data")).user.coin) + 50} coins`
     : "congratulations! You won 50 coins";
   const lostMsg = user
     ? `You Lost! You won 0 coins. 
      Total = ` +
-      user.coin +
-      ` coins`
+    JSON.parse(localStorage.getItem("dama_user_data")).user.coin +
+    ` coins`
     : "You Lost! You won 0 coins.";
 
-  // useEffect(() => {}, []);
-  isWinnerModalOpen &&
-    login(token, { ...user, coin: parseInt(user?.coin) + 50 });
+  // useEffect(() => {
+  //   login(token, { ...user, coin: parseInt(user.coin) + 50 })
+  // }, [])
   return (
     <>
       <Transition appear show={isWinnerModalOpen} as={Fragment}>

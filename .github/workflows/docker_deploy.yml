@@ -50,15 +50,17 @@ jobs:
         DB_USERNAME: ${{ vars.DB_USERNAME }}
         DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
-        APP_ID: ${{ env.APP_ID }}
-        APP_KEY: ${{ env.APP_KEY }}
-        PUBLIC_KEY: ${{ env.PUBLIC_KEY }}
-        SHORT_CODE: ${{ env.SHORT_CODE }}
-        TB_APP_URL: ${{ env.TB_APP_URL }}
-        TB_WEB_URL: ${{ env.TB_WEB_URL }}
-        TB_SDK_URL: ${{ env.TB_SDK_URL }}
-        SUBJECT: ${{ env.SUBJECT }}
-        RECIEVE_NAME: ${{ env.RECIEVE_NAME }}
+        TELEBIRR_APP_ID: ${{ env.TELEBIRR_APP_ID }}
+        TELEBIRR_APP_KEY: ${{ env.TELEBIRR_APP_KEY }}
+        TELEBIRR_PUBLIC_KEY: ${{ env.TELEBIRR_PUBLIC_KEY }}
+        TELEBIRR_SHORT_CODE: ${{ env.TELEBIRR_SHORT_CODE }}
+        TELEBIRR_TB_APP_URL: ${{ env.TELEBIRR_TB_APP_URL }}
+        TELEBIRR_TB_WEB_URL: ${{ env.TELEBIRR_TB_WEB_URL }}
+        TELEBIRR_TB_SDK_URL: ${{ env.TELEBIRR_TB_SDK_URL }}
+        TELEBIRR_NOTIFY_URL: ${{ env.TELEBIRR_NOTIFY_URL }}
+        TELEBIRR_RETURN_URL: ${{ env.TELEBIRR_RETURN_URL }}
+        TELEBIRR_SUBJECT: ${{ env.TELEBIRR_SUBJECT }}
+        TELEBIRR_RECIEVE_NAME: ${{ env.TELEBIRR_RECIEVE_NAME }}
         OTP_URL: ${{ env.OTP_URL }}
         OTP_USERNAME: ${{ env.OTP_USERNAME }}
         OTP_PASSWORD: ${{ env.OTP_PASSWORD }}
