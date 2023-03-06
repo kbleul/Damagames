@@ -30,7 +30,7 @@ import { useAuth } from "../context/auth.js";
 import { IoMdLogIn } from "react-icons/io";
 const Game = () => {
   const { id } = useParams();
-  const { user, token, login, setUser } = useAuth();
+  const { user, token } = useAuth();
   const navigate = useNavigate();
   const [playMove] = useSound(moveSound);
   const [playStrike] = useSound(strikeSound);
@@ -67,10 +67,6 @@ const Game = () => {
   const [messageInputOpen, setMessageInputOpen] = useState(false);
   const [latestMessage, setLatestMessage] = useState(null);
   const [showResetWaiting, setShowResetWaiting] = useState(false);
-
-  const [threeD, setthreeD] = useState(false)
-
-
 
   useEffect(() => {
     if (!id && !localStorage.getItem("gameId")) {
@@ -330,15 +326,17 @@ const Game = () => {
       setTimeout(() => {
         const postMoveState = movesData[1]
           ? movePiece(columns, mergerObj.moves[0], {
-            ...mergerObj,
-            jumpKills: movesData[1],
-          })
+              ...mergerObj,
+              jumpKills: movesData[1],
+            })
           : movePiece(columns, mergerObj.moves[0], mergerObj);
         if (postMoveState === null) {
           return;
         }
 
-        updateStatePostMove(postMoveState, { tracker: { moved: coordinates, to: mergerObj.moves[0] } });
+        updateStatePostMove(postMoveState, {
+          tracker: { moved: coordinates, to: mergerObj.moves[0] },
+        });
 
         moveRef.current = [moveRef.current[0], ++moveRef.current[1]];
 
@@ -358,72 +356,74 @@ const Game = () => {
 
   //update the game state after move
   function updateStatePostMove(postMoveState, gametrackes) {
-
-    let track
+    let track;
 
     if (!gametrackes == 1) {
       if (gameState.moves.length === 1) {
-        track = { moved: gameState.activePiece, to: gameState.moves[0] }
+        track = { moved: gameState.activePiece, to: gameState.moves[0] };
       } else {
-
-        if (postMoveState.boardState[gameState.moves[0]]) { track = { moved: gameState.activePiece, to: gameState.moves[0] } }
-        else {
-          track = { moved: gameState.activePiece, to: gameState.moves[1] }
+        if (postMoveState.boardState[gameState.moves[0]]) {
+          track = { moved: gameState.activePiece, to: gameState.moves[0] };
+        } else {
+          track = { moved: gameState.activePiece, to: gameState.moves[1] };
         }
       }
-    } else if (id == 1 && gametrackes) { track = gametrackes.tracker }
-
+    } else if (id == 1 && gametrackes) {
+      track = gametrackes.tracker;
+    }
 
     //   console.log("Rever: ", gameState.moves, gameState.activePiece)
-    id == 1 ? setGameState((prevGameState) => {
-      return {
-        ...prevGameState,
+    id == 1
+      ? setGameState((prevGameState) => {
+          return {
+            ...prevGameState,
 
-        history: gameState.history.concat([
-          {
-            boardState: postMoveState.boardState,
-            currentPlayer: postMoveState.currentPlayer,
-          },
-        ]),
-        activePiece: postMoveState.activePiece,
-        moves: postMoveState.moves,
-        jumpKills: postMoveState.jumpKills,
-        hasJumped: postMoveState.hasJumped,
-        stepNumber: gameState.history.length,
-        winner: postMoveState.winner,
-        tracker: track
-      };
-    }) : setGameState((prevGameState) => {
-      return {
-        ...prevGameState,
+            history: gameState.history.concat([
+              {
+                boardState: postMoveState.boardState,
+                currentPlayer: postMoveState.currentPlayer,
+              },
+            ]),
+            activePiece: postMoveState.activePiece,
+            moves: postMoveState.moves,
+            jumpKills: postMoveState.jumpKills,
+            hasJumped: postMoveState.hasJumped,
+            stepNumber: gameState.history.length,
+            winner: postMoveState.winner,
+            tracker: track,
+          };
+        })
+      : setGameState((prevGameState) => {
+          return {
+            ...prevGameState,
 
-        history: gameState.history.concat([
-          {
-            boardState: postMoveState.boardState,
-            currentPlayer: postMoveState.currentPlayer,
-          },
-        ]),
-        activePiece: postMoveState.activePiece,
-        moves: postMoveState.moves,
-        jumpKills: postMoveState.jumpKills,
-        hasJumped: postMoveState.hasJumped,
-        stepNumber: gameState.history.length,
-        winner: postMoveState.winner,
-      };
-    });
-
+            history: gameState.history.concat([
+              {
+                boardState: postMoveState.boardState,
+                currentPlayer: postMoveState.currentPlayer,
+              },
+            ]),
+            activePiece: postMoveState.activePiece,
+            moves: postMoveState.moves,
+            jumpKills: postMoveState.jumpKills,
+            hasJumped: postMoveState.hasJumped,
+            stepNumber: gameState.history.length,
+            winner: postMoveState.winner,
+          };
+        });
 
     if (gameState.players == 1) {
       setMyTurn(postMoveState.currentPlayer ? "player1" : "player2");
     }
 
-    id != 1 && socket.emit("sendGameMessage", {
-      winnerPlayer: postMoveState.winner,
-      boardState: postMoveState.boardState,
-      currentPlayer: postMoveState.currentPlayer,
-      turnPlayer: postMoveState.currentPlayer ? "player1" : "player2",
-      tracker: track
-    });
+    id != 1 &&
+      socket.emit("sendGameMessage", {
+        winnerPlayer: postMoveState.winner,
+        boardState: postMoveState.boardState,
+        currentPlayer: postMoveState.currentPlayer,
+        turnPlayer: postMoveState.currentPlayer ? "player1" : "player2",
+        tracker: track,
+      });
 
     calcPawns(postMoveState.boardState);
   }
@@ -438,8 +438,8 @@ const Game = () => {
   const playerOneIp = localStorage.getItem("playerOneIp");
   const playerTwoIp = localStorage.getItem("playerTwoIp");
   const btCoin = localStorage.getItem("bt_coin_amount");
-  const p2Info = JSON.parse(localStorage.getItem("p2Info"))
-  const p1Info = localStorage.getItem("p1")
+  const p2Info = JSON.parse(localStorage.getItem("p2Info"));
+  const p1Info = localStorage.getItem("p1");
   //console.log({p2Info:p1Info})
   let gameStatus;
   switch (gameState.winner) {
@@ -475,14 +475,14 @@ const Game = () => {
       ) {
         playWin();
 
-        localStorage.setItem(
-          "dama_user_data",
-          JSON.stringify({
-            token,
-            user: { ...user, coin: user.coin + 50 },
-          })
-        );
-
+        user &&
+          localStorage.setItem(
+            "dama_user_data",
+            JSON.stringify({
+              token,
+              user: { ...user, coin: user.coin + 50 },
+            })
+          );
       } else if (
         winnerPlayer === "player2pieces" &&
         localStorage.getItem("playerOne") &&
@@ -496,14 +496,14 @@ const Game = () => {
       ) {
         playWin();
 
-        localStorage.setItem(
-          "dama_user_data",
-          JSON.stringify({
-            token,
-            user: { ...user, coin: user.coin + 50 },
-          })
-        );
-
+        user &&
+          localStorage.setItem(
+            "dama_user_data",
+            JSON.stringify({
+              token,
+              user: { ...user, coin: user.coin + 50 },
+            })
+          );
       } else if (
         winnerPlayer === "player1pieces" &&
         localStorage.getItem("playerTwo") &&
@@ -513,7 +513,6 @@ const Game = () => {
       }
 
       setIsWinnerModalOpen(true);
-
     } else {
       if (gameState.winner || winnerPlayer) {
         setIsWinnerModalOpen(true);
@@ -530,8 +529,6 @@ const Game = () => {
         }
       }
     }
-
-
   }, [gameState, gameStatus, winnerPlayer]);
   const resetGame = () => {
     moveRef.current = [0, 0];
@@ -541,7 +538,7 @@ const Game = () => {
   const rejectGameRequest = () => {
     socket.emit("sendRejectGameMessage", { status: "Reject" });
     setShowResetWaiting(false);
-    setIsDrawModalOpen(false)
+    setIsDrawModalOpen(false);
   };
   const acceptGameRequest = () => {
     socket.emit("sendResetGameMessage", {
@@ -668,7 +665,6 @@ const Game = () => {
         setMyTurn(turnPlayer);
         setWinnerPlayer(winnerPlayer);
 
-
         setGameState((prevGameState) => {
           return {
             ...prevGameState,
@@ -679,7 +675,7 @@ const Game = () => {
                 currentPlayer: currentPlayer,
               };
             }),
-            tracker
+            tracker,
           };
         });
 
@@ -689,7 +685,6 @@ const Game = () => {
 
         calcPawns(boardState);
         compareObjects(lastElement?.boardState, boardState);
-
       }
     );
 
@@ -722,13 +717,11 @@ const Game = () => {
       toast("You friend did not accept the request");
 
       if (!status.type) {
-
         clearCookie.forEach((data) => {
           localStorage.getItem(data) && localStorage.removeItem(data);
         });
         navigate("/create-game");
       }
-
     });
 
     //listen for if user left room
@@ -937,21 +930,17 @@ const Game = () => {
           game_id: gameId,
         },
         {
-          onSuccess: (responseData) => { },
-          onError: (err) => { },
+          onSuccess: (responseData) => {},
+          onError: (err) => {},
         }
       );
-    } catch (err) { }
+    } catch (err) {}
   };
 
   const changeSound = () => {
     localStorage.setItem("dama-sound", !soundOn);
     setSoundOn((prev) => !prev);
-    setthreeD(prev => !prev)
   };
-
-
-
 
   return (
     <div
@@ -1058,7 +1047,9 @@ const Game = () => {
             <img
               src={
                 playerOneIp || (id == 1 && user?.profile_image)
-                  ? user?.profile_image ? user.profile_image : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
+                  ? user?.profile_image
+                    ? user.profile_image
+                    : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
                   : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
               }
               className="h-12 rounded-full"
@@ -1071,10 +1062,10 @@ const Game = () => {
                 ? user.username
                 : "You"
               : playerOneIp && user
-                ? user?.username
-                : playerOneIp
-                  ? firstPlayer?.username
-                  : p1Info}
+              ? user?.username
+              : playerOneIp
+              ? firstPlayer?.username
+              : p1Info}
           </h4>
         </div>
 
@@ -1106,12 +1097,12 @@ const Game = () => {
             {id == 1
               ? "Computer"
               : playerTwoIp && user
-                ? user?.username
-                : playerTwoIp
-                  ? secondPlayer?.username
-                  : p1Info
-                    ? p1Info
-                    : p2Info?.username}
+              ? user?.username
+              : playerTwoIp
+              ? secondPlayer?.username
+              : p1Info
+              ? p1Info
+              : p2Info?.username}
           </h4>
         </div>
       </section>
@@ -1196,30 +1187,31 @@ const Game = () => {
           />
         )}
       </div>
-      <div className={threeD ? "" : ""}>
+      <div className={""}>
         <div
-          className={`box   ${!id
-            ? currentPlayer === true
-              ? currentPlayer === true && !firstPlayer
-                ? "pointer-events-none"
-                : ""
-              : currentPlayer === false
+          className={`box   ${
+            !id
+              ? currentPlayer === true
+                ? currentPlayer === true && !firstPlayer
+                  ? "pointer-events-none"
+                  : ""
+                : currentPlayer === false
                 ? currentPlayer === false && !secondPlayer
                   ? "pointer-events-none"
                   : ""
                 : ""
-            : ""
-            }`}
+              : ""
+          }`}
         >
           <Board
             boardState={
               id === "1"
                 ? dict_reverse(boardState)
                 : !id
-                  ? localStorage.getItem("playerOne")
-                    ? dict_reverse(boardState)
-                    : boardState
+                ? localStorage.getItem("playerOne")
+                  ? dict_reverse(boardState)
                   : boardState
+                : boardState
             }
             currentPlayer={currentPlayer}
             activePiece={gameState.activePiece}
@@ -1269,8 +1261,9 @@ const Game = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ type: "tween", duration: 1, ease: "easeInOut" }}
-          className={`absolute top-36  bg-white max-w-sm  p-1 w-44 ${playerOneIp ? "left-3" : "right-3"
-            }
+          className={`absolute top-36  bg-white max-w-sm  p-1 w-44 ${
+            playerOneIp ? "left-3" : "right-3"
+          }
        border border-orange-color rounded-lg m-3`}
         >
           <div className="text-gray-800">
