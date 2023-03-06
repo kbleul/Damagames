@@ -32,4 +32,4 @@ jobs:
   e2e-test:
     uses: ./.github/workflows/playwright.yml
     secrets: inherit
-    needs: 'deploy'
+    needs: 'deploy_production'
