@@ -26,7 +26,7 @@ jobs:
   deploy_production:
     uses: ./.github/workflows/docker_deploy.yml
     secrets: inherit
-    needs: 'release'
+    # needs: 'release'
 
 
   e2e-test:
