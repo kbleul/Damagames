@@ -87,20 +87,20 @@ const WinnerModal = ({
                               : lostMsg
                             : winnerPlayer === "player2pieces" ||
                               winnerPlayer === "player2moves"
-                              ? playerTwoIp != null
-                                ? congraMsg
-                                : lostMsg
-                              : ""
+                            ? playerTwoIp != null
+                              ? congraMsg
+                              : lostMsg
+                            : ""
                           : gameState?.winner == "player2pieces" ||
                             "player2moves"
-                            ? lostMsg
-                            : congraMsg}
+                          ? lostMsg
+                          : congraMsg}
                       </h1>
                     )}
                     {gameState.players == 1 && (
                       <h1 className="w-[60%] ml-[20%] text-white font-semibold  text-center capitalize py-5">
                         {gameState.winner === "player1pieces" ||
-                          gameState.winner === "player1moves"
+                        gameState.winner === "player1moves"
                           ? congraMsg
                           : lostMsg}
                       </h1>
