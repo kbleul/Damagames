@@ -30,7 +30,7 @@ import { useAuth } from "../context/auth.js";
 import { IoMdLogIn } from "react-icons/io";
 const Game = () => {
   const { id } = useParams();
-  const { user, token, login, setUser } = useAuth();
+  const { user, token } = useAuth();
   const navigate = useNavigate();
   const [playMove] = useSound(moveSound);
   const [playStrike] = useSound(strikeSound);
@@ -67,9 +67,6 @@ const Game = () => {
   const [messageInputOpen, setMessageInputOpen] = useState(false);
   const [latestMessage, setLatestMessage] = useState(null);
   const [showResetWaiting, setShowResetWaiting] = useState(false);
-
-  const [threeD, setthreeD] = useState(false)
-
 
 
   useEffect(() => {
@@ -475,14 +472,13 @@ const Game = () => {
       ) {
         playWin();
 
-        localStorage.setItem(
+        user && localStorage.setItem(
           "dama_user_data",
           JSON.stringify({
             token,
             user: { ...user, coin: user.coin + 50 },
           })
         );
-
       } else if (
         winnerPlayer === "player2pieces" &&
         localStorage.getItem("playerOne") &&
@@ -496,7 +492,7 @@ const Game = () => {
       ) {
         playWin();
 
-        localStorage.setItem(
+        user && localStorage.setItem(
           "dama_user_data",
           JSON.stringify({
             token,
@@ -947,7 +943,6 @@ const Game = () => {
   const changeSound = () => {
     localStorage.setItem("dama-sound", !soundOn);
     setSoundOn((prev) => !prev);
-    setthreeD(prev => !prev)
   };
 
 
@@ -1196,7 +1191,7 @@ const Game = () => {
           />
         )}
       </div>
-      <div className={threeD ? "" : ""}>
+      <div className={""}>
         <div
           className={`box   ${!id
             ? currentPlayer === true
