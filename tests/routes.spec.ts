@@ -14,7 +14,7 @@ test("/new-game", async ({ page }) => {
 
 test("/join-game", async ({ page }) => {
   await page.goto("/join-game");
-  await page.waitForLoadState("networkidle", { timeout: 30000 });
+  await page.waitForLoadState("networkidle", { timeout: 20000 });
   await expect(page).toHaveTitle(/Dama/);
 });
 
