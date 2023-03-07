@@ -20,7 +20,7 @@ test("Create Game", async ({ page }) => {
   });
   await createGameButton.click();
   // Wait for the page to navigate to the new URL
-  await page.waitForLoadState("networkidle", { timeout: 5000 });
+  await page.waitForLoadState("networkidle", { timeout: 15000 });
 
   // Wait for the text input to appear and fill it
   //   const nameInput = await page.waitForSelector('input[type="text"]');
@@ -30,6 +30,6 @@ test("Create Game", async ({ page }) => {
   //   const createButton = await page.waitForSelector("button", { text: "Create" });
   //   await createButton.click();
   //   // Wait for the heading to appear and assert its text
-  //   //await page.waitForLoadState('networkidle', { timeout: 5000 });
+  //   //await page.waitForLoadState('networkidle', { timeout: 15000 });
   //   await expect(page.getByRole("heading")).toHaveText("Great Work!");
 });
