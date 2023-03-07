@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Dama Games</title>
+    <title>Dama Games | Telebirr</title>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -413,11 +413,29 @@
     <div class="relative flex justify-center min-h-screen bg-gray-100  dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
         <div class="max-w-6xl sm:px-6 lg:px-8">
             <div class="object-center">
-                <img src="{{asset('img/dama.svg')}}" alt="Logo">s
+                <div class="object-center">
+                    <img src="{{asset('img/dama.svg')}}" alt="Logo">s
+                </div>
+            </div>
+
+            <div class=" my-5">
+                <form action="{{route('telebirr.pay')}}" method="post">
+                    @csrf
+                    <div class="form-group">
+                        <label for="price" class="text-light">Amount</label>
+                        <input type="text" class="form-control" name="price" id="price" class="amount" required>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-primary px-5 my-2">
+                            Pay
+                        </button>
+                    </div>
+
+                </form>
             </div>
 
             {{-- <h1 class="text-center text-gray-600"><i class="fa-solid fa-envelope"></i></h1> --}}
-            <h1 class="text-center text-sky-500 dark:text-gray-400 text-xl">Dama Games</h1>
+            <h1 class="text-center text-sky-500 dark:text-gray-400 text-xl">Telebirr </h1>
             <p class="text-center text-gray-400 dark:text-gray-600 text-sm">Copyright &copy {{date('Y')}} All rights
                 reserved. </p>
         </div>

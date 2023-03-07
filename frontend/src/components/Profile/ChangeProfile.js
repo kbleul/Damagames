@@ -161,7 +161,7 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
 
       },
       onError: err => {
-        console.log(err)
+        //console.log(err)
         toast(err.message)
         // setItemIsLoading(false)
         // setitemsError(true)

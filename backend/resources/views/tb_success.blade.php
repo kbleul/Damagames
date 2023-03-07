@@ -413,11 +413,12 @@
     <div class="relative flex justify-center min-h-screen bg-gray-100  dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
         <div class="max-w-6xl sm:px-6 lg:px-8">
             <div class="object-center">
-                <img src="{{asset('img/dama.svg')}}" alt="Logo">s
+                <img src="{{asset('img/success.gif')}}" class="img-fluid rounded mx-auto d-block mx-auto" width="450px"
+                    height="450px">
             </div>
 
             {{-- <h1 class="text-center text-gray-600"><i class="fa-solid fa-envelope"></i></h1> --}}
-            <h1 class="text-center text-sky-500 dark:text-gray-400 text-xl">Dama Games</h1>
+            <h1 class="text-center text-sky-500 dark:text-gray-400 text-xl">Payment Completed Successfully!</h1>
             <p class="text-center text-gray-400 dark:text-gray-600 text-sm">Copyright &copy {{date('Y')}} All rights
                 reserved. </p>
         </div>

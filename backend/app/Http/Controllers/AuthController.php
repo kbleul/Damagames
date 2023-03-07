@@ -10,14 +10,18 @@ use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Requests\StoreSecurityQuestionAnswerRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UserAnswerRequest;
+use App\Models\CoinSetting;
 use App\Models\SecurityQuestion;
 use App\Models\SecurityQuestionAnswer;
 use App\Models\SQUser;
 use App\Models\User;
 use App\Models\UserItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class AuthController extends SendSmsController
 {
@@ -48,7 +52,6 @@ class AuthController extends SendSmsController
             return response()->json(['message' => 'Password is incorrect.'], 400);
 
             return response()->json(['message' => 'Something wrong.'], 400);
-
         }
     }
 
@@ -100,12 +103,11 @@ class AuthController extends SendSmsController
 
 
 
+
     public function register_new(RegisterRequest $request)
     {
         $password = rand(1000, 9999);
-
         $user = User::where('phone', $request->phone)->first();
-
         if (!empty($user) && !empty($user->phone_verified_at)) {
             if (empty($user->username)) {
                 $this->sendSMS($request->phone, $password);
@@ -127,7 +129,7 @@ class AuthController extends SendSmsController
         $user = User::create([
             'phone' => $request->phone,
             'password' =>  Hash::make($password),
-            'current_point' =>  30,
+            'current_point' =>   CoinSetting::first()->newUserCoins,
         ]);
 
         return response()->json(['message' => 'OTP sent successfully!'], 201);
@@ -173,7 +175,7 @@ class AuthController extends SendSmsController
         $user = User::create([
             'phone' => $request->phone,
             'password' =>  Hash::make($password),
-            'current_point' =>  30,
+            'current_point' =>  CoinSetting::first()->newUserCoins,
         ]);
 
         return response()->json(['message' => 'OTP sent successfully!'], 201);

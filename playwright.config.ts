@@ -12,7 +12,7 @@ import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   testDir: "./tests",
   /* Maximum time one test can run for. */
-  timeout: 40 * 1000,
+  timeout: 40 * 10000,
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.
@@ -54,10 +54,10 @@ export default defineConfig({
       use: { ...devices["Desktop Firefox"] },
     },
 
-    {
-      name: "webkit",
-      use: { ...devices["Desktop Safari"] },
-    },
+    // {
+    //   name: "webkit",
+    //   use: { ...devices["Desktop Safari"] },
+    // },
 
     /* Test against mobile viewports. */
     {

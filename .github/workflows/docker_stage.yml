@@ -36,7 +36,7 @@ jobs:
 
     - name: Deploy Docker Containers
       run: |
-        docker-compose --context test -f docker-compose.prod.yml up --build --remove-orphans -d
+        docker-compose --context test -f docker-compose.stage.yml up --build --remove-orphans -d
       env:
         DOCKER_HOST: ssh://${{ vars.REMOTE_USER }}@${{ vars.REMOTE_HOST }}
         REMOTE_HOST: ${{ vars.REMOTE_HOST }}

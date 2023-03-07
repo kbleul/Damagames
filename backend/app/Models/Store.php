@@ -16,19 +16,28 @@ class Store extends Model  implements HasMedia
 
     protected $hidden = [
         'media',
-        'status',
         'updated_at',
         'deleted_at'
     ];
 
 
     protected $casts = [
+        'status' => 'integer',
         'price' => "integer",
         'discount' => "integer",
         'created_at' => "datetime:Y-m-d",
         'updated_at' => "datetime:Y-m-d",
         'deleted_at' => "datetime:Y-m-d",
     ];
+
+    public function getStatusAttribute($status)
+    {
+        if ($status == 0) {
+            return $status = "Active";
+        } else {
+            return $status = "Not Active";
+        }
+    }
 
     public $appends = ['item'];
 

@@ -6,7 +6,7 @@ export const Footer = () => {
 
     return (
         <div className="w-full bg-inherit absolute top-[95vh] text-white">
-            <a onClick={() => navigate("/privacy-policy")} className="text-xs text-gray-200 cursor-pointer">Privacy Policy |  v1.0.0</a>
+            <a onClick={() => navigate("/privacy-policy")} className="text-xs text-gray-200 cursor-pointer">Privacy Policy |  v3.0.0</a>
         </div>
     )
 }

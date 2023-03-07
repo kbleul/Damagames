@@ -27,9 +27,10 @@ import { ThreeDots } from "react-loader-spinner";
 import UserLeavesModal from "./components/UserLeavesModal.js";
 import { clearCookie } from "../utils/data.js";
 import { useAuth } from "../context/auth.js";
+import { IoMdLogIn } from "react-icons/io";
 const Game = () => {
   const { id } = useParams();
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const navigate = useNavigate();
   const [playMove] = useSound(moveSound);
   const [playStrike] = useSound(strikeSound);
@@ -66,8 +67,6 @@ const Game = () => {
   const [messageInputOpen, setMessageInputOpen] = useState(false);
   const [latestMessage, setLatestMessage] = useState(null);
   const [showResetWaiting, setShowResetWaiting] = useState(false);
-
-  const [threeD, setthreeD] = useState(false);
 
   useEffect(() => {
     if (!id && !localStorage.getItem("gameId")) {
@@ -254,7 +253,6 @@ const Game = () => {
       }
 
       updateStatePostMove(postMoveState);
-      // if(soundOn) { playMove()}
       soundOn && playMove();
       if (
         id === "1" &&
@@ -336,7 +334,9 @@ const Game = () => {
           return;
         }
 
-        updateStatePostMove(postMoveState);
+        updateStatePostMove(postMoveState, {
+          tracker: { moved: coordinates, to: mergerObj.moves[0] },
+        });
 
         moveRef.current = [moveRef.current[0], ++moveRef.current[1]];
 
@@ -351,56 +351,79 @@ const Game = () => {
           computerTurn(postMoveState, postMoveState.activePiece);
         }
       }, 600);
-    }, 1000);
+    }, 1300);
   }
 
   //update the game state after move
-  function updateStatePostMove(postMoveState) {
+  function updateStatePostMove(postMoveState, gametrackes) {
     let track;
-    if (gameState.moves.length === 1) {
-      track = { moved: gameState.activePiece, to: gameState.moves[0] };
-    } else {
-      // console.log({ active: gameState.activePiece, to: gameState.moves }, postMoveState)
-      console.log(postMoveState.boardState[gameState.moves[0]]);
-      console.log(postMoveState.boardState[gameState.moves[0]]);
 
-      if (postMoveState.boardState[gameState.moves[0]]) {
+    if (!gametrackes == 1) {
+      if (gameState.moves.length === 1) {
         track = { moved: gameState.activePiece, to: gameState.moves[0] };
       } else {
-        track = { moved: gameState.activePiece, to: gameState.moves[1] };
+        if (postMoveState.boardState[gameState.moves[0]]) {
+          track = { moved: gameState.activePiece, to: gameState.moves[0] };
+        } else {
+          track = { moved: gameState.activePiece, to: gameState.moves[1] };
+        }
       }
+    } else if (id == 1 && gametrackes) {
+      track = gametrackes.tracker;
     }
 
-    // console.log("Rever: ", postMoveState.boardState)
-    setGameState((prevGameState) => {
-      return {
-        ...prevGameState,
+    //   console.log("Rever: ", gameState.moves, gameState.activePiece)
+    id == 1
+      ? setGameState((prevGameState) => {
+          return {
+            ...prevGameState,
 
-        history: gameState.history.concat([
-          {
-            boardState: postMoveState.boardState,
-            currentPlayer: postMoveState.currentPlayer,
-          },
-        ]),
-        activePiece: postMoveState.activePiece,
-        moves: postMoveState.moves,
-        jumpKills: postMoveState.jumpKills,
-        hasJumped: postMoveState.hasJumped,
-        stepNumber: gameState.history.length,
-        winner: postMoveState.winner,
-      };
-    });
+            history: gameState.history.concat([
+              {
+                boardState: postMoveState.boardState,
+                currentPlayer: postMoveState.currentPlayer,
+              },
+            ]),
+            activePiece: postMoveState.activePiece,
+            moves: postMoveState.moves,
+            jumpKills: postMoveState.jumpKills,
+            hasJumped: postMoveState.hasJumped,
+            stepNumber: gameState.history.length,
+            winner: postMoveState.winner,
+            tracker: track,
+          };
+        })
+      : setGameState((prevGameState) => {
+          return {
+            ...prevGameState,
+
+            history: gameState.history.concat([
+              {
+                boardState: postMoveState.boardState,
+                currentPlayer: postMoveState.currentPlayer,
+              },
+            ]),
+            activePiece: postMoveState.activePiece,
+            moves: postMoveState.moves,
+            jumpKills: postMoveState.jumpKills,
+            hasJumped: postMoveState.hasJumped,
+            stepNumber: gameState.history.length,
+            winner: postMoveState.winner,
+          };
+        });
+
     if (gameState.players == 1) {
       setMyTurn(postMoveState.currentPlayer ? "player1" : "player2");
     }
 
-    socket.emit("sendGameMessage", {
-      winnerPlayer: postMoveState.winner,
-      boardState: postMoveState.boardState,
-      currentPlayer: postMoveState.currentPlayer,
-      turnPlayer: postMoveState.currentPlayer ? "player1" : "player2",
-      tracker: track,
-    });
+    id != 1 &&
+      socket.emit("sendGameMessage", {
+        winnerPlayer: postMoveState.winner,
+        boardState: postMoveState.boardState,
+        currentPlayer: postMoveState.currentPlayer,
+        turnPlayer: postMoveState.currentPlayer ? "player1" : "player2",
+        tracker: track,
+      });
 
     calcPawns(postMoveState.boardState);
   }
@@ -417,7 +440,7 @@ const Game = () => {
   const btCoin = localStorage.getItem("bt_coin_amount");
   const p2Info = JSON.parse(localStorage.getItem("p2Info"));
   const p1Info = localStorage.getItem("p1");
-  console.log({ p2Info: p1Info });
+  //console.log({p2Info:p1Info})
   let gameStatus;
   switch (gameState.winner) {
     case "player1pieces":
@@ -451,6 +474,15 @@ const Game = () => {
         soundOn
       ) {
         playWin();
+
+        user &&
+          localStorage.setItem(
+            "dama_user_data",
+            JSON.stringify({
+              token,
+              user: { ...user, coin: user.coin + 50 },
+            })
+          );
       } else if (
         winnerPlayer === "player2pieces" &&
         localStorage.getItem("playerOne") &&
@@ -463,6 +495,15 @@ const Game = () => {
         soundOn
       ) {
         playWin();
+
+        user &&
+          localStorage.setItem(
+            "dama_user_data",
+            JSON.stringify({
+              token,
+              user: { ...user, coin: user.coin + 50 },
+            })
+          );
       } else if (
         winnerPlayer === "player1pieces" &&
         localStorage.getItem("playerTwo") &&
@@ -470,6 +511,8 @@ const Game = () => {
       ) {
         playLose();
       }
+
+      setIsWinnerModalOpen(true);
     } else {
       if (gameState.winner || winnerPlayer) {
         setIsWinnerModalOpen(true);
@@ -486,9 +529,6 @@ const Game = () => {
         }
       }
     }
-
-    // gameState.tracker && console.log(gameState, gameState.tracker)
-    // gameState.tracker && document.getElementsByClassName(gameState.tracker.moved)[0].setAttribute("id", "white")
   }, [gameState, gameStatus, winnerPlayer]);
   const resetGame = () => {
     moveRef.current = [0, 0];
@@ -621,23 +661,9 @@ const Game = () => {
       "getGameMessage",
       ({ winnerPlayer, boardState, currentPlayer, turnPlayer, tracker }) => {
         stopInterval();
-        // setUpdatedState({winnerPlayer,boardState,currentPlayer})
 
         setMyTurn(turnPlayer);
         setWinnerPlayer(winnerPlayer);
-
-        //console.log("from get", {
-        //   ...gameState, history: gameState.history?.map((item) => {
-        //     return {
-        //       ...item,
-        //       boardState: boardState,
-        //       currentPlayer: currentPlayer,
-        //     };
-        //   }),
-        //   tracker
-        // })
-
-        //tracker && tracker.moved && console.log(document.getElementsByClassName(tracker.moved))
 
         setGameState((prevGameState) => {
           return {
@@ -914,7 +940,6 @@ const Game = () => {
   const changeSound = () => {
     localStorage.setItem("dama-sound", !soundOn);
     setSoundOn((prev) => !prev);
-    setthreeD((prev) => !prev);
   };
 
   return (
@@ -1162,7 +1187,7 @@ const Game = () => {
           />
         )}
       </div>
-      <div className={threeD ? "" : ""}>
+      <div className={""}>
         <div
           className={`box   ${
             !id
