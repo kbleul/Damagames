@@ -21,16 +21,6 @@ const Board = (props) => {
 
     else { squareClasses = props["squareClasses"] }
 
-    // // props.tracker && console.log(props.tracker.moved)
-    // if (tracker && squareClasses.includes(tracker.moved)) {
-    //   console.log("squareClasses", squareClasses, "---------------------")
-
-    // } else {
-    //   console.log("squareClasses", squareClasses)
-    // }
-
-    //console.log(tracker)
-
     return (
       <div>
         <button className={tracker && (squareClasses.includes(tracker.moved) || squareClasses.includes(tracker.to)) ? "square " + squareClasses + " tracker" : "square " + squareClasses} onClick={onClick} />
@@ -38,6 +28,7 @@ const Board = (props) => {
     );
   }
 
+  
   function renderSquare(coordinates, squareClasses) {
     return (
       <div>
