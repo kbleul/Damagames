@@ -25,6 +25,8 @@ const CreateGame = () => {
       navigate(`/${url}`);
     }, 300);
   }
+
+      
   return (
     <div
       style={{
