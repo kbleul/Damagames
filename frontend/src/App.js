@@ -118,9 +118,7 @@ const App = () => {
   return (
     <>
       {checked ? (
-        <Suspense
-          fallback={<SplashScreen />}
-        >
+        <Suspense fallback={<SplashScreen />}>
           <RoutComp />
         </Suspense>
       ) : (
