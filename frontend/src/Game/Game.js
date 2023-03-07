@@ -716,6 +716,7 @@ const Game = () => {
       setShowResetWaiting(false);
       toast("You friend did not accept the request");
 
+      socket.emit("leave", gameId);
       if (!status.type) {
         clearCookie.forEach((data) => {
           localStorage.getItem(data) && localStorage.removeItem(data);
@@ -742,6 +743,7 @@ const Game = () => {
         clearCookie.forEach((data) => {
           localStorage.getItem(data) && localStorage.removeItem(data);
         });
+        socket.emit("leave", gameId);
         navigate("/create-game");
       }, 5000);
     });

@@ -9,12 +9,12 @@ export default function UserLeavesModal({
   setIsLeaveModalOpen,
 }) {
   const navigate = useNavigate();
-
+  const gameId = localStorage.getItem("gameId");
   const handleExit = () => {
     clearCookie.forEach((data) => {
       localStorage.getItem(data) && localStorage.removeItem(data);
     });
-
+    socket.emit("leave", gameId);
     navigate("/create-game");
   };
   return (
