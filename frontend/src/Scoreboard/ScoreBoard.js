@@ -31,7 +31,7 @@ const ScoreBoard = () => {
 
 
   return (
-    <div className="h-[100vh] overflow-y-scroll flex flex-col items-center">
+    <div className="h-[100vh] overflow-y-scroll flex flex-col items-center ">
       <button
         className="z-10 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 fixed left-2 md:right-4"
         onClick={() => navigate("/create-game")}
