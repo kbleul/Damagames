@@ -55,7 +55,7 @@ const Store = () => {
   const myItemsFetch = useQuery(
     ["myItemsFetch"],
     async () =>
-      await axios.get(`${process.env.REACT_APP_BACKEND_URL}my-items`, {
+      await axios.get(`https://api.test.damagames.com/api/my-items`, {
         headers: header,
       }),
     {
@@ -90,7 +90,7 @@ const Store = () => {
   const storeItemsFetch = useQuery(
     ["storeItemsFetch"],
     async () =>
-      await axios.get(`${process.env.REACT_APP_BACKEND_URL}store-items`, {
+      await axios.get(`https://api.test.damagames.com/api/store-items`, {
         headers,
       }),
     {
@@ -110,19 +110,19 @@ const Store = () => {
   );
 
   return (
-  
-    <div 
-    style={{
-      backgroundImage: `url(${background})`,
-      backgroundPosition: "center",
-      minWidth: "100vw",
-      minHeight: "100vh",
-      backgroundSize: "cover",
-      backgroundRepeat: "no-repeat",
-      width: "100%",
-    }}
-    className="relative flex w-full  min-h-screen">
-         <button
+
+    <div
+      style={{
+        backgroundImage: `url(${background})`,
+        backgroundPosition: "center",
+        minWidth: "100vw",
+        minHeight: "100vh",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        width: "100%",
+      }}
+      className="relative flex w-full  min-h-screen">
+      <button
         className="z-10 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 fixed left-2 md:right-4"
         onClick={() => navigate("/create-game")}
       >
@@ -366,7 +366,7 @@ const Avatar = ({
             </defs>
           </svg>
         </p>
-        <p className="text-xs pl-1">{avatar.price}</p>
+        <p className="text-xs text-white pl-1">{avatar.price}</p>
       </section>
 
       {user && token && !myAvatarsId.includes(avatar.id) && (
@@ -420,12 +420,12 @@ const Board = ({
     >
       {isOn && <h4 className="text-sm ">{board.name}</h4>}
       <section className="max-h-[13vh]">
-        <img className="w-4/5 ml-[10%] h-full" src={board.item} alt="" />
+        <img className="w-4/5 max-w-[12rem] ml-[10%] h-full" src={board.item} alt="" />
       </section>
 
       {isOn && (
         <section className=" flex  justify-center items-center text-sm mt-2">
-          <p className="text-sm pr-1">{board.price}</p>
+          <p className="text-sm text-white pr-1">{board.price}</p>
 
           <p>
             <svg
