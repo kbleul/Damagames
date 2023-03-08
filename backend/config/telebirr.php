@@ -9,7 +9,7 @@ return [
     |
     */
     'app_id' => env('TELEBIRR_APP_ID'),
-    'app_key' => env('TELEBIRR_APP_ID'),
+    'app_key' => env('TELEBIRR_APP_KEY'),
     'public_key' => env('TELEBIRR_PUBLIC_KEY'),
     'short_code' => env('TELEBIRR_SHORT_CODE'),
     'app_url' => env('TELEBIRR_TB_APP_URL'),
