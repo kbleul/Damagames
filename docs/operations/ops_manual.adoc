@@ -113,58 +113,71 @@ DNS is hoted on namecheap.com by username damagames
 Set up the following environment variables and secrets
 
 |===
-| Name | Default | Description
+| Name | Default | env | Description
 
 | APP_ENV
-| dev
-| dev or prod?
+| staging
+| yes
+| local, staging or production
 
 | DB_CONNECTION
 | mysql
+| static
 | type of database
 
 | DB_HOST
 | database
+| static
 | hostname of database
 
 | DB_PORT
 | 3306
+| static
 | db port
 
 | DB_DATABASE
 | dama
+| static
 | name of the database
 
 | DB_USERNAME
 | dama
+| static
 | database username
 
 | DB_PASSWORD
 | SECRET
+| env
 | secret to define the db user password
 
 | PORT
 | 3000
+| static
 | defines on which port socket.io runs - needs to be same as docker config
 
 | REACT_APP_FRONTEND_URL
 | damagames.com / ${REMOTE_HOST}
+| env
 | Frontend needs the URL for sharing game with other players
 
 | REACT_APP_FRONTEND_URL
 | api.damagames.com / api.${REMOTE_HOST}
+| env
 | Frontend needs the URL to the API
 
 | REACT_APP_GTM_ID
 | https://github.com/jaktechet/damagames/settings/variables/actions/GTAG_ID
+| env
 | Google Analytics gtag.js config id from damagamescom@gmail.com https://analytics.google.com/
 
 | REACT_APP_SOCKET_URL
 | damagames.com / ${REMOTE_HOST}
+| env
 | URL of the websocket server that the frontend uses
 
 | REACT_APP_SOCKET_PORT
 | 443
+| static
 | Port of the websocket server that the frontend uses
 
 |===
