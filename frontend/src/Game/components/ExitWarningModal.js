@@ -1,44 +1,34 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import socket from "../../utils/socket.io";
-const savedData = [
-  "gameId",
-  "playerOne",
-  "playerTwo",
-  "playerOneIp",
-  "playerTwoIp",
-  "playerOneToken",
-  "p1",
-  "p2",
-  "players",
-  "bt_coin_amount",
-  "dama-sound"
-];
+import { clearCookie } from "../../utils/data";
 
 export default function ExitWarningModal({
   isExitModalOpen,
   set_isExitModalOpen,
+  gameState,
 }) {
   const navigate = useNavigate();
 
   const handleExit = () => {
     //exit socket code here
-    socket.emit("sendExitGameRequest", { status: "Exit" });
-    savedData.forEach((data) => {
+    if (gameState?.players > 1) {
+      socket.emit("sendExitGameRequest", { status: "Exit" });
+    }
+    clearCookie.forEach((data) => {
       localStorage.getItem(data) && localStorage.removeItem(data);
     });
 
     navigate("/create-game");
   };
-
   return (
     <>
       <Transition appear show={isExitModalOpen} as={Fragment}>
         <Dialog
           as="div"
           className="relative z-10"
-          onClose={() => set_isExitModalOpen(false)}
+          onClose={() => set_isExitModalOpen(true)}
         >
           <Transition.Child
             as={Fragment}
@@ -63,7 +53,7 @@ export default function ExitWarningModal({
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="border border-orange-500 bg-[#181920] w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel className="border border-orange-500 bg-[#181920] w-full max-w-md transform overflow-hidden rounded-2xl  p-6 text-left align-middle shadow-xl transition-all">
                   <Dialog.Title
                     as="h3"
                     className="text-lg font-medium leading-6 text-white text-center"
@@ -71,23 +61,34 @@ export default function ExitWarningModal({
                     You are about to leave this game !
                   </Dialog.Title>
                   <div className="mt-2">
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 text-center ">
                       Are you sure you want to leave and lose this game ?
                     </p>
                   </div>
 
-                  <div className="mt-4 flex w-full justify-evenly">
+                  <div className="mt-4 flex w-full items-center space-x-5 justify-center">
                     <button
                       type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4  text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                      onClick={handleExit}
+                      className="w-full p-2  bg-sky-700 rounded-md cursor-pointer select-none
+                       active:translate-y-2  active:[box-shadow:0_0px_0_0_#026ca4,0_0px_0_0_#026ca4]
+                       active:border-b-[0px]
+                       transition-all duration-150 [box-shadow:0_5px_0_0_#026ca4,0_5px_0_0_#026ca4]
+                       border-b-[1px] border-gray-300/50 font-semibold text-white
+                     "
+                       onClick={handleExit}
                     >
                       Yes
                     </button>
                     <button
                       type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 bg-orange-600 text-white text-sm font-medium hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                       onClick={() => set_isExitModalOpen(false)}
+                      className="w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+                      active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
+                      active:border-b-[0px]
+                      transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+                      border-b-[1px] border-gray-300/50 font-medium text-white
+                    "
+                    
                     >
                       No
                     </button>

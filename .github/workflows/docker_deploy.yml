@@ -10,6 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    
+    - name: Set version
+      run: |
+        echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> frontend/.env.example
+        echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
     - name: Install SSH key
       uses: shimataro/ssh-key-action@v2
@@ -21,7 +26,7 @@ jobs:
         #if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
 
     - name: Create docker context
-      run: docker context create prod --docker "host=ssh://${{ vars.REMOTE_USER }}@${{ vars.REMOTE_HOST }}"
+      run: docker context create test --docker "host=ssh://${{ vars.REMOTE_USER }}@${{ vars.REMOTE_HOST }}"
 
     # - name: Remove old php container to force build
     #   run: docker-compose --context prod -f docker-compose.prod.yml rm -s -f
@@ -31,7 +36,7 @@ jobs:
 
     - name: Deploy Docker Containers
       run: |
-        docker-compose --context prod -f docker-compose.prod.yml up --build --remove-orphans -d
+        docker-compose --context test -f docker-compose.prod.yml up --build --remove-orphans -d
       env:
         DOCKER_HOST: ssh://${{ vars.REMOTE_USER }}@${{ vars.REMOTE_HOST }}
         REMOTE_HOST: ${{ vars.REMOTE_HOST }}
@@ -44,3 +49,18 @@ jobs:
         DB_DATABASE: ${{ vars.DB_DATABASE }}
         DB_USERNAME: ${{ vars.DB_USERNAME }}
         DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+        TELEBIRR_APP_ID: ${{ env.TELEBIRR_APP_ID }}
+        TELEBIRR_APP_KEY: ${{ env.TELEBIRR_APP_KEY }}
+        TELEBIRR_PUBLIC_KEY: ${{ env.TELEBIRR_PUBLIC_KEY }}
+        TELEBIRR_SHORT_CODE: ${{ env.TELEBIRR_SHORT_CODE }}
+        TELEBIRR_TB_APP_URL: ${{ env.TELEBIRR_TB_APP_URL }}
+        TELEBIRR_TB_WEB_URL: ${{ env.TELEBIRR_TB_WEB_URL }}
+        TELEBIRR_TB_SDK_URL: ${{ env.TELEBIRR_TB_SDK_URL }}
+        TELEBIRR_NOTIFY_URL: ${{ env.TELEBIRR_NOTIFY_URL }}
+        TELEBIRR_RETURN_URL: ${{ env.TELEBIRR_RETURN_URL }}
+        TELEBIRR_SUBJECT: ${{ env.TELEBIRR_SUBJECT }}
+        TELEBIRR_RECIEVE_NAME: ${{ env.TELEBIRR_RECIEVE_NAME }}
+        OTP_URL: ${{ env.OTP_URL }}
+        OTP_USERNAME: ${{ env.OTP_USERNAME }}
+        OTP_PASSWORD: ${{ env.OTP_PASSWORD }}

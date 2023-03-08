@@ -1,0 +1,13 @@
+{
+  "name": "damagames",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/jaktechet/damagames.git",
+  "author": "Markus Matiaschek <mmatiaschek@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.30.0"
+  },
+  "scripts": {},
+  "dependencies": {}
+}

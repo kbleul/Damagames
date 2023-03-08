@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+
 export const clearCookie = [
   "gameId",
   "playerOne",
@@ -9,5 +11,9 @@ export const clearCookie = [
   "p2",
   "players",
   "bt_coin_amount",
-  "dama-sound"
+  "dama-sound",
+  "p2Info"
 ];
+
+
+

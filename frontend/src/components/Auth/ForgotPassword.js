@@ -7,6 +7,7 @@ import useValidPhone from "../../Hook/useValidPhone";
 import ReactCodeInput from "react-code-input";
 import { ThreeDots } from "react-loader-spinner";
 import axios from "axios";
+import { Footer } from "../Footer";
 
 const ForgotPassword = () => {
   const [temporaryToken, setTemporaryToken] = useState(null);
@@ -99,14 +100,11 @@ const ForgotPassword = () => {
             toast.success("otp is sent to your phone");
           },
           onError: (err) => {
-            console.log(err);
             toast.error(err?.response?.data?.data);
           },
         }
       );
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   const forgotOtpMutation = useMutation(
@@ -131,20 +129,16 @@ const ForgotPassword = () => {
         },
         {
           onSuccess: (responseData) => {
-            console.log(responseData?.data?.data?.token);
-            setTemporaryToken(responseData?.data?.data?.token)
+            setTemporaryToken(responseData?.data?.data?.token);
             sethasCode(true);
             toast.success("success");
           },
           onError: (err) => {
-            console.log(err);
             toast.error(err?.response?.data?.message);
           },
         }
       );
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
   const changePasswordMutation = useMutation(
     async (newData) =>
@@ -152,7 +146,7 @@ const ForgotPassword = () => {
         `${process.env.REACT_APP_BACKEND_URL}reset-change-password`,
         newData,
         {
-          headers:header,
+          headers: header,
         }
       ),
     {
@@ -168,12 +162,10 @@ const ForgotPassword = () => {
         },
         {
           onSuccess: (responseData) => {
-            // console.log(responseData);
             toast.success("password has been successfully changed");
             navigate("/login");
           },
           onError: (err) => {
-            console.log(changePasswordMutation?.error?.response?.data?.message);
             toast.error(
               err?.response?.data?.message,
               { theme: "colored" },
@@ -190,9 +182,7 @@ const ForgotPassword = () => {
           },
         }
       );
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   //resend otp
@@ -219,14 +209,11 @@ const ForgotPassword = () => {
             toast.success("otp is sent to your phone");
           },
           onError: (err) => {
-            console.log(err);
             toast.error(err?.response?.data?.data);
           },
         }
       );
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
   const props = {
     inputStyle: {
@@ -296,9 +283,14 @@ const ForgotPassword = () => {
 
               <button
                 onClick={forgotPasswordHandler}
-                className="w-full p-2 rounded-md flex items-center justify-center
-               bg-orange-bg font-medium text-white"
+                className="relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+          active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
+          active:border-b-[0px] flex items-center justify-center
+          transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+          border-b-[1px] border-gray-400/50 font-semibold text-white
+              "
               >
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
                 {forgotPasswordMutation.isLoading ? (
                   <ThreeDots
                     height="25"
@@ -332,9 +324,14 @@ const ForgotPassword = () => {
               />
               <button
                 onClick={forgotPasswordHandler}
-                className="w-full p-2 rounded-md flex items-center justify-center
-                bg-orange-bg text-white font-medium"
+                className="relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+                active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
+                active:border-b-[0px] flex items-center justify-center
+                transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+                border-b-[1px] border-gray-400/50 font-semibold text-white
+                    "
               >
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
                 {forgotOtpMutation.isLoading ? (
                   <ThreeDots
                     height="25"
@@ -405,9 +402,14 @@ const ForgotPassword = () => {
               </div>
               <button
                 onClick={forgotPasswordHandler}
-                className="w-full p-2 rounded-md flex items-center justify-center
-                bg-orange-bg text-white font-medium"
+                className="relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+                active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
+                active:border-b-[0px] flex items-center justify-center
+                transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+                border-b-[1px] border-gray-400/50 font-semibold text-white
+                    "
               >
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
                 {changePasswordMutation.isLoading ? (
                   <ThreeDots
                     height="25"
@@ -433,6 +435,7 @@ const ForgotPassword = () => {
           )}
         </div>
       </div>
+      <Footer />
       <Toaster />
     </>
   );

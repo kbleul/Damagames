@@ -413,8 +413,7 @@
     <div class="relative flex justify-center min-h-screen bg-gray-100  dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
         <div class="max-w-6xl sm:px-6 lg:px-8">
             <div class="object-center">
-                <img src="{{asset('img/icon.gif')}}" class="img-fluid rounded mx-auto d-block mx-auto" width="450px"
-                    height="450px">
+                <img src="{{asset('img/dama.svg')}}" alt="Logo">s
             </div>
 
             {{-- <h1 class="text-center text-gray-600"><i class="fa-solid fa-envelope"></i></h1> --}}

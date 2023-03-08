@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreScoreRequest;
 use App\Http\Requests\UpdateScoreRequest;
 use App\Models\Bet;
+use App\Models\CoinSetting;
 use App\Models\Game;
 use App\Models\Score;
 use App\Models\User;
@@ -19,7 +20,7 @@ class ScoreController extends GameController
      */
     public function index()
     {
-        return User::orderByDesc('current_point')
+        return User::orderByDesc('current_point')->limit(50)
             ->get()->map(function ($query) {
                 $query->rank = $this->getRanking($query->id);
                 return $query;
@@ -66,10 +67,11 @@ class ScoreController extends GameController
         $losser = User::find($loser);
 
         $Winer->update([
-            'current_point' => ($Winer->current_point + 5) + $coin,
+            'current_point' => ($Winer->current_point + CoinSetting::first()->winnerCoins) + $coin,
         ]);
+
         $losser->update([
-            'current_point' =>  $losser->current_point - $coin,
+            'current_point' =>  $losser->current_point - CoinSetting::first()->looserCoins - $coin,
         ]);
 
         return Score::create([
@@ -126,7 +128,6 @@ class ScoreController extends GameController
 
     public function draw(Game $game)
     {
-
         Score::create([
             'game_id' => $game->id,
             'draw' => true,

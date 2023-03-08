@@ -24,9 +24,13 @@ import { BsFillChatFill } from "react-icons/bs";
 import { FaTimes, FaTelegramPlane } from "react-icons/fa";
 import { getSmartMove } from "./components/Opponent.js";
 import { ThreeDots } from "react-loader-spinner";
-
+import UserLeavesModal from "./components/UserLeavesModal.js";
+import { clearCookie } from "../utils/data.js";
+import { useAuth } from "../context/auth.js";
+import { IoMdLogIn } from "react-icons/io";
 const Game = () => {
   const { id } = useParams();
+  const { user, token } = useAuth();
   const navigate = useNavigate();
   const [playMove] = useSound(moveSound);
   const [playStrike] = useSound(strikeSound);
@@ -43,43 +47,39 @@ const Game = () => {
   const [isWinnerModalOpen, setIsWinnerModalOpen] = useState(false);
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
 
-  const [latestState, setLatestState] = useState({});
-
-  const [timerP1, setTimerP1] = useState(30);
-  const [timerP2, setTimerP2] = useState(30);
+  const [timerP1, setTimerP1] = useState(15);
+  const [timerP2, setTimerP2] = useState(15);
 
   const [passedCounter, setPassedCounter] = useState(0);
   const intervalRef = useRef(null);
 
   const [isRematchModalOpen, setIsRematchModalOpen] = useState(false);
+  const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
+
   const [isDrawModalOpen, setIsDrawModalOpen] = useState(false);
   const [winnerPlayer, setWinnerPlayer] = useState(null);
 
   const [pawns, setPawns] = useState([0, 0]);
-  const [moves, setMoves] = useState([0, 0]);
-  const [timer, setTimer] = useState(15);
+
+  const moveRef = useRef([0, 0]);
 
   const messageInputRef = useRef();
   const [messageInputOpen, setMessageInputOpen] = useState(false);
   const [latestMessage, setLatestMessage] = useState(null);
+  const [showResetWaiting, setShowResetWaiting] = useState(false);
+
+  useEffect(() => {
+    if (!id && !localStorage.getItem("gameId")) {
+      navigate("/create-game");
+    } else if (id && id != 1 && !localStorage.getItem("gameId")) {
+      navigate("/create-game");
+    }
+  }, []);
+
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
   };
-
-  const savedData = [
-    "gameId",
-    "playerOne",
-    "playerTwo",
-    "playerOneIp",
-    "playerTwoIp",
-    "playerOneToken",
-    "p1",
-    "p2",
-    "players",
-    "bt_coin_amount",
-    "dama-sound",
-  ];
   const [columns, setColumns] = useState({
     a: 0,
     b: 1,
@@ -173,7 +173,6 @@ const Game = () => {
   });
 
   useEffect(() => {
-    console.log(id === 1, id === "1", id == 1);
     if (id == 1) {
       setGameState((prevGameState) => {
         return { ...prevGameState, players: 1 };
@@ -203,7 +202,6 @@ const Game = () => {
       ) {
         return;
       }
-
       // Unset active piece if it's clicked
       if (
         gameState.activePiece === coordinates &&
@@ -231,7 +229,6 @@ const Game = () => {
         clickedSquare.isKing,
         false
       );
-
       setGameState({
         ...gameState,
         activePiece: coordinates,
@@ -256,18 +253,13 @@ const Game = () => {
       }
 
       updateStatePostMove(postMoveState);
-      // if(soundOn) { playMove()}
       soundOn && playMove();
-      console.log("gameState", gameState);
-      console.log("postMoveState", postMoveState);
-      console.log("current", getCurrentState());
-      // Start computer move is the player is finished
       if (
         id === "1" &&
         postMoveState.currentPlayer === false &&
         postMoveState.winner === null
       ) {
-        setMoves([++moves[0], moves[1]]);
+        moveRef.current = [++moveRef.current[0], moveRef.current[1]];
         calcPawns(boardState);
         computerTurn(postMoveState);
       }
@@ -276,11 +268,6 @@ const Game = () => {
 
   //computer turn
   function computerTurn(newMoveState, piece = null) {
-    //console.log("gameState",gameState)
-    // if (gameState.players > 1 || id == 1) {
-    //   return;
-    // }
-    console.log({ newMoveState });
     setTimeout(() => {
       // const currentState = getCurrentState();
       const boardState = newMoveState.boardState;
@@ -290,14 +277,12 @@ const Game = () => {
       let mergerObj;
 
       computerMove = getSmartMove(columns, gameState, boardState, "player2");
-      console.log({ computerMove });
 
       coordinates = computerMove.piece;
       moveTo = computerMove.moveTo;
 
       let tempHistory = gameState.history;
       tempHistory.push(newMoveState);
-      console.log("SDfds", tempHistory);
       mergerObj = {
         ...gameState,
         activePiece: computerMove.piece,
@@ -306,8 +291,6 @@ const Game = () => {
         stepNumber: ++gameState.stepNumber,
         history: tempHistory,
       };
-
-      console.log("newobj", mergerObj);
 
       const clickedSquare = boardState[coordinates];
       let movesData;
@@ -331,8 +314,6 @@ const Game = () => {
         moveTo = movesData[0][Math.floor(Math.random() * movesData[0].length)];
       }
 
-      // console.log("gg",coordinates,movesData[0],movesData[1])
-
       setGameState((prevState) => {
         return {
           ...prevState,
@@ -343,22 +324,21 @@ const Game = () => {
       });
 
       setTimeout(() => {
-        //console.log({ moveTo: mergerObj });
-
         const postMoveState = movesData[1]
           ? movePiece(columns, mergerObj.moves[0], {
               ...mergerObj,
               jumpKills: movesData[1],
             })
           : movePiece(columns, mergerObj.moves[0], mergerObj);
-        console.log({ postMoveState });
         if (postMoveState === null) {
           return;
         }
 
-        updateStatePostMove(postMoveState);
+        updateStatePostMove(postMoveState, {
+          tracker: { moved: coordinates, to: mergerObj.moves[0] },
+        });
 
-        setMoves([moves[0], ++moves[1]]);
+        moveRef.current = [moveRef.current[0], ++moveRef.current[1]];
 
         if (movesData[1] && soundOn) {
           playStrike();
@@ -371,42 +351,81 @@ const Game = () => {
           computerTurn(postMoveState, postMoveState.activePiece);
         }
       }, 600);
-    }, 1000);
+    }, 1300);
   }
 
   //update the game state after move
-  function updateStatePostMove(postMoveState) {
-    setGameState((prevGameState) => {
-      return {
-        ...prevGameState,
+  function updateStatePostMove(postMoveState, gametrackes) {
+    let track;
 
-        history: gameState.history.concat([
-          {
-            boardState: postMoveState.boardState,
-            currentPlayer: postMoveState.currentPlayer,
-          },
-        ]),
-        activePiece: postMoveState.activePiece,
-        moves: postMoveState.moves,
-        jumpKills: postMoveState.jumpKills,
-        hasJumped: postMoveState.hasJumped,
-        stepNumber: gameState.history.length,
-        winner: postMoveState.winner,
-      };
-    });
+    if (!gametrackes == 1) {
+      if (gameState.moves.length === 1) {
+        track = { moved: gameState.activePiece, to: gameState.moves[0] };
+      } else {
+        if (postMoveState.boardState[gameState.moves[0]]) {
+          track = { moved: gameState.activePiece, to: gameState.moves[0] };
+        } else {
+          track = { moved: gameState.activePiece, to: gameState.moves[1] };
+        }
+      }
+    } else if (id == 1 && gametrackes) {
+      track = gametrackes.tracker;
+    }
 
-    socket.emit("sendGameMessage", {
-      winnerPlayer: postMoveState.winner,
-      boardState: postMoveState.boardState,
-      currentPlayer: postMoveState.currentPlayer,
-      turnPlayer: postMoveState.currentPlayer ? "player1" : "player2",
-    });
+    //   console.log("Rever: ", gameState.moves, gameState.activePiece)
+    id == 1
+      ? setGameState((prevGameState) => {
+          return {
+            ...prevGameState,
+
+            history: gameState.history.concat([
+              {
+                boardState: postMoveState.boardState,
+                currentPlayer: postMoveState.currentPlayer,
+              },
+            ]),
+            activePiece: postMoveState.activePiece,
+            moves: postMoveState.moves,
+            jumpKills: postMoveState.jumpKills,
+            hasJumped: postMoveState.hasJumped,
+            stepNumber: gameState.history.length,
+            winner: postMoveState.winner,
+            tracker: track,
+          };
+        })
+      : setGameState((prevGameState) => {
+          return {
+            ...prevGameState,
+
+            history: gameState.history.concat([
+              {
+                boardState: postMoveState.boardState,
+                currentPlayer: postMoveState.currentPlayer,
+              },
+            ]),
+            activePiece: postMoveState.activePiece,
+            moves: postMoveState.moves,
+            jumpKills: postMoveState.jumpKills,
+            hasJumped: postMoveState.hasJumped,
+            stepNumber: gameState.history.length,
+            winner: postMoveState.winner,
+          };
+        });
+
+    if (gameState.players == 1) {
+      setMyTurn(postMoveState.currentPlayer ? "player1" : "player2");
+    }
+
+    id != 1 &&
+      socket.emit("sendGameMessage", {
+        winnerPlayer: postMoveState.winner,
+        boardState: postMoveState.boardState,
+        currentPlayer: postMoveState.currentPlayer,
+        turnPlayer: postMoveState.currentPlayer ? "player1" : "player2",
+        tracker: track,
+      });
 
     calcPawns(postMoveState.boardState);
-
-    // playOff();
-    // playActive();
-    // console.log("first",postMoveState.currentPlayer)
   }
 
   const stateHistory = gameState.history;
@@ -419,7 +438,9 @@ const Game = () => {
   const playerOneIp = localStorage.getItem("playerOneIp");
   const playerTwoIp = localStorage.getItem("playerTwoIp");
   const btCoin = localStorage.getItem("bt_coin_amount");
-
+  const p2Info = JSON.parse(localStorage.getItem("p2Info"));
+  const p1Info = localStorage.getItem("p1");
+  //console.log({p2Info:p1Info})
   let gameStatus;
   switch (gameState.winner) {
     case "player1pieces":
@@ -444,7 +465,7 @@ const Game = () => {
   }
 
   useEffect(() => {
-    if (gameState.winner || winnerPlayer) {
+    if (gameState.players > 1 && (gameState.winner || winnerPlayer)) {
       setIsWinnerModalOpen(true);
 
       if (
@@ -453,6 +474,15 @@ const Game = () => {
         soundOn
       ) {
         playWin();
+
+        user &&
+          localStorage.setItem(
+            "dama_user_data",
+            JSON.stringify({
+              token,
+              user: { ...user, coin: user.coin + 50 },
+            })
+          );
       } else if (
         winnerPlayer === "player2pieces" &&
         localStorage.getItem("playerOne") &&
@@ -465,6 +495,15 @@ const Game = () => {
         soundOn
       ) {
         playWin();
+
+        user &&
+          localStorage.setItem(
+            "dama_user_data",
+            JSON.stringify({
+              token,
+              user: { ...user, coin: user.coin + 50 },
+            })
+          );
       } else if (
         winnerPlayer === "player1pieces" &&
         localStorage.getItem("playerTwo") &&
@@ -472,14 +511,34 @@ const Game = () => {
       ) {
         playLose();
       }
+
+      setIsWinnerModalOpen(true);
+    } else {
+      if (gameState.winner || winnerPlayer) {
+        setIsWinnerModalOpen(true);
+        if (
+          gameState.winner === "player1pieces" ||
+          gameState.winner === "player1moves"
+        ) {
+          soundOn && playWin();
+        } else if (
+          gameState.winner === "player2pieces" ||
+          gameState.winner === "player2moves"
+        ) {
+          soundOn && playLose();
+        }
+      }
     }
   }, [gameState, gameStatus, winnerPlayer]);
-
   const resetGame = () => {
+    moveRef.current = [0, 0];
+
     socket.emit("sendResetGameRequest", { status: "Pending" });
   };
   const rejectGameRequest = () => {
     socket.emit("sendRejectGameMessage", { status: "Reject" });
+    setShowResetWaiting(false);
+    setIsDrawModalOpen(false);
   };
   const acceptGameRequest = () => {
     socket.emit("sendResetGameMessage", {
@@ -500,7 +559,10 @@ const Game = () => {
         winner: null,
       },
       isWinnerModalOpen: false,
+      pawns: [0, 0],
+      moves: [0, 0],
     });
+    moveRef.current = [0, 0];
   };
   const setNewGameWithComputer = () => {
     setGameState({
@@ -518,9 +580,12 @@ const Game = () => {
       stepNumber: 0,
       winner: null,
     });
+    setMyTurn("player1");
+    setPawns([0, 0]);
   };
 
   const drawGame = () => {
+    setShowResetWaiting(true);
     socket.emit("sendDrawGameRequest", { status: "Draw" });
   };
 
@@ -558,20 +623,12 @@ const Game = () => {
         ++player2Counter;
       }
     });
-    // console.log({player1Counter})
     if (
       pawns[0] !== 12 - player2Counter ||
       pawns[1] !== player2Counter - prevP2
     ) {
       setPawns([12 - player2Counter, 12 - player1Counter]);
-      // soundOn && playMove();
     }
-
-    // setPawns([12 - player2Counter, 12 - player1Counter]);
-    // if(12 - player1Counter !== prevP1 || 12 - player2Counter !== prevP2) {
-    //   soundOn && playStrike()
-    // }
-    // console.log([...pawns] , [prevP1 , prevP2]);
   };
   function compareObjects(obj1, obj2) {
     let obj1NullCount = 0;
@@ -602,16 +659,12 @@ const Game = () => {
     // let cPlayer = currentPlayer
     socket.on(
       "getGameMessage",
-      ({ winnerPlayer, boardState, currentPlayer, turnPlayer }) => {
+      ({ winnerPlayer, boardState, currentPlayer, turnPlayer, tracker }) => {
         stopInterval();
-        // setUpdatedState({winnerPlayer,boardState,currentPlayer})
-
-        const tempMoves = moves;
-        turnPlayer === "player2" ? ++tempMoves[0] : ++tempMoves[1];
-        setMoves(tempMoves);
 
         setMyTurn(turnPlayer);
         setWinnerPlayer(winnerPlayer);
+
         setGameState((prevGameState) => {
           return {
             ...prevGameState,
@@ -622,18 +675,22 @@ const Game = () => {
                 currentPlayer: currentPlayer,
               };
             }),
+            tracker,
           };
         });
 
+        turnPlayer === "player2"
+          ? (moveRef.current = [1 + moveRef.current[0], moveRef.current[1]])
+          : (moveRef.current = [moveRef.current[0], 1 + moveRef.current[1]]);
+
         calcPawns(boardState);
         compareObjects(lastElement?.boardState, boardState);
-        console.log("currentPlayer", currentPlayer);
       }
     );
 
     socket.on(
       "getResetGameMessage",
-      ({ winnerPlayer, gameState, isWinnerModalOpen }) => {
+      ({ winnerPlayer, gameState, isWinnerModalOpen, pawns, moves }) => {
         setGameState(gameState);
         setWinnerPlayer(winnerPlayer);
         setIsWinnerModalOpen(isWinnerModalOpen);
@@ -641,50 +698,62 @@ const Game = () => {
         setIsRematchModalOpen(false);
         setMyTurn("player1");
         setPawns([0, 0]);
-        setMoves([0, 0]);
-        setTimerP1(30);
-        setTimerP2(30);
+        setTimerP1(15);
+        setTimerP2(15);
         setPassedCounter(0);
+        setShowResetWaiting(false);
+        moveRef.current = [0, 0];
       }
     );
     socket.on("getResetGameRequest", ({ status }) => {
       setIsRematchModalOpen(true);
+      moveRef.current = [0, 0];
     });
     socket.on("getDrawGameRequest", ({ status }) => {
       setIsDrawModalOpen(true);
     });
-    socket.on("getRejectGameMessage", ({ status }) => {
+    socket.on("getRejectGameMessage", (status) => {
+      setShowResetWaiting(false);
       toast("You friend did not accept the request");
-      savedData.forEach((data) => {
-        localStorage.getItem(data) && localStorage.removeItem(data);
-      });
-      navigate("/create-game");
+
+      socket.emit("leave", gameId);
+      if (!status.type) {
+        clearCookie.forEach((data) => {
+          localStorage.getItem(data) && localStorage.removeItem(data);
+        });
+        navigate("/create-game");
+      }
     });
 
     //listen for if user left room
     socket.on("userLeaveMessage", (data) => {
-      alert(data);
+      setIsLeaveModalOpen(true);
       setTimeout(() => {
-        savedData.forEach((data) => {
+        clearCookie.forEach((data) => {
           localStorage.getItem(data) && localStorage.removeItem(data);
         });
         navigate("/create-game");
-      }, 1000);
+      }, 5000);
     });
 
     //listen for if the user exit the game
     socket.on("getExitGameRequest", (data) => {
-      alert("you friend has left the game😢");
+      setIsLeaveModalOpen(true);
       setTimeout(() => {
-        savedData.forEach((data) => {
+        clearCookie.forEach((data) => {
           localStorage.getItem(data) && localStorage.removeItem(data);
         });
+        socket.emit("leave", gameId);
         navigate("/create-game");
-      }, 10);
+      }, 5000);
     });
     //listen for chat message
     socket.on("getChatMessage", ({ message }) => {
       setLatestMessage(message);
+    });
+    //if the first player not in the game
+    socket.emit("sendMessage", {
+      status: "started",
     });
   }, []);
 
@@ -707,8 +776,8 @@ const Game = () => {
   const stopInterval = () => {
     clearInterval(intervalRef.current);
     intervalRef.current = null;
-    setTimerP1(30);
-    setTimerP2(30);
+    setTimerP1(15);
+    setTimerP2(15);
   };
 
   const timeChecker = () => {
@@ -717,15 +786,15 @@ const Game = () => {
     if (currentPlayer && localStorage.getItem("playerOneIp")) {
       intervalRef.current = setInterval(() => {
         if (myCounter === 0) {
-          setTimerP1(30);
+          setTimerP1(15);
         } else {
           setTimerP1((prev) => --prev);
         }
         ++myCounter;
 
-        if (myCounter >= 30) {
+        if (myCounter >= 15) {
           stopInterval();
-          setTimerP1(30);
+          setTimerP1(15);
           myCounter = 0;
           setMyTurn("player2");
           setPassedCounter((prev) => ++prev);
@@ -768,15 +837,15 @@ const Game = () => {
     } else if (!currentPlayer && localStorage.getItem("playerTwoIp")) {
       intervalRef.current = setInterval(() => {
         if (myCounter === 0) {
-          setTimerP2(30);
+          setTimerP2(15);
         } else {
           setTimerP2((prev) => --prev);
         }
         ++myCounter;
 
-        if (myCounter >= 30) {
+        if (myCounter >= 15) {
           stopInterval();
-          setTimerP2(30);
+          setTimerP2(15);
           myCounter = 0;
           setMyTurn("player1");
           setPassedCounter((prev) => ++prev);
@@ -823,18 +892,6 @@ const Game = () => {
     timeChecker();
   }, [currentPlayer]);
 
-  //           //  socket.emit("sendGameMessage", {
-  //           //    winnerPlayer: latestState.winner,
-  //           //    boardState: latestState.boardState,
-  //           //    currentPlayer: latestState.currentPlayer,
-  //           //    turnPlayer: latestState.currentPlayer ? "player1" : "player2",
-  //           //   });
-  //          }
-  //       } , 1000);
-  //     }
-
-  // }, [MyTurn])
-
   useEffect(() => {
     if (winnerPlayer) {
       if (winnerPlayer === "player1pieces" || winnerPlayer === "player1moves") {
@@ -875,9 +932,7 @@ const Game = () => {
           game_id: gameId,
         },
         {
-          onSuccess: (responseData) => {
-            //  console.log(responseData?.data);
-          },
+          onSuccess: (responseData) => {},
           onError: (err) => {},
         }
       );
@@ -965,17 +1020,17 @@ const Game = () => {
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
+              fillRule="evenodd"
+              clipRule="evenodd"
               d="M9.7656 1.0273C10.3031 0.866059 10.8708 0.832704 11.4235 0.929896C11.9762 1.02709 12.4985 1.25214 12.9487 1.58707C13.399 1.92201 13.7647 2.35757 14.0167 2.85897C14.2686 3.36037 14.3999 3.91374 14.4 4.4749V22.0237C14.3999 22.5849 14.2686 23.1382 14.0167 23.6396C13.7647 24.141 13.399 24.5766 12.9487 24.9115C12.4985 25.2465 11.9762 25.4715 11.4235 25.5687C10.8708 25.6659 10.3031 25.6325 9.7656 25.4713L2.5656 23.3113C1.82412 23.0889 1.17409 22.6333 0.711938 22.0123C0.249785 21.3913 0.000126947 20.6378 0 19.8637V6.6349C0.000126947 5.86077 0.249785 5.10731 0.711938 4.48628C1.17409 3.86525 1.82412 3.40973 2.5656 3.1873L9.7656 1.0273ZM15.6 3.6493C15.6 3.33104 15.7264 3.02581 15.9515 2.80077C16.1765 2.57573 16.4817 2.4493 16.8 2.4493H20.4C21.3548 2.4493 22.2705 2.82858 22.9456 3.50371C23.6207 4.17884 24 5.09452 24 6.0493V7.2493C24 7.56756 23.8736 7.87278 23.6485 8.09783C23.4235 8.32287 23.1183 8.4493 22.8 8.4493C22.4817 8.4493 22.1765 8.32287 21.9515 8.09783C21.7264 7.87278 21.6 7.56756 21.6 7.2493V6.0493C21.6 5.73104 21.4736 5.42581 21.2485 5.20077C21.0235 4.97573 20.7183 4.8493 20.4 4.8493H16.8C16.4817 4.8493 16.1765 4.72287 15.9515 4.49783C15.7264 4.27278 15.6 3.96756 15.6 3.6493ZM22.8 18.0493C23.1183 18.0493 23.4235 18.1757 23.6485 18.4008C23.8736 18.6258 24 18.931 24 19.2493V20.4493C24 21.4041 23.6207 22.3198 22.9456 22.9949C22.2705 23.67 21.3548 24.0493 20.4 24.0493H16.8C16.4817 24.0493 16.1765 23.9229 15.9515 23.6978C15.7264 23.4728 15.6 23.1676 15.6 22.8493C15.6 22.531 15.7264 22.2258 15.9515 22.0008C16.1765 21.7757 16.4817 21.6493 16.8 21.6493H20.4C20.7183 21.6493 21.0235 21.5229 21.2485 21.2978C21.4736 21.0728 21.6 20.7676 21.6 20.4493V19.2493C21.6 18.931 21.7264 18.6258 21.9515 18.4008C22.1765 18.1757 22.4817 18.0493 22.8 18.0493ZM8.4 12.0493C8.08174 12.0493 7.77652 12.1757 7.55147 12.4008C7.32643 12.6258 7.2 12.931 7.2 13.2493C7.2 13.5676 7.32643 13.8728 7.55147 14.0978C7.77652 14.3229 8.08174 14.4493 8.4 14.4493H8.4012C8.71946 14.4493 9.02468 14.3229 9.24973 14.0978C9.47477 13.8728 9.6012 13.5676 9.6012 13.2493C9.6012 12.931 9.47477 12.6258 9.24973 12.4008C9.02468 12.1757 8.71946 12.0493 8.4012 12.0493H8.4Z"
               fill="#FF4C01"
             />
             <path
               d="M16.8 13.2494H22.8M22.8 13.2494L20.4 10.8494M22.8 13.2494L20.4 15.6494"
               stroke="#FF4C01"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
           </svg>
           <p className="text-white text-xs">Exit</p>
@@ -992,13 +1047,27 @@ const Game = () => {
             }
           >
             <img
-              src="https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
+              src={
+                playerOneIp || (id == 1 && user?.profile_image)
+                  ? user?.profile_image
+                    ? user.profile_image
+                    : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
+                  : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
+              }
               className="h-12 rounded-full"
               alt=""
             />
           </div>
           <h4 className="text-white capitalize  font-semibold text-xs">
-            {id == 1 && "You"}
+            {id == 1
+              ? user
+                ? user.username
+                : "You"
+              : playerOneIp && user
+              ? user?.username
+              : playerOneIp
+              ? firstPlayer?.username
+              : p1Info}
           </h4>
         </div>
 
@@ -1016,25 +1085,37 @@ const Game = () => {
             }
           >
             <img
-              src="https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
+              src={
+                playerTwoIp && user?.profile_image
+                  ? user?.profile_image
+                  : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
+              }
               className="h-12 rounded-full"
               alt=""
             />
           </div>
           <h4 className="text-white capitalize  font-semibold text-xs">
             {/* {secondPlayer?.name} */}
-            {id == 1 && "Computer"}
+            {id == 1
+              ? "Computer"
+              : playerTwoIp && user
+              ? user?.username
+              : playerTwoIp
+              ? secondPlayer?.username
+              : p1Info
+              ? p1Info
+              : p2Info?.username}
           </h4>
         </div>
       </section>
 
       <section className="flex justify-evenly items-center text-sm w-full">
-        <div className="border-r-[3px] border-gray-400 text-white w-1/2 pb-[5vh]">
+        <div className="border-r-[3px] border-gray-400 text-white w-1/2 ">
           <div className="flex justify-center items-center text-[.7rem] gap-x-2 font-bold mb-2">
             <p className="bg-gray-300 text-black pr-[.2rem] w-12 rounded">
               Moves
             </p>
-            <p>{moves[0]}</p>
+            <p>{moveRef.current[0]}</p>
           </div>
           <div className="flex justify-center items-center text-[.7rem] gap-x-2 font-bold mb-2">
             <p className="bg-gray-300 text-black pr-[.2rem] w-12 rounded">
@@ -1044,9 +1125,9 @@ const Game = () => {
           </div>
         </div>
 
-        <div className="text-white w-1/2 pb-[5vh]">
+        <div className="text-white w-1/2">
           <div className="flex justify-center items-center text-[.7rem] gap-x-2 font-bold mb-2">
-            <p>{moves[1]}</p>
+            <p>{moveRef.current[1]}</p>
             <p className="bg-gray-300 text-black pr-[.2rem] w-12 rounded">
               Moves
             </p>
@@ -1059,47 +1140,58 @@ const Game = () => {
           </div>
         </div>
       </section>
-      {id == 1 && !currentPlayer && (
-        <ThreeDots
-          height="20"
-          width="40"
-          radius="9"
-          color="#f75105"
-          ariaLabel="three-dots-loading"
-          wrapperStyle={{}}
-          wrapperClassName=""
-          visible={true}
-        />
-      )}
+      <div
+        className={
+          id != 1 ? "hidden" : "w-full h-4 flex justify-center items-center"
+        }
+      >
+        {id == 1 && !currentPlayer && (
+          <ThreeDots
+            height="20"
+            width="40"
+            radius="9"
+            color="#f75105"
+            ariaLabel="three-dots-loading"
+            wrapperStyle={{}}
+            wrapperClassName=""
+            visible={true}
+          />
+        )}
+      </div>
 
-      {!currentPlayer && localStorage.getItem("playerOne") && (
-        <ThreeDots
-          height="20"
-          width="40"
-          radius="9"
-          color="#f75105"
-          ariaLabel="three-dots-loading"
-          wrapperStyle={{}}
-          wrapperClassName=""
-          visible={true}
-        />
-      )}
-      {currentPlayer && localStorage.getItem("playerTwo") && (
-        <ThreeDots
-          height="20"
-          width="40"
-          radius="9"
-          color="#f75105"
-          ariaLabel="three-dots-loading"
-          wrapperStyle={{}}
-          wrapperClassName=""
-          visible={true}
-        />
-      )}
-
-      <div className="game-board  ">
+      <div
+        className={
+          id == 1 ? "hidden" : "w-full h-4 flex justify-center items-center"
+        }
+      >
+        {!currentPlayer && localStorage.getItem("playerOne") && (
+          <ThreeDots
+            height="20"
+            width="40"
+            radius="9"
+            color="#f75105"
+            ariaLabel="three-dots-loading"
+            wrapperStyle={{}}
+            wrapperClassName=""
+            visible={true}
+          />
+        )}
+        {currentPlayer && localStorage.getItem("playerTwo") && (
+          <ThreeDots
+            height="20"
+            width="40"
+            radius="9"
+            color="#f75105"
+            ariaLabel="three-dots-loading"
+            wrapperStyle={{}}
+            wrapperClassName=""
+            visible={true}
+          />
+        )}
+      </div>
+      <div className={""}>
         <div
-          className={` shadow-2xl    ${
+          className={`box   ${
             !id
               ? currentPlayer === true
                 ? currentPlayer === true && !firstPlayer
@@ -1128,37 +1220,43 @@ const Game = () => {
             moves={gameState.moves}
             columns={columns}
             onClick={(coordinates) => handleClick(coordinates)}
+            numberOfPlayers={gameState.players}
+            tracker={gameState.tracker ? gameState.tracker : null}
           />
         </div>
       </div>
 
-      <div onClick={drawGame} className="flex flex-col">
-        <div className="p-2 bg-orange-color rounded-full flex flex-col items-center justify-center">
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 18 18"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M14 13V11H4V13H14ZM16 0C16.5304 0 17.0391 0.210714 17.4142 0.585786C17.7893 0.960859 18 1.46957 18 2V16C18 16.5304 17.7893 17.0391 17.4142 17.4142C17.0391 17.7893 16.5304 18 16 18H2C1.46957 18 0.960859 17.7893 0.585786 17.4142C0.210714 17.0391 0 16.5304 0 16V2C0 0.89 0.89 0 2 0H16ZM14 7V5H4V7H14Z"
-              fill="#181920"
+      <div className="flex justify-evenly items-center w-full">
+        {id != 1 && (
+          <div onClick={drawGame} className="flex flex-col">
+            <div className="p-2 bg-orange-color rounded-full flex flex-col items-center justify-center">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 18 18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M14 13V11H4V13H14ZM16 0C16.5304 0 17.0391 0.210714 17.4142 0.585786C17.7893 0.960859 18 1.46957 18 2V16C18 16.5304 17.7893 17.0391 17.4142 17.4142C17.0391 17.7893 16.5304 18 16 18H2C1.46957 18 0.960859 17.7893 0.585786 17.4142C0.210714 17.0391 0 16.5304 0 16V2C0 0.89 0.89 0 2 0H16ZM14 7V5H4V7H14Z"
+                  fill="#181920"
+                />
+              </svg>
+            </div>
+            <p className="text-xs font-bold text-white">Draw</p>
+          </div>
+        )}
+        {id != 1 && (
+          <div className="flex items-end justify-end flex-col">
+            <BsFillChatFill
+              onClick={openChatFilled}
+              size={30}
+              className="text-orange-color"
             />
-          </svg>
-        </div>
-        <p className="text-xs font-bold text-white">Draw</p>
+            <p className="text-xs font-bold text-white">Chat</p>
+          </div>
+        )}
       </div>
-      {id != 1 && (
-        <div className="absolute right-3 bottom-5 flex items-end justify-end">
-          <BsFillChatFill
-            onClick={openChatFilled}
-            size={30}
-            className="text-orange-color"
-          />
-        </div>
-      )}
-
       {/* message */}
       {latestMessage && (
         <motion.div
@@ -1223,6 +1321,7 @@ const Game = () => {
       <ExitWarningModal
         isExitModalOpen={isExitModalOpen}
         set_isExitModalOpen={setIsExitModalOpen}
+        gameState={gameState}
       />
 
       <WinnerModal
@@ -1245,6 +1344,11 @@ const Game = () => {
         setIsDrawModalOpen={setIsDrawModalOpen}
         acceptGameRequest={acceptGameRequest}
         rejectGameRequest={rejectGameRequest}
+        showResetWaiting={showResetWaiting}
+      />
+      <UserLeavesModal
+        setIsLeaveModalOpen={setIsLeaveModalOpen}
+        isLeaveModalOpen={isLeaveModalOpen}
       />
       <Toaster />
     </div>

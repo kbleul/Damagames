@@ -10,13 +10,18 @@ use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Requests\StoreSecurityQuestionAnswerRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UserAnswerRequest;
+use App\Models\CoinSetting;
 use App\Models\SecurityQuestion;
 use App\Models\SecurityQuestionAnswer;
 use App\Models\SQUser;
 use App\Models\User;
+use App\Models\UserItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class AuthController extends SendSmsController
 {
@@ -31,14 +36,22 @@ class AuthController extends SendSmsController
             return response()->json(['message' => 'Already verified'], 400);
         }
 
-        if (!empty($user) && Hash::check($request['password'], $user->password)) {
+        if (empty($user)) {
+            abort(404, "User not found");
+        }
+
+
+        if (Hash::check($request['password'], $user->password)) {
             $credentials = request(['phone', 'password']);
             Auth::attempt($credentials);
             $token = $user->createToken('DAMA')->plainTextToken;
             $user->update(['phone_verified_at' => now()]);
             return response()->json(['message' => 'User Created successfully!', 'user' => auth()->user(), 'token' => $token], 201);
         } else {
-            return response()->json(['message' => 'There was a problem with your otp.'], 400);
+
+            return response()->json(['message' => 'Password is incorrect.'], 400);
+
+            return response()->json(['message' => 'Something wrong.'], 400);
         }
     }
 
@@ -67,23 +80,34 @@ class AuthController extends SendSmsController
     {
         $user = User::where('phone', $request->phone)->first();
 
+        if (empty($user)) {
+            abort(404, "Invalid Phone number");
+        }
+
         $credentials = request(['phone', 'password']);
         if (Auth::attempt($credentials)) {
             $token = $user->createToken('DAMA')->plainTextToken;
-            return response()->json(['message' => 'Logged In!', 'token' => $token, 'user' => auth()->user()], 201);
+            $user = auth()->user();
+
+            return response()->json([
+                'message' => 'Logged In!',
+                'token' => $token,
+                'user' => $user,
+                'default_board' => UserItem::where('user_id', auth()->id())->whereRelation('item', 'type', 'Board')->first()->item->item ?? null,
+                'default_crown' => UserItem::where('user_id', auth()->id())->whereRelation('item', 'type', 'Crown')->first()->item->item ?? null,
+            ], 201);
         } else {
-            return response()->json(['message' => 'There was a problem with your login.'], 400);
+            return response()->json(['message' => 'Password is incorrect.'], 400);
         }
     }
+
 
 
 
     public function register_new(RegisterRequest $request)
     {
         $password = rand(1000, 9999);
-
         $user = User::where('phone', $request->phone)->first();
-
         if (!empty($user) && !empty($user->phone_verified_at)) {
             if (empty($user->username)) {
                 $this->sendSMS($request->phone, $password);
@@ -105,7 +129,7 @@ class AuthController extends SendSmsController
         $user = User::create([
             'phone' => $request->phone,
             'password' =>  Hash::make($password),
-            'current_point' =>  30,
+            'current_point' =>   CoinSetting::first()->newUserCoins,
         ]);
 
         return response()->json(['message' => 'OTP sent successfully!'], 201);
@@ -151,7 +175,7 @@ class AuthController extends SendSmsController
         $user = User::create([
             'phone' => $request->phone,
             'password' =>  Hash::make($password),
-            'current_point' =>  30,
+            'current_point' =>  CoinSetting::first()->newUserCoins,
         ]);
 
         return response()->json(['message' => 'OTP sent successfully!'], 201);

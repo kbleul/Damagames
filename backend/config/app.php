@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'Damagames'),
 
     /*
     |--------------------------------------------------------------------------
@@ -54,9 +54,13 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'https://api.test.damagames.com'),
 
     'asset_url' => env('ASSET_URL'),
+
+    'otp_url' => "http://197.156.70.196:9095/api/send_sms",
+    'otp_username' => "Dama70314",
+    'otp_password' => "B/Y.w9.Ec:W_3Qh]Og^'D=2vfO94VB",
 
     /*
     |--------------------------------------------------------------------------
