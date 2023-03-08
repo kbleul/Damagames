@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Telebirr;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -78,10 +79,10 @@ class TelebirrController extends Controller
             'ussd' => $ussd
         ]);
 
-        // Telebirr::create([
-        //     'user_id' => auth()->id(),
-        //     'outTradeNo' => $outTradeNo,
-        // ]);
+        Telebirr::create([
+            'user_id' => auth()->id(),
+            'outTradeNo' => $outTradeNo,
+        ]);
 
         return $returnContent->json();
     }
@@ -107,7 +108,20 @@ class TelebirrController extends Controller
 
         Log::info("\n\ndecrypted_message: " . $decrypted);
 
-        // $telebirr = Telebirr::where('outTradeNo', json_decode($decrypted)->outTradeNo)->first();
+        $telebirr = Telebirr::where('outTradeNo', json_decode($decrypted)->outTradeNo)->first();
+
+        $user =  User::find($telebirr->user_id);
+
+        $user->update([
+            'current_point' => json_decode($decrypted)->totalAmount * 100
+        ]);
+        $telebirr->update([
+            'transactionNo' => json_decode($decrypted)->transactionNo,
+            'msisdn' => json_decode($decrypted)->msisdn,
+            'totalAmount' => json_decode($decrypted)->totalAmount,
+            'tradeDate' => json_decode($decrypted)->tradeDate,
+            'tradeStatus' => json_decode($decrypted)->tradeStatus,
+        ]);
 
         return  response()->json(['code' => '0', 'msg' => 'success'], 200);
     }
