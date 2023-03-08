@@ -108,14 +108,16 @@ io.on("connection", (socket) => {
 
     // , { clients, room, id: socket.id }
     let tempSocketObj = roomSocketObj[room];
-    if (tempSocketObj && tempSocketObj.includes(socket.id)) {
-      io.to(room).emit("samePerson", "You can't join a game you created");
-    } else {
-      roomSocketObj = {
-        ...roomSocketObj,
-        [room]: tempSocketObj ? [...tempSocketObj, socket.id] : [socket.id],
-      };
-    }
+    // if (tempSocketObj && tempSocketObj.includes(socket.id)) {
+    //   //  io.to(room).emit("samePerson", "You can't join a game you created");
+    // } else {
+
+    // }
+
+    roomSocketObj = {
+      ...roomSocketObj,
+      [room]: tempSocketObj ? [...tempSocketObj, socket.id] : [socket.id],
+    };
 
     if (clients.length == 2) {
       // io.to(room).emit("started","you can play now")
@@ -127,7 +129,6 @@ io.on("connection", (socket) => {
     //send and get messages
 
     socket.on("sendMessage", (data) => {
-      console.log("send")
       io.to(room).emit("getMessage", data);
     });
     socket.on("sendGameMessage", (data) => {
