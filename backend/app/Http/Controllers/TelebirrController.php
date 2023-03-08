@@ -73,16 +73,18 @@ class TelebirrController extends Controller
 
         $ussd = base64_encode($crypto);
 
+        Telebirr::create([
+            'user_id' => auth()->id(),
+            'outTradeNo' => $outTradeNo,
+        ]);
+
         $returnContent = Http::post(config('telebirr.web_url'), [
             'appid' => config('telebirr.app_id'),
             'sign' => $sign,
             'ussd' => $ussd
         ]);
 
-        Telebirr::create([
-            'user_id' => auth()->id(),
-            'outTradeNo' => $outTradeNo,
-        ]);
+
 
         return $returnContent->json();
     }
@@ -115,6 +117,7 @@ class TelebirrController extends Controller
         $user->update([
             'current_point' => json_decode($decrypted)->totalAmount * 100
         ]);
+
         $telebirr->update([
             'transactionNo' => json_decode($decrypted)->transactionNo,
             'msisdn' => json_decode($decrypted)->msisdn,
