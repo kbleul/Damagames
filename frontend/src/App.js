@@ -44,12 +44,10 @@ const App = () => {
   // function to delete cookies
   function deleteCookies() {
     var Cookies = document.cookie.split(";");
-    console.log(document.cookie);
     // set 1 Jan, 1970 expiry for every cookies
     for (let i = 0; i < Cookies.length; i++)
       document.cookie =
         Cookies[i] + "=;expires=" + new Date(0).toUTCString();
-    console.log(document.cookie);
   }
 
   useEffect(() => {

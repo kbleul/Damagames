@@ -1,11 +1,11 @@
 ---
-name: 'build, release and deploy'
+name: "build, release and deploy"
 
 on:
   push:
     tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+'
-      - 'v*-rc[0-9]+'
+      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "v*-rc[0-9]+"
 
 jobs:
   build_arc_docs:
@@ -13,7 +13,7 @@ jobs:
 
   release:
     uses: ./.github/workflows/release.yml
-    needs: ['build_arc_docs','e2e-test']
+    needs: ["build_arc_docs", "e2e-test"]
   # with:
   #   secrets:
   #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -26,10 +26,9 @@ jobs:
   deploy_production:
     uses: ./.github/workflows/docker_deploy.yml
     secrets: inherit
-    # needs: 'release'
-
+    needs: "release"
 
   e2e-test:
     uses: ./.github/workflows/playwright.yml
     secrets: inherit
-    needs: 'deploy_production'
+    needs: "deploy_staging"
