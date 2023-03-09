@@ -28,6 +28,7 @@ import UserLeavesModal from "./components/UserLeavesModal.js";
 import { clearCookie } from "../utils/data.js";
 import { useAuth } from "../context/auth.js";
 import { IoMdLogIn } from "react-icons/io";
+import NewGameRequestModal from "./components/NewGameRequestModal.js";
 const Game = () => {
   const { id } = useParams();
   const { user, token } = useAuth();
@@ -46,7 +47,7 @@ const Game = () => {
   const [MyTurn, setMyTurn] = useContext(TurnContext);
   const [isWinnerModalOpen, setIsWinnerModalOpen] = useState(false);
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
-
+  const [isNewGameModalOpen, setIsNewGameModalOpen] = useState(false);
   const [timerP1, setTimerP1] = useState(15);
   const [timerP2, setTimerP2] = useState(15);
 
@@ -538,6 +539,13 @@ const Game = () => {
   };
   const rejectGameRequest = () => {
     socket.emit("sendRejectGameMessage", { status: "Reject" });
+    socket.emit("leave", gameId);
+    setShowResetWaiting(false);
+    setIsDrawModalOpen(false);
+  };
+  const rejectDrawGameRequest = () => {
+    socket.emit("sendRejectDrawGameMessage", { status: "Reject" });
+    // socket.emit('leave',gameId)
     setShowResetWaiting(false);
     setIsDrawModalOpen(false);
   };
@@ -715,18 +723,28 @@ const Game = () => {
       setIsDrawModalOpen(true);
     });
     socket.on("getRejectGameMessage", (status) => {
-      setShowResetWaiting(false);
-      toast("You friend did not accept the request");
-
       socket.emit("leave", gameId);
+      setShowResetWaiting(false);
+      // toast("You friend did not accept the request");
       if (!status.type) {
+      }
+      setIsNewGameModalOpen(true);
+      setTimeout(() => {
         clearCookie.forEach((data) => {
           localStorage.getItem(data) && localStorage.removeItem(data);
         });
         navigate("/create-game");
-      }
+      }, 3500);
     });
 
+    //get reject draw game message
+    socket.on("getRejectDrawGameMessage", (status) => {
+      setShowResetWaiting(false);
+      setIsNewGameModalOpen(true);
+      // toast("You friend did not accept the request");
+      if (!status.type) {
+      }
+    });
     //listen for if user left room
     socket.on("userLeaveMessage", (data) => {
       setIsLeaveModalOpen(true);
@@ -740,12 +758,12 @@ const Game = () => {
 
     //listen for if the user exit the game
     socket.on("getExitGameRequest", (data) => {
+      socket.emit("leave", gameId);
       setIsLeaveModalOpen(true);
       setTimeout(() => {
         clearCookie.forEach((data) => {
           localStorage.getItem(data) && localStorage.removeItem(data);
         });
-        socket.emit("leave", gameId);
         navigate("/create-game");
       }, 5000);
     });
@@ -1351,12 +1369,16 @@ const Game = () => {
         isDrawModalOpen={isDrawModalOpen}
         setIsDrawModalOpen={setIsDrawModalOpen}
         acceptGameRequest={acceptGameRequest}
-        rejectGameRequest={rejectGameRequest}
+        rejectGameRequest={rejectDrawGameRequest}
         showResetWaiting={showResetWaiting}
       />
       <UserLeavesModal
         setIsLeaveModalOpen={setIsLeaveModalOpen}
         isLeaveModalOpen={isLeaveModalOpen}
+      />
+      <NewGameRequestModal
+        isNewGameModalOpen={isNewGameModalOpen}
+        setIsNewGameModalOpen={setIsNewGameModalOpen}
       />
       <Toaster />
     </div>

@@ -13,9 +13,8 @@ const io = new Server(httpServer, {
       "http://172.17.104.251:3000",
       "http://192.168.43.253:3000",
       "http://172.17.104.250:3000",
-      "http://172.17.104.248:3000",
-      "http://172.17.104.251:3000",
-      "http://172.17.104.248:3000",
+      "http://172.17.104.249:3000",
+      "http://172.17.104.254:3000",
       "https://dama-blue.vercel.app",
       "https://admin.socket.io",
       "http://localhost:3000",
@@ -108,7 +107,6 @@ io.on("connection", (socket) => {
 
     // , { clients, room, id: socket.id }
     let tempSocketObj = roomSocketObj[room];
-
     if (tempSocketObj && tempSocketObj.includes(socket.id)) {
       io.to(room).emit("samePerson", "You can't join a game you created");
     } else {
@@ -117,11 +115,6 @@ io.on("connection", (socket) => {
         [room]: tempSocketObj ? [...tempSocketObj, socket.id] : [socket.id],
       };
     }
-
-    roomSocketObj = {
-      ...roomSocketObj,
-      [room]: tempSocketObj ? [...tempSocketObj, socket.id] : [socket.id],
-    };
 
     if (clients.length == 2) {
       // io.to(room).emit("started","you can play now")
@@ -153,6 +146,13 @@ io.on("connection", (socket) => {
         .to(room)
         .emit("getRejectGameMessage", { data, type: "draw-rejected" });
     });
+    //new added for reject game requests
+    socket.on("sendRejectDrawGameMessage", (data) => {
+      // io.to(room).emit("getRejectGameMessage", data);
+      socket
+        .to(room)
+        .emit("getRejectDrawGameMessage", { data, type: "New-Game-rejected" });
+    });
     //send draw game message
     socket.on("sendDrawGameRequest", (data) => {
       // io.to(room).broadcast.emit("getResetGameRequest", data);
@@ -174,13 +174,28 @@ io.on("connection", (socket) => {
   });
 
   //leave room
+  // socket.on("leave", (room) => {
+  //   socket.leave(room);
+  //   console.log(`user leave a room ${room}`)
+  //   if (rooms[room]) {
+  //     rooms[room].delete(socket.id);
+  //   }
+  // });
   socket.on("leave", (room) => {
+    socket.leave(room);
+    console.log(`user leave a room ${room}`);
     if (rooms[room]) {
       rooms[room].delete(socket.id);
+      if (rooms[room].size === 0) {
+        delete rooms[room];
+        console.log(`Room ${room} has been deleted`);
+      }
     }
   });
+
   //when disconnect
   socket.on("disconnect", () => {
+    console.log("user disconnected");
     Object.keys(rooms).forEach((room) => {
       rooms[room].delete(socket.id);
       if (rooms[room].size === 0) delete rooms[room];
@@ -192,7 +207,7 @@ io.on("connection", (socket) => {
 
 instrument(io, {
   auth: false,
-  mode: "production",
+  mode: "development",
 });
 
 const PORT = process.env.PORT || 7744;
