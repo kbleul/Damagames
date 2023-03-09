@@ -8,12 +8,13 @@ export default function ExitWarningModal({
   isExitModalOpen,
   set_isExitModalOpen,
   gameState,
+  beforeGame
 }) {
   const navigate = useNavigate();
   const gameId = localStorage.getItem("gameId");
   const handleExit = () => {
     //exit socket code here
-    if (gameState?.players > 1) {
+    if (gameState?.players > 1 || beforeGame) {
       socket.emit("sendExitGameRequest", { status: "Exit" });
     }  
     socket.emit('leave',gameId)
@@ -28,7 +29,7 @@ export default function ExitWarningModal({
       <Transition appear show={isExitModalOpen} as={Fragment}>
         <Dialog
           as="div"
-          className="relative z-10"
+          className="relative z-50"
           onClose={() => set_isExitModalOpen(true)}
         >
           <Transition.Child
@@ -61,11 +62,19 @@ export default function ExitWarningModal({
                   >
                     You are about to leave this game !
                   </Dialog.Title>
-                  <div className="mt-2">
+
+
+                  {beforeGame ? <div className="mt-2">
                     <p className="text-sm text-gray-500 text-center ">
-                      Are you sure you want to leave and lose this game ?
+                      Are you sure you want to leave ? Your friend won't be able to join this game if you leave now !
                     </p>
-                  </div>
+                  </div> :
+                    <div className="mt-2">
+                      <p className="text-sm text-gray-500 text-center ">
+                        Are you sure you want to leave ?
+                      </p>
+                    </div>
+                  }
 
                   <div className="mt-4 flex w-full items-center space-x-5 justify-center">
                     <button
@@ -76,7 +85,7 @@ export default function ExitWarningModal({
                        transition-all duration-150 [box-shadow:0_5px_0_0_#026ca4,0_5px_0_0_#026ca4]
                        border-b-[1px] border-gray-300/50 font-semibold text-white
                      "
-                       onClick={handleExit}
+                      onClick={handleExit}
                     >
                       Yes
                     </button>
@@ -89,7 +98,7 @@ export default function ExitWarningModal({
                       transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
                       border-b-[1px] border-gray-300/50 font-medium text-white
                     "
-                    
+
                     >
                       No
                     </button>
