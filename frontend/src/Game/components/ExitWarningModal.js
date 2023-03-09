@@ -10,12 +10,13 @@ export default function ExitWarningModal({
   gameState,
 }) {
   const navigate = useNavigate();
-
+  const gameId = localStorage.getItem("gameId");
   const handleExit = () => {
     //exit socket code here
     if (gameState?.players > 1) {
       socket.emit("sendExitGameRequest", { status: "Exit" });
-    }
+    }  
+    socket.emit('leave',gameId)
     clearCookie.forEach((data) => {
       localStorage.getItem(data) && localStorage.removeItem(data);
     });

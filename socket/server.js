@@ -13,7 +13,7 @@ const io = new Server(httpServer, {
       "http://172.17.104.251:3000",
       "http://192.168.43.253:3000",
       "http://172.17.104.250:3000",
-      "http://172.17.104.248:3000",
+      "http://172.17.104.249:3000",
       "http://172.17.104.251:3000",
       "http://172.17.104.246:3000",
       "https://dama-blue.vercel.app",
@@ -176,6 +176,7 @@ io.on("connection", (socket) => {
   });
   //when disconnect
   socket.on("disconnect", () => {
+    console.log("a user disconnected.");
     Object.keys(rooms).forEach((room) => {
       rooms[room].delete(socket.id);
       if (rooms[room].size === 0) delete rooms[room];

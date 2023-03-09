@@ -127,6 +127,7 @@ const NewGame = () => {
         { username: name, has_bet: false },
         {
           onSuccess: (responseData) => {
+            socket.emit("leave", gameId);
             socket.emit("join-room", responseData?.data?.data?.game);
 
             setIsCreated(true);
@@ -178,6 +179,7 @@ const NewGame = () => {
           : { has_bet: false },
         {
           onSuccess: (responseData) => {
+            socket.emit("leave", gameId);
             socket.emit("join-room", responseData?.data?.data?.game);
             setIsCreated(true);
             setValue(

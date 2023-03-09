@@ -13,6 +13,11 @@ import { Footer } from "./Footer";
 
 const JoinGame = () => {
   const { user, token } = useAuth();
+  const [isMessageSent, setIsMessageSent] = useState(false);
+  const [isMessageListened, setIsMessageListened] = useState(false);
+  const [socketLoading, setsocketLoading] = useState(false);
+  const [tempPlayer, setTempPlayer] = useState(null);
+
   const [isVerified, setIsVerified] = useState(false);
   const { id } = useParams();
   const gameId = localStorage.getItem("gameId");
@@ -24,15 +29,22 @@ const JoinGame = () => {
 
   // to check if  creater and the joining player are the same
   const sameUser = useRef(false);
-
+  const useLess = useRef(false);
   let msgCounter = 0;
 
   const ipRef = useRef(localStorage.getItem("playerOneIp"));
   const navigate = useNavigate();
   const [name, setName] = useState(user && token ? user.username : "");
+
   useEffect(() => {
     socket.on("getMessage", (data) => {
-      navigate("/game");
+      if (data?.player2) {
+        console.log({ data });
+        setIsMessageSent(false);
+        setIsMessageListened(true);
+        useLess.current = true;
+        navigate("/game");
+      }
     });
 
     socket.on("samePerson", (data) => {
@@ -40,7 +52,39 @@ const JoinGame = () => {
       sameUser.current = true;
       ++msgCounter;
     });
-  }, []);
+  }, [isMessageListened]);
+
+  const playerIp = localStorage.getItem("");
+  // useEffect(() => {
+  //   if(isMessageSent && !isMessageListened){
+  //     if (ipRef.current !== playerIp) {
+  //       socket.emit("sendMessage", {
+  //         status: "started",
+  //         player2: JSON.stringify(tempPlayer),
+  //       });
+  //     }
+  //   }
+  // }, [isMessageListened])
+
+  setInterval(() => {
+    if (!useLess.current) {
+      if (isMessageSent && !isMessageListened) {
+        socket.emit("sendMessage", {
+          status: "started",
+          player2: JSON.stringify(tempPlayer),
+        });
+        console.log(
+          "isMessageSent:",
+          isMessageSent,
+          "isMessageListened:",
+          isMessageListened,
+          "use",
+          useLess.current
+        );
+      }
+    }
+  }, 500);
+
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -131,7 +175,7 @@ const JoinGame = () => {
           }
         );
       }
-    } catch (err) { }
+    } catch (err) {}
   };
 
   const handleJoin = () => {
@@ -156,8 +200,8 @@ const JoinGame = () => {
             ? `${process.env.REACT_APP_BACKEND_URL}auth-start-game/${id}`
             : `${process.env.REACT_APP_BACKEND_URL}add-player/${id}`
           : user && token
-            ? `${process.env.REACT_APP_BACKEND_URL}auth-start-game/${gameId}`
-            : `${process.env.REACT_APP_BACKEND_URL}add-player/${gameId}`,
+          ? `${process.env.REACT_APP_BACKEND_URL}auth-start-game/${gameId}`
+          : `${process.env.REACT_APP_BACKEND_URL}add-player/${gameId}`,
         newData,
         {
           headers: user && token ? header : headers,
@@ -181,7 +225,10 @@ const JoinGame = () => {
               status: "started",
               player2: JSON.stringify(responseData?.data?.data?.playerTwo),
             });
+            setIsMessageSent(true);
+            setsocketLoading(true);
           }
+          setTempPlayer(JSON.stringify(responseData?.data?.data?.playerTwo));
           socket.emit("join-room", id);
 
           //first clear local storage
@@ -195,9 +242,9 @@ const JoinGame = () => {
           );
           localStorage.setItem("gameId", responseData?.data?.data?.game);
         },
-        onError: (err) => { },
+        onError: (err) => {},
       });
-    } catch (err) { }
+    } catch (err) {}
   };
 
   //with code
@@ -205,15 +252,16 @@ const JoinGame = () => {
     try {
       nameMutation.mutate(user && token ? {} : { username: name }, {
         onSuccess: (responseData) => {
-          console.log("zzzzz", responseData?.data?.data?.playerOne);
           socket.emit("join-room", gameId);
           if (ipRef.current !== responseData?.data?.data?.ip) {
             socket.emit("sendMessage", {
               status: "started",
               player2: JSON.stringify(responseData?.data?.data?.playerTwo),
             });
+            setIsMessageSent(true);
+            setsocketLoading(true);
           }
-
+          setTempPlayer(JSON.stringify(responseData?.data?.data?.playerTwo));
           //first clear local storage
           clearCookie.forEach((data) => {
             localStorage.getItem(data) && localStorage.removeItem(data);
@@ -233,9 +281,9 @@ const JoinGame = () => {
           );
           localStorage.setItem("gameId", responseData?.data?.data?.game);
         },
-        onError: (err) => { },
+        onError: (err) => {},
       });
-    } catch (err) { }
+    } catch (err) {}
   };
 
   const handleSubmitCode = () => {
@@ -290,7 +338,8 @@ const JoinGame = () => {
               //   setIsBet(true);
               //   setBetCoin(responseData?.data.data.bet_coin)
               // }
-
+              socket.emit("leave", gameId);
+              socket.emit("leave", id);
               setIsVerified(true);
               responseData?.data?.data?.playerOne.username &&
                 setMyFriend(responseData?.data?.data?.playerOne.username);
@@ -308,6 +357,8 @@ const JoinGame = () => {
           { code: code },
           {
             onSuccess: (responseData) => {
+              socket.emit("leave", gameId);
+              socket.emit("leave", id);
               setIsVerified(true);
               responseData?.data?.data?.playerOne.username &&
                 setMyFriend(responseData?.data?.data?.playerOne.username);
@@ -325,7 +376,7 @@ const JoinGame = () => {
           }
         );
       }
-    } catch (err) { }
+    } catch (err) {}
   };
   return (
     <div
@@ -340,7 +391,6 @@ const JoinGame = () => {
         overflow: "hidden",
       }}
     >
-
       <button
         className="z-10 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 fixed left-2 md:left-4"
         onClick={() => navigate("/create-game")}
@@ -415,7 +465,6 @@ const JoinGame = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
                 {nameMutation.isLoading ? "Loading.." : "Join"}
               </button>
-
             </div>
           </div>
         )
@@ -458,9 +507,8 @@ const JoinGame = () => {
             "
             >
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-              {nameMutation.isLoading ? "Loading.." : "Join"}
+              {nameMutation.isLoading || socketLoading ? "Loading.." : "Join"}
             </button>
-
           </div>
         </div>
       ) : (
@@ -472,7 +520,9 @@ const JoinGame = () => {
             className="flex flex-col items-center justify-center space-y-4  
              p-3 rounded-sm w-full bg-dark-bg max-w-[600px] "
           >
-            <h2 className="font-medium text-white text-lg capitalize">enter code</h2>
+            <h2 className="font-medium text-white text-lg capitalize">
+              enter code
+            </h2>
 
             <input
               type="text"
@@ -500,7 +550,6 @@ const JoinGame = () => {
                 ? "Loading..."
                 : "Submit"}
             </button>
-
           </div>
         </div>
       )}
