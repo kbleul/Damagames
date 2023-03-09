@@ -537,6 +537,7 @@ const Game = () => {
   };
   const rejectGameRequest = () => {
     socket.emit("sendRejectGameMessage", { status: "Reject" });
+    socket.emit('leave',gameId)
     setShowResetWaiting(false);
     setIsDrawModalOpen(false);
   };
@@ -713,16 +714,17 @@ const Game = () => {
       setIsDrawModalOpen(true);
     });
     socket.on("getRejectGameMessage", (status) => {
+      socket.emit('leave',gameId)
       setShowResetWaiting(false);
       toast("You friend did not accept the request");
-
-      socket.emit("leave", gameId);
       if (!status.type) {
+      }
+      setTimeout(() => {
         clearCookie.forEach((data) => {
           localStorage.getItem(data) && localStorage.removeItem(data);
         });
         navigate("/create-game");
-      }
+      }, 1500);
     });
 
     //listen for if user left room
