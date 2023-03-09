@@ -15,7 +15,7 @@ const io = new Server(httpServer, {
       "http://172.17.104.250:3000",
       "http://172.17.104.248:3000",
       "http://172.17.104.251:3000",
-      "http://172.17.104.246:3000",
+      "http://172.17.104.248:3000",
       "https://dama-blue.vercel.app",
       "https://admin.socket.io",
       "http://localhost:3000",
@@ -108,11 +108,15 @@ io.on("connection", (socket) => {
 
     // , { clients, room, id: socket.id }
     let tempSocketObj = roomSocketObj[room];
-    // if (tempSocketObj && tempSocketObj.includes(socket.id)) {
-    //   //  io.to(room).emit("samePerson", "You can't join a game you created");
-    // } else {
 
-    // }
+    if (tempSocketObj && tempSocketObj.includes(socket.id)) {
+      io.to(room).emit("samePerson", "You can't join a game you created");
+    } else {
+      roomSocketObj = {
+        ...roomSocketObj,
+        [room]: tempSocketObj ? [...tempSocketObj, socket.id] : [socket.id],
+      };
+    }
 
     roomSocketObj = {
       ...roomSocketObj,

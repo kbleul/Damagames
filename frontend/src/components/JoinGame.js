@@ -205,7 +205,6 @@ const JoinGame = () => {
     try {
       nameMutation.mutate(user && token ? {} : { username: name }, {
         onSuccess: (responseData) => {
-          console.log("zzzzz", responseData?.data?.data?.playerOne);
           socket.emit("join-room", gameId);
           if (ipRef.current !== responseData?.data?.data?.ip) {
             socket.emit("sendMessage", {

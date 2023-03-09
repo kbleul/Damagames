@@ -21,6 +21,7 @@ import { Footer } from "./Footer";
 import { useHome } from "../context/HomeContext";
 import { clearCookie } from "../utils/data";
 import { MdOutlineCancel } from "react-icons/md";
+import ExitWarningModal from "../Game/components/ExitWarningModal";
 
 const NewGame = () => {
   const { user, token } = useAuth();
@@ -44,6 +45,7 @@ const NewGame = () => {
 
   //coins input
   const [showInput, setShowInput] = useState(false);
+  const [isExitModalOpen, setIsExitModalOpen] = useState(false);
 
   const gameId = localStorage.getItem("gameId");
   const betRef = useRef();
@@ -273,7 +275,7 @@ const NewGame = () => {
     >
       <button
         className="z-10 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 fixed left-2 md:left-4"
-        onClick={() => navigate("/create-game")}
+        onClick={() => isCreated ? setIsExitModalOpen(true) : navigate("/create-game")}
       >
         <svg
           width="18"
@@ -580,6 +582,12 @@ const NewGame = () => {
         </div>
       </BottomSheet>
       <Toaster />
+
+      <ExitWarningModal
+        isExitModalOpen={isExitModalOpen}
+        set_isExitModalOpen={setIsExitModalOpen}
+        beforeGame={true}
+      />
     </div>
   );
 };
