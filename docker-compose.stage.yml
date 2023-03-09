@@ -28,6 +28,8 @@ services:
     frontend:
         build: 
             context: ./frontend/
+        depends_on: 
+            - sockets
         environment:
             - PUBLIC_URL=${REACT_APP_FRONTEND_URL}
             - NODE_ENV=${APP_ENV}
@@ -110,6 +112,7 @@ services:
         - "traefik.http.routers.sockets-https.entrypoints=websecure"
         - "traefik.http.routers.sockets-https.rule=Host(`sockets.${REMOTE_HOST}`) || PathPrefix(`/socket.io`)"
         - "traefik.http.routers.sockets-https.tls.certresolver=myresolver"
+        restart: always
 
 volumes:
     mysql-data: ~
