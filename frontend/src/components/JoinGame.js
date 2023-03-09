@@ -73,14 +73,14 @@ const JoinGame = () => {
           status: "started",
           player2: JSON.stringify(tempPlayer),
         });
-        console.log(
-          "isMessageSent:",
-          isMessageSent,
-          "isMessageListened:",
-          isMessageListened,
-          "use",
-          useLess.current
-        );
+        // console.log(
+        //   "isMessageSent:",
+        //   isMessageSent,
+        //   "isMessageListened:",
+        //   isMessageListened,
+        //   "use",
+        //   useLess.current
+        // );
       }
     }
   }, 500);
