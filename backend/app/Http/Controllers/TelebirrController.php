@@ -14,7 +14,7 @@ class TelebirrController extends Controller
     {
         $outTradeNo = uniqid();
         $data = [
-            'outTradeNo' => uniqid(),
+            'outTradeNo' => $outTradeNo,
             'subject' => config('telebirr.subject'),
             'totalAmount' => $request->price,
             'shortCode' => config('telebirr.short_code'),
@@ -27,6 +27,7 @@ class TelebirrController extends Controller
             'timestamp' => strtotime(date('Y-m-d H:i:s')),
         ];
 
+        
 
         $data['appKey'] = config('telebirr.app_key');
         ksort($data);
@@ -91,6 +92,7 @@ class TelebirrController extends Controller
 
     public function response(Request $request)
     {
+        // dd(config('telebirr.public_key'));
         $pubPem = chunk_split(config('telebirr.public_key'), 64, "\n");
         $pubPem = "-----BEGIN PUBLIC KEY-----\n" . $pubPem . "-----END PUBLIC KEY-----\n";
         $public_key = openssl_pkey_get_public($pubPem);
@@ -108,14 +110,14 @@ class TelebirrController extends Controller
             $decrypted .= $partial;
         }
 
-        Log::info("\n\ndecrypted_message: " . $decrypted);
+        Log::info("\n\ndecrypted_message: " . $decrypted." \n".$request->getContent());
 
         $telebirr = Telebirr::where('outTradeNo', json_decode($decrypted)->outTradeNo)->first();
 
         $user =  User::find($telebirr->user_id);
 
         $user->update([
-            'current_point' => json_decode($decrypted)->totalAmount * 100
+            'current_point' => (json_decode($decrypted)->totalAmount * 100) + $user->current_point
         ]);
 
         $telebirr->update([
