@@ -10,12 +10,12 @@
   "icons": [
     {
       "src": "logo192.png",
-      "sizes": "any",
+      "sizes": "196x196",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "logo192.png",
+      "src": "logo384.png",
       "sizes": "any",
       "type": "image/png",
       "purpose": "any"
