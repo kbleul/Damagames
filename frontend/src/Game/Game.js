@@ -531,6 +531,8 @@ const Game = () => {
         }
       }
     }
+
+    console.log(gameState.history[gameState.history.length - 1].boardState)
   }, [gameState, gameStatus, winnerPlayer]);
   const resetGame = () => {
     moveRef.current = [0, 0];

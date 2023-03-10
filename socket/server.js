@@ -14,6 +14,7 @@ const io = new Server(httpServer, {
       "http://192.168.43.253:3000",
       "http://172.17.104.250:3000",
       "http://172.17.104.249:3000",
+      "http://172.17.104.248:3000",
       "http://172.17.104.254:3000",
       "https://dama-blue.vercel.app",
       "https://admin.socket.io",
