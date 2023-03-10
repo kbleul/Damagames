@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import socket from "../utils/socket.io";
 import Avatar from "../assets/Avatar.png";
 import PublicGameImg from "../assets/PublicGameImg.png";
@@ -8,14 +8,18 @@ import { useAuth } from "../context/auth";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Footer } from "./Footer";
-
+import { clearCookie } from "../utils/data";
 const PubicGames = () => {
   const { user, token } = useAuth();
+  const [isMessageSent, setIsMessageSent] = useState(false);
+  const [isMessageListened, setIsMessageListened] = useState(false);
+  const [socketLoading, setsocketLoading] = useState(false);
+  const [tempPlayer, setTempPlayer] = useState(null);
 
   const [publicGames, setPublicGames] = useState([]);
   const [myFriend, setMyFriend] = useState("Your Friend");
   const [code, setCode] = useState();
-
+  const useLess = useRef(false);
   const [isVerified, setIsVerified] = useState(false);
   const [name, setName] = useState(user && token ? user.username : "");
   const navigate = useNavigate();
@@ -39,6 +43,62 @@ const PubicGames = () => {
     socket.emit("publicGames");
   }, []);
 
+  const counter = 0
+
+  useEffect(() => {
+    socket.on("getMessage", (data) => {
+      setIsMessageSent(false);
+      setIsMessageListened(true);
+      useLess.current = true;
+
+      // clearCookie.forEach((data) => {
+      //   localStorage.getItem(data) && localStorage.removeItem(data);
+      // });
+
+      // console.log(data.p1)
+      // console.log(data.p2)
+      // console.log(data.playerTwoIp)
+      // console.log(data.player2)
+      // console.log(data.gameId)
+
+      // const a = data.pl
+
+      console.log(data.p1 === undefined)
+      //  counter++
+      if (data.gameId !== undefined) {
+        localStorage.setItem("p1", "data.p1");
+        localStorage.setItem("playerTwo", data.player2);
+        localStorage.setItem("gameId", data.gameId);
+        localStorage.setItem("gameIdsd", "data.gameId");
+
+      }
+
+
+
+      navigate("/game");
+    });
+
+
+  }, [isMessageListened]);
+
+  setInterval(() => {
+    if (!useLess.current) {
+      if (isMessageSent && !isMessageListened) {
+        socket.emit("sendMessage", {
+          status: "started",
+          player2: JSON.stringify(tempPlayer),
+        });
+        // console.log(
+        //   "isMessageSent:",
+        //   isMessageSent,
+        //   "isMessageListened:",
+        //   isMessageListened,
+        //   "use",
+        //   useLess.current
+        // );
+      }
+    }
+  }, 500);
   const handleJoin = () => {
     if (!name) {
       toast("name is required.");
@@ -54,12 +114,10 @@ const PubicGames = () => {
     async (newData) =>
       await axios.post(
         user && token
-          ? `${
-              process.env.REACT_APP_BACKEND_URL
-            }auth-start-game/${localStorage.getItem("gameId")}`
-          : `${
-              process.env.REACT_APP_BACKEND_URL
-            }add-player/${localStorage.getItem("gameId")}`,
+          ? `${process.env.REACT_APP_BACKEND_URL
+          }auth-start-game/${localStorage.getItem("gameId")}`
+          : `${process.env.REACT_APP_BACKEND_URL
+          }add-player/${localStorage.getItem("gameId")}`,
         newData,
         {
           headers: user && token ? header : headers,
@@ -73,7 +131,6 @@ const PubicGames = () => {
   //with code
   const nameMutationWithCode = async (values) => {
     try {
-      //console.log({ gameid2: localStorage.getItem("gameId") })
       nameMutation.mutate(user && token ? {} : { username: name }, {
         onSuccess: (responseData) => {
           socket.emit("join-room", responseData?.data?.data?.game);
@@ -81,21 +138,28 @@ const PubicGames = () => {
           socket.emit("sendMessage", {
             status: "started",
             player2: JSON.stringify(responseData?.data?.data?.playerTwo),
+            pl: responseData?.data?.data?.playerOne?.username,
+            p2: responseData?.data?.data?.playerTwo?.username,
+            playerTwoIp: responseData?.data?.data?.ip,
+            gameId: responseData?.data?.data?.game
           });
 
-          //   console.log(responseData?.data.data?.playerTwo);
-
-          navigate("/game");
+          setTempPlayer(JSON.stringify(responseData?.data?.data?.playerTwo));
+          setIsMessageSent(true);
+          console.log({ "manana": responseData?.data?.data?.playerOne?.username })
+          setsocketLoading(true);
           //first clear local storage
-          localStorage.clear();
-          localStorage.setItem("p1", responseData?.data?.data?.playerOne.name);
-          localStorage.setItem("p2", responseData?.data?.data?.playerTwo.name);
-          localStorage.setItem("playerTwoIp", responseData?.data?.data?.ip);
-          localStorage.setItem(
-            "playerTwo",
-            JSON.stringify(responseData?.data?.data?.playerTwo)
-          );
-          localStorage.setItem("gameId", responseData?.data?.data?.game);
+
+          // localStorage.setItem("p1", responseData?.data?.data?.playerOne?.username);
+          // localStorage.setItem("p2", responseData?.data?.data?.playerTwo?.username);
+          // localStorage.setItem("playerTwoIp", responseData?.data?.data?.ip);
+          // localStorage.setItem(
+          //   "playerTwo",
+          //   JSON.stringify(responseData?.data?.data?.playerTwo)
+          // );
+          // localStorage.setItem("gameId", responseData?.data?.data?.game);
+
+
         },
         onError: (err) => {
           //   console.log(err?.response?.data?.message);
@@ -108,7 +172,8 @@ const PubicGames = () => {
 
   const handleSubmitCode = (mycode) => {
     socket.emit("joinPublicGame", mycode);
-    joinViaCodeMutationSubmitHandler();
+    joinViaCodeMutationSubmitHandler(mycode);
+
   };
 
   const joinViaCodeMutation = useMutation(
@@ -126,9 +191,10 @@ const PubicGames = () => {
   );
 
   const joinViaCodeMutationSubmitHandler = async (values) => {
+    console.log(values)
     try {
       joinViaCodeMutation.mutate(
-        { code: code },
+        { code: values },
         {
           onSuccess: (responseData) => {
             //  console.log(responseData?.data);
@@ -139,6 +205,8 @@ const PubicGames = () => {
                   prev + " " + responseData?.data?.data?.playerOne?.username
               );
             localStorage.setItem("gameId", responseData?.data?.data?.game);
+            localStorage.setItem("p1", responseData?.data?.data?.playerOne?.username);
+
           },
           onError: (err) => {
             //    console.log(err?.response?.data);
@@ -281,7 +349,7 @@ const PubicGames = () => {
           "
               >
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-                {nameMutation.isLoading ? "Loading.." : "Join"}
+                {nameMutation.isLoading || socketLoading ? "Loading.." : "Join"}
               </button>
               <p
                 onClick={() => navigate("/create-game")}

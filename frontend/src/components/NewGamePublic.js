@@ -10,7 +10,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { IoIosCopy } from "react-icons/io";
 import { IoIosShareAlt } from "react-icons/io";
-
+import { clearCookie } from "../utils/data";
 import background from "../assets/backdrop.jpg";
 import { Footer } from "./Footer";
 
@@ -115,7 +115,10 @@ const NewGamePublic = () => {
             );
             setCode(responseData?.data?.data?.code);
             //first clear local storage
-            localStorage.clear();
+           //first clear local storage
+           clearCookie.forEach((data) => {
+            localStorage.getItem(data) && localStorage.removeItem(data);
+          });
             localStorage.setItem("gameId", responseData?.data?.data?.game);
             localStorage.setItem(
               "playerOne",

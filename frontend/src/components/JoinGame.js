@@ -235,6 +235,14 @@ const JoinGame = () => {
           clearCookie.forEach((data) => {
             localStorage.getItem(data) && localStorage.removeItem(data);
           });
+          localStorage.setItem(
+            "p1",
+            responseData?.data?.data?.playerOne.username
+          );
+          localStorage.setItem(
+            "p2",
+            responseData?.data?.data?.playerTwo.username
+          );
           localStorage.setItem("playerTwoIp", responseData?.data?.data?.ip);
           localStorage.setItem(
             "playerTwo",
@@ -272,7 +280,7 @@ const JoinGame = () => {
           );
           localStorage.setItem(
             "p2",
-            responseData?.data?.data?.playerOne.username
+            responseData?.data?.data?.playerTwo.username
           );
           localStorage.setItem("playerTwoIp", responseData?.data?.data?.ip);
           localStorage.setItem(

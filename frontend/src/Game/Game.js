@@ -328,9 +328,9 @@ const Game = () => {
       setTimeout(() => {
         const postMoveState = movesData[1]
           ? movePiece(columns, mergerObj.moves[0], {
-            ...mergerObj,
-            jumpKills: movesData[1],
-          })
+              ...mergerObj,
+              jumpKills: movesData[1],
+            })
           : movePiece(columns, mergerObj.moves[0], mergerObj);
         if (postMoveState === null) {
           return;
@@ -377,42 +377,42 @@ const Game = () => {
     //   console.log("Rever: ", gameState.moves, gameState.activePiece)
     id == 1
       ? setGameState((prevGameState) => {
-        return {
-          ...prevGameState,
+          return {
+            ...prevGameState,
 
-          history: gameState.history.concat([
-            {
-              boardState: postMoveState.boardState,
-              currentPlayer: postMoveState.currentPlayer,
-            },
-          ]),
-          activePiece: postMoveState.activePiece,
-          moves: postMoveState.moves,
-          jumpKills: postMoveState.jumpKills,
-          hasJumped: postMoveState.hasJumped,
-          stepNumber: gameState.history.length,
-          winner: postMoveState.winner,
-          tracker: track,
-        };
-      })
+            history: gameState.history.concat([
+              {
+                boardState: postMoveState.boardState,
+                currentPlayer: postMoveState.currentPlayer,
+              },
+            ]),
+            activePiece: postMoveState.activePiece,
+            moves: postMoveState.moves,
+            jumpKills: postMoveState.jumpKills,
+            hasJumped: postMoveState.hasJumped,
+            stepNumber: gameState.history.length,
+            winner: postMoveState.winner,
+            tracker: track,
+          };
+        })
       : setGameState((prevGameState) => {
-        return {
-          ...prevGameState,
+          return {
+            ...prevGameState,
 
-          history: gameState.history.concat([
-            {
-              boardState: postMoveState.boardState,
-              currentPlayer: postMoveState.currentPlayer,
-            },
-          ]),
-          activePiece: postMoveState.activePiece,
-          moves: postMoveState.moves,
-          jumpKills: postMoveState.jumpKills,
-          hasJumped: postMoveState.hasJumped,
-          stepNumber: gameState.history.length,
-          winner: postMoveState.winner,
-        };
-      });
+            history: gameState.history.concat([
+              {
+                boardState: postMoveState.boardState,
+                currentPlayer: postMoveState.currentPlayer,
+              },
+            ]),
+            activePiece: postMoveState.activePiece,
+            moves: postMoveState.moves,
+            jumpKills: postMoveState.jumpKills,
+            hasJumped: postMoveState.hasJumped,
+            stepNumber: gameState.history.length,
+            winner: postMoveState.winner,
+          };
+        });
 
     if (gameState.players == 1) {
       setMyTurn(postMoveState.currentPlayer ? "player1" : "player2");
@@ -610,7 +610,7 @@ const Game = () => {
 
     socket.emit("sendChatMessage", {
       message: messageInputRef.current.value,
-      sender: localStorage.getItem("playerOne") ? "playerOne" : "playerTwo"
+      sender: localStorage.getItem("playerOne") ? "playerOne" : "playerTwo",
     });
     setMessageInputOpen(false);
   };
@@ -772,9 +772,9 @@ const Game = () => {
     //listen for chat message
     socket.on("getChatMessage", (data) => {
       setMsgSender(data.sender);
-      console.log(data.sender)
-      console.log(localStorage.getItem("playerOne") === "playerOne")
-      console.log(localStorage.getItem("playerTwo") === "playerTwo")
+      console.log(data.sender);
+      console.log(localStorage.getItem("playerOne") === "playerOne");
+      console.log(localStorage.getItem("playerTwo") === "playerTwo");
 
       setLatestMessage(data.message);
     });
@@ -959,11 +959,11 @@ const Game = () => {
           game_id: gameId,
         },
         {
-          onSuccess: (responseData) => { },
-          onError: (err) => { },
+          onSuccess: (responseData) => {},
+          onError: (err) => {},
         }
       );
-    } catch (err) { }
+    } catch (err) {}
   };
 
   const changeSound = () => {
@@ -1091,10 +1091,10 @@ const Game = () => {
                 ? user.username
                 : "You"
               : playerOneIp && user
-                ? user?.username
-                : playerOneIp
-                  ? firstPlayer?.username
-                  : p1Info}
+              ? user?.username
+              : playerOneIp
+              ? firstPlayer?.username
+              : p1Info}
           </h4>
         </div>
 
@@ -1126,12 +1126,12 @@ const Game = () => {
             {id == 1
               ? "Computer"
               : playerTwoIp && user
-                ? user?.username
-                : playerTwoIp
-                  ? secondPlayer?.username
-                  : p1Info
-                    ? p1Info
-                    : p2Info?.username}
+              ? user?.username
+              : playerTwoIp
+              ? secondPlayer?.username
+              : p1Info
+              ? p1Info
+              : p2Info?.username}
           </h4>
         </div>
       </section>
@@ -1172,7 +1172,7 @@ const Game = () => {
           id != 1 ? "hidden" : "w-full h-4 flex justify-center items-center"
         }
       >
-        {id == 1 && !currentPlayer && (
+        {id == 1 && !currentPlayer ? (
           <ThreeDots
             height="20"
             width="40"
@@ -1183,6 +1183,8 @@ const Game = () => {
             wrapperClassName=""
             visible={true}
           />
+        ) : (
+          <h1 className="text-white font-normal">Your turn</h1>
         )}
       </div>
 
@@ -1191,55 +1193,62 @@ const Game = () => {
           id == 1 ? "hidden" : "w-full h-4 flex justify-center items-center"
         }
       >
-        {!currentPlayer && localStorage.getItem("playerOne") && (
-          <ThreeDots
-            height="20"
-            width="40"
-            radius="9"
-            color="#f75105"
-            ariaLabel="three-dots-loading"
-            wrapperStyle={{}}
-            wrapperClassName=""
-            visible={true}
-          />
-        )}
-        {currentPlayer && localStorage.getItem("playerTwo") && (
-          <ThreeDots
-            height="20"
-            width="40"
-            radius="9"
-            color="#f75105"
-            ariaLabel="three-dots-loading"
-            wrapperStyle={{}}
-            wrapperClassName=""
-            visible={true}
-          />
-        )}
+        {playerOneIp &&
+          (!currentPlayer ? (
+            <ThreeDots
+              height="20"
+              width="40"
+              radius="9"
+              color="#f75105"
+              ariaLabel="three-dots-loading"
+              wrapperStyle={{}}
+              wrapperClassName=""
+              visible={true}
+            />
+          ) : (
+            <h1 className="text-white font-normal">Your turn</h1>
+          ))}
+        {playerTwoIp &&
+          (currentPlayer ? (
+            <ThreeDots
+              height="20"
+              width="40"
+              radius="9"
+              color="#f75105"
+              ariaLabel="three-dots-loading"
+              wrapperStyle={{}}
+              wrapperClassName=""
+              visible={true}
+            />
+          ) : (
+            <h1 className="text-white font-normal">Your turn</h1>
+          ))}
       </div>
       <div className={""}>
         <div
-          className={`box   ${!id
-            ? currentPlayer === true
-              ? currentPlayer === true && !firstPlayer
-                ? "pointer-events-none"
-                : ""
-              : currentPlayer === false
+          className={`box   ${
+            !id
+              ? currentPlayer === true
+                ? currentPlayer === true && !firstPlayer
+                  ? "pointer-events-none"
+                  : ""
+                : currentPlayer === false
                 ? currentPlayer === false && !secondPlayer
                   ? "pointer-events-none"
                   : ""
                 : ""
-            : ""
-            }`}
+              : ""
+          }`}
         >
           <Board
             boardState={
               id === "1"
                 ? dict_reverse(boardState)
                 : !id
-                  ? localStorage.getItem("playerOne")
-                    ? dict_reverse(boardState)
-                    : boardState
+                ? localStorage.getItem("playerOne")
+                  ? dict_reverse(boardState)
                   : boardState
+                : boardState
             }
             currentPlayer={currentPlayer}
             activePiece={gameState.activePiece}
@@ -1292,9 +1301,11 @@ const Game = () => {
           //     className={`absolute top-36  bg-white max-w-sm  p-1 w-44 ${playerOneIp ? "left-3" : "right-3"
           //       }
           //  border border-orange-color rounded-lg m-3`}
-          className={msgSender === "playerOne" ?
-            "absolute top-36  bg-white max-w-sm  p-1 w-44 left-3  border border-orange-color rounded-lg m-3" :
-            "absolute top-36  bg-white max-w-sm  p-1 w-44 right-3  border border-orange-color rounded-lg m-3"}
+          className={
+            msgSender === "playerOne"
+              ? "absolute top-36  bg-white max-w-sm  p-1 w-44 left-3  border border-orange-color rounded-lg m-3"
+              : "absolute top-36  bg-white max-w-sm  p-1 w-44 right-3  border border-orange-color rounded-lg m-3"
+          }
         >
           <div className="text-gray-800">
             <p className="text-start text-sm pl-2 font-medium">

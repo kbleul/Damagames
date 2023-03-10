@@ -2,6 +2,7 @@ import React, { Component, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Link, useNavigate } from "react-router-dom";
 import wancha from "../../assets/wancha.svg";
+import { clearCookie } from "../../utils/data";
 const RematchModal = ({
   isRematchModalOpen,
   setIsRematchModalOpen,
@@ -70,7 +71,9 @@ const RematchModal = ({
                 "
                       onClick={() => {
                         rejectGameRequest();
-                        localStorage.clear();
+                        clearCookie.forEach((data) => {
+                          localStorage.getItem(data) && localStorage.removeItem(data);
+                        });
                         navigate("/create-game");
                       }}
                     >
