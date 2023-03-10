@@ -65,13 +65,12 @@ const PubicGames = () => {
 
       console.log(data.p1 === undefined)
       //  counter++
-      if (data.gameId !== undefined) {
-        localStorage.setItem("p1", "data.p1");
-        localStorage.setItem("playerTwo", data.player2);
-        localStorage.setItem("gameId", data.gameId);
-        localStorage.setItem("gameIdsd", "data.gameId");
 
-      }
+      localStorage.setItem("p12", data.data.player2.username);
+      localStorage.setItem("playerTwo", data.player2);
+      localStorage.setItem("gameId", data.gameId);
+      localStorage.setItem("playerTwoIp", data.playerTwoIp);
+
 
 
 
