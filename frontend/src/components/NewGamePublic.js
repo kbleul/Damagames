@@ -184,8 +184,9 @@ const NewGamePublic = () => {
 
   useEffect(() => {
     socket.on("getMessage", (data) => {
+      // console.log(data)
       if (data.status === "started") {
-        localStorage.setItem("p1", data.player1);
+        // localStorage.setItem("p1", data.player1);
         localStorage.setItem("p2", data.player2);
         navigate("/game");
       }

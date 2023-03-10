@@ -77,7 +77,7 @@ const NewGame = () => {
   const playerOneIp = localStorage.getItem("playerOneIp");
   useEffect(() => {
     socket.on("getMessage", (data) => {
-      // console.log(data?.player2);
+      // console.log(JSON.stringify(data?.player2));
       if (data.status === "started" && data?.player2) {
         navigate("/game");
         localStorage.setItem("p2Info", data?.player2);

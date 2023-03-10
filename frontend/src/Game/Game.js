@@ -440,9 +440,10 @@ const Game = () => {
   const playerOneIp = localStorage.getItem("playerOneIp");
   const playerTwoIp = localStorage.getItem("playerTwoIp");
   const btCoin = localStorage.getItem("bt_coin_amount");
-  const p2Info = JSON.parse(localStorage.getItem("p2Info"));
+  const temp = JSON.parse(localStorage.getItem("p2Info"))
+  const p2Info = temp?.username ? JSON.parse(localStorage.getItem("p2Info")) : JSON.parse(JSON.parse(localStorage.getItem("p2Info")))
   const p1Info = localStorage.getItem("p1");
-  //console.log({p2Info:p1Info})
+  console.log({"p2Info":p2Info?.username})
   let gameStatus;
   switch (gameState.winner) {
     case "player1pieces":

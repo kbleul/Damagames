@@ -9,6 +9,18 @@
   "start_url": "/",
   "icons": [
     {
+      "src": "logo192.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "logo192.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
       "src": "maskable.png",
       "sizes": "196x196",
       "type": "image/png",
@@ -34,5 +46,6 @@
       "type": "image/png",
       "sizes": "512x512"
     }
-  ]
+  ],
+  "description": "Join the fun at Dama! Challenge your friends or try your hand at playing against our smart AI. Experience endless\n hours of fun as you strategize to capture all your opponent's pieces and win the game."
 }
