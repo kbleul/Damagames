@@ -1,7 +1,7 @@
 // socket.io.js
 import io from "socket.io-client";
 
-const socket = io(process.env.REACT_APP_SOCKET_URL, {
+const socket = io('https://dama.up.railway.app', {
   port: process.env.REACT_APP_SOCKET_PORT,
 });
 

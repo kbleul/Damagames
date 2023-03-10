@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useRef } from "react";
 import socket from "../utils/socket.io";
 import Avatar from "../assets/Avatar.png";
 import PublicGameImg from "../assets/PublicGameImg.png";
@@ -8,14 +8,18 @@ import { useAuth } from "../context/auth";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Footer } from "./Footer";
-
+import { clearCookie } from "../utils/data";
 const PubicGames = () => {
   const { user, token } = useAuth();
-
+  const [isMessageSent, setIsMessageSent] = useState(false);
+  const [isMessageListened, setIsMessageListened] = useState(false);
+  const [socketLoading, setsocketLoading] = useState(false);
+  const [tempPlayer, setTempPlayer] = useState(null);
+  
   const [publicGames, setPublicGames] = useState([]);
   const [myFriend, setMyFriend] = useState("Your Friend");
   const [code, setCode] = useState();
-
+  const useLess = useRef(false);
   const [isVerified, setIsVerified] = useState(false);
   const [name, setName] = useState(user && token ? user.username : "");
   const navigate = useNavigate();
@@ -39,6 +43,36 @@ const PubicGames = () => {
     socket.emit("publicGames");
   }, []);
 
+
+  useEffect(() => {
+    socket.on("getMessage", (data) => {
+      setIsMessageSent(false);
+      setIsMessageListened(true);
+      useLess.current = true;
+      navigate("/game");
+    });
+
+  
+  }, [isMessageListened]);
+
+  setInterval(() => {
+    if (!useLess.current) {
+      if (isMessageSent && !isMessageListened) {
+        socket.emit("sendMessage", {
+          status: "started",
+          player2: JSON.stringify(tempPlayer),
+        });
+        // console.log(
+        //   "isMessageSent:",
+        //   isMessageSent,
+        //   "isMessageListened:",
+        //   isMessageListened,
+        //   "use",
+        //   useLess.current
+        // );
+      }
+    }
+  }, 500);
   const handleJoin = () => {
     if (!name) {
       toast("name is required.");
@@ -73,23 +107,25 @@ const PubicGames = () => {
   //with code
   const nameMutationWithCode = async (values) => {
     try {
-      //console.log({ gameid2: localStorage.getItem("gameId") })
       nameMutation.mutate(user && token ? {} : { username: name }, {
         onSuccess: (responseData) => {
           socket.emit("join-room", responseData?.data?.data?.game);
-
+          
           socket.emit("sendMessage", {
             status: "started",
             player2: JSON.stringify(responseData?.data?.data?.playerTwo),
           });
-
-          //   console.log(responseData?.data.data?.playerTwo);
-
-          navigate("/game");
-          //first clear local storage
-          localStorage.clear();
-          localStorage.setItem("p1", responseData?.data?.data?.playerOne.name);
-          localStorage.setItem("p2", responseData?.data?.data?.playerTwo.name);
+          
+          setTempPlayer(JSON.stringify(responseData?.data?.data?.playerTwo));
+          setIsMessageSent(true);
+          console.log({ "manana":responseData?.data?.data?.playerOne?.username        })
+          setsocketLoading(true);
+            //first clear local storage
+            clearCookie.forEach((data) => {
+              localStorage.getItem(data) && localStorage.removeItem(data);
+            });
+          localStorage.setItem("p1", responseData?.data?.data?.playerOne?.username);
+          localStorage.setItem("p2", responseData?.data?.data?.playerTwo?.username);
           localStorage.setItem("playerTwoIp", responseData?.data?.data?.ip);
           localStorage.setItem(
             "playerTwo",
@@ -108,7 +144,8 @@ const PubicGames = () => {
 
   const handleSubmitCode = (mycode) => {
     socket.emit("joinPublicGame", mycode);
-    joinViaCodeMutationSubmitHandler();
+    joinViaCodeMutationSubmitHandler(mycode);
+    
   };
 
   const joinViaCodeMutation = useMutation(
@@ -126,9 +163,10 @@ const PubicGames = () => {
   );
 
   const joinViaCodeMutationSubmitHandler = async (values) => {
+    console.log(values)
     try {
       joinViaCodeMutation.mutate(
-        { code: code },
+        { code: values },
         {
           onSuccess: (responseData) => {
             //  console.log(responseData?.data);
@@ -281,7 +319,7 @@ const PubicGames = () => {
           "
               >
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-                {nameMutation.isLoading ? "Loading.." : "Join"}
+                {nameMutation.isLoading || socketLoading  ? "Loading.." : "Join"}
               </button>
               <p
                 onClick={() => navigate("/create-game")}
