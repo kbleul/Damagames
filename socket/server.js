@@ -7,22 +7,7 @@ import { Socket } from "dgram";
 const httpServer = createServer();
 const io = new Server(httpServer, {
   cors: {
-    origin: [
-      "https://dama-game-socketio.vercel.app",
-      "http://172.17.104.252:3000",
-      "http://172.17.104.251:3000",
-      "http://192.168.43.253:3000",
-      "http://172.17.104.250:3000",
-      "http://172.17.104.249:3000",
-      "http://172.17.104.248:3000",
-      "http://172.17.104.254:3000",
-      "https://dama-blue.vercel.app",
-      "https://admin.socket.io",
-      "http://localhost:3000",
-      "http://172.17.104.251:3000",
-      "https://damagames.com",
-      "https://test.damagames.com",
-    ],
+    origin:"*",
     credentials: true,
   },
 });
