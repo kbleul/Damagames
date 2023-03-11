@@ -1,119 +1,115 @@
 version: "3.8"
 services:
-    traefik:
-        image: "traefik:v2.9"
-        #container_name: "traefik"
-        command:
-        #- "--log.level=DEBUG"
-        - "--api.insecure=true"
-        - "--providers.docker=true"
-        - "--providers.docker.exposedbydefault=false"
-        - "--entrypoints.web.address=:80"
-        - "--entrypoints.websecure.address=:443"
-        - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
-        - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
-        - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
-        - "--certificatesresolvers.myresolver.acme.email=info@damagames.com"
-        - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
-        - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
-        ports:
-        - "443:443"
-        - "80:80"
-        - "8080:8080"
-        volumes:
-        #- "/letsencrypt:/letsencrypt"
-        - letsencrypt-data:/letsencrypt
-        - "/var/run/docker.sock:/var/run/docker.sock:ro"
+  traefik:
+    image: "traefik:v2.9"
+    #container_name: "traefik"
+    command:
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
+      - "--certificatesresolvers.myresolver.acme.email=info@damagames.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+    ports:
+      - "443:443"
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      #- "/letsencrypt:/letsencrypt"
+      - letsencrypt-data:/letsencrypt
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
-    frontend:
-        build: 
-            context: ./frontend/
-        depends_on: 
-            - sockets
-        environment:
-            - PUBLIC_URL=${REACT_APP_FRONTEND_URL}
-            - NODE_ENV=${APP_ENV}
-            - REACT_APP_FRONTEND_URL
-            - REACT_APP_BACKEND_URL
-            - RELEASE_VERSION
-        labels:
-        - "traefik.frontend.priority=1"
-        - "traefik.enable=true"
-        - "traefik.http.routers.frontend.rule=Host(`${REMOTE_HOST}`) || (Host(`app.${REMOTE_HOST}`))"
-        - "traefik.http.routers.frontend.entrypoints=websecure"
-        - "traefik.http.routers.frontend.tls.certresolver=myresolver"
+  frontend:
+    build:
+      context: ./frontend/
+    environment:
+      - PUBLIC_URL=${REACT_APP_FRONTEND_URL}
+      - NODE_ENV=${APP_ENV}
+      - REACT_APP_FRONTEND_URL
+      - REACT_APP_BACKEND_URL
+      - RELEASE_VERSION
+    labels:
+      - "traefik.frontend.priority=1"
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`${REMOTE_HOST}`) || (Host(`app.${REMOTE_HOST}`))"
+      - "traefik.http.routers.frontend.entrypoints=websecure"
+      - "traefik.http.routers.frontend.tls.certresolver=myresolver"
 
+  # PHP services
 
-    # PHP services
+  api:
+    build:
+      context: ./backend
+      args:
+        - APP_ENV
+    environment:
+      - APP_ENV
+      - APP_URL
+      - CONTAINER_ROLE=app
+      - DB_CONNECTION
+      - DB_HOST
+      - DB_PORT
+      - DB_DATABASE
+      - DB_USERNAME
+      - DB_PASSWORD
+      - TELEBIRR_APP_ID
+      - TELEBIRR_APP_KEY
+      - TELEBIRR_PUBLIC_KEY
+      - TELEBIRR_SHORT_CODE
+      - TELEBIRR_TB_APP_URL
+      - TELEBIRR_TB_WEB_URL
+      - TELEBIRR_TB_SDK_URL
+      - TELEBIRR_NOTIFY_URL
+      - TELEBIRR_RETURN_URL
+      - TELEBIRR_SUBJECT
+      - TELEBIRR_RECIEVE_NAME
+      - OTP_URL
+      - OTP_USERNAME
+      - OTP_PASSWORD
+    depends_on:
+      - database
+    labels:
+      - "traefik.enable=true"
+      - "traefik.api.priority=2"
+      - "traefik.http.routers.api-https.entrypoints=websecure"
+      - "traefik.http.routers.api-https.rule=Host(`api.${REMOTE_HOST}`) || PathPrefix(`/api`)"
+      - "traefik.http.routers.api-https.tls.certresolver=myresolver"
 
-    api:
-        build:
-            context: ./backend
-            args:
-                - APP_ENV
-        environment:
-            - APP_ENV
-            - APP_URL
-            - CONTAINER_ROLE=app
-            - DB_CONNECTION
-            - DB_HOST
-            - DB_PORT
-            - DB_DATABASE
-            - DB_USERNAME
-            - DB_PASSWORD
-            - TELEBIRR_APP_ID
-            - TELEBIRR_APP_KEY
-            - TELEBIRR_PUBLIC_KEY
-            - TELEBIRR_SHORT_CODE
-            - TELEBIRR_TB_APP_URL
-            - TELEBIRR_TB_WEB_URL
-            - TELEBIRR_TB_SDK_URL
-            - TELEBIRR_NOTIFY_URL
-            - TELEBIRR_RETURN_URL
-            - TELEBIRR_SUBJECT
-            - TELEBIRR_RECIEVE_NAME
-            - OTP_URL
-            - OTP_USERNAME
-            - OTP_PASSWORD
-        depends_on:
-            - database
-        labels:
-        - "traefik.enable=true"
-        - "traefik.api.priority=2"
-        - "traefik.http.routers.api-https.entrypoints=websecure"
-        - "traefik.http.routers.api-https.rule=Host(`api.${REMOTE_HOST}`) || PathPrefix(`/api`)"
-        - "traefik.http.routers.api-https.tls.certresolver=myresolver"
+  # Database server
+  database:
+    image: mariadb:10.6
+    restart: unless-stopped
+    environment:
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - SERVICE_TAGS=${APP_ENV}
+      - SERVICE_NAME=database
+    volumes:
+      - mysql-data:/var/lib/mysql
 
-    # Database server
-    database:
-        image: mariadb:10.6
-        restart: unless-stopped
-        environment:
-            - MYSQL_DATABASE=${DB_DATABASE}
-            - MYSQL_USER=${DB_USERNAME}
-            - MYSQL_PASSWORD=${DB_PASSWORD}
-            - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
-            - SERVICE_TAGS=${APP_ENV}
-            - SERVICE_NAME=database
-        volumes:
-            - mysql-data:/var/lib/mysql
-
-    # Websockets Server
-    sockets:
-        build:
-            context: ./socket
-        environment:
-            - APP_ENV
-            - CONTAINER_ROLE=sockets
-            - PORT=3000     # if not set defaults to 7744
-        labels:
-        - "traefik.enable=true"
-        - "traefik.sockets.priority=3"
-        - "traefik.http.routers.sockets-https.entrypoints=websecure"
-        - "traefik.http.routers.sockets-https.rule=Host(`sockets.${REMOTE_HOST}`) || PathPrefix(`/socket.io`)"
-        - "traefik.http.routers.sockets-https.tls.certresolver=myresolver"
-        restart: always
+  # Websockets Server
+  sockets:
+    build:
+      context: ./socket
+    environment:
+      - APP_ENV
+      - CONTAINER_ROLE=sockets
+      - PORT=3000 # if not set defaults to 7744
+    labels:
+      - "traefik.enable=true"
+      - "traefik.sockets.priority=3"
+      - "traefik.http.routers.sockets-https.entrypoints=websecure"
+      - "traefik.http.routers.sockets-https.rule=Host(`sockets.${REMOTE_HOST}`) || PathPrefix(`/socket.io`)"
+      - "traefik.http.routers.sockets-https.tls.certresolver=myresolver"
 
 volumes:
-    mysql-data: ~
-    letsencrypt-data: ~
+  mysql-data: ~
+  letsencrypt-data: ~
