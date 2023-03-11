@@ -19,14 +19,14 @@ jobs:
     - name: Install SSH key
       uses: shimataro/ssh-key-action@v2
       with:
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        key: ${{ secrets.STAGE_SSH_PRIVATE_KEY }}
         #name: id_rsa # optional
-        known_hosts: ${{ vars.SSH_FINGERPRINT }}
+        known_hosts: ${{ vars.STAGE_SSH_FINGERPRINT }}
         #config: ${{ secrets.CONFIG }} # ssh_config; optional
         #if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
 
     - name: Create docker context
-      run: docker context create test --docker "host=ssh://${{ vars.REMOTE_USER }}@${{ vars.REMOTE_HOST }}"
+      run: docker context create test --docker "host=ssh://${{ vars.REMOTE_USER }}@${{ vars.STAGE_REMOTE_HOST }}"
 
     # - name: Remove old php container to force build
     #   run: docker-compose --context prod -f docker-compose.prod.yml rm -s -f
@@ -36,12 +36,10 @@ jobs:
 
     - name: Deploy Docker Containers
       run: |
-        docker-compose --context test -f docker-compose.prod.yml up --build --remove-orphans -d
+        docker-compose --context test -f docker-compose.stage.yml up --build --remove-orphans -d
       env:
-        DOCKER_HOST: ssh://${{ vars.REMOTE_USER }}@${{ vars.REMOTE_HOST }}
-        REMOTE_HOST: ${{ vars.REMOTE_HOST }}
-        #DOCKER_TLS_VERIFY: 1
-        #DOCKER_CERT_PATH: /github/workspace/.ssh
+        DOCKER_HOST: ssh://${{ vars.REMOTE_USER }}@${{ vars.STAGE_REMOTE_HOST }}
+        REMOTE_HOST: ${{ vars.STAGE_REMOTE_HOST }}
         APP_ENV: ${{ vars.APP_ENV }}
         DB_CONNECTION: ${{ vars.DB_CONNECTION }}
         DB_HOST: ${{ vars.DB_HOST }}
@@ -50,15 +48,15 @@ jobs:
         DB_USERNAME: ${{ vars.DB_USERNAME }}
         DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         RELEASE_VERSION: ${{ vars.RELEASE_VERSION }}
-        TELEBIRR_APP_ID: ${{ vars.TELEBIRR_APP_ID }}
-        TELEBIRR_APP_KEY: ${{ vars.TELEBIRR_APP_KEY }}
-        TELEBIRR_PUBLIC_KEY: ${{ vars.TELEBIRR_PUBLIC_KEY }}
-        TELEBIRR_SHORT_CODE: ${{ vars.TELEBIRR_SHORT_CODE }}
-        TELEBIRR_TB_APP_URL: ${{ vars.TELEBIRR_TB_APP_URL }}
-        TELEBIRR_TB_WEB_URL: ${{ vars.TELEBIRR_TB_WEB_URL }}
-        TELEBIRR_TB_SDK_URL: ${{ vars.TELEBIRR_TB_SDK_URL }}
-        TELEBIRR_NOTIFY_URL: ${{ vars.TELEBIRR_NOTIFY_URL }}
-        TELEBIRR_RETURN_URL: ${{ vars.TELEBIRR_RETURN_URL }}
+        TELEBIRR_APP_ID: ${{ vars.STAGE_TELEBIRR_APP_ID }}
+        TELEBIRR_APP_KEY: ${{ vars.STAGE_TELEBIRR_APP_KEY }}
+        TELEBIRR_PUBLIC_KEY: ${{ vars.STAGE_TELEBIRR_PUBLIC_KEY }}
+        TELEBIRR_SHORT_CODE: ${{ vars.STAGE_TELEBIRR_SHORT_CODE }}
+        TELEBIRR_TB_APP_URL: ${{ vars.STAGE_TELEBIRR_TB_APP_URL }}
+        TELEBIRR_TB_WEB_URL: ${{ vars.STAGE_TELEBIRR_TB_WEB_URL }}
+        TELEBIRR_TB_SDK_URL: ${{ vars.STAGE_TELEBIRR_TB_SDK_URL }}
+        TELEBIRR_NOTIFY_URL: ${{ vars.STAGE_TELEBIRR_NOTIFY_URL }}
+        TELEBIRR_RETURN_URL: ${{ vars.STAGE_TELEBIRR_RETURN_URL }}
         TELEBIRR_SUBJECT: ${{ vars.TELEBIRR_SUBJECT }}
         TELEBIRR_RECIEVE_NAME: ${{ vars.TELEBIRR_RECIEVE_NAME }}
         OTP_URL: ${{ vars.OTP_URL }}
