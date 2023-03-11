@@ -11,10 +11,13 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: Set version
-      run: |
-        echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> frontend/.env.example
-        echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+    # - name: Set version
+    #   run: |
+    #     echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> frontend/.env.example
+    #     echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+     - name: Set version
+        run: php update-version-file.php
 
     - name: Install SSH key
       uses: shimataro/ssh-key-action@v2
