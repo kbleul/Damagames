@@ -27,7 +27,7 @@ class TelebirrController extends Controller
             'timestamp' => strtotime(date('Y-m-d H:i:s')),
         ];
 
-        
+
 
         $data['appKey'] = config('telebirr.app_key');
         ksort($data);
@@ -110,7 +110,7 @@ class TelebirrController extends Controller
             $decrypted .= $partial;
         }
 
-        Log::info("\n\ndecrypted_message: " . $decrypted." \n".$request->getContent());
+        Log::info("\n\ndecrypted_message: " . $decrypted . " \n" . $request->getContent());
 
         $telebirr = Telebirr::where('outTradeNo', json_decode($decrypted)->outTradeNo)->first();
 
