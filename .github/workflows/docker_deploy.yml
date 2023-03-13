@@ -1,5 +1,5 @@
 ---
-name: 'Deploy Docker Containers'
+name: "Deploy Docker Containers"
 
 on:
   workflow_call:
@@ -26,11 +26,11 @@ jobs:
     - name: Create docker context
       run: docker context create test --docker "host=ssh://${{ vars.REMOTE_USER }}@${{ vars.STAGE_REMOTE_HOST }}"
 
-    # - name: Remove old php container to force build
-    #   run: docker-compose --context prod -f docker-compose.prod.yml rm -s -f
+      # - name: Remove old php container to force build
+      #   run: docker-compose --context prod -f docker-compose.prod.yml rm -s -f
 
-    # - name: Stop containers
-    #   run: docker-compose --context prod -f docker-compose.prod.yml down --remove-orphans
+      # - name: Stop containers
+      #   run: docker-compose --context prod -f docker-compose.prod.yml down --remove-orphans
 
     - name: Deploy Docker Containers
       run: |
@@ -38,8 +38,8 @@ jobs:
       env:
         DOCKER_HOST: ssh://${{ vars.REMOTE_USER }}@${{ vars.STAGE_REMOTE_HOST }}
         REMOTE_HOST: ${{ vars.STAGE_REMOTE_HOST }}
-        APP_ENV: ${{ vars.APP_ENV }}
         APP_URL: ${{ vars.STAGE_APP_URL }}
+        APP_ENV: ${{ vars.APP_ENV }}
         DB_CONNECTION: ${{ vars.DB_CONNECTION }}
         DB_HOST: ${{ vars.DB_HOST }}
         DB_PORT: ${{ vars.DB_PORT }}
@@ -61,7 +61,3 @@ jobs:
         OTP_URL: ${{ vars.OTP_URL }}
         OTP_USERNAME: ${{ vars.OTP_USERNAME }}
         OTP_PASSWORD: ${{ secrets.OTP_PASSWORD }}
-        REACT_APP_FRONTEND_URL: ${{ vars.STAGE_REACT_APP_FRONTEND_URL }}
-        REACT_APP_BACKEND_URL: ${{ vars.STAGE_REACT_APP_BACKEND_URL }}
-        PUBLIC_URL: ${{ vars.STAGE_PUBLIC_URL }}
-        REACT_APP_SOCKET_URL: ${{ vars.STAGE_REACT_APP_SOCKET_URL }}
