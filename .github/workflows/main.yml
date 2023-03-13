@@ -27,7 +27,7 @@ jobs:
     uses: ./.github/workflows/docker_deploy.yml
     secrets: inherit
 
-  # e2e-test:
-  #   uses: ./.github/workflows/playwright.yml
-  #   secrets: inherit
-  #   needs: "deploy_staging"
+  e2e-test:
+    uses: ./.github/workflows/playwright.yml
+    secrets: inherit
+    needs: "deploy_production"
