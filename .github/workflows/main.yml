@@ -21,10 +21,9 @@ jobs:
   deploy_staging:
     uses: ./.github/workflows/docker_stage.yml
     secrets: inherit
-    #needs: "release"
 
   deploy_production:
-    # if: ${{ !contains(github.ref, 'rc') }}
+    # if: ${{ github.ref =~ '^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$' && github.ref =~ '^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$' }}
     uses: ./.github/workflows/docker_deploy.yml
     secrets: inherit
     needs: "release"
