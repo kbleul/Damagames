@@ -77,6 +77,7 @@ class TelebirrController extends Controller
         Telebirr::create([
             'user_id' => auth()->id(),
             'outTradeNo' => $outTradeNo,
+            'totalAmount' => $request->price,
         ]);
 
         $returnContent = Http::post(config('telebirr.web_url'), [
@@ -123,7 +124,7 @@ class TelebirrController extends Controller
         $telebirr->update([
             'transactionNo' => json_decode($decrypted)->transactionNo,
             'msisdn' => json_decode($decrypted)->msisdn,
-            'totalAmount' => json_decode($decrypted)->totalAmount,
+            'totalAmount' => json_decode($decrypted)->totalAmount ?? $telebirr->totalAmount,
             'tradeDate' => json_decode($decrypted)->tradeDate,
             'tradeStatus' => json_decode($decrypted)->tradeStatus,
         ]);
