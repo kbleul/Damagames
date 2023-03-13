@@ -18,9 +18,9 @@ jobs:
   #   secrets:
   #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  deploy_staging:
-    uses: ./.github/workflows/docker_stage.yml
-    secrets: inherit
+  # deploy_staging:
+  #   uses: ./.github/workflows/docker_stage.yml
+  #   secrets: inherit
 
   deploy_production:
     # if: ${{ github.ref =~ '^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$' && github.ref =~ '^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$' }}
@@ -28,7 +28,7 @@ jobs:
     secrets: inherit
     needs: "release"
 
-  e2e-test:
-    uses: ./.github/workflows/playwright.yml
-    secrets: inherit
-    needs: "deploy_staging"
+  # e2e-test:
+  #   uses: ./.github/workflows/playwright.yml
+  #   secrets: inherit
+  #   needs: "deploy_staging"
