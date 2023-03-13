@@ -12,7 +12,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Set version
-      run: php update-version-file.php
+      run: php ./update-version-file.php
 
     - name: Install SSH key
       uses: shimataro/ssh-key-action@v2
