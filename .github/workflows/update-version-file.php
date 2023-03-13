@@ -1,4 +1,4 @@
-// Retrieve the latest tag using git describe
+<!-- // Retrieve the latest tag using git describe
 $tag = trim(shell_exec('git describe --tags --abbrev=0'));
 
 // Extract the desired version format from the tag using regular expression
@@ -19,4 +19,11 @@ echo "Deploying to production environment...";
 } else {
 echo "Tag format not supported!";
 exit 1;
-}
+} -->
+
+$tag = trim(shell_exec('git describe --tags --abbrev=0'));
+
+// Update the version file with the tag
+$versionFilePath = '../frontend/src/version.js';
+$versionFileContent = "const VERSION = '$tag';\nexport default VERSION;\n";
+file_put_contents($versionFilePath, $versionFileContent);
