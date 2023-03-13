@@ -41,6 +41,7 @@ jobs:
         DOCKER_HOST: ssh://${{ vars.REMOTE_USER }}@${{ vars.REMOTE_HOST }}
         REMOTE_HOST: ${{ vars.REMOTE_HOST }}
         APP_ENV: ${{ vars.APP_ENV }}
+        APP_URL: ${{ vars.APP_URL }}
         DB_CONNECTION: ${{ vars.DB_CONNECTION }}
         DB_HOST: ${{ vars.DB_HOST }}
         DB_PORT: ${{ vars.DB_PORT }}
