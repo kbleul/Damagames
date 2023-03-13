@@ -61,3 +61,7 @@ jobs:
         OTP_URL: ${{ vars.OTP_URL }}
         OTP_USERNAME: ${{ vars.OTP_USERNAME }}
         OTP_PASSWORD: ${{ secrets.OTP_PASSWORD }}
+        REACT_APP_FRONTEND_URL: ${{ vars.STAGE_REACT_APP_FRONTEND_URL }}
+        REACT_APP_BACKEND_URL: ${{ vars.STAGE_REACT_APP_BACKEND_URL }}
+        PUBLIC_URL: ${{ vars.STAGE_PUBLIC_URL }}
+        REACT_APP_SOCKET_URL: ${{ vars.STAGE_REACT_APP_SOCKET_URL }}
