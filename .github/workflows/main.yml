@@ -24,7 +24,7 @@ jobs:
     #needs: "release"
 
   deploy_production:
-    if: if: ${{ !contains(github.ref, 'rc') }}
+    if: ${{ !contains(github.ref, 'rc') }}
     uses: ./.github/workflows/docker_deploy.yml
     secrets: inherit
     needs: "release"
