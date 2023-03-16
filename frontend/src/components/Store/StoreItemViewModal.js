@@ -30,7 +30,7 @@ const StoreItemView = ({
 	const purchaseMutation = useMutation(
 		async (newData) =>
 			await axios.post(
-				`${process.env.STAGE_REACT_APP_BACKEND_URL}purchase-item`,
+				`${process.env.REACT_APP_BACKEND_URL}purchase-item`,
 				newData,
 				{
 					headers,
