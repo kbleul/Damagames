@@ -43,7 +43,7 @@ registerRoute(
 
     return true;
   },
-  createHandlerBoundToURL('https://test.damagames.com/index.html')
+  createHandlerBoundToURL(process.env.PUBLIC_URL + '/index.html')
 );
 
 // An example runtime caching route for requests that aren't handled by the
