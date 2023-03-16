@@ -16,8 +16,8 @@ export default function ExitWarningModal({
     //exit socket code here
     if (gameState?.players > 1 || beforeGame) {
       socket.emit("sendExitGameRequest", { status: "Exit" });
-    }  
-    socket.emit('leave',gameId)
+    }
+    socket.emit('leave', gameId)
     clearCookie.forEach((data) => {
       localStorage.getItem(data) && localStorage.removeItem(data);
     });

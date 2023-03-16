@@ -52,6 +52,7 @@ const App = () => {
         Cookies[i] + "=;expires=" + new Date(0).toUTCString();
   }
 
+  console.log(`${process.env.REACT_APP_SOCKET_URL}:${process.env.REACT_APP_SOCKET_PORT}`)
   useEffect(() => {
     TagManager.initialize(tagManagerArgs);
     deleteCookies()

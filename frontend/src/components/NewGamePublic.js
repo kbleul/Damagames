@@ -13,6 +13,8 @@ import { IoIosShareAlt } from "react-icons/io";
 import { clearCookie } from "../utils/data";
 import background from "../assets/backdrop.jpg";
 import { Footer } from "./Footer";
+import ExitWarningModal from "../Game/components/ExitWarningModal";
+
 
 const ACTION = {
   MENU: "menu",
@@ -29,9 +31,12 @@ const NewGamePublic = () => {
   const [name, setName] = useState("");
   const [open, setOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+  const [isCreated, setIsCreated] = useState(false);
+
   const [value, setValue] = useState("");
   const [code, setCode] = useState("");
   const [codeCopied, setCodeCopied] = useState(false);
+  const [isExitModalOpen , setIsExitModalOpen] = useState(false);
 
   const headers = {
     "Content-Type": "application/json",
@@ -68,7 +73,7 @@ const NewGamePublic = () => {
             setAction(ACTION.CREATED);
             setValue(
               `${process.env.REACT_APP_FRONTEND_URL}/join-game/` +
-                responseData?.data?.data?.game
+              responseData?.data?.data?.game
             );
             setCode(responseData?.data?.data?.code);
             //first clear local storage
@@ -81,10 +86,10 @@ const NewGamePublic = () => {
             // localStorage.setItem("playerOneToken", responseData?.data?.data?.token);
             localStorage.setItem("playerOneIp", responseData?.data?.data?.ip);
           },
-          onError: (err) => {},
+          onError: (err) => { },
         }
       );
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const nameMutation = useMutation(
@@ -111,14 +116,14 @@ const NewGamePublic = () => {
             setAction(ACTION.CREATED);
             setValue(
               `${process.env.REACT_APP_FRONTEND_URL}/join-game/` +
-                responseData?.data?.data?.game
+              responseData?.data?.data?.game
             );
             setCode(responseData?.data?.data?.code);
             //first clear local storage
-           //first clear local storage
-           clearCookie.forEach((data) => {
-            localStorage.getItem(data) && localStorage.removeItem(data);
-          });
+            //first clear local storage
+            clearCookie.forEach((data) => {
+              localStorage.getItem(data) && localStorage.removeItem(data);
+            });
             localStorage.setItem("gameId", responseData?.data?.data?.game);
             localStorage.setItem(
               "playerOne",
@@ -143,20 +148,22 @@ const NewGamePublic = () => {
               coin: responseData?.data?.data?.playerOne.coin,
             });
           },
-          onError: (err) => {},
+          onError: (err) => { },
         }
       );
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const submitName = () => {
     if (user && token) {
+      setIsCreated(true)
       loggedInNameMutationSubmitHandler();
     } else {
       if (!name) {
         toast("name is required.");
         return;
       }
+      setIsCreated(true)
       nameMutationSubmitHandler();
     }
   };
@@ -208,7 +215,7 @@ const NewGamePublic = () => {
     >
       <button
         className="z-10 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 fixed left-2 md:left-4"
-        onClick={() => navigate("/create-game")}
+        onClick={() => isCreated ? setIsExitModalOpen(true) : navigate("/create-game") }
       >
         <svg
           width="18"
@@ -313,9 +320,8 @@ const NewGamePublic = () => {
                   <p className="text-xs text-green-500">Copied</p>
                 ) : (
                   <IoIosCopy
-                    className={`${
-                      isCopied ? "text-green-500" : "text-gray-300"
-                    }`}
+                    className={`${isCopied ? "text-green-500" : "text-gray-300"
+                      }`}
                   />
                 )}
               </CopyToClipboard>
@@ -339,9 +345,8 @@ const NewGamePublic = () => {
                   <p className="text-xs text-green-500">Copied</p>
                 ) : (
                   <IoIosCopy
-                    className={`${
-                      codeCopied ? "text-green-500" : "text-gray-400"
-                    }`}
+                    className={`${codeCopied ? "text-green-500" : "text-gray-400"
+                      }`}
                   />
                 )}
               </CopyToClipboard>
@@ -367,6 +372,12 @@ const NewGamePublic = () => {
       <Footer />
 
       <Toaster />
+
+      <ExitWarningModal
+        isExitModalOpen={isExitModalOpen}
+        set_isExitModalOpen={setIsExitModalOpen}
+        beforeGame={true}
+      />
     </main>
   );
 };

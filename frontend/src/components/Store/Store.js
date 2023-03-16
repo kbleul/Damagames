@@ -55,7 +55,7 @@ const Store = () => {
   const myItemsFetch = useQuery(
     ["myItemsFetch"],
     async () =>
-      await axios.get(`https://api.test.damagames.com/api/my-items`, {
+      await axios.get(`${process.env.REACT_APP_BACKEND_URL}my-items`, {
         headers: header,
       }),
     {
@@ -90,7 +90,7 @@ const Store = () => {
   const storeItemsFetch = useQuery(
     ["storeItemsFetch"],
     async () =>
-      await axios.get(`https://api.test.damagames.com/api/store-items`, {
+      await axios.get(`${process.env.REACT_APP_BACKEND_URL}store-items`, {
         headers,
       }),
     {

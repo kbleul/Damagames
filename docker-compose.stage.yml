@@ -80,6 +80,8 @@ services:
       - "traefik.http.routers.api-https.entrypoints=websecure"
       - "traefik.http.routers.api-https.rule=Host(`api.${REMOTE_HOST}`) || PathPrefix(`/api`)"
       - "traefik.http.routers.api-https.tls.certresolver=myresolver"
+    volumes:
+      - storage-data:/var/www/html/public/app
 
   # Database server
   database:
@@ -113,3 +115,4 @@ services:
 volumes:
   mysql-data: ~
   letsencrypt-data: ~
+  storage-data: ~

@@ -1,5 +1,5 @@
 ---
-name: 'Deploy Docker Containers'
+name: "Deploy Docker Containers"
 
 on:
   workflow_call:
@@ -10,10 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    
-    - name: Set version
-      run: php update-version-file.php
 
+    - name: Set version
+      run: php ./update-version-file.php
 
     - name: Install SSH key
       uses: shimataro/ssh-key-action@v2
@@ -27,11 +26,11 @@ jobs:
     - name: Create docker context
       run: docker context create test --docker "host=ssh://${{ vars.REMOTE_USER }}@${{ vars.STAGE_REMOTE_HOST }}"
 
-    # - name: Remove old php container to force build
-    #   run: docker-compose --context prod -f docker-compose.prod.yml rm -s -f
+      # - name: Remove old php container to force build
+      #   run: docker-compose --context prod -f docker-compose.prod.yml rm -s -f
 
-    # - name: Stop containers
-    #   run: docker-compose --context prod -f docker-compose.prod.yml down --remove-orphans
+      # - name: Stop containers
+      #   run: docker-compose --context prod -f docker-compose.prod.yml down --remove-orphans
 
     - name: Deploy Docker Containers
       run: |
@@ -39,6 +38,7 @@ jobs:
       env:
         DOCKER_HOST: ssh://${{ vars.REMOTE_USER }}@${{ vars.STAGE_REMOTE_HOST }}
         REMOTE_HOST: ${{ vars.STAGE_REMOTE_HOST }}
+        APP_URL: ${{ vars.STAGE_APP_URL }}
         APP_ENV: ${{ vars.APP_ENV }}
         DB_CONNECTION: ${{ vars.DB_CONNECTION }}
         DB_HOST: ${{ vars.DB_HOST }}
@@ -61,3 +61,5 @@ jobs:
         OTP_URL: ${{ vars.OTP_URL }}
         OTP_USERNAME: ${{ vars.OTP_USERNAME }}
         OTP_PASSWORD: ${{ secrets.OTP_PASSWORD }}
+        REACT_APP_FRONTEND_URL: ${{ vars.REACT_APP_FRONTEND_URL }}
+        REACT_APP_BACKEND_URL: ${{ vars.REACT_APP_BACKEND_URL }}
