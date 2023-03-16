@@ -1,5 +1,5 @@
 ---
-name: 'Deploy Docker Containers'
+name: "Deploy Docker Containers"
 
 on:
   workflow_call:
