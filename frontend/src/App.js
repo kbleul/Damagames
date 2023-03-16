@@ -18,6 +18,8 @@ const tagManagerArgs = {
 
 const SplashScreen = React.lazy(() => import("./components/SplashScreen"));
 // import SplashScreen from "./components/SplashScreen"
+const Success = React.lazy(() => import("./components/Success"));
+
 const CreateGame = React.lazy(() => import("./components/CreateGame"));
 const JoinGame = React.lazy(() => import("./components/JoinGame"));
 const NewGame = React.lazy(() => import("./components/NewGame"));
@@ -84,6 +86,7 @@ const App = () => {
           <Route path="/join-public" element={<PublicGames />} />
           <Route path="/new-game-public" element={<NewGamePublic />} />
           <Route path="/store" element={<Store />} />
+          <Route path="/payment/success" element={<Success />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="*" element={<CreateGame />} />
         </Routes>
@@ -111,10 +114,6 @@ const App = () => {
           <Route path="/join-public" element={<PublicGames />} />
           <Route path="/new-game-public" element={<NewGamePublic />} />
           <Route path="/store" element={<Store />} />
-          <Route
-            path="/profile"
-            element={user && token ? <Profile /> : <Navigate to="/login" />}
-          />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="*" element={<Navigate to="/create-game" />} />
         </Routes>
