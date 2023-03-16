@@ -52,7 +52,7 @@ const CoinModal = ({ isCoinModalOpen, setIsCoinModalOpen }) => {
 	const paymentMutation = useMutation(
 		async (newData) =>
 			await axios.post(
-				`${process.env.STAGE_REACT_APP_BACKEND_URL}telebirr/pay`,
+				`https://api.test.damagames.com/api/telebirr/pay`,
 				newData,
 				{
 					headers,
