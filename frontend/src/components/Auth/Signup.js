@@ -93,8 +93,8 @@ const Signup = () => {
     async (newData) =>
       await axios.post(
         !playerId && !playerTwoId
-          ? `${process.env.REACT_APP_BACKEND_URL}register`
-          : `${process.env.REACT_APP_BACKEND_URL}register/${playerId.id}`,
+          ? `${process.env.STAGE_REACT_APP_BACKEND_URL}register`
+          : `${process.env.STAGE_REACT_APP_BACKEND_URL}register/${playerId.id}`,
         newData,
         {
           headers,
@@ -125,7 +125,7 @@ const Signup = () => {
   const verifyOtpMutation = useMutation(
     async (newData) =>
       await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}verify-otp`,
+        `${process.env.STAGE_REACT_APP_BACKEND_URL}verify-otp`,
         newData,
         {
           headers,
@@ -158,7 +158,7 @@ const Signup = () => {
   const finishRegisterMutation = useMutation(
     async (newData) =>
       await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}finish-regster`,
+        `${process.env.STAGE_REACT_APP_BACKEND_URL}finish-regster`,
         newData,
         {
           headers: header,
