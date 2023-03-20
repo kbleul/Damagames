@@ -243,7 +243,7 @@ class AuthController extends SendSmsController
         ]);
         return response()->json([
             'message' => 'Username updated successfully!',
-            'user' =>  auth()->user()
+            'user' =>  User::find(auth()->id())
         ], 201);
     }
 }
