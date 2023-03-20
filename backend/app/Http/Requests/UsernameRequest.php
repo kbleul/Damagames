@@ -24,7 +24,7 @@ class UsernameRequest extends FormRequest
     public function rules()
     {
         return [
-            'password' => ['required', 'unique:users,username'],
+            'username' => 'required',
         ];
     }
 }
