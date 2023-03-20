@@ -26,7 +26,7 @@ const CreateGame = () => {
     }, 300);
   }
 
-      
+
   return (
     <div
       style={{
@@ -162,7 +162,7 @@ const CreateGame = () => {
             <p className="text-orange-color text-[.7rem]">Store</p>
           </Link>
         </section>
-        <Footer />
+        {/* <Footer /> */}
       </div>
       {/* <div className="bg-white  bottom-0 left-0 right-0 fixed">
         <div className="grid grid-cols-2 ">

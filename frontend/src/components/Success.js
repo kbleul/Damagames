@@ -59,9 +59,9 @@ const Success = () => {
             transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
             border-b-[1px] border-gray-400/50 font-semibold text-white
           "
-        onClick={() => navigate("/create-game")}
+        onClick={() => navigate("/store")}
       >
-        Go to home
+        Go to Store
       </button>
     </div>
   );

@@ -8,7 +8,7 @@ import { useAuth } from "../../context/auth";
 import { MdOutlineCancel } from "react-icons/md";
 import Tele from '../../assets/Tele.png'
 const CoinModal = ({ isCoinModalOpen, setIsCoinModalOpen }) => {
-  const { user , token , setUser } = useAuth();
+  const { user, token, setUser } = useAuth();
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -68,35 +68,36 @@ const CoinModal = ({ isCoinModalOpen, setIsCoinModalOpen }) => {
       paymentMutation.mutate(
         {
           price: selectedCoin.amountMoney,
+          coin: selectedCoin.coinAmount
         },
         {
           onSuccess: (responseData) => {
-			// user &&
-			// 				localStorage.setItem(
-			// 					"dama_user_data",
-			// 					JSON.stringify({
-			// 						token,
-			// 						user: {
-			// 							...user,
-			// 							coin: parseInt(user.coin) + parseInt(selectedCoin.amountMoney),
-			// 							current_point: parseInt(user.coin) + parseInt(selectedCoin.amountMoney)
-			// 						},
-			// 					})
-			// 				);
+            // user &&
+            // 				localStorage.setItem(
+            // 					"dama_user_data",
+            // 					JSON.stringify({
+            // 						token,
+            // 						user: {
+            // 							...user,
+            // 							coin: parseInt(user.coin) + parseInt(selectedCoin.amountMoney),
+            // 							current_point: parseInt(user.coin) + parseInt(selectedCoin.amountMoney)
+            // 						},
+            // 					})
+            // 				);
 
-			// 			user &&
-			// 				setUser({
-			// 					...user,
-			// 					coin: parseInt(user.coin) + parseInt(selectedCoin.amountMoney),
-			// 					current_point: parseInt(user.coin) + parseInt(selectedCoin.amountMoney)
-			// 				});
+            // 			user &&
+            // 				setUser({
+            // 					...user,
+            // 					coin: parseInt(user.coin) + parseInt(selectedCoin.amountMoney),
+            // 					current_point: parseInt(user.coin) + parseInt(selectedCoin.amountMoney)
+            // 				});
             window.open(responseData?.data?.data?.data?.toPayUrl, "_self");
             // console.log(responseData?.data?.data?.data?.toPayUrl)
           },
-          onError: (err) => {},
+          onError: (err) => { },
         }
       );
-    } catch (err) {}
+    } catch (err) { }
   };
   return (
     <>
@@ -169,7 +170,7 @@ const CoinModal = ({ isCoinModalOpen, setIsCoinModalOpen }) => {
                     </button>
                   )}
                   <MdOutlineCancel
-                    onClick={() => {setIsCoinModalOpen(false);setSelectedCoin(null)}}
+                    onClick={() => { setIsCoinModalOpen(false); setSelectedCoin(null) }}
                     className="absolute top-2 right-2 text-orange-color w-6 h-6"
                   />
                   {!selectedCoin ? (
@@ -209,7 +210,7 @@ const CoinModal = ({ isCoinModalOpen, setIsCoinModalOpen }) => {
                   ) : (
                     <div className="flex flex-col items-center space-y-2 mt-4">
                       <div className="flex items-center space-x-2">
-                      {/* <h3 className="text-white font-medium capitalize">
+                        {/* <h3 className="text-white font-medium capitalize">
                           selected coin
                         </h3> */}
                         <h3 className="text-white font-medium capitalize">
@@ -222,7 +223,7 @@ const CoinModal = ({ isCoinModalOpen, setIsCoinModalOpen }) => {
                         </h3>
                         <h3 className="text-white font-medium capitalize">
                           {selectedCoin?.amountMoney} birr
-                          
+
                         </h3>
                       </div>
                       <button
@@ -237,7 +238,7 @@ const CoinModal = ({ isCoinModalOpen, setIsCoinModalOpen }) => {
                       >
                         {paymentMutation.isLoading
                           ? "please wait..."
-                          : <div className="flex items-center space-x-2"><span>Pay with</span>   <img src={Tele} alt="" className="h-8"/></div>}
+                          : <div className="flex items-center space-x-2"><span>Pay with</span>   <img src={Tele} alt="" className="h-8" /></div>}
                       </button>
                     </div>
                   )}
