@@ -17,7 +17,7 @@ const Score = ({ score, hasBadge, index }) => {
             src={
               score?.profile_image ? score?.profile_image : Avatar
             }
-            alt="avatar"
+            alt=""
           />
         </div>
         <div className="w-[70%] font-bold self-center text-white text-left ml-4 text-sm">{`${++index}- ${score?.username

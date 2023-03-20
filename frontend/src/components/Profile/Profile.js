@@ -60,7 +60,7 @@ const Profile = () => {
         </svg>
       </button>
       <div className="h-[40vh]">
-        <SideMenu />
+        <SideMenu isprofile={true} />
         <div className="flex flex-col items-center space-y-2 pt-24 ml-[5%]">
           <div className="flex items-center justify-end space-x-4">
             <div className="relative flex items-center justify-center">
