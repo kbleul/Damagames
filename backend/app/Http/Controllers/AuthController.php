@@ -10,6 +10,7 @@ use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Requests\StoreSecurityQuestionAnswerRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UserAnswerRequest;
+use App\Http\Requests\UsernameRequest;
 use App\Models\CoinSetting;
 use App\Models\SecurityQuestion;
 use App\Models\SecurityQuestionAnswer;
@@ -232,5 +233,14 @@ class AuthController extends SendSmsController
         $user = User::where('phone', $request->phone)->first();
         $sqa = SecurityQuestionAnswer::where('user_id',  $user->id)->first();
         return  SecurityQuestion::find($sqa->security_question_id);
+    }
+
+    public function update_username(UsernameRequest $request)
+    {
+
+        User::find(auth()->id())->update([
+            'username' => $request->username,
+        ]);
+        return response()->json(['message' => 'Username updated successfully!', 'user' =>  User::find(auth()->id())], 201);
     }
 }

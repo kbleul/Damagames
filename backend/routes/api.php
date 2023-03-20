@@ -57,6 +57,7 @@ Route::middleware('response')->group(function () {
     Route::post('verify-password', ResetPasswordController::class);
     Route::post('reset-change-password', [ResetPasswordController::class, 'change_password'])->middleware('auth:sanctum');
     Route::post('finish-regster', [AuthController::class, 'finish_regster'])->middleware('auth:sanctum');
+    Route::post('update-username', [AuthController::class, 'update_username'])->middleware('auth:sanctum');
     Route::get('store-items', [StoreController::class, 'index']);
 });
 
