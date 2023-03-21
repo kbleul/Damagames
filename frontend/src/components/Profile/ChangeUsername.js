@@ -27,7 +27,7 @@ const ChangeProfile = ({ changeUsernameModal, setChangeUsernameModal, username }
     if (uname.length < 2) { setErrorMessage("Username is too short !") }
     else if (uname === username) { setChangeUsernameModal(false) }
     else {
-      setIsLoading(false)
+      setIsLoading(true)
       registerMutationSubmitHandler()
     }
   }
@@ -128,7 +128,7 @@ const ChangeProfile = ({ changeUsernameModal, setChangeUsernameModal, username }
                   </div>
                   <article className="flex flex-col items-center justify-center mt-8 text-white">
                     <h2 className=" mb-4 w-[80%] text-left">Username</h2>
-                    <input className="w-[90%] bg-inherit border border-gray-500 text-white py-2 px-4 rounded-lg" value={uname} onChange={e => setUname(e.target.value)} />
+                    <input className="w-[90%] bg-inherit border md:border-2 focus:border-red-500 focus:outline-none focus:ring-0 border-gray-500 text-white py-2 px-4 rounded-lg" value={uname} onChange={e => setUname(e.target.value)} />
                     {errorMessage && <p className="w-[90%] text-red-400 p-4 text-xs">{errorMessage}</p>}
                     <button onClick={onSubmit} className="mt-8 w-[90%] border border-orange-color rounded-lg text-white bg-orange-color text-sm py-2">{isLoading ? "Loading..." : "Change Username"}</button>
                   </article>
