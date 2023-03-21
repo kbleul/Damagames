@@ -5,8 +5,6 @@ import avatar from "../assets/logo.png";
 import { useAuth } from "../context/auth";
 import { Link } from "react-router-dom";
 import { clearCookie } from "../utils/data";
-import { Footer } from "./Footer";
-import { FaStore, FaClipboard } from "react-icons/fa";
 
 import "./style.css";
 const CreateGame = () => {
@@ -164,18 +162,7 @@ const CreateGame = () => {
         </section>
         {/* <Footer /> */}
       </div>
-      {/* <div className="bg-white  bottom-0 left-0 right-0 fixed">
-        <div className="grid grid-cols-2 ">
-          <div className="bg-gradient-to-r from-[#1EB0B9] to-[#05484E] p-2 flex flex-col border-t-4 border-orange-color/10 items-center justify-center space-x-1">
-            <FaClipboard size={20} className="text-[#191921]" />
-            <p className="font-semibold text-white">Score board</p>
-          </div>
-          <div className="bg-orange-bg p-2 flex  items-center justify-center space-x-1">
-            <FaStore size={20} className="text-[#191921]" />
-            <p className="font-semibold text-white">store</p>
-          </div>
-        </div>
-      </div> */}
+
     </div>
   );
 };

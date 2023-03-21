@@ -115,20 +115,26 @@ const Profile = () => {
 
       {/* <PlayerHistory playerName={profileData?.data?.data?.data?.username} /> */}
 
-      <article className="text-white mt-16 flex flex-col gap-y-16 items-center justify-center">
-        <section className="flex w-3/5 ">
-          <div className=" flex items-center justify-center gap-x-4 text-lg  w-[30%]">
-            <FaUserAlt />
-            <p>Username</p>
+      <article className="text-white mt-16 flex flex-col gap-y-4 items-center justify-center">
+        <section className="w-[70%] md:max-w-[600px] ">
+          <p className="text-left text-sm mb-1">Username</p>
+
+          <div onClick={() => setChangeUsernameModal(true)}
+            className="relative w-full p-2 bg-orange-bg  cursor-pointer  border-gray-400/50 font-semibold text-white py-2 border rounded-md border-orange-colo  flex gap-2 items-center justify-center ">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
+
+            <p className="text-sm font-bold">{user.username}</p>
+            <svg width="14" height="15" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M13.2933 0.792726C13.6683 0.417784 14.1769 0.207153 14.7073 0.207153C15.2376 0.207153 15.7462 0.417784 16.1213 0.792726L18.7073 3.37873C19.0822 3.75378 19.2928 4.2624 19.2928 4.79273C19.2928 5.32305 19.0822 5.83167 18.7073 6.20673L17.1213 7.79273L11.7073 2.37873L13.2933 0.792726ZM10.2933 3.79273L1.29328 12.7927C0.918177 13.1677 0.707389 13.6763 0.707275 14.2067V16.7927C0.707275 17.3232 0.917989 17.8319 1.29306 18.2069C1.66813 18.582 2.17684 18.7927 2.70728 18.7927H5.29328C5.82367 18.7926 6.33229 18.5818 6.70728 18.2067L15.7073 9.20673L10.2933 3.79273Z" fill="#CCCCCC" />
+            </svg>
           </div>
-          <div onClick={() => setChangeUsernameModal(true)} className="w-[70%] border-b"><p>{user.username}</p></div>
         </section>
-        <section className="w-4/5 border ">
-          <p>Password</p>
+        <section className="w-[70%] md:max-w-[600px] ">
+          <p className="text-left text-sm mb-1">Password</p>
           <div onClick={() => setChangePasswordModal(true)}
-            className="border border-orange-color text-orange-color text-xs flex items-center justify-center ">
+            className="py-2 border rounded-md border-orange-color text-orange-color text-sm flex gap-2 items-center justify-center ">
             <p>*****************</p>
-            <svg width="20" height="19" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg width="14" height="15" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd" clip-rule="evenodd" d="M13.2933 0.792726C13.6683 0.417784 14.1769 0.207153 14.7073 0.207153C15.2376 0.207153 15.7462 0.417784 16.1213 0.792726L18.7073 3.37873C19.0822 3.75378 19.2928 4.2624 19.2928 4.79273C19.2928 5.32305 19.0822 5.83167 18.7073 6.20673L17.1213 7.79273L11.7073 2.37873L13.2933 0.792726ZM10.2933 3.79273L1.29328 12.7927C0.918177 13.1677 0.707389 13.6763 0.707275 14.2067V16.7927C0.707275 17.3232 0.917989 17.8319 1.29306 18.2069C1.66813 18.582 2.17684 18.7927 2.70728 18.7927H5.29328C5.82367 18.7926 6.33229 18.5818 6.70728 18.2067L15.7073 9.20673L10.2933 3.79273Z" fill="#CCCCCC" />
             </svg>
           </div>
