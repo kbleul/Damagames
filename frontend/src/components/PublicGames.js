@@ -36,14 +36,12 @@ const PubicGames = () => {
 
   useEffect(() => {
     socket.on("getPublicGames", (data) => {
-      // console.log("ola", data)
       setPublicGames([...data]);
     });
 
     socket.emit("publicGames");
   }, []);
 
-  const counter = 0
 
   useEffect(() => {
     socket.on("getMessage", (data) => {
@@ -51,28 +49,10 @@ const PubicGames = () => {
       setIsMessageListened(true);
       useLess.current = true;
 
-      // clearCookie.forEach((data) => {
-      //   localStorage.getItem(data) && localStorage.removeItem(data);
-      // });
-
-      // console.log(data.p1)
-      // console.log(data.p2)
-      // console.log(data.playerTwoIp)
-      // console.log(data.player2)
-      // console.log(data.gameId)
-
-      // const a = data.pl
-
-      console.log(data.p1 === undefined)
-      //  counter++
-
       localStorage.setItem("p12", data.data.player2.username);
       localStorage.setItem("playerTwo", data.player2);
       localStorage.setItem("gameId", data.gameId);
       localStorage.setItem("playerTwoIp", data.playerTwoIp);
-
-
-
 
       navigate("/game");
     });
@@ -87,14 +67,6 @@ const PubicGames = () => {
           status: "started",
           player2: JSON.stringify(tempPlayer),
         });
-        // console.log(
-        //   "isMessageSent:",
-        //   isMessageSent,
-        //   "isMessageListened:",
-        //   isMessageListened,
-        //   "use",
-        //   useLess.current
-        // );
       }
     }
   }, 500);
@@ -145,7 +117,6 @@ const PubicGames = () => {
 
           setTempPlayer(JSON.stringify(responseData?.data?.data?.playerTwo));
           setIsMessageSent(true);
-          console.log({ "manana": responseData?.data?.data?.playerOne?.username })
           setsocketLoading(true);
           //first clear local storage
 
@@ -161,11 +132,9 @@ const PubicGames = () => {
 
         },
         onError: (err) => {
-          //   console.log(err?.response?.data?.message);
         },
       });
     } catch (err) {
-      //  console.log(err);
     }
   };
 
@@ -190,13 +159,11 @@ const PubicGames = () => {
   );
 
   const joinViaCodeMutationSubmitHandler = async (values) => {
-    console.log(values)
     try {
       joinViaCodeMutation.mutate(
         { code: values },
         {
           onSuccess: (responseData) => {
-            //  console.log(responseData?.data);
             setIsVerified(true);
             responseData?.data?.data?.playerOne?.username &&
               setMyFriend(
@@ -208,13 +175,11 @@ const PubicGames = () => {
 
           },
           onError: (err) => {
-            //    console.log(err?.response?.data);
             toast(err?.response?.data?.message);
           },
         }
       );
     } catch (err) {
-      //  console.log(err);
     }
   };
   return (

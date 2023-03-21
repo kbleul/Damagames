@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import ChangePassword from "./ChangePassword";
+import ChangeUsername from "./ChangeUsername";
+
 import { AiFillCamera } from "react-icons/ai";
+import { FaUserAlt } from "react-icons/fa";
+
+
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useAuth } from "../../context/auth";
@@ -15,6 +20,8 @@ const Profile = () => {
   const [changePasswordModal, setChangePasswordModal] = useState(false);
   const [forgotPasswordModal, setForgotPasswordModal] = useState(false);
   const [changeProfileModal, setChangeProfileModal] = useState(false);
+  const [changeUsernameModal, setChangeUsernameModal] = useState(false);
+
   const { user, token } = useAuth();
   const navigate = useNavigate();
 
@@ -59,9 +66,9 @@ const Profile = () => {
           />
         </svg>
       </button>
-      <div className="h-[40vh]">
-        <SideMenu isprofile={true} />
-        <div className="flex flex-col items-center space-y-2 pt-24 ml-[5%]">
+      <div className="">
+        {/* <SideMenu isprofile={true} /> */}
+        <div className="flex flex-col items-center space-y-2  ml-[5%]">
           <div className="flex items-center justify-end space-x-4">
             <div className="relative flex items-center justify-center">
               <img
@@ -83,25 +90,7 @@ const Profile = () => {
               </button>
             </div>
 
-            <button
-              className="bg-orange-bg p-1 rounded-md self-end"
-              onClick={() => setChangePasswordModal(true)}
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 18 18"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M3.88574 7.20002V4.27938C3.88574 3.74242 3.9915 3.21072 4.19699 2.71463C4.40248 2.21854 4.70366 1.76779 5.08335 1.3881C5.46304 1.00841 5.91379 0.707225 6.40988 0.501739C6.90597 0.296253 7.43767 0.190491 7.97463 0.190491C8.51159 0.190491 9.04329 0.296253 9.53938 0.501739C10.0355 0.707225 10.4862 1.00841 10.8659 1.3881C11.2456 1.76779 11.5468 2.21854 11.7523 2.71463C11.9578 3.21072 12.0635 3.74242 12.0635 4.27938V7.20002H13.8159C14.2807 7.20002 14.7264 7.38464 15.055 7.71327C15.3837 8.04191 15.5683 8.48764 15.5683 8.9524V9.59494C16.2285 9.729 16.8221 10.0872 17.2484 10.6088C17.6748 11.1305 17.9077 11.7835 17.9077 12.4572C17.9077 13.1309 17.6748 13.7839 17.2484 14.3055C16.8221 14.8271 16.2285 15.1853 15.5683 15.3194V15.9619C15.5683 16.4267 15.3837 16.8724 15.055 17.201C14.7264 17.5297 14.2807 17.7143 13.8159 17.7143H2.13336C1.6686 17.7143 1.22288 17.5297 0.894242 17.201C0.565607 16.8724 0.380981 16.4267 0.380981 15.9619L0.380981 8.9524C0.380981 8.48764 0.565607 8.04191 0.894242 7.71327C1.22288 7.38464 1.6686 7.20002 2.13336 7.20002H3.88574ZM5.054 4.27938C5.054 3.50478 5.36171 2.7619 5.90943 2.21418C6.45716 1.66645 7.20003 1.35874 7.97463 1.35874C8.74923 1.35874 9.49211 1.66645 10.0398 2.21418C10.5876 2.7619 10.8953 3.50478 10.8953 4.27938V7.20002H5.054V4.27938ZM10.3111 10.7048C9.84638 10.7048 9.40065 10.8894 9.07202 11.218C8.74338 11.5467 8.55876 11.9924 8.55876 12.4572C8.55876 12.9219 8.74338 13.3676 9.07202 13.6963C9.40065 14.0249 9.84638 14.2095 10.3111 14.2095H14.9842C15.4489 14.2095 15.8946 14.0249 16.2233 13.6963C16.5519 13.3676 16.7365 12.9219 16.7365 12.4572C16.7365 11.9924 16.5519 11.5467 16.2233 11.218C15.8946 10.8894 15.4489 10.7048 14.9842 10.7048H10.3111Z"
-                  fill="#191921"
-                />
-              </svg>
-            </button>
+
           </div>
         </div>
 
@@ -117,9 +106,34 @@ const Profile = () => {
           setForgotPasswordModal={setForgotPasswordModal}
           forgotPasswordModal={forgotPasswordModal}
         />
+        <ChangeUsername
+          setChangeUsernameModal={setChangeUsernameModal}
+          changeUsernameModal={changeUsernameModal}
+          username={user?.username}
+        />
       </div>
 
-      <PlayerHistory playerName={profileData?.data?.data?.data?.username} />
+      {/* <PlayerHistory playerName={profileData?.data?.data?.data?.username} /> */}
+
+      <article className="text-white mt-16 flex flex-col gap-y-16 items-center justify-center">
+        <section className="flex w-3/5 ">
+          <div className=" flex items-center justify-center gap-x-4 text-lg  w-[30%]">
+            <FaUserAlt />
+            <p>Username</p>
+          </div>
+          <div onClick={() => setChangeUsernameModal(true)} className="w-[70%] border-b"><p>{user.username}</p></div>
+        </section>
+        <section className="w-4/5 border ">
+          <p>Password</p>
+          <div onClick={() => setChangePasswordModal(true)}
+            className="border border-orange-color text-orange-color text-xs flex items-center justify-center ">
+            <p>*****************</p>
+            <svg width="20" height="19" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M13.2933 0.792726C13.6683 0.417784 14.1769 0.207153 14.7073 0.207153C15.2376 0.207153 15.7462 0.417784 16.1213 0.792726L18.7073 3.37873C19.0822 3.75378 19.2928 4.2624 19.2928 4.79273C19.2928 5.32305 19.0822 5.83167 18.7073 6.20673L17.1213 7.79273L11.7073 2.37873L13.2933 0.792726ZM10.2933 3.79273L1.29328 12.7927C0.918177 13.1677 0.707389 13.6763 0.707275 14.2067V16.7927C0.707275 17.3232 0.917989 17.8319 1.29306 18.2069C1.66813 18.582 2.17684 18.7927 2.70728 18.7927H5.29328C5.82367 18.7926 6.33229 18.5818 6.70728 18.2067L15.7073 9.20673L10.2933 3.79273Z" fill="#CCCCCC" />
+            </svg>
+          </div>
+        </section>
+      </article>
 
     </article>
   );

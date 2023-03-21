@@ -18,7 +18,6 @@ export function AuthProvider({ children }) {
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
-    console.log(user)
   }, [user])
 
   const login = useCallback((token, user) => {

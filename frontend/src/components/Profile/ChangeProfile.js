@@ -142,9 +142,7 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
       keepPreviousData: true,
       refetchOnWindowFocus: false,
       retry: false,
-      // enabled: token ? !itemIsLoading : false,
       onSuccess: (res) => {
-        console.log("success", res.data.data.avatars)
         setMyAvatars([])
         setMyBoards([])
         setMyCrowns([])
@@ -161,10 +159,7 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
 
       },
       onError: err => {
-        //console.log(err)
         toast(err.message)
-        // setItemIsLoading(false)
-        // setitemsError(true)
       }
     }
   );

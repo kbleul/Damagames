@@ -64,7 +64,6 @@ const Store = () => {
       retry: false,
       enabled: token ? !itemIsLoading : false,
       onSuccess: (res) => {
-        //  console.log(res.data.data.avatars[0])
         for (const [, value] of Object.entries(res.data.data.avatars)) {
           setMyAvatarsId((prev) => [...prev, value.id]);
         }
@@ -74,16 +73,8 @@ const Store = () => {
         for (const [, value] of Object.entries(res.data.data.crowns)) {
           setMyCrownsId((prev) => [...prev, value.id]);
         }
-        // setStoreItems(res.data.data)
-        // setItemIsLoading(false)
-        // myItemsMutationSubmitHandler()
       },
-      onError: (err) => {
-        console.log(err);
-
-        // setItemIsLoading(false)
-        // setitemsError(true)
-      },
+      onError: (err) => { },
     }
   );
 

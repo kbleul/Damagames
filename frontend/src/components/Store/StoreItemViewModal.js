@@ -91,9 +91,7 @@ const StoreItemView = ({
 					},
 				}
 			);
-		} catch (err) {
-			console.log(err.response?.data?.data.data);
-		}
+		} catch (err) { }
 	};
 
 	useEffect(() => {

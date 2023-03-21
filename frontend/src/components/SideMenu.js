@@ -5,6 +5,9 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { BiMenu } from 'react-icons/bi';
+import { CiMenuKebab } from 'react-icons/ci';
+
+
 
 const SideMenu = ({ isprofile }) => {
   const navigate = useNavigate();
@@ -60,8 +63,6 @@ const SideMenu = ({ isprofile }) => {
   );
 
 
-  console.log(historyData?.data?.data?.data)
-
 
   return (
     // <>
@@ -115,7 +116,9 @@ const SideMenu = ({ isprofile }) => {
     //   )}
     // </>
     <>
-      {user && token && <article className="text-white w-full pb-2">
+      {user && token && <article className="py-4 text-white w-full pb-2 rounded-bl-3xl" style={{
+        background: `linear-gradient(90deg, #FF4C01 0%, rgba(0, 0, 0, 0) 139.19%)`
+      }}>
 
         <section className="flex flex-col justify-end items-end">
           {/* <button
@@ -138,14 +141,12 @@ const SideMenu = ({ isprofile }) => {
               />
             </svg>
           </button> */}
-          <div className="md:mr-4">
-            <BiMenu size={"2rem"} color="red" onClick={() => setShowMenu((prev) => !prev)} />
-          </div>
+
 
           {showMenu &&
-            <ul className="font-bold z-10 ml-24 w-[50%] max-w-[10rem] border border-orange-color border-b-0 text-orange-color cursor-pointer">
+            <ul className="absolute right-0 top-12 bg-orange-color text-black font-bold z-10 ml-24 w-[50%] max-w-[10rem] border border-orange-color border-b-0 text-orange-color cursor-pointer">
               <li
-                className="text-orange-color hover:text-black py-2 w-full border-b border-orange-color hover:border-black hover:bg-orange-color"
+                className=" py-2 w-full border-b border-black hover:border-black hover:bg-orange-color"
                 onClick={() => {
                   setShowMenu(false);
                   navigate("/profile");
@@ -154,7 +155,7 @@ const SideMenu = ({ isprofile }) => {
                 Profile
               </li>
               <li
-                className="text-orange-color hover:text-black py-2 w-full border-b border-orange-color hover:border-black hover:bg-orange-color"
+                className="py-2 w-full border-b border-black hover:border-black hover:bg-orange-color"
                 onClick={() => {
                   userLogOut();
                 }}
@@ -165,32 +166,57 @@ const SideMenu = ({ isprofile }) => {
           }
         </section>
         {
-          !isprofile &&
-          <>
-            <section className="w-full  flex">
-              <div className="w-1/2 flex gap-3 items-center justify-center font-bold">
-                <img className="w-12 h-12  border rounded-full" src={user.profile_image} alt="profile" />
-                <h5 className="text-sm">{user.username}</h5>
+          !isprofile && <>
+            <article className="flex">
+
+              <section className="w-[96%] flex items-end justify-end ">
+                <div className="w-14 h-14 md:w-16 md:h-16 border-2 border-black rounded-full flex items-center justify-center font-bold">
+                  <img className="w-12 h-12 md:w-14 md:h-14  border rounded-full" src={user.profile_image} alt="profile" />
+                </div>
+                <div className="border-b-2 border-black w-4/5 flex justify-center ">
+                  <div className=" w-3/5">
+                    <h5 className="text-left font-bold text-black text-base md:text-[1.2rem] ml-2">{user.username}</h5>
+                    <p className="text-[.6rem] md:text-xs text-left ml-2">Coins earned : {user.coin}</p>
+                  </div>
+
+                  <div className=" w-2/5 text-[.6rem] font-bold"><p>Games played - {historyData?.data?.data?.data?.played}</p></div>
+
+                </div>
+              </section>
+
+
+              {/* <section className="w-4/5 border">
+              <div>
+
+
+                <p>Games Played</p>
+
               </div>
-              <div className="w-1/2 flex gap-3 items-center justify-center text-xs font-bold">
-                <h1>Coins</h1>
-                <p>{user.coin}</p>
+
+                <CiMenuKebab size={"2rem"} color="red"  />
+
+              
+            </section> */}
+              <div onClick={() => setShowMenu((prev) => !prev)} className="w-[4%] mr-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><path fill="none" stroke="currentColor" stroke-width="2" d="M16 24a1 1 0 1 0 0-2a1 1 0 0 0 0 2Zm0-7a1 1 0 1 0 0-2a1 1 0 0 0 0 2Zm0-7a1 1 0 1 0 0-2a1 1 0 0 0 0 2Z" /></svg>
               </div>
-            </section>
-            <section className="flex items-center justify-center mt-2 md:w-3/5 md:ml-[20%] border-b-2 border-orange-color">
-              <div className="w-[33.33%] flex justify-center items-center gap-2 text-xs">
+            </article>
+
+            <section className="w-[60%] ml-[20%] flex items-center justify-center py-2 font-bold">
+              <div className="w-[33.33%] flex justify-center items-center gap-2 text-[.6rem] md:text-xs">
                 <h5>Win - </h5>
                 <p>{historyData?.data?.data?.data?.wins}</p>
               </div>
-              <div className="w-[33.33%] flex justify-center items-center gap-2 text-xs">
+              <div className="w-[33.33%] flex justify-center items-center gap-2 text-[.6rem] md:text-xs">
                 <h5>Draw - </h5>
                 <p>{historyData?.data?.data?.data?.draw}</p>
               </div>
-              <div className="w-[33.33%] flex justify-center items-center gap-2 text-xs">
+              <div className="w-[33.33%] flex justify-center items-center gap-2 text-[.6rem] md:text-xs">
                 <h5>Loss - </h5>
                 <p>{historyData?.data?.data?.data?.losses}</p>
               </div>
-            </section></>
+            </section>
+          </>
         }
 
       </article>}
