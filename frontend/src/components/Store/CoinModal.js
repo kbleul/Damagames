@@ -92,7 +92,6 @@ const CoinModal = ({ isCoinModalOpen, setIsCoinModalOpen }) => {
             // 					current_point: parseInt(user.coin) + parseInt(selectedCoin.amountMoney)
             // 				});
             window.open(responseData?.data?.data?.data?.toPayUrl, "_self");
-            // console.log(responseData?.data?.data?.data?.toPayUrl)
           },
           onError: (err) => { },
         }

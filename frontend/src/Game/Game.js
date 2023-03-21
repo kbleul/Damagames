@@ -105,30 +105,30 @@ const Game = () => {
     const player1 = [
       "a8",
       "c8",
-      "e8",
-      "g8",
-      "b7",
-      "d7",
-      "f7",
-      "h7",
-      "a6",
-      "c6",
-      "e6",
-      "g6",
+      // "e8",
+      // "g8",
+      // "b7",
+      // "d7",
+      // "f7",
+      // "h7",
+      // "a6",
+      // "c6",
+      // "e6",
+      // "g6",
     ];
     const player2 = [
       "b3",
       "d3",
-      "f3",
-      "h3",
-      "a2",
-      "c2",
-      "e2",
-      "g2",
-      "b1",
-      "d1",
-      "f1",
-      "h1",
+      // "f3",
+      // "h3",
+      // "a2",
+      // "c2",
+      // "e2",
+      // "g2",
+      // "b1",
+      // "d1",
+      // "f1",
+      // "h1",
     ];
 
     player1.forEach(function (i) {
@@ -374,7 +374,6 @@ const Game = () => {
       track = gametrackes.tracker;
     }
 
-    //   console.log("Rever: ", gameState.moves, gameState.activePiece)
     id == 1
       ? setGameState((prevGameState) => {
         return {
@@ -443,7 +442,6 @@ const Game = () => {
   const temp = JSON.parse(localStorage.getItem("p2Info"))
   const p2Info = temp?.username ? JSON.parse(localStorage.getItem("p2Info")) : JSON.parse(JSON.parse(localStorage.getItem("p2Info")))
   const p1Info = localStorage.getItem("p1");
-  console.log({"p2Info":p2Info?.username})
   let gameStatus;
   switch (gameState.winner) {
     case "player1pieces":
@@ -772,10 +770,6 @@ const Game = () => {
     //listen for chat message
     socket.on("getChatMessage", (data) => {
       setMsgSender(data.sender);
-      console.log(data.sender);
-      console.log(localStorage.getItem("playerOne") === "playerOne");
-      console.log(localStorage.getItem("playerTwo") === "playerTwo");
-
       setLatestMessage(data.message);
     });
     //if the first player not in the game
@@ -809,7 +803,6 @@ const Game = () => {
 
   const timeChecker = () => {
     let myCounter = 0;
-    console.log(id == 1)
     if (id != 1 && currentPlayer && localStorage.getItem("playerOneIp")) {
       intervalRef.current = setInterval(() => {
         if (myCounter === 0) {

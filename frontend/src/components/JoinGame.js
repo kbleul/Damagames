@@ -39,7 +39,6 @@ const JoinGame = () => {
   useEffect(() => {
     socket.on("getMessage", (data) => {
       if (data?.player2) {
-        console.log({ data });
         setIsMessageSent(false);
         setIsMessageListened(true);
         useLess.current = true;
@@ -175,7 +174,7 @@ const JoinGame = () => {
           }
         );
       }
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const handleJoin = () => {
@@ -200,8 +199,8 @@ const JoinGame = () => {
             ? `${process.env.REACT_APP_BACKEND_URL}auth-start-game/${id}`
             : `${process.env.REACT_APP_BACKEND_URL}add-player/${id}`
           : user && token
-          ? `${process.env.REACT_APP_BACKEND_URL}auth-start-game/${gameId}`
-          : `${process.env.REACT_APP_BACKEND_URL}add-player/${gameId}`,
+            ? `${process.env.REACT_APP_BACKEND_URL}auth-start-game/${gameId}`
+            : `${process.env.REACT_APP_BACKEND_URL}add-player/${gameId}`,
         newData,
         {
           headers: user && token ? header : headers,
@@ -250,9 +249,9 @@ const JoinGame = () => {
           );
           localStorage.setItem("gameId", responseData?.data?.data?.game);
         },
-        onError: (err) => {},
+        onError: (err) => { },
       });
-    } catch (err) {}
+    } catch (err) { }
   };
 
   //with code
@@ -289,9 +288,9 @@ const JoinGame = () => {
           );
           localStorage.setItem("gameId", responseData?.data?.data?.game);
         },
-        onError: (err) => {},
+        onError: (err) => { },
       });
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const handleSubmitCode = () => {
@@ -384,7 +383,7 @@ const JoinGame = () => {
           }
         );
       }
-    } catch (err) {}
+    } catch (err) { }
   };
   return (
     <div

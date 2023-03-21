@@ -139,10 +139,9 @@ body {
 .square.player2 {
   background-image: url("/src/assets/yellow-coin.svg");
   /* background-image: url("/src/assets/3d.svg"); */
-  
+
   background-size: contain;
   background-position: center;
-  
 }
 
 .square.player1.myturn {

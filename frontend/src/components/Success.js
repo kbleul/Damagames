@@ -26,7 +26,6 @@ const Success = () => {
       retry: false,
       enabled: !!token,
       onSuccess: (res) => {
-        console.log(res?.data?.data);
         localStorage.setItem(
           "dama_user_data",
           JSON.stringify({

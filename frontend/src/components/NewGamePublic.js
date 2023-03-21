@@ -36,7 +36,7 @@ const NewGamePublic = () => {
   const [value, setValue] = useState("");
   const [code, setCode] = useState("");
   const [codeCopied, setCodeCopied] = useState(false);
-  const [isExitModalOpen , setIsExitModalOpen] = useState(false);
+  const [isExitModalOpen, setIsExitModalOpen] = useState(false);
 
   const headers = {
     "Content-Type": "application/json",
@@ -170,7 +170,6 @@ const NewGamePublic = () => {
 
   const shareLink = async () => {
     const tempurl = value.split("/").splice(-1)[0];
-    // console.log(tempurl[0])
     if (navigator.share) {
       try {
         await navigator
@@ -179,19 +178,13 @@ const NewGamePublic = () => {
           })
           .then(() => console.log(""));
       } catch (error) {
-        //  console.log(`Oops! I couldn't share to the world because: ${error}`);
       }
     } else {
-      // fallback code
-      // console.log(
-      //   "Web share is currently not supported on this browser. Please provide a callback"
-      // );
     }
   };
 
   useEffect(() => {
     socket.on("getMessage", (data) => {
-      // console.log(data)
       if (data.status === "started") {
         // localStorage.setItem("p1", data.player1);
         localStorage.setItem("p2", data.player2);
@@ -215,7 +208,7 @@ const NewGamePublic = () => {
     >
       <button
         className="z-10 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 fixed left-2 md:left-4"
-        onClick={() => isCreated ? setIsExitModalOpen(true) : navigate("/create-game") }
+        onClick={() => isCreated ? setIsExitModalOpen(true) : navigate("/create-game")}
       >
         <svg
           width="18"
