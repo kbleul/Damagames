@@ -118,4 +118,14 @@ class PlayersController extends Controller
                 'ip' => request()->ip(),
             ], 201);
     }
+
+    public function game_status(Game $game)
+    {
+
+        $game->update([
+            'status' => 2,
+        ]);
+
+        return "success";
+    }
 }
