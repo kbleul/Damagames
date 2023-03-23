@@ -10,6 +10,8 @@ export function HomeProvider({ children }) {
   const [checked, setChecked] = useState(false);
   const [isBet, setIsBet] = useState(false)
   const [betCoin, setBetCoin] = useState(0)
+  const [messageType, setMessageType] = useState(null);
+
 
   // const [tokenExpirationDate, setTokenExpirationDate] = useState();
 
@@ -22,7 +24,8 @@ export function HomeProvider({ children }) {
     <HomeContext.Provider
       value={{
         checked, isBet, setIsBet,
-        betCoin, setBetCoin
+        betCoin, setBetCoin,
+        messageType, setMessageType
       }}
     >
       {children}

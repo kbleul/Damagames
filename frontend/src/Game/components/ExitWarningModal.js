@@ -3,6 +3,8 @@ import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import socket from "../../utils/socket.io";
 import { clearCookie } from "../../utils/data";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 export default function ExitWarningModal({
   isExitModalOpen,
@@ -12,9 +14,49 @@ export default function ExitWarningModal({
 }) {
   const navigate = useNavigate();
   const gameId = localStorage.getItem("gameId");
+
+  const headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json"
+  };
+
+  const exitGameMutation = useMutation(
+    async (newData) =>
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}game-exit/${gameId}`,
+        newData,
+        {
+          headers,
+        }
+      ),
+    {
+      retry: false,
+    }
+  );
+
+  const exitGameMutationSubmitHandler = async (values) => {
+    try {
+      exitGameMutation.mutate(
+        {
+        },
+        {
+          onSuccess: (responseData) => {
+            console.log(responseData?.data)
+          },
+          onError: (err) => {
+            console.log(err)
+
+          },
+        }
+      );
+    } catch (err) { }
+  };
+
+
   const handleExit = () => {
     //exit socket code here
     if (gameState?.players > 1 || beforeGame) {
+      exitGameMutationSubmitHandler()
       socket.emit("sendExitGameRequest", { status: "Exit" });
     }
     socket.emit('leave', gameId)

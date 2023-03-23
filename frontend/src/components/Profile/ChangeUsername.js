@@ -111,19 +111,16 @@ const ChangeProfile = ({ changeUsernameModal, setChangeUsernameModal, username }
                 leaveTo="opacity-0 scale-95"
               >
                 <Dialog.Panel
-                  className="w-full max-w-md transform overflow-hidden 
+                  className="border border-orange-500 bg-[#181920] w-full max-w-md transform overflow-hidden 
             rounded-2xl bg-dark-bg p-6 text-left align-middle shadow-xl transition-all"
                 >
 
                   <div
                     onClick={() => setChangeUsernameModal(false)}
-                    className={`absolute right-3 top-2 border-2 rounded-md  p-1 cursor-pointer`}
+                    className={`text-orange-color absolute rounded-full border-2 border-orange-color right-3 top-2 cursor-pointer`}
                   >
                     <FaTimes
-                      size={15}
-                      style={{
-                        color: "#fff",
-                      }}
+                      size={20}
                     />
                   </div>
                   <article className="flex flex-col items-center justify-center mt-8 text-white">

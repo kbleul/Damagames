@@ -6,6 +6,7 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { BiMenu } from 'react-icons/bi';
 import { CiMenuKebab } from 'react-icons/ci';
+import Avatar from "../assets/Avatar.png"
 
 
 
@@ -99,36 +100,37 @@ const SideMenu = ({ isprofile }) => {
           !isprofile && <>
             <article className="flex ">
 
-              <section className="w-[96%] md:[90%] flex items-end justify-end ">
-                <div className="w-14 h-14 md:w-16 md:h-16 border-2 border-black rounded-full flex items-center justify-center font-bold">
-                  <img className="w-12 h-12 md:w-14 md:h-14  border rounded-full" src={user.profile_image} alt="profile" />
+              <section className="w-[96%] md:[90%] flex items-start justify-end ">
+                <div className="w-14 h-14 md:w-16 md:h-16 border-2  border-black rounded-full flex items-center justify-center font-bold">
+                  <img className="w-12 h-12 md:w-14 md:h-14  border rounded-full" src={user.profile_image ? user.profile_image : Avatar} alt="profile" />
                 </div>
-                <div className="border-b-2 border-black w-4/5 md:[90%]">
+                <div className="border-b-2 border-black pb-2 w-4/5 md:[90%]">
                   <div className="flex justify-between items-center w-full">
                     <h5 className="text-left font-bold text-black text-base md:text-[1.2rem] ml-2">{user.username}</h5>
-                    <p className="text-xs">Games played - {historyData?.data?.data?.data?.played}</p>
                   </div>
-                  <p className="text-[.6rem] md:text-xs text-left ml-2">Coins earned : {user.coin}</p>
-
+                  <div className="flex justify-between">
+                    <p className="text-xs text-left ml-2">Coins earned : {user.coin}</p>
+                    <p className="text-xs mr-2">Games played - {historyData?.data?.data?.data?.played}</p>
+                  </div>
 
                 </div>
               </section>
 
               <div onClick={() => setShowMenu((prev) => !prev)} className="w-[4%] md:w-[10%] mr-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><path fill="none" stroke="currentColor" stroke-width="2" d="M16 24a1 1 0 1 0 0-2a1 1 0 0 0 0 2Zm0-7a1 1 0 1 0 0-2a1 1 0 0 0 0 2Zm0-7a1 1 0 1 0 0-2a1 1 0 0 0 0 2Z" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 32 32"><path fill="none" stroke="currentColor" stroke-width="2" d="M16 24a1 1 0 1 0 0-2a1 1 0 0 0 0 2Zm0-7a1 1 0 1 0 0-2a1 1 0 0 0 0 2Zm0-7a1 1 0 1 0 0-2a1 1 0 0 0 0 2Z" /></svg>
               </div>
             </article>
 
-            <section className="w-[60%] ml-[20%] flex items-center justify-center py-2 font-bold">
-              <div className="w-[33.33%] flex justify-center items-center gap-2 text-[.6rem] md:text-xs">
+            <section className="w-[60%] ml-[20%] flex items-center justify-center font-bold">
+              <div className="w-[33.33%] flex justify-center items-center gap-2 text-xs">
                 <h5>Win - </h5>
                 <p>{historyData?.data?.data?.data?.wins}</p>
               </div>
-              <div className="w-[33.33%] flex justify-center items-center gap-2 text-[.6rem] md:text-xs">
+              <div className="w-[33.33%] flex justify-center items-center gap-2 text-xs">
                 <h5>Draw - </h5>
                 <p>{historyData?.data?.data?.data?.draw}</p>
               </div>
-              <div className="w-[33.33%] flex justify-center items-center gap-2 text-[.6rem] md:text-xs">
+              <div className="w-[33.33%] flex justify-center items-center gap-2 text-xs">
                 <h5>Loss - </h5>
                 <p>{historyData?.data?.data?.data?.losses}</p>
               </div>
