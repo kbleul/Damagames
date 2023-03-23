@@ -154,7 +154,7 @@ const ChangePassword = ({ changePasswordModal, setChangePasswordModal }) => {
                             <Field
                               as="input"
                               type="text"
-                              placeholder="currentPassword"
+                              placeholder="Current Password"
                               name="currentPassword"
                               className={`rounded-[4px] pl-3 w-full h-[42px] bg-transparent font-medium  focus:outline-none focus:ring-0   text-gray-200 
                   ${errors.currentPassword && touched.currentPassword
@@ -172,7 +172,7 @@ const ChangePassword = ({ changePasswordModal, setChangePasswordModal }) => {
                             <Field
                               as="input"
                               type="text"
-                              placeholder="password"
+                              placeholder="Password"
                               name="password"
                               className={`rounded-[4px] pl-3 w-full h-[42px] bg-transparent font-medium  focus:outline-none focus:ring-0   text-gray-200 
                   ${errors.password && touched.password
@@ -189,7 +189,7 @@ const ChangePassword = ({ changePasswordModal, setChangePasswordModal }) => {
                             <Field
                               as="input"
                               type="text"
-                              placeholder="confirm Password"
+                              placeholder="Confirm Password"
                               name="confirmPassword"
                               className={`rounded-[4px] pl-3 w-full h-[42px] bg-transparent font-medium  focus:outline-none focus:ring-0   text-gray-200 
                   ${errors.confirmPassword && touched.confirmPassword

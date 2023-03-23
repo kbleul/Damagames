@@ -195,7 +195,7 @@ const Profile = () => {
                 <div className="relative max-h-[30vh] w-[70%]">
                   <img className="" src={board.item} alt="" />
                   {user.default_board === board.item &&
-                    <AiFillStar size={30} className="absolute bottom-0 right-0  text-orange-color" />
+                    <AiFillStar size={30} className="absolute bottom-0 right-0 text-yellow-300" />
                   }
                 </div>
 
@@ -227,7 +227,7 @@ const Profile = () => {
                 <div className="relative max-h-[30vh] w-[70%]">
                   <img className="" src={crown.item} alt="" />
                   {user.default_crown === crown.item &&
-                    <AiFillStar size={30} className="absolute bottom-0 right-0  text-black" />
+                    <AiFillStar size={30} className="absolute bottom-0 right-0  text-yellow-300" />
                   }
                 </div>
               </div>
