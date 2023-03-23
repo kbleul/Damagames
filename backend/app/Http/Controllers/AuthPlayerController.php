@@ -60,7 +60,6 @@ class AuthPlayerController extends Controller
     public function join_game(Game $game)
     {
 
-        // dd($game);
         if ($game->status !== 3) {
             return response()
                 ->json([
@@ -89,7 +88,7 @@ class AuthPlayerController extends Controller
 
     public function join_game_via_code(Request $request)
     {
-        $game = Game::where('code', $request->code)->first();
+        $game = Game::where('code', $request->code)->where('status', 0)->first();
 
         if (!$game) {
             abort(400, "This link is expired or it is not correct!");

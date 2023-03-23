@@ -46,6 +46,7 @@ class PlayersController extends Controller
 
     public function join_game(Game $game)
     {
+        // dd($game);
         if ($game->status !== 0) {
             return response()
                 ->json([
@@ -69,7 +70,7 @@ class PlayersController extends Controller
 
     public function join_game_via_code(Request $request)
     {
-        $game = Game::where('code', $request->code)->first();
+        $game = Game::where('code', $request->code)->where('status', 0)->first();
 
         // return $game->status == 3;
         if ($game->status == 3) {
