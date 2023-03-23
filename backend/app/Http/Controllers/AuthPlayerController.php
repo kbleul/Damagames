@@ -94,10 +94,6 @@ class AuthPlayerController extends Controller
             abort(400, "This link is expired or it is not correct!");
         }
 
-        if ($game->status === 3 && !Auth::check()) {
-            abort(400, "This game requires login because it has bet!");
-        }
-
         if ($game->status === 3) {
             $user = User::find(auth()->id());
             $bet = Bet::where('game_id', $game->id)->first();
