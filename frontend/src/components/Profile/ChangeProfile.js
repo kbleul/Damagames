@@ -9,29 +9,20 @@ import { useAuth } from "../../context/auth";
 import toast, { Toaster } from "react-hot-toast";
 import { FaTimes } from "react-icons/fa";
 import { BsFillPatchCheckFill } from "react-icons/bs";
-import { RiLock2Fill } from "react-icons/ri";
-import { ImUnlocked } from "react-icons/im";
 import { AiFillStar } from "react-icons/ai";
-import ChangeBoard from "./changeSettings/ChangeBoard";
-import ChangeCrown from "./changeSettings/ChangeCrown";
+import { useHome } from "../../context/HomeContext";
 
-const SHOWiTEM = { "AVATAR": "avatar", "BOARD": "board", "CROWN": "crown" }
 const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
   const { login, token, user } = useAuth();
-
+  const { setMessageType } = useHome();
   const [selected, setSelected] = useState(null);
 
   const [myAvatars, setMyAvatars] = useState([]);
-  const [myBoards, setMyBoards] = useState([]);
-  const [myCrowns, setMyCrowns] = useState([]);
 
 
   const [errorMessage, setErrorMessage] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
-
-  const [showItems, setShowItems] = useState(SHOWiTEM.AVATAR);
-
 
   const [pricePrompt, setPricePrompt] = useState(null);
 
@@ -64,9 +55,12 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
         },
         {
           onSuccess: (responseData) => {
-            toast("profile changed successfully");
             login(token, responseData?.data?.data);
             setChangeProfileModal(false);
+            setMessageType({
+              type: "SUCCESS",
+              message: "Avatar updated sucessfully!",
+            });
           },
           onError: (err) => {
             setErrorMessage(err?.response?.data?.data);
@@ -144,19 +138,10 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
       retry: false,
       onSuccess: (res) => {
         setMyAvatars([])
-        setMyBoards([])
-        setMyCrowns([])
 
         for (const [, value] of Object.entries(res.data.data.avatars)) {
           setMyAvatars(prev => [...prev, value])
         }
-        for (const [, value] of Object.entries(res.data.data.boards)) {
-          setMyBoards(prev => [...prev, value])
-        }
-        for (const [, value] of Object.entries(res.data.data.crowns)) {
-          setMyCrowns(prev => [...prev, value])
-        }
-
       },
       onError: err => {
         toast(err.message)
@@ -197,8 +182,8 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
                 leaveTo="opacity-0 scale-95"
               >
                 <Dialog.Panel
-                  className="w-full max-w-md transform overflow-hidden 
-            rounded-2xl bg-dark-bg p-6 text-left align-middle shadow-xl transition-all"
+                  className="border border-orange-500 bg-[#181920] w-full max-w-md transform overflow-hidden 
+            rounded-2xl p-6 text-left align-middle shadow-xl transition-all"
                 >
                   <div
                     onClick={() => {
@@ -209,13 +194,10 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
                       setSelectedItem([])
                       setErrorMessage("")
                     }}
-                    className={`absolute right-3 top-2 border-2 rounded-md  p-1 cursor-pointer`}
+                    className={`absolute right-3 top-2 text-orange-color cursor-pointer border-2 border-orange-color rounded-full`}
                   >
                     <FaTimes
-                      size={15}
-                      style={{
-                        color: "#fff",
-                      }}
+                      size={20}
                     />
                   </div>
                   <div
@@ -247,16 +229,12 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
                     )}
                     {/* profiles */}
 
-                    <section className="w-full border-b border-gray-600 flex items-center justify-center gap-8 text-sm font-bold pb-1 ">
-                      <button className={showItems === SHOWiTEM.AVATAR ? "border-b-2 border-orange-600 text-orange-600 hover:text-white cursor-pointer" : "text-white hover:text-orange-color cursor-pointer"}
-                        onClick={() => setShowItems(SHOWiTEM.AVATAR)}>Avatars</button>
-                      <button className={showItems === SHOWiTEM.BOARD ? "border-b-2 border-orange-600 text-orange-600 hover:text-white cursor-pointer" : "text-white hover:text-orange-color cursor-pointer"}
-                        onClick={() => setShowItems(SHOWiTEM.BOARD)}>Boards</button>
-                      <button className={showItems === SHOWiTEM.CROWN ? "border-b-2 border-orange-600 text-orange-600 hover:text-white cursor-pointer" : "text-white hover:text-orange-color cursor-pointer"}
-                        onClick={() => setShowItems(SHOWiTEM.CROWN)}>Crown / King</button>
-                    </section>
+                    {/* <section className="w-full border-b border-gray-600 flex items-center justify-center gap-8 text-sm font-bold pb-1 ">
+                      <button className="border-b-2 border-orange-600 text-orange-600 hover:text-white cursor-pointer"
+                      >Avatars</button>
+                    </section> */}
 
-                    {showItems === SHOWiTEM.AVATAR && <div className="flex flex-col items-center space-y-2 w-full">
+                    <div className="flex flex-col items-center space-y-2 w-full">
                       <div className="grid grid-cols-3 gap-y-2 items-center space-x-3 just-fy-center">
                         {images.map((img, i) => (
                           <div
@@ -323,21 +301,8 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
                           {profileSelectMutation.isLoading ? "Loading..." : "Update"}
                         </button>
                       )}
+                    </div>
 
-
-                    </div>}
-
-                    {showItems === SHOWiTEM.BOARD &&
-                      <ChangeBoard myBoards={myBoards} selected={selected}
-                        selectedItem={selectedItem} setSelected={setSelected} setErrorMessage={setErrorMessage}
-                        setSelectedItem={setSelectedItem} setChangeProfileModal={setChangeProfileModal} />
-                    }
-
-                    {showItems === SHOWiTEM.CROWN &&
-                      <ChangeCrown myCrowns={myCrowns} selected={selected}
-                        selectedItem={selectedItem} setSelected={setSelected} setErrorMessage={setErrorMessage}
-                        setSelectedItem={setSelectedItem} setChangeProfileModal={setChangeProfileModal} />
-                    }
                   </div>
                 </Dialog.Panel>
               </Transition.Child>

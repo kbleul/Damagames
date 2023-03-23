@@ -9,5 +9,4 @@ const socket = io(`${process.env.REACT_APP_SOCKET_URL}:${process.env.REACT_APP_S
   timeout: 20000,
 }
 );
-// { port: process.env.REACT_APP_SOCKET_PORT },
 export default socket;

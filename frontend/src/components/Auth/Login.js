@@ -49,9 +49,14 @@ const Login = () => {
         },
         {
           onSuccess: (responseData) => {
+            const newUser = {
+              ...responseData?.data?.data?.user,
+              default_board: responseData?.data?.data?.default_board,
+              default_crown: responseData?.data?.data?.default_crown
+            }
             login(
               responseData?.data?.data?.token,
-              responseData?.data?.data?.user
+              newUser
             );
             navigate('/')
           },
