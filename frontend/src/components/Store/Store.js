@@ -199,17 +199,6 @@ const Store = () => {
                 myBoardsId={myBoardsId}
               />
             ))}
-            {storeItems.boards?.map((board) => (
-              <Board
-                id={board.id}
-                board={board}
-                isOn={isOn}
-                set_isShowModalOpen={set_isShowModalOpen}
-                setSelectedItem={setSelectedItem}
-                setShowLoginModal={setShowLoginModal}
-                myBoardsId={myBoardsId}
-              />
-            ))}
           </section>
         </article>
 
@@ -218,7 +207,8 @@ const Store = () => {
           <section className="flex overflow-x-scroll  pt-4 border-2 rounded-3xl" style={{
             background: `linear-gradient(120deg, rgb(39, 138, 134) 1%, rgba(11, 42, 43, 0.32) 10%, rgb(22, 85, 82) 98%) repeat scroll 0% 0%`,
           }}>
-            {storeItems?.crowns?.reverse().map((crown) => (
+          
+            {storeItems?.crowns?.map((crown) => (
               <Crown
                 id={crown.id}
                 crown={crown}

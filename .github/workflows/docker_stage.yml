@@ -59,4 +59,6 @@ jobs:
           TELEBIRR_RECIEVE_NAME: ${{ vars.TELEBIRR_RECIEVE_NAME }}
           OTP_URL: ${{ vars.OTP_URL }}
           OTP_USERNAME: ${{ vars.OTP_USERNAME }}
-          OTP_PASSWORD: ${{ vars.OTP_PASSWORD }}
+          OTP_PASSWORD: ${{ secrets.OTP_PASSWORD }}
+          REACT_APP_FRONTEND_URL: ${{ vars.STAGE_REACT_APP_FRONTEND_URL }}
+          REACT_APP_BACKEND_URL: ${{ vars.STAGE_REACT_APP_BACKEND_URL }}
