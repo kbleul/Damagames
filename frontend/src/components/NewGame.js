@@ -465,29 +465,6 @@ const NewGame = () => {
                 </p>
               </div>
 
-              {/* <input
-                type="text"
-                value={value}
-                disabled
-                className=" bg-transparent text-white focus:outline-none focus:ring-0  w-full pr-2 "
-              />
-
-              <button onClick={() => setCodeCopied(true)} className={codeCopied ? "text-green-500 text-sm border-l-2 p-2 font-bold" : "text-white text-sm border-l-2 p-2 font-bold"}>{codeCopied ? "Copied" : "Copy"}</button> */}
-
-              {/* <CopyToClipboard
-                className="w-8 h-5 text-orange-color border-2 border-orange-color p-2"
-                text={value}
-                onCopy={() => setIsCopied(true)}
-              >
-                {isCopied ? (
-                  <p className="text-xs text-green-500">Copied</p>
-                ) : (
-                  <IoIosCopy
-                    className={`${isCopied ? "text-green-500" : "text-gray-300"
-                      }`}
-                  />
-                )}
-              </CopyToClipboard> */}
             </div>
             {/* via code */}
             <div className="flex items-center space-x-2 justify-center">
@@ -503,21 +480,6 @@ const NewGame = () => {
                 disabled
                 className="border-r-2 w-[90%] bg-transparent flex flex-grow text-white focus:outline-none focus:ring-0 p-2 rounded-"
               />
-
-              {/* <CopyToClipboard
-                className="w-8 h-5 text-white border-l-2 text-orange-color pl-2"
-                text={code}
-                onCopy={() => setCodeCopied(true)}
-              >
-                {codeCopied ? (
-                  <p className="text-xs text-green-500">Copied</p>
-                ) : (
-                  <IoIosCopy
-                    className={`${codeCopied ? "text-green-500" : "text-gray-400"
-                      }`}
-                  />
-                )}
-              </CopyToClipboard> */}
 
               <div className="flex items-center">
                 <CopyToClipboard
