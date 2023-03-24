@@ -32,9 +32,6 @@ jobs:
       # - name: Stop containers
       #   run: docker-compose --context prod -f docker-compose.prod.yml down --remove-orphans
 
-      - name: Show environment variables
-        run: export
-
       - name: Deploy Docker Containers
         run: |
           docker-compose --context test -f docker-compose.prod.yml up --build --remove-orphans -d
@@ -64,5 +61,3 @@ jobs:
           OTP_URL: ${{ vars.OTP_URL }}
           OTP_USERNAME: ${{ vars.OTP_USERNAME }}
           OTP_PASSWORD: ${{ secrets.OTP_PASSWORD }}
-          REACT_APP_FRONTEND_URL: ${{ vars.STAGE_REACT_APP_FRONTEND_URL }}
-          REACT_APP_BACKEND_URL: ${{ vars.STAGE_REACT_APP_BACKEND_URL }}

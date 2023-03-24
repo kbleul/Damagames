@@ -11,10 +11,10 @@ jobs:
   build_arc_docs:
     uses: ./.github/workflows/build_arc_docs.yml
 
-  # release:
-  #   uses: ./.github/workflows/release.yml
-  #   needs: ["build_arc_docs", "e2e-test"]
-  # # with:
+  release:
+    uses: ./.github/workflows/release.yml
+    needs: ["build_arc_docs", "e2e-test"]
+  #  with:
   #   secrets:
   #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -27,9 +27,9 @@ jobs:
     if: ${{ !contains(github.ref, '-rc') }}
     uses: ./.github/workflows/docker_deploy.yml
     secrets: inherit
-    # needs: "release"
+    needs: "release"
 
-  # e2e-test:
-  #   uses: ./.github/workflows/playwright.yml
-  #   secrets: inherit
-  #   needs: "deploy_staging"
+  e2e-test:
+    uses: ./.github/workflows/playwright.yml
+    secrets: inherit
+    needs: "deploy_staging"
