@@ -6,6 +6,7 @@ import { AiFillCamera } from "react-icons/ai";
 import ChangeBoard from "./changeSettings/ChangeBoard"
 import ChangeCrown from "./changeSettings/ChangeCrown"
 import { AiFillStar } from "react-icons/ai";
+import { AiFillCheckCircle } from "react-icons/ai";
 
 
 import { useQuery } from "@tanstack/react-query";
@@ -172,7 +173,7 @@ const Profile = () => {
 
       </article>
 
-      <article className="mt-16 mb-2 border-2 rounded-3xl mx-2 md:w-1/2 ml-[25%]" style={{
+      {myBoards && <article className="mt-16 mb-2 border-2 rounded-3xl mx-2 md:w-1/2 md:ml-[25%]" style={{
         background: `linear-gradient(90deg, #FF4C01 0%, rgba(0, 0, 0, 0) 139.19%)`
       }}>
         <h2 className="text-black font-extrabold">My Boards</h2>
@@ -195,7 +196,7 @@ const Profile = () => {
                 <div className="relative max-h-[30vh] w-[70%]">
                   <img className="" src={board.item} alt="" />
                   {user.default_board === board.item &&
-                    <AiFillStar size={30} className="absolute bottom-0 right-0 text-yellow-300" />
+                    <AiFillCheckCircle size={30} className="absolute bottom-0 right-0 text-green-400" />
                   }
                 </div>
 
@@ -203,8 +204,8 @@ const Profile = () => {
             ))}
           </section>}
       </article>
-
-      <article className="mt-16 mb-2 border-2 rounded-3xl mx-2 md:w-1/2 ml-[25%]" style={{
+      }
+      {myCrowns && <article className="mt-16 mb-2 border-2 rounded-3xl mx-2 md:w-1/2 md:ml-[25%]" style={{
         background: `linear-gradient(90deg, #FF4C01 0%, rgba(0, 0, 0, 0) 139.19%)`
       }}>
         <h2 className="text-black font-extrabold">My Crowns</h2>
@@ -227,13 +228,13 @@ const Profile = () => {
                 <div className="relative max-h-[30vh] w-[70%]">
                   <img className="" src={crown.item} alt="" />
                   {user.default_crown === crown.item &&
-                    <AiFillStar size={30} className="absolute bottom-0 right-0  text-yellow-300" />
+                    <AiFillCheckCircle size={30} className="absolute bottom-0 right-0  text-green-400" />
                   }
                 </div>
               </div>
             ))}
           </section>}
-      </article>
+      </article>}
 
       <ChangeBoard board={selectedBoard} showChangeBoardModal={showChangeBoardModal} setShowChangeBoardModal={setShowChangeBoardModal} />
       <ChangeCrown crown={selectedCrown} showChangeCrownModal={showChangeCrownModal} setShowChangeCrownModal={setShowChangeCrownModal} />

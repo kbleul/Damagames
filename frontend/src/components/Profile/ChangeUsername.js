@@ -5,6 +5,7 @@ import axios from "axios";
 import { useAuth } from "../../context/auth";
 import toast, { Toaster } from "react-hot-toast";
 import { FaTimes } from "react-icons/fa";
+import { AiFillCheckCircle } from "react-icons/ai";
 
 
 const SHOWiTEM = { "AVATAR": "avatar", "BOARD": "board", "CROWN": "crown" }
@@ -14,6 +15,7 @@ const ChangeProfile = ({ changeUsernameModal, setChangeUsernameModal, username }
   const [uname, setUname] = useState(username);
   const [errorMessage, setErrorMessage] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [successMessage, setSuccessMessage] = useState(null)
 
 
   const headers = {
@@ -55,21 +57,28 @@ const ChangeProfile = ({ changeUsernameModal, setChangeUsernameModal, username }
         {
           onSuccess: (responseData) => {
             setIsLoading(false)
-            setChangeUsernameModal(false);
-            console.log(responseData?.data?.data?.user)
+            // console.log(responseData?.data?.data?.user)
 
-            localStorage.setItem(
-              "dama_user_data",
-              JSON.stringify({
-                token,
-                user: {
-                  ...user,
-                  username: responseData?.data?.data?.user?.username
-                },
-              })
-            );
-            setUser({ ...user, username: responseData?.data?.data?.user?.username })
-            toast(responseData?.data?.message);
+            // localStorage.setItem(
+            //   "dama_user_data",
+            //   JSON.stringify({
+            //     token,
+            //     user: {
+            //       ...user,
+            //       username: responseData?.data?.data?.user?.username
+            //     },
+            //   })
+            // );
+            // setUser({ ...user, username: responseData?.data?.data?.user?.username })
+            // toast(responseData?.data?.message);
+
+
+            setSuccessMessage("Username changed.")
+
+            setTimeout(() => {
+              login(token, { ...user, username: responseData?.data?.data?.user?.username });
+            }, 800)
+
           },
           onError: (err) => {
             setErrorMessage(err?.response?.data?.data);
@@ -127,6 +136,10 @@ const ChangeProfile = ({ changeUsernameModal, setChangeUsernameModal, username }
                     <h2 className=" mb-4 w-[80%] text-left">Username</h2>
                     <input className="w-[90%] bg-inherit border md:border-2 focus:border-red-500 focus:outline-none focus:ring-0 border-gray-500 text-white py-2 px-4 rounded-lg" value={uname} onChange={e => setUname(e.target.value)} />
                     {errorMessage && <p className="w-[90%] text-red-400 p-4 text-xs">{errorMessage}</p>}
+                    {successMessage && <div className='text-white flex items-center justify-center pt-2'>
+                      <p>{successMessage}</p>
+                      <AiFillCheckCircle size={20} className="text-green-300" />
+                    </div>}
                     <button onClick={onSubmit} className="mt-8 w-[90%] border border-orange-color rounded-lg text-white bg-orange-color text-sm py-2">{isLoading ? "Loading..." : "Change Username"}</button>
                   </article>
                 </Dialog.Panel>
