@@ -7,6 +7,7 @@ import { useAuth } from "../../context/auth";
 import { ThreeDots } from "react-loader-spinner";
 import { useNavigate } from "react-router-dom";
 import { Footer } from "../Footer";
+import { useHome } from "../../context/HomeContext";
 const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -17,6 +18,8 @@ const Login = () => {
     : secondPlayer;
   const playerTwoId = localStorage.getItem("playerTwoIp");
   const [errorMessage, setErrorMessage] = useState("");
+  const {setMessageType } = useHome()
+
   const singUpValidationSchema = Yup.object().shape({
     phone: Yup.string()
       .matches(/^[0-9]{9}$/, "phone starts with 9 and 9 char in length")
@@ -58,6 +61,10 @@ const Login = () => {
               responseData?.data?.data?.token,
               newUser
             );
+            setMessageType({
+              type: "SUCCESS",
+              message: "Login successful!",
+            });
             navigate('/')
           },
           onError: (err) => {

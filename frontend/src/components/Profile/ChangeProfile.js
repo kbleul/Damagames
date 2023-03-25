@@ -10,6 +10,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { FaTimes } from "react-icons/fa";
 import { BsFillPatchCheckFill } from "react-icons/bs";
 import { AiFillStar } from "react-icons/ai";
+
 import { useHome } from "../../context/HomeContext";
 
 const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {

@@ -11,6 +11,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { Circles } from "react-loader-spinner";
+import ToastContainer from "./utils/ToastContainer";
 //'G-YM283P3T0J'
 const tagManagerArgs = {
   gtmId: process.env.REACT_APP_GTM_ID,
@@ -130,6 +131,7 @@ const App = () => {
     <>
       {checked ? (
         <Suspense fallback={<SplashScreen />}>
+          <ToastContainer/>
           <RoutComp />
         </Suspense>
       ) : (

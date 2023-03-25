@@ -7,9 +7,14 @@ import axios from "axios";
 import { useAuth } from "../../context/auth";
 import toast, { Toaster } from "react-hot-toast";
 import { FaTimes } from "react-icons/fa";
+import { AiFillCheckCircle } from "react-icons/ai";
+
 const ChangePassword = ({ changePasswordModal, setChangePasswordModal }) => {
   const { token } = useAuth();
+
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState(null)
+
   const changePasswordValidationSchema = Yup.object().shape({
     currentPassword: Yup.string().required("current password is required"),
     password: Yup.string().min(6).required("new password is required"),
@@ -53,8 +58,11 @@ const ChangePassword = ({ changePasswordModal, setChangePasswordModal }) => {
         },
         {
           onSuccess: (responseData) => {
-            setChangePasswordModal(false);
-            toast("password changed successfully");
+            setSuccessMessage("Password changed.")
+
+            setTimeout(() => {
+              setChangePasswordModal(false)
+            }, 800)
           },
           onError: (err) => {
             setErrorMessage(err?.response?.data?.data);
@@ -204,6 +212,11 @@ const ChangePassword = ({ changePasswordModal, setChangePasswordModal }) => {
                               </p>
                             ) : null}
                           </div>
+
+                          {successMessage && <div className='w-full text-white flex items-center justify-center pt-2'>
+                            <p>{successMessage}</p>
+                            <AiFillCheckCircle size={20} className="text-green-300" />
+                          </div>}
                           <button
                             disabled={registerMutation.isLoading}
                             type="submit"

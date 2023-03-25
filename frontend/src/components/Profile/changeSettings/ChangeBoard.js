@@ -7,15 +7,17 @@ import { Dialog, Transition } from "@headlessui/react";
 
 import { useAuth } from "../../../context/auth";
 
-import toast, { Toaster } from "react-hot-toast";
-import { useNavigate } from 'react-router-dom';
 import { FaTimes } from "react-icons/fa";
+import { useState } from 'react';
+import { AiFillCheckCircle } from "react-icons/ai";
 
 
 
 const ChangeBoard = ({ board, showChangeBoardModal, setShowChangeBoardModal }) => {
 
     const { login, token, user } = useAuth();
+    const [successMessage, setSuccessMessage] = useState(null)
+
 
     const headers = {
         "Content-Type": "application/json",
@@ -44,10 +46,11 @@ const ChangeBoard = ({ board, showChangeBoardModal, setShowChangeBoardModal }) =
                 {},
                 {
                     onSuccess: (responseData) => {
-                        console.log({ ...user, default_board: board?.item })
-                        login(token, { ...user, default_board: board?.item });
-                        setShowChangeBoardModal(false);
-                        toast("Default board? changed successfully");
+                        setSuccessMessage("Board changed.")
+
+                        setTimeout(() => {
+                            login(token, { ...user, default_board: board?.item });
+                        }, 800)
                     },
                     onError: (err) => {
                         //  setErrorMessage(err?.response?.data?.data);
@@ -103,6 +106,10 @@ const ChangeBoard = ({ board, showChangeBoardModal, setShowChangeBoardModal }) =
                                     <div className="text-white mb-4 flex flex-col items-center space-x-3 just-fy-center">
                                         <h2>{board?.name}</h2>
                                         <img className='w-1/2' src={board?.item} alt="" />
+                                        {successMessage && <div className='text-white flex items-center justify-center pt-2'>
+                                            <p>{successMessage}</p>
+                                            <AiFillCheckCircle size={20} className="text-green-300" />
+                                        </div>}
                                     </div>
 
                                     <button
