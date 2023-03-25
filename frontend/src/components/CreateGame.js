@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import SideMenu from "./SideMenu";
 import { useNavigate } from "react-router-dom";
 import background from "../assets/backdrop.jpg";
@@ -10,7 +11,7 @@ import "./style.css";
 const CreateGame = () => {
   const navigate = useNavigate();
   const { user, token } = useAuth();
-
+  const [showMenu, setShowMenu] = useState(false);
   const handleNavigate = (url) => {
     clearCookie.forEach((data) => {
       localStorage.getItem(data) && localStorage.removeItem(data);
@@ -38,9 +39,9 @@ const CreateGame = () => {
         position: "relative",
       }}
     >
-      <SideMenu />
+      <SideMenu showMenu={showMenu} setShowMenu={setShowMenu} />
 
-      <div className="max-w-xs p-3 mx-auto flex flex-col items-center justify-center gap-y-2 min-h-screen space-y-2">
+      <div onClick={() => setShowMenu(false)} className="max-w-xs p-3 mx-auto flex flex-col items-center justify-center gap-y-2 min-h-screen space-y-2">
         <div className="h-[180px] w-[200px] bg-inherit mt-18 mb-8 ">
           <img src={avatar} className="" alt="avatar" />
         </div>
