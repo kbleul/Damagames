@@ -172,7 +172,7 @@ const Profile = () => {
 
       </article>
 
-      <article className="mt-16 mb-2 border-2 rounded-3xl mx-2" style={{
+      <article className="mt-16 mb-2 border-2 rounded-3xl mx-2 md:w-1/2 ml-[25%]" style={{
         background: `linear-gradient(90deg, #FF4C01 0%, rgba(0, 0, 0, 0) 139.19%)`
       }}>
         <h2 className="text-black font-extrabold">My Boards</h2>
@@ -204,7 +204,7 @@ const Profile = () => {
           </section>}
       </article>
 
-      <article className="mt-16 mb-2 border-2 rounded-3xl mx-2" style={{
+      <article className="mt-16 mb-2 border-2 rounded-3xl mx-2 md:w-1/2 ml-[25%]" style={{
         background: `linear-gradient(90deg, #FF4C01 0%, rgba(0, 0, 0, 0) 139.19%)`
       }}>
         <h2 className="text-black font-extrabold">My Crowns</h2>
