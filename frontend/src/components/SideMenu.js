@@ -10,10 +10,10 @@ import Avatar from "../assets/Avatar.png"
 
 
 
-const SideMenu = ({ isprofile }) => {
+const SideMenu = ({ showMenu, setShowMenu, isprofile }) => {
   const navigate = useNavigate();
   const { user, token, logout } = useAuth();
-  const [showMenu, setShowMenu] = useState(false);
+
 
   const headers = {
     "Content-Type": "application/json",
@@ -101,7 +101,7 @@ const SideMenu = ({ isprofile }) => {
             <article className="flex ">
 
               <section className="w-[96%] md:[90%] flex items-start justify-end ">
-                <div className="w-14 h-14 md:w-16 md:h-16 border-2  border-black rounded-full flex items-center justify-center font-bold">
+                <div onClick={() => navigate("/profile")} className="w-14 h-14 md:w-16 md:h-16 border-2  border-black rounded-full flex items-center justify-center font-bold">
                   <img className="w-12 h-12 md:w-14 md:h-14  border rounded-full" src={user.profile_image ? user.profile_image : Avatar} alt="profile" />
                 </div>
                 <div className="border-b-2 border-black pb-2 w-4/5 md:[90%]">

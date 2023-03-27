@@ -1,20 +1,21 @@
 
 
-import React, { Fragment, useEffect } from 'react'
+import React, { Fragment, useState } from 'react'
 import axios from "axios";
 import { useMutation, } from "@tanstack/react-query";
 import { Dialog, Transition } from "@headlessui/react";
 
 import { useAuth } from "../../../context/auth";
 
-import toast, { Toaster } from "react-hot-toast";
-import { useNavigate } from 'react-router-dom';
 import { FaTimes } from "react-icons/fa";
+import { AiFillCheckCircle } from "react-icons/ai";
+
 
 
 const ChangeCrown = ({ crown, showChangeCrownModal, setShowChangeCrownModal }) => {
 
     const { login, token, user } = useAuth();
+    const [successMessage, setSuccessMessage] = useState(null)
 
     const headers = {
         "Content-Type": "application/json",
@@ -43,10 +44,13 @@ const ChangeCrown = ({ crown, showChangeCrownModal, setShowChangeCrownModal }) =
                 {},
                 {
                     onSuccess: (responseData) => {
-                        console.log({ ...user, default_crown: crown?.item })
-                        login(token, { ...user, default_crown: crown?.item });
-                        setShowChangeCrownModal(false);
-                        toast("Default crown changed successfully");
+                       
+                        setSuccessMessage("Crown changed.")
+
+                        setTimeout( () => {
+                            login(token, { ...user, default_crown: crown?.item });
+                        },800)
+
                     },
                     onError: (err) => {
                         //  setErrorMessage(err?.response?.data?.data);
@@ -102,6 +106,10 @@ const ChangeCrown = ({ crown, showChangeCrownModal, setShowChangeCrownModal }) =
                                     <div className="text-white mb-4 flex flex-col items-center space-x-3 just-fy-center">
                                         <h2>{crown?.name}</h2>
                                         <img className='w-1/2' src={crown?.item} alt="" />
+                                        {successMessage && <div className='text-white flex items-center justify-center pt-2'>
+                                            <p>{successMessage}</p>
+                                            <AiFillCheckCircle size={20} className="text-green-300" />
+                                        </div>}
                                     </div>
 
                                     <button

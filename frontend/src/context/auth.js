@@ -45,12 +45,12 @@ export function AuthProvider({ children }) {
     if (storedData) {
       if (storedData?.token) {
         loginData = login(storedData?.token, storedData?.user);
-        setTimeout(() => setChecked(true), 3000);
+        setTimeout(() => setChecked(true), 300);
       }
 
-      setTimeout(() => setChecked(true), 3000);
+      setTimeout(() => setChecked(true), 300);
     }
-    setTimeout(() => setChecked(true), 3000);
+    setTimeout(() => setChecked(true), 300);
   }, [loginData]);
 
   //Return
