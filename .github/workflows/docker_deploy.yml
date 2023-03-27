@@ -9,22 +9,22 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+    - uses: actions/checkout@v2
 
-      - name: Set version
-        run: php ./update-version-file.php
+    - name: Set version
+      run: php ./update-version-file.php
 
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.STAGE_SSH_PRIVATE_KEY }}
-          #name: id_rsa # optional
-          known_hosts: ${{ vars.STAGE_SSH_FINGERPRINT }}
-          #config: ${{ secrets.CONFIG }} # ssh_config; optional
-          #if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
+    - name: Install SSH key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.STAGE_SSH_PRIVATE_KEY }}
+        #name: id_rsa # optional
+        known_hosts: ${{ vars.STAGE_SSH_FINGERPRINT }}
+        #config: ${{ secrets.CONFIG }} # ssh_config; optional
+        #if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
 
-      - name: Create docker context
-        run: docker context create test --docker "host=ssh://${{ vars.REMOTE_USER }}@${{ vars.STAGE_REMOTE_HOST }}"
+    - name: Create docker context
+      run: docker context create test --docker "host=ssh://${{ vars.REMOTE_USER }}@${{ vars.STAGE_REMOTE_HOST }}"
 
         # - name: Remove old php container to force build
         #   run: docker-compose --context prod -f docker-compose.prod.yml rm -s -f
