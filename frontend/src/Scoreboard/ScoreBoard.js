@@ -17,7 +17,7 @@ const ScoreBoard = () => {
   const scoreBoardData = useQuery(
     ["soreBoardDataApi"],
     async () =>
-      await axios.get(`https://api.test.damagames.com/api/scores`, {
+      await axios.get(`${process.env.REACT_APP_BACKEND_URL}scores`, {
         headers,
       }),
     {
