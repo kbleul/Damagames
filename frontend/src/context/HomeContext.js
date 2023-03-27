@@ -8,10 +8,15 @@ export function useHome() {
 
 export function HomeProvider({ children }) {
   const [checked, setChecked] = useState(false);
-  const [isBet, setIsBet] = useState(false)
-  const [betCoin, setBetCoin] = useState(0)
+  const [isBet, setIsBet] = useState(false);
+  const [betCoin, setBetCoin] = useState(0);
   const [messageType, setMessageType] = useState(null);
-
+  const [playerOneCrown, setPlayerOneCrown] = useState(
+    localStorage.getItem("playerOneCrown")
+  );
+  const [playerTwoCrown, setPlayerTwoCrown] = useState(
+    localStorage.getItem("playerTwoCrown")
+  );
 
   // const [tokenExpirationDate, setTokenExpirationDate] = useState();
 
@@ -23,9 +28,17 @@ export function HomeProvider({ children }) {
   return (
     <HomeContext.Provider
       value={{
-        checked, isBet, setIsBet,
-        betCoin, setBetCoin,
-        messageType, setMessageType
+        checked,
+        isBet,
+        setIsBet,
+        betCoin,
+        setBetCoin,
+        messageType,
+        setMessageType,
+        playerOneCrown,
+        setPlayerOneCrown,
+        playerTwoCrown,
+        setPlayerTwoCrown,
       }}
     >
       {children}

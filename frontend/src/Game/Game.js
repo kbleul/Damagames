@@ -29,9 +29,26 @@ import { clearCookie } from "../utils/data.js";
 import { useAuth } from "../context/auth.js";
 import { IoMdLogIn } from "react-icons/io";
 import NewGameRequestModal from "./components/NewGameRequestModal.js";
+
+//crowns
+//crowns
+import kingIcon from '../assets/kingIcon.svg'
+import redNegus from '../assets/redNegus.svg'
+import redNegusWhite from '../assets/redNegus-white.svg'
+import { useHome } from "../context/HomeContext.js";
 const Game = () => {
   const { id } = useParams();
   const { user, token } = useAuth();
+
+  const { playerOneCrown,setPlayerOneCrown}=useHome()
+  useEffect(() => {
+    if(id){
+       document.documentElement.style.setProperty('--playerOneCrown',!user && !token ?   `url(${redNegus})` : playerOneCrown ? `url(${redNegus})` : `url(${kingIcon})`);
+       document.documentElement.style.setProperty('--playerOneCrownTurn',!user && !token ?  `url(${redNegusWhite})` : playerOneCrown ? `url(${redNegusWhite})` : `url(${redNegus})`);
+     }else{
+
+     }
+  }, []);
   const navigate = useNavigate();
   const [playMove] = useSound(moveSound);
   const [playStrike] = useSound(strikeSound);
@@ -105,30 +122,30 @@ const Game = () => {
     const player1 = [
       "a8",
       "c8",
-      "e8",
-      "g8",
-      "b7",
-      "d7",
-      "f7",
-      "h7",
-      "a6",
-      "c6",
-      "e6",
-      "g6",
+      // "e8",
+      // "g8",
+      // "b7",
+      // "d7",
+      // "f7",
+      // "h7",
+      // "a6",
+      // "c6",
+      // "e6",
+      // "g6",
     ];
     const player2 = [
       "b3",
       "d3",
-      "f3",
-      "h3",
-      "a2",
-      "c2",
-      "e2",
-      "g2",
-      "b1",
-      "d1",
-      "f1",
-      "h1",
+      // "f3",
+      // "h3",
+      // "a2",
+      // "c2",
+      // "e2",
+      // "g2",
+      // "b1",
+      // "d1",
+      // "f1",
+      // "h1",
     ];
 
     player1.forEach(function (i) {

@@ -5,6 +5,7 @@ body {
 }
 
 #root {
+  /* --playerOneCrown: url('../assets/redNegus.svg'); */
   /* height: 90vh; */
   display: flex;
   flex-direction: column;
@@ -130,7 +131,7 @@ body {
 }
 
 .square.player1 {
-  /* background-image: url("img/orange-coin.svg"); */
+  /* background-image: url("/src/assets/img/kingIcon.svg"); */
   background-image: url("/src/assets/orange-coin.svg");
   /* background-image: url("/src/assets/3d.svg"); */
   background-size: cover;
@@ -156,7 +157,8 @@ body {
 }
 
 .square.player1.king {
-  background-image: url("/src/assets/redNegus.svg");
+  /* kingIcon.svg */
+  background-image: var(--playerOneCrown);
   background-size: cover;
   background-position: center;
 }
@@ -167,7 +169,7 @@ body {
 }
 
 .square.player1.king.myturn {
-  background-image: url("/src/assets/redNegus-white.svg");
+  background-image: var(--playerOneCrownTurn);
   background-size: cover;
   background-position: center;
 }
