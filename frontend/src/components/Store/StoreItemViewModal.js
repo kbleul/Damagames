@@ -63,6 +63,7 @@ const StoreItemView = ({
 									user: {
 										...user,
 										coin: parseInt(user.coin) - parseInt(item.price),
+										current_point: parseInt(user.coin) - parseInt(item.price)
 									},
 								})
 							);
@@ -71,6 +72,7 @@ const StoreItemView = ({
 							setUser({
 								...user,
 								coin: parseInt(user.coin) - parseInt(item.price),
+								current_point: parseInt(user.coin) - parseInt(item.price)
 							});
 					},
 					onError: (err) => {
