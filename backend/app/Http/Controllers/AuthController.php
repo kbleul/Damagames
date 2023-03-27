@@ -94,8 +94,8 @@ class AuthController extends SendSmsController
                 'message' => 'Logged In!',
                 'token' => $token,
                 'user' => $user,
-                'default_board' => UserItem::where('user_id', auth()->id())->whereRelation('item', 'type', 'Board')->first()->item->item ?? null,
-                'default_crown' => UserItem::where('user_id', auth()->id())->whereRelation('item', 'type', 'Crown')->first()->item->item ?? null,
+                'default_board' => UserItem::where('user_id', auth()->id())->whereRelation('item', 'type', 'Board')->first()->item ?? null,
+                'default_crown' => UserItem::where('user_id', auth()->id())->whereRelation('item', 'type', 'Crown')->first()->item ?? null,
             ], 201);
         } else {
             return response()->json(['message' => 'Password is incorrect.'], 400);
