@@ -30,8 +30,8 @@ class StoreItemRequest extends FormRequest
             'item' => 'required|mimes:png,jpeg,jpg,svg|max:5000',
             'color1' => 'required_if:type,Board',
             'color2' => 'required_if:type,Board',
-            'board_pown1' => 'required_if:type,Board',
-            'board_pown2' => 'required_if:type,Board',
+            'board_pawn1' => 'required_if:type,Board',
+            'board_pawn2' => 'required_if:type,Board',
         ];
     }
 }

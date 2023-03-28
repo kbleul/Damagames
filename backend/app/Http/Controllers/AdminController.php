@@ -83,11 +83,11 @@ class AdminController extends Controller
         ]);
 
         if ($request->type === "Board") {
-            if ($request->hasFile('board_pown1') && $request->file('board_pown1')->isValid()) {
-                $item->addMediaFromRequest('board_pown1')->toMediaCollection('board_pown1');
+            if ($request->hasFile('board_pawn1') && $request->file('board_pawn1')->isValid()) {
+                $item->addMediaFromRequest('board_pawn1')->toMediaCollection('board_pawn1');
             }
-            if ($request->hasFile('board_pown2') && $request->file('board_pown2')->isValid()) {
-                $item->addMediaFromRequest('board_pown2')->toMediaCollection('board_pown2');
+            if ($request->hasFile('board_pawn2') && $request->file('board_pawn2')->isValid()) {
+                $item->addMediaFromRequest('board_pawn2')->toMediaCollection('board_pawn2');
             }
         }
 
