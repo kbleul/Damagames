@@ -46,20 +46,29 @@ class Store extends Model  implements HasMedia
     {
         $image = $this->getMedia('item')->last();
 
-        return $image->getUrl() ?? " ";
+        if (!empty($image)) {
+            return $image->getUrl();
+        }
+       return ""; 
     }
 
     public function getBoardPawn1Attribute()
     {
         $image = $this->getMedia('board_pawn1')->last();
 
-        return $image->getUrl() ?? " ";
+        if (!empty($image)) {
+            return $image->getUrl();
+        }
+       return ""; 
     }
 
     public function getBoardPawn2Attribute()
     {
         $image = $this->getMedia('board_pawn2')->last();
 
-        return $image->getUrl() ?? " ";
+        if (!empty($image)) {
+            return $image->getUrl();
+        }
+       return ""; 
     }
 }
