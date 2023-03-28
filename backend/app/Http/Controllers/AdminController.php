@@ -79,6 +79,7 @@ class AdminController extends Controller
             'color' => [
                 'color1' => $request->color1,
                 'color2' => $request->color2,
+                'lastMoveColor' => $request->lastMoveColor,
             ],
         ]);
 
@@ -88,6 +89,14 @@ class AdminController extends Controller
             }
             if ($request->hasFile('board_pawn2') && $request->file('board_pawn2')->isValid()) {
                 $item->addMediaFromRequest('board_pawn2')->toMediaCollection('board_pawn2');
+            }
+
+            if ($request->hasFile('board_pawn1_turn') && $request->file('board_pawn1_turn')->isValid()) {
+                $item->addMediaFromRequest('board_pawn1_turn')->toMediaCollection('board_pawn1_turn');
+            }
+
+            if ($request->hasFile('board_pawn2_turn') && $request->file('board_pawn2_turn')->isValid()) {
+                $item->addMediaFromRequest('board_pawn2_turn')->toMediaCollection('board_pawn2_turn');
             }
         }
 
@@ -104,11 +113,36 @@ class AdminController extends Controller
             'price' => $request->price ?? $store->price,
             'discount' => $request->discount ?? $store->discount,
             'type' => $request->type ?? $store->type,
+            'color' => [
+                'color1' => $request->color1 ?? $store->color['color1'],
+                'color2' => $request->color2 ?? $store->color['color2'],
+            ],
         ]);
 
         if ($request->hasFile('item') && $request->file('item')->isValid()) {
-            $store->clearMediaCollection();
+            $store->clearMediaCollection('item');
             $store->addMediaFromRequest('item')->toMediaCollection('item');
+        }
+
+        if ($store->type === "Board") {
+            if ($request->hasFile('board_pawn1') && $request->file('board_pawn1')->isValid()) {
+                $store->clearMediaCollection('board_pawn1');
+                $store->addMediaFromRequest('board_pawn1')->toMediaCollection('board_pawn1');
+            }
+            if ($request->hasFile('board_pawn2') && $request->file('board_pawn2')->isValid()) {
+                $store->clearMediaCollection('board_pawn2');
+                $store->addMediaFromRequest('board_pawn2')->toMediaCollection('board_pawn2');
+            }
+
+            if ($request->hasFile('board_pawn1_turn') && $request->file('board_pawn1_turn')->isValid()) {
+                $store->clearMediaCollection('board_pawn1_turn');
+                $store->addMediaFromRequest('board_pawn1_turn')->toMediaCollection('board_pawn1_turn');
+            }
+
+            if ($request->hasFile('board_pawn2_turn') && $request->file('board_pawn2_turn')->isValid()) {
+                $store->clearMediaCollection('board_pawn2_turn');
+                $store->addMediaFromRequest('board_pawn2_turn')->toMediaCollection('board_pawn2_turn');
+            }
         }
 
         return "Updated";
