@@ -7,7 +7,7 @@ import { Socket } from "dgram";
 const httpServer = createServer();
 const io = new Server(httpServer, {
   cors: {
-    origin:"*",
+    origin: "*",
     credentials: true,
   },
 });
@@ -114,6 +114,11 @@ io.on("connection", (socket) => {
     socket.on("sendMessage", (data) => {
       io.to(room).emit("getMessage", data);
     });
+
+    socket.on("sendCrownType", (data) => {
+      io.to(room).emit("getCrownType", data);
+    });
+
     socket.on("sendGameMessage", (data) => {
       io.to(room).emit("getGameMessage", data);
       // socket.broadcast.to(room).emit("getGameMessage", data);
