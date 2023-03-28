@@ -110,19 +110,29 @@ const Board = (props) => {
       squareClasses.push(moveClass);
     }
 
-    const coinType = user
+    const pawnType = user
       ? user.default_board
         ? user.default_board.name
         : ""
       : "";
 
+    let crownType = user
+      ? user.default_crown
+        ? user.default_crown.name
+        : ""
+      : "";
+
     if (props.boardState[coordinates] !== null) {
       squareClasses.push(
-        props.boardState[coordinates].player + " " + coinType + " piece"
+        props.boardState[coordinates].player + " " + pawnType + " piece"
       );
 
       if (props.boardState[coordinates].isKing === true) {
-        squareClasses.push("king");
+        props.playingCrown
+          ? props.boardState[coordinates].player === "player1"
+            ? squareClasses.push("king" + " " + props.playingCrown.p1)
+            : squareClasses.push("king" + " " + props.playingCrown.p2)
+          : squareClasses.push("king" + " " + crownType);
       }
     }
 

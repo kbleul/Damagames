@@ -32,22 +32,35 @@ import NewGameRequestModal from "./components/NewGameRequestModal.js";
 
 //crowns
 //crowns
-import kingIcon from '../assets/kingIcon.svg'
-import redNegus from '../assets/redNegus.svg'
-import redNegusWhite from '../assets/redNegus-white.svg'
+import kingIcon from "../assets/kingIcon.svg";
+import redNegus from "../assets/redNegus.svg";
+import redNegusWhite from "../assets/redNegus-white.svg";
 import { useHome } from "../context/HomeContext.js";
 const Game = () => {
   const { id } = useParams();
   const { user, token } = useAuth();
 
-  const { playerOneCrown,setPlayerOneCrown}=useHome()
+  const { playerOneCrown, setPlayerOneCrown } = useHome();
   useEffect(() => {
-    if(id){
-       document.documentElement.style.setProperty('--playerOneCrown',!user && !token ?   `url(${redNegus})` : playerOneCrown ? `url(${redNegus})` : `url(${kingIcon})`);
-       document.documentElement.style.setProperty('--playerOneCrownTurn',!user && !token ?  `url(${redNegusWhite})` : playerOneCrown ? `url(${redNegusWhite})` : `url(${redNegus})`);
-     }else{
-
-     }
+    if (id) {
+      document.documentElement.style.setProperty(
+        "--playerOneCrown",
+        !user && !token
+          ? `url(${redNegus})`
+          : playerOneCrown
+          ? `url(${redNegus})`
+          : `url(${kingIcon})`
+      );
+      document.documentElement.style.setProperty(
+        "--playerOneCrownTurn",
+        !user && !token
+          ? `url(${redNegusWhite})`
+          : playerOneCrown
+          ? `url(${redNegusWhite})`
+          : `url(${redNegus})`
+      );
+    } else {
+    }
   }, []);
   const navigate = useNavigate();
   const [playMove] = useSound(moveSound);
@@ -86,6 +99,9 @@ const Game = () => {
   const [latestMessage, setLatestMessage] = useState(null);
   const [showResetWaiting, setShowResetWaiting] = useState(false);
   const [msgSender, setMsgSender] = useState(null);
+
+  const [firstMove, setFirstMove] = useState(true);
+  const playingCrowns = useRef({});
 
   useEffect(() => {
     if (!id && !localStorage.getItem("gameId")) {
@@ -345,9 +361,9 @@ const Game = () => {
       setTimeout(() => {
         const postMoveState = movesData[1]
           ? movePiece(columns, mergerObj.moves[0], {
-            ...mergerObj,
-            jumpKills: movesData[1],
-          })
+              ...mergerObj,
+              jumpKills: movesData[1],
+            })
           : movePiece(columns, mergerObj.moves[0], mergerObj);
         if (postMoveState === null) {
           return;
@@ -376,6 +392,29 @@ const Game = () => {
   //update the game state after move
   function updateStatePostMove(postMoveState, gametrackes) {
     let track;
+    console.log(firstMove);
+
+    if (id != 1 && firstMove) {
+      const tempObj = localStorage.getItem("playerOne")
+        ? {
+            p1: user
+              ? user.default_crown
+                ? user.default_crown
+                : "Default"
+              : "Default",
+          }
+        : {
+            p2: user
+              ? user.default_crown
+                ? user.default_crown
+                : "Default"
+              : "Default",
+          };
+
+      socket.emit("sendCrownType", tempObj);
+
+      firstMove && setFirstMove(false);
+    }
 
     if (!gametrackes == 1) {
       if (gameState.moves.length === 1) {
@@ -393,42 +432,42 @@ const Game = () => {
 
     id == 1
       ? setGameState((prevGameState) => {
-        return {
-          ...prevGameState,
+          return {
+            ...prevGameState,
 
-          history: gameState.history.concat([
-            {
-              boardState: postMoveState.boardState,
-              currentPlayer: postMoveState.currentPlayer,
-            },
-          ]),
-          activePiece: postMoveState.activePiece,
-          moves: postMoveState.moves,
-          jumpKills: postMoveState.jumpKills,
-          hasJumped: postMoveState.hasJumped,
-          stepNumber: gameState.history.length,
-          winner: postMoveState.winner,
-          tracker: track,
-        };
-      })
+            history: gameState.history.concat([
+              {
+                boardState: postMoveState.boardState,
+                currentPlayer: postMoveState.currentPlayer,
+              },
+            ]),
+            activePiece: postMoveState.activePiece,
+            moves: postMoveState.moves,
+            jumpKills: postMoveState.jumpKills,
+            hasJumped: postMoveState.hasJumped,
+            stepNumber: gameState.history.length,
+            winner: postMoveState.winner,
+            tracker: track,
+          };
+        })
       : setGameState((prevGameState) => {
-        return {
-          ...prevGameState,
+          return {
+            ...prevGameState,
 
-          history: gameState.history.concat([
-            {
-              boardState: postMoveState.boardState,
-              currentPlayer: postMoveState.currentPlayer,
-            },
-          ]),
-          activePiece: postMoveState.activePiece,
-          moves: postMoveState.moves,
-          jumpKills: postMoveState.jumpKills,
-          hasJumped: postMoveState.hasJumped,
-          stepNumber: gameState.history.length,
-          winner: postMoveState.winner,
-        };
-      });
+            history: gameState.history.concat([
+              {
+                boardState: postMoveState.boardState,
+                currentPlayer: postMoveState.currentPlayer,
+              },
+            ]),
+            activePiece: postMoveState.activePiece,
+            moves: postMoveState.moves,
+            jumpKills: postMoveState.jumpKills,
+            hasJumped: postMoveState.hasJumped,
+            stepNumber: gameState.history.length,
+            winner: postMoveState.winner,
+          };
+        });
 
     if (gameState.players == 1) {
       setMyTurn(postMoveState.currentPlayer ? "player1" : "player2");
@@ -456,8 +495,10 @@ const Game = () => {
   const playerOneIp = localStorage.getItem("playerOneIp");
   const playerTwoIp = localStorage.getItem("playerTwoIp");
   const btCoin = localStorage.getItem("bt_coin_amount");
-  const temp = JSON.parse(localStorage.getItem("p2Info"))
-  const p2Info = temp?.username ? JSON.parse(localStorage.getItem("p2Info")) : JSON.parse(JSON.parse(localStorage.getItem("p2Info")))
+  const temp = JSON.parse(localStorage.getItem("p2Info"));
+  const p2Info = temp?.username
+    ? JSON.parse(localStorage.getItem("p2Info"))
+    : JSON.parse(JSON.parse(localStorage.getItem("p2Info")));
   const p1Info = localStorage.getItem("p1");
   let gameStatus;
   switch (gameState.winner) {
@@ -547,7 +588,6 @@ const Game = () => {
         }
       }
     }
-
   }, [gameState, gameStatus, winnerPlayer]);
   const resetGame = () => {
     moveRef.current = [0, 0];
@@ -683,7 +723,16 @@ const Game = () => {
   let lastElement = array[array.length - 1];
 
   useEffect(() => {
-    // let cPlayer = currentPlayer
+    let cPlayer = currentPlayer;
+
+    socket.on("getCrownType", (data) => {
+      // data.p1 && playingCrowns.current = { ...playingCrowns.current, p1: data.p1 };
+      // data.p2 && setplayingCrowns({ ...playingCrowns, p2: data.p2 });
+
+      playingCrowns.current = data.p1
+        ? { ...playingCrowns.current, p1: data.p1 }
+        : { ...playingCrowns.current, p2: data.p2 };
+    });
     socket.on(
       "getGameMessage",
       ({ winnerPlayer, boardState, currentPlayer, turnPlayer, tracker }) => {
@@ -871,7 +920,11 @@ const Game = () => {
           });
         }
       }, 1000);
-    } else if (id != 1 && !currentPlayer && localStorage.getItem("playerTwoIp")) {
+    } else if (
+      id != 1 &&
+      !currentPlayer &&
+      localStorage.getItem("playerTwoIp")
+    ) {
       intervalRef.current = setInterval(() => {
         if (myCounter === 0) {
           setTimerP2(15);
@@ -969,11 +1022,11 @@ const Game = () => {
           game_id: gameId,
         },
         {
-          onSuccess: (responseData) => { },
-          onError: (err) => { },
+          onSuccess: (responseData) => {},
+          onError: (err) => {},
         }
       );
-    } catch (err) { }
+    } catch (err) {}
   };
 
   const changeSound = () => {
@@ -1101,10 +1154,10 @@ const Game = () => {
                 ? user.username
                 : "You"
               : playerOneIp && user
-                ? user?.username
-                : playerOneIp
-                  ? firstPlayer?.username
-                  : p1Info}
+              ? user?.username
+              : playerOneIp
+              ? firstPlayer?.username
+              : p1Info}
           </h4>
         </div>
 
@@ -1136,12 +1189,12 @@ const Game = () => {
             {id == 1
               ? "Computer"
               : playerTwoIp && user
-                ? user?.username
-                : playerTwoIp
-                  ? secondPlayer?.username
-                  : p1Info
-                    ? p1Info
-                    : p2Info?.username}
+              ? user?.username
+              : playerTwoIp
+              ? secondPlayer?.username
+              : p1Info
+              ? p1Info
+              : p2Info?.username}
           </h4>
         </div>
       </section>
@@ -1236,28 +1289,29 @@ const Game = () => {
       </div>
       <div className={""}>
         <div
-          className={`box   ${!id
-            ? currentPlayer === true
-              ? currentPlayer === true && !firstPlayer
-                ? "pointer-events-none"
-                : ""
-              : currentPlayer === false
+          className={`box   ${
+            !id
+              ? currentPlayer === true
+                ? currentPlayer === true && !firstPlayer
+                  ? "pointer-events-none"
+                  : ""
+                : currentPlayer === false
                 ? currentPlayer === false && !secondPlayer
                   ? "pointer-events-none"
                   : ""
                 : ""
-            : ""
-            }`}
+              : ""
+          }`}
         >
           <Board
             boardState={
               id === "1"
                 ? dict_reverse(boardState)
                 : !id
-                  ? localStorage.getItem("playerOne")
-                    ? dict_reverse(boardState)
-                    : boardState
+                ? localStorage.getItem("playerOne")
+                  ? dict_reverse(boardState)
                   : boardState
+                : boardState
             }
             currentPlayer={currentPlayer}
             activePiece={gameState.activePiece}
@@ -1266,6 +1320,9 @@ const Game = () => {
             onClick={(coordinates) => handleClick(coordinates)}
             numberOfPlayers={gameState.players}
             tracker={gameState.tracker ? gameState.tracker : null}
+            playingCrown={
+              playingCrowns.p1 && playingCrowns.p2 ? playingCrowns : null
+            }
           />
         </div>
       </div>

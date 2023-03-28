@@ -212,10 +212,10 @@ body {
 }
 
 .square.Golden.player1.myturn {
-  background-image: url("/src/assets/Board_Coin/Golden/dark.svg");
+  background-image: url("/src/assets/Board_Coin/Golden/dark-active.svg");
 }
 .square.Golden.player2.myturn {
-  background-image: url("/src/assets/Board_Coin/Golden/light.svg");
+  background-image: url("/src/assets/Board_Coin/Golden/light-active.svg");
 }
 
 .square.Wood.player1.myturn {
@@ -227,7 +227,7 @@ body {
 
 .square.player1.king {
   /* kingIcon.svg */
-  background-image: var(--playerOneCrown);
+  background-image: url("/src/assets/redNegus.svg");
   background-size: cover;
   background-position: center;
 }
@@ -237,15 +237,188 @@ body {
   background-position: center;
 }
 
-.square.player1.king.myturn {
-  background-image: var(--playerOneCrownTurn);
-  background-size: cover;
-  background-position: center;
+.square.player1.Golden.Royals.king {
+  /* kingIcon.svg */
+  background-image: url("/src/assets/Board_Coin/Golden/dark-royal-king.svg");
 }
-.square.player2.king.myturn {
-  background-image: url("/src/assets/YellowNegus-white.svg");
-  background-size: cover;
-  background-position: center;
+.square.player2.Golden.Royals.king {
+  background-image: url("/src/assets/Board_Coin/Golden/light-royal-king.svg");
+}
+
+.square.player1.Golden.Royals.king.myturn {
+  background-image: url("/src/assets/Board_Coin/Golden/dark-royal-king-active.svg");
+}
+.square.player2.Golden.Royals.king.myturn {
+  background-image: url("/src/assets/Board_Coin/Golden/light-royal-king-active.svg");
+}
+
+.square.player1.Golden.Default.king {
+  /* kingIcon.svg */
+  background-image: url("/src/assets/Board_Coin/Golden/dark-royal-king.svg");
+}
+.square.player2.Golden.Default.king {
+  background-image: url("/src/assets/Board_Coin/Golden/light-royal-king.svg");
+}
+
+.square.player1.Golden.Default.king.myturn {
+  background-image: url("/src/assets/Board_Coin/Golden/dark-royal-king-active.svg");
+}
+.square.player2.Golden.Default.king.myturn {
+  background-image: url("/src/assets/Board_Coin/Golden/light-royal-king-active.svg");
+}
+
+.square.player1.Golden.Pearl.king {
+  /* kingIcon.svg */
+  background-image: url("/src/assets/Board_Coin/Golden/dark-pearl-king.svg");
+}
+.square.player2.Golden.Pearl.king {
+  background-image: url("/src/assets/Board_Coin/Golden/light-pearl-king.svg");
+}
+
+.square.player1.Golden.Pearl.king.myturn {
+  background-image: url("/src/assets/Board_Coin/Golden/dark-pearl-king-active.svg");
+}
+.square.player2.Golden.Pearl.king.myturn {
+  background-image: url("/src/assets/Board_Coin/Golden/light-pearl-king-active.svg");
+}
+
+.square.player1.Golden.Negest.king {
+  /* kingIcon.svg */
+  background-image: url("/src/assets/Board_Coin/Golden/dark-negest-king.svg");
+}
+.square.player2.Golden.Negest.king {
+  background-image: url("/src/assets/Board_Coin/Golden/light-negest-king.svg");
+}
+
+.square.player1.Golden.Negest.king.myturn {
+  background-image: url("/src/assets/Board_Coin/Golden/dark-negest-king-active.svg");
+}
+.square.player2.Golden.Negest.king.myturn {
+  background-image: url("/src/assets/Board_Coin/Golden/light-negest-king-active.svg");
+}
+
+/*  --------------------------------                          */
+
+.square.player1.Royal.Royals.king {
+  /* kingIcon.svg */
+  background-image: url("/src/assets/Board_Coin/Royal/dark-king-royal.svg");
+}
+.square.player2.Royal.Royals.king {
+  background-image: url("/src/assets/Board_Coin/Royal/light-king-royal.svg");
+}
+
+.square.player1.Royal.Royals.king.myturn {
+  background-image: url("/src/assets/Board_Coin/Royal/dark-king-royal-active.svg");
+}
+.square.player2.Royal.Royals.king.myturn {
+  background-image: url("/src/assets/Board_Coin/Royal/light-king-royal-active.svg");
+}
+
+.square.player1.Royal.Default.king {
+  /* kingIcon.svg */
+  background-image: url("/src/assets/Board_Coin/Royal/dark-king-default.svg");
+}
+.square.player2.Royal.Default.king {
+  background-image: url("/src/assets/Board_Coin/Royal/light-king-default.svg");
+}
+
+.square.player1.Royal.Default.king.myturn {
+  background-image: url("/src/assets/Board_Coin/Royal/dark-king-default-active.svg");
+}
+.square.player2.Royal.Default.king.myturn {
+  background-image: url("/src/assets/Board_Coin/Royal/light-king-default-active.svg");
+}
+
+.square.player1.Royal.Pearl.king {
+  /* kingIcon.svg */
+  background-image: url("/src/assets/Board_Coin/Royal/dark-king-pearl.svg");
+}
+.square.player2.Royal.Pearl.king {
+  background-image: url("/src/assets/Board_Coin/Royal/light-king-pearl.svg");
+}
+
+.square.player1.Royal.Pearl.king.myturn {
+  background-image: url("/src/assets/Board_Coin/Royal/dark-king-pearl-active.svg");
+}
+.square.player2.Royal.Pearl.king.myturn {
+  background-image: url("/src/assets/Board_Coin/Royal/light-king-pearl-active.svg");
+}
+
+.square.player1.Royal.Negest.king {
+  /* kingIcon.svg */
+  background-image: url("/src/assets/Board_Coin/Royal/dark-king-negest.svg");
+}
+.square.player2.Royal.Negest.king {
+  background-image: url("/src/assets/Board_Coin/Royal/light-king-negest.svg");
+}
+
+.square.player1.Royal.Negest.king.myturn {
+  background-image: url("/src/assets/Board_Coin/Royal/dark-king-negest-active.svg");
+}
+.square.player2.Royal.Negest.king.myturn {
+  background-image: url("/src/assets/Board_Coin/Royal/light-king-negest-active.svg");
+}
+
+/*  --------------------------------                          */
+
+.square.player1.Wood.Royals.king {
+  /* kingIcon.svg */
+  background-image: url("/src/assets/Board_Coin/Wood/dark-king-royal.svg");
+}
+.square.player2.Wood.Royals.king {
+  background-image: url("/src/assets/Board_Coin/Wood/light-king-royal.svg");
+}
+
+.square.player1.Wood.Royals.king.myturn {
+  background-image: url("/src/assets/Board_Coin/Wood/dark-king-royal-active.svg");
+}
+.square.player2.Wood.Royals.king.myturn {
+  background-image: url("/src/assets/Board_Coin/Wood/light-king-royal-active.svg");
+}
+
+.square.player1.Wood.Default.king {
+  /* kingIcon.svg */
+  background-image: url("/src/assets/Board_Coin/Wood/dark-king-default.svg");
+}
+.square.player2.Wood.Default.king {
+  background-image: url("/src/assets/Board_Coin/Wood/light-king-default.svg");
+}
+
+.square.player1.Wood.Default.king.myturn {
+  background-image: url("/src/assets/Board_Coin/Wood/dark-king-default-active.svg");
+}
+.square.player2.Wood.Default.king.myturn {
+  background-image: url("/src/assets/Board_Coin/Wood/light-king-default-active.svg");
+}
+
+.square.player1.Wood.Pearl.king {
+  /* kingIcon.svg */
+  background-image: url("/src/assets/Board_Coin/Wood/dark-king-pearl.svg");
+}
+.square.player2.Wood.Pearl.king {
+  background-image: url("/src/assets/Board_Coin/Wood/light-king-pearl.svg");
+}
+
+.square.player1.Wood.Pearl.king.myturn {
+  background-image: url("/src/assets/Board_Coin/Wood/dark-king-pearl-active.svg");
+}
+.square.player2.Wood.Pearl.king.myturn {
+  background-image: url("/src/assets/Board_Coin/Wood/light-king-pearl-active.svg");
+}
+
+.square.player1.Wood.Negest.king {
+  /* kingIcon.svg */
+  background-image: url("/src/assets/Board_Coin/Wood/dark-king-negest.svg");
+}
+.square.player2.Wood.Negest.king {
+  background-image: url("/src/assets/Board_Coin/Wood/light-king-negest.svg");
+}
+
+.square.player1.Wood.Negest.king.myturn {
+  background-image: url("/src/assets/Board_Coin/Wood/dark-king-negest-active.svg");
+}
+.square.player2.Wood.Negest.king.myturn {
+  background-image: url("/src/assets/Board_Coin/Wood/light-king-negest-active.svg");
 }
 
 .vs {

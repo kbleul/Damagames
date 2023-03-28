@@ -83,8 +83,7 @@ const NewGame = () => {
       }
     });
 
-    socket.on("userLeaveMessage", (data) => { });
-
+    socket.on("userLeaveMessage", (data) => {});
   }, []);
 
   const submitName = () => {
@@ -131,10 +130,12 @@ const NewGame = () => {
             socket.emit("leave", gameId);
             socket.emit("join-room", responseData?.data?.data?.game);
 
+            socket.emit("join-room", responseData?.data?.data?.game);
+
             setIsCreated(true);
             setValue(
               `${process.env.REACT_APP_FRONTEND_URL}/join-game/` +
-              responseData?.data?.data?.game
+                responseData?.data?.data?.game
             );
             setCode(responseData?.data?.data?.code);
             //first clear local storage
@@ -152,10 +153,10 @@ const NewGame = () => {
             );
             localStorage.setItem("playerOneIp", responseData?.data?.data?.ip);
           },
-          onError: (err) => { },
+          onError: (err) => {},
         }
       );
-    } catch (err) { }
+    } catch (err) {}
   };
 
   //no userName if the user ligged in
@@ -181,11 +182,12 @@ const NewGame = () => {
         {
           onSuccess: (responseData) => {
             socket.emit("leave", gameId);
+
             socket.emit("join-room", responseData?.data?.data?.game);
             setIsCreated(true);
             setValue(
               `${process.env.REACT_APP_FRONTEND_URL}/join-game/` +
-              responseData?.data?.data?.game
+                responseData?.data?.data?.game
             );
 
             if (betRef.current.checked) {
@@ -210,10 +212,10 @@ const NewGame = () => {
           },
         }
       );
-    } catch (err) { }
+    } catch (err) {}
   };
   useEffect(() => {
-    socket.on("private-room", (data) => { });
+    socket.on("private-room", (data) => {});
   }, []);
 
   const checkCoinAmoute = (e) => {
@@ -276,7 +278,9 @@ const NewGame = () => {
     >
       <button
         className="z-10 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 fixed left-2 md:left-4"
-        onClick={() => isCreated ? setIsExitModalOpen(true) : navigate("/create-game")}
+        onClick={() =>
+          isCreated ? setIsExitModalOpen(true) : navigate("/create-game")
+        }
       >
         <svg
           width="18"
@@ -323,7 +327,7 @@ const NewGame = () => {
                 if (betRef.current.checked) {
                   if (user && token) {
                     setShowInput(true);
-                    setCoinAmount(profileData?.data?.data?.data?.coins / 10)
+                    setCoinAmount(profileData?.data?.data?.data?.coins / 10);
                   } else {
                     //show sign in promp
                     setLoginPromt(true);
@@ -451,8 +455,9 @@ const NewGame = () => {
                     <p className="w-6 h-6 text-xs text-green-500">Copied</p>
                   ) : (
                     <IoIosCopy
-                      className={`${isCopied ? "text-green-500" : "text-red-500"
-                        }`}
+                      className={`${
+                        isCopied ? "text-green-500" : "text-red-500"
+                      }`}
                     />
                   )}
                 </CopyToClipboard>
@@ -464,7 +469,6 @@ const NewGame = () => {
                   {isCopied ? "Copied" : "Copy"}
                 </p>
               </div>
-
             </div>
             {/* via code */}
             <div className="flex items-center space-x-2 justify-center">
@@ -495,8 +499,9 @@ const NewGame = () => {
                     <p className="w-6 h-6 text-xs text-green-500">Copied</p>
                   ) : (
                     <IoIosCopy
-                      className={`${codeCopied ? "text-green-500" : "text-red-500"
-                        }`}
+                      className={`${
+                        codeCopied ? "text-green-500" : "text-red-500"
+                      }`}
                     />
                   )}
                 </CopyToClipboard>
