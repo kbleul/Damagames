@@ -33,6 +33,8 @@ class StoreItemRequest extends FormRequest
             'lastMoveColor' => 'required_if:type,Board',
             'board_pawn1' => 'required_if:type,Board',
             'board_pawn2' => 'required_if:type,Board',
+            'board_pawn1_turn' => 'required_if:type,Board',
+            'board_pawn2_turn' => 'required_if:type,Board',
         ];
     }
 }

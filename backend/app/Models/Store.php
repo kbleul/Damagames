@@ -40,7 +40,7 @@ class Store extends Model  implements HasMedia
         }
     }
 
-    public $appends = ['item', 'board_pawn1', 'board_pawn2'];
+    public $appends = ['item', 'board_pawn1', 'board_pawn2', 'board_pawn1_turn', 'board_pawn2_turn'];
 
     public function getItemAttribute()
     {
@@ -49,7 +49,7 @@ class Store extends Model  implements HasMedia
         if (!empty($image)) {
             return $image->getUrl();
         }
-       return ""; 
+        return "";
     }
 
     public function getBoardPawn1Attribute()
@@ -59,7 +59,7 @@ class Store extends Model  implements HasMedia
         if (!empty($image)) {
             return $image->getUrl();
         }
-       return ""; 
+        return "";
     }
 
     public function getBoardPawn2Attribute()
@@ -69,6 +69,26 @@ class Store extends Model  implements HasMedia
         if (!empty($image)) {
             return $image->getUrl();
         }
-       return ""; 
+        return "";
+    }
+
+    public function getBoardPawn1TurnAttribute()
+    {
+        $image = $this->getMedia('board_pawn1_turn')->last();
+
+        if (!empty($image)) {
+            return $image->getUrl();
+        }
+        return "";
+    }
+
+    public function getBoardPawn2TurnAttribute()
+    {
+        $image = $this->getMedia('board_pawn2_turn')->last();
+
+        if (!empty($image)) {
+            return $image->getUrl();
+        }
+        return "";
     }
 }

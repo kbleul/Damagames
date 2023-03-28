@@ -133,7 +133,6 @@ class StoreSeeder extends Seeder
         $board2->addMediaFromUrl(asset('store/boards/pawns/dpc3white.svg'))->toMediaCollection('board_pawn1_turn');
         $board2->addMediaFromUrl(asset('store/boards/pawns/gpc4white.svg'))->toMediaCollection('board_pawn2_turn');
 
-
         $crown1 = Store::create([
             'name' => "Crown",
             'nickname' => "",
