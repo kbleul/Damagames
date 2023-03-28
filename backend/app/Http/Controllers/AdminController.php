@@ -76,7 +76,20 @@ class AdminController extends Controller
             'price' => $request->price,
             'discount' => $request->discount,
             'type' => $request->type,
+            'color' => [
+                'color1' => $request->color1,
+                'color2' => $request->color2,
+            ],
         ]);
+
+        if ($request->type === "Board") {
+            if ($request->hasFile('board_pown1') && $request->file('board_pown1')->isValid()) {
+                $item->addMediaFromRequest('board_pown1')->toMediaCollection('board_pown1');
+            }
+            if ($request->hasFile('board_pown2') && $request->file('board_pown2')->isValid()) {
+                $item->addMediaFromRequest('board_pown2')->toMediaCollection('board_pown2');
+            }
+        }
 
         $item->addMediaFromRequest('item')->toMediaCollection('item');
 

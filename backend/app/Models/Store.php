@@ -24,6 +24,7 @@ class Store extends Model  implements HasMedia
     protected $casts = [
         'status' => 'integer',
         'price' => "integer",
+        'color' => "json",
         'discount' => "integer",
         'created_at' => "datetime:Y-m-d",
         'updated_at' => "datetime:Y-m-d",
