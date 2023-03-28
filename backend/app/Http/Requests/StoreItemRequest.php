@@ -24,10 +24,17 @@ class StoreItemRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|unique:stores,name',
+            'name' => 'required|uxnique:stores,name',
             'price' => 'required|integer',
             'type' => 'required|in:Avatar,Crown,Board',
             'item' => 'required|mimes:png,jpeg,jpg,svg|max:5000',
+            'color1' => 'required_if:type,Board',
+            'color2' => 'required_if:type,Board',
+            'lastMoveColor' => 'required_if:type,Board',
+            'board_pawn1' => 'required_if:type,Board',
+            'board_pawn2' => 'required_if:type,Board',
+            'board_pawn1_turn' => 'required_if:type,Board',
+            'board_pawn2_turn' => 'required_if:type,Board',
         ];
     }
 }
