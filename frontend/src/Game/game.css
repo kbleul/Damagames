@@ -104,10 +104,10 @@ body {
   background-color: #2c2c37;
 }
 
-.square.Brass.primary {
+.square.Wood.primary {
   background-color: #734e21;
 }
-.square.Brass.secondary {
+.square.Wood.secondary {
   background-color: #efd6ad;
 }
 
@@ -186,6 +186,13 @@ body {
   background-image: url("/src/assets/Board_Coin/Golden/light.svg");
 }
 
+.square.Wood.player1 {
+  background-image: url("/src/assets/Board_Coin/Wood/dark.svg");
+}
+.square.Wood.player2 {
+  background-image: url("/src/assets/Board_Coin/Wood/light.svg");
+}
+
 .square.player1.myturn {
   background-image: url("/src/assets/orange-coin-white.svg");
   background-size: cover;
@@ -202,6 +209,20 @@ body {
 }
 .square.Royal.player2.myturn {
   background-image: url("/src/assets/Board_Coin/Royal/silver_pawn-active.svg");
+}
+
+.square.Golden.player1.myturn {
+  background-image: url("/src/assets/Board_Coin/Golden/dark.svg");
+}
+.square.Golden.player2.myturn {
+  background-image: url("/src/assets/Board_Coin/Golden/light.svg");
+}
+
+.square.Wood.player1.myturn {
+  background-image: url("/src/assets/Board_Coin/Wood/dark-active.svg");
+}
+.square.Wood.player2.myturn {
+  background-image: url("/src/assets/Board_Coin/Wood/light-active.svg");
 }
 
 .square.player1.king {

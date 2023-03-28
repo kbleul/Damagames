@@ -15,7 +15,7 @@
       }
 
       .cls-4 {
-        fill: orange;
+        fill: #FBC300;
       }
     </style>
   </defs>
