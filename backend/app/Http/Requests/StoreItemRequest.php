@@ -24,7 +24,7 @@ class StoreItemRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|unique:stores,name',
+            'name' => 'required|uxnique:stores,name',
             'price' => 'required|integer',
             'type' => 'required|in:Avatar,Crown,Board',
             'item' => 'required|mimes:png,jpeg,jpg,svg|max:5000',
