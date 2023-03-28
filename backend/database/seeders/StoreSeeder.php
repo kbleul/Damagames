@@ -110,10 +110,10 @@ class StoreSeeder extends Seeder
             ],
         ]);
         $board1->addMediaFromUrl(asset('store/boards/royal.png'))->toMediaCollection('item');
-        $board1->addMediaFromUrl('board_pawn1')->toMediaCollection('board_pawn1');
-        $board1->addMediaFromUrl('board_pawn2')->toMediaCollection('board_pawn2');
-        $board1->addMediaFromUrl('board_pawn1_turn')->toMediaCollection('board_pawn1_turn');
-        $board1->addMediaFromUrl('board_pawn2_turn')->toMediaCollection('board_pawn2_turn');
+        $board1->addMediaFromUrl(asset('store/boards/pawns/bpc1.svg'))->toMediaCollection('board_pawn1');
+        $board1->addMediaFromUrl(asset('store/boards/pawns/tpc1.svg'))->toMediaCollection('board_pawn2');
+        $board1->addMediaFromUrl(asset('store/boards/pawns/bpc1_white.svg'))->toMediaCollection('board_pawn1_turn');
+        $board1->addMediaFromUrl(asset('store/boards/pawns/tpc1white.svg'))->toMediaCollection('board_pawn2_turn');
 
 
         $board2 = Store::create([
@@ -128,10 +128,10 @@ class StoreSeeder extends Seeder
             ],
         ]);
         $board2->addMediaFromUrl(asset('store/boards/brass.png'))->toMediaCollection('item');
-        $board2->addMediaFromUrl('board_pawn1')->toMediaCollection('board_pawn1');
-        $board2->addMediaFromUrl('board_pawn2')->toMediaCollection('board_pawn2');
-        $board2->addMediaFromUrl('board_pawn1_turn')->toMediaCollection('board_pawn1_turn');
-        $board2->addMediaFromUrl('board_pawn2_turn')->toMediaCollection('board_pawn2_turn');
+        $board2->addMediaFromUrl(asset('store/boards/pawns/dpc3.svg'))->toMediaCollection('board_pawn1');
+        $board2->addMediaFromUrl(asset('store/boards/pawns/gpc4.svg'))->toMediaCollection('board_pawn2');
+        $board2->addMediaFromUrl(asset('store/boards/pawns/dpc3white.svg'))->toMediaCollection('board_pawn1_turn');
+        $board2->addMediaFromUrl(asset('store/boards/pawns/gpc4white.svg'))->toMediaCollection('board_pawn2_turn');
 
 
         $crown1 = Store::create([
