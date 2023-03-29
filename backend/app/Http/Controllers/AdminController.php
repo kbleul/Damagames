@@ -116,6 +116,7 @@ class AdminController extends Controller
             'color' => [
                 'color1' => $request->color1 ?? $store->color['color1'],
                 'color2' => $request->color2 ?? $store->color['color2'],
+                'lastMoveColor' => $request->lastMoveColor ?? $store->color['lastMoveColor'],
             ],
         ]);
 
