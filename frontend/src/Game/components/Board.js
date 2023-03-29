@@ -77,14 +77,12 @@ const Board = (props) => {
 
     const evenColor = user
       ? user.default_board
-        ? user.default_board.name === "Golden" ?
-          `${user.default_board.name} secondary` : `${user.default_board.name} primary`
+        ? `${user.default_board.name} primary`
         : "Default primary"
       : "Default primary";
     const oddColor = user
       ? user.default_board
-        ? user.default_board.name === "Golden" ?
-          `${user.default_board.name} primary` : `${user.default_board.name} secondary`
+        ? user.default_board.name === `${user.default_board.name} secondary`
         : "Default secondary"
       : "Default secondary";
 
