@@ -48,16 +48,16 @@ const Game = () => {
         !user && !token
           ? `url(${redNegus})`
           : playerOneCrown
-          ? `url(${redNegus})`
-          : `url(${kingIcon})`
+            ? `url(${redNegus})`
+            : `url(${kingIcon})`
       );
       document.documentElement.style.setProperty(
         "--playerOneCrownTurn",
         !user && !token
           ? `url(${redNegusWhite})`
           : playerOneCrown
-          ? `url(${redNegusWhite})`
-          : `url(${redNegus})`
+            ? `url(${redNegusWhite})`
+            : `url(${redNegus})`
       );
     } else {
     }
@@ -361,9 +361,9 @@ const Game = () => {
       setTimeout(() => {
         const postMoveState = movesData[1]
           ? movePiece(columns, mergerObj.moves[0], {
-              ...mergerObj,
-              jumpKills: movesData[1],
-            })
+            ...mergerObj,
+            jumpKills: movesData[1],
+          })
           : movePiece(columns, mergerObj.moves[0], mergerObj);
         if (postMoveState === null) {
           return;
@@ -397,19 +397,19 @@ const Game = () => {
     if (id != 1 && firstMove) {
       const tempObj = localStorage.getItem("playerOne")
         ? {
-            p1: user
+          p1: user
+            ? user.default_crown
               ? user.default_crown
-                ? user.default_crown
-                : "Default"
-              : "Default",
-          }
+              : "Default"
+            : "Default",
+        }
         : {
-            p2: user
+          p2: user
+            ? user.default_crown
               ? user.default_crown
-                ? user.default_crown
-                : "Default"
-              : "Default",
-          };
+              : "Default"
+            : "Default",
+        };
 
       socket.emit("sendCrownType", tempObj);
 
@@ -432,42 +432,42 @@ const Game = () => {
 
     id == 1
       ? setGameState((prevGameState) => {
-          return {
-            ...prevGameState,
+        return {
+          ...prevGameState,
 
-            history: gameState.history.concat([
-              {
-                boardState: postMoveState.boardState,
-                currentPlayer: postMoveState.currentPlayer,
-              },
-            ]),
-            activePiece: postMoveState.activePiece,
-            moves: postMoveState.moves,
-            jumpKills: postMoveState.jumpKills,
-            hasJumped: postMoveState.hasJumped,
-            stepNumber: gameState.history.length,
-            winner: postMoveState.winner,
-            tracker: track,
-          };
-        })
+          history: gameState.history.concat([
+            {
+              boardState: postMoveState.boardState,
+              currentPlayer: postMoveState.currentPlayer,
+            },
+          ]),
+          activePiece: postMoveState.activePiece,
+          moves: postMoveState.moves,
+          jumpKills: postMoveState.jumpKills,
+          hasJumped: postMoveState.hasJumped,
+          stepNumber: gameState.history.length,
+          winner: postMoveState.winner,
+          tracker: track,
+        };
+      })
       : setGameState((prevGameState) => {
-          return {
-            ...prevGameState,
+        return {
+          ...prevGameState,
 
-            history: gameState.history.concat([
-              {
-                boardState: postMoveState.boardState,
-                currentPlayer: postMoveState.currentPlayer,
-              },
-            ]),
-            activePiece: postMoveState.activePiece,
-            moves: postMoveState.moves,
-            jumpKills: postMoveState.jumpKills,
-            hasJumped: postMoveState.hasJumped,
-            stepNumber: gameState.history.length,
-            winner: postMoveState.winner,
-          };
-        });
+          history: gameState.history.concat([
+            {
+              boardState: postMoveState.boardState,
+              currentPlayer: postMoveState.currentPlayer,
+            },
+          ]),
+          activePiece: postMoveState.activePiece,
+          moves: postMoveState.moves,
+          jumpKills: postMoveState.jumpKills,
+          hasJumped: postMoveState.hasJumped,
+          stepNumber: gameState.history.length,
+          winner: postMoveState.winner,
+        };
+      });
 
     if (gameState.players == 1) {
       setMyTurn(postMoveState.currentPlayer ? "player1" : "player2");
@@ -1022,11 +1022,11 @@ const Game = () => {
           game_id: gameId,
         },
         {
-          onSuccess: (responseData) => {},
-          onError: (err) => {},
+          onSuccess: (responseData) => { },
+          onError: (err) => { },
         }
       );
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const changeSound = () => {
@@ -1154,10 +1154,10 @@ const Game = () => {
                 ? user.username
                 : "You"
               : playerOneIp && user
-              ? user?.username
-              : playerOneIp
-              ? firstPlayer?.username
-              : p1Info}
+                ? user?.username
+                : playerOneIp
+                  ? firstPlayer?.username
+                  : p1Info}
           </h4>
         </div>
 
@@ -1189,12 +1189,12 @@ const Game = () => {
             {id == 1
               ? "Computer"
               : playerTwoIp && user
-              ? user?.username
-              : playerTwoIp
-              ? secondPlayer?.username
-              : p1Info
-              ? p1Info
-              : p2Info?.username}
+                ? user?.username
+                : playerTwoIp
+                  ? secondPlayer?.username
+                  : p1Info
+                    ? p1Info
+                    : p2Info?.username}
           </h4>
         </div>
       </section>
@@ -1289,29 +1289,28 @@ const Game = () => {
       </div>
       <div className={""}>
         <div
-          className={`box   ${
-            !id
-              ? currentPlayer === true
-                ? currentPlayer === true && !firstPlayer
-                  ? "pointer-events-none"
-                  : ""
-                : currentPlayer === false
+          className={`box   ${!id
+            ? currentPlayer === true
+              ? currentPlayer === true && !firstPlayer
+                ? "pointer-events-none"
+                : ""
+              : currentPlayer === false
                 ? currentPlayer === false && !secondPlayer
                   ? "pointer-events-none"
                   : ""
                 : ""
-              : ""
-          }`}
+            : ""
+            }`}
         >
           <Board
             boardState={
               id === "1"
                 ? dict_reverse(boardState)
                 : !id
-                ? localStorage.getItem("playerOne")
-                  ? dict_reverse(boardState)
+                  ? localStorage.getItem("playerOne")
+                    ? dict_reverse(boardState)
+                    : boardState
                   : boardState
-                : boardState
             }
             currentPlayer={currentPlayer}
             activePiece={gameState.activePiece}

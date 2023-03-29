@@ -3,11 +3,6 @@ import * as utils from "./utils.js";
 import { TurnContext } from "../../context/TurnContext";
 import { useAuth } from "../../context/auth.js";
 
-const PLAYING_COIN = {
-  Brass: ["Brass_coin-primary", "Brass_coin-secondary"],
-  Royal: ["Royal_coin-primary", "Royal_coin-secondary"],
-};
-
 const Board = (props) => {
   const { login, token, user } = useAuth();
 
@@ -23,16 +18,16 @@ const Board = (props) => {
     if (
       props.numberOfPlayers > 1
         ? JSON.parse(localStorage.getItem("playerOne")) &&
-          MyTurn === "player1" &&
-          props["squareClasses"].includes("player1")
+        MyTurn === "player1" &&
+        props["squareClasses"].includes("player1")
         : MyTurn === "player1" && props["squareClasses"].includes("player1")
     ) {
       squareClasses = props["squareClasses"] + " myturn";
     } else if (
       props.numberOfPlayers > 1
         ? JSON.parse(localStorage.getItem("playerTwo")) &&
-          MyTurn === "player2" &&
-          props["squareClasses"].includes("player2")
+        MyTurn === "player2" &&
+        props["squareClasses"].includes("player2")
         : MyTurn === "player2" && props["squareClasses"].includes("player2")
     ) {
       squareClasses = props["squareClasses"] + " myturn";
@@ -45,8 +40,8 @@ const Board = (props) => {
         <button
           className={
             tracker &&
-            (squareClasses.includes(tracker.moved) ||
-              squareClasses.includes(tracker.to))
+              (squareClasses.includes(tracker.moved) ||
+                squareClasses.includes(tracker.to))
               ? "square " + squareClasses + " tracker"
               : "square " + squareClasses
           }
@@ -91,11 +86,14 @@ const Board = (props) => {
         : "Default secondary"
       : "Default secondary";
 
+    // const evenColor = "Default primary"
+    // const oddColor = "Default secondary"
+
     const colorClass =
       (utils.isOdd(col) && utils.isOdd(row)) ||
-      (!utils.isOdd(col) && !utils.isOdd(row))
-        ? oddColor
-        : evenColor;
+        (!utils.isOdd(col) && !utils.isOdd(row))
+        ? evenColor
+        : oddColor;
 
     let squareClasses = [];
 
@@ -113,14 +111,17 @@ const Board = (props) => {
     const pawnType = user
       ? user.default_board
         ? user.default_board.name
-        : ""
-      : "";
+        : "Default"
+      : "Default";
 
     let crownType = user
       ? user.default_crown
         ? user.default_crown.name
-        : ""
-      : "";
+        : "Default"
+      : "Default";
+
+    // const pawnType = "Default"
+    // let crownType = "Royals"
 
     if (props.boardState[coordinates] !== null) {
       squareClasses.push(
@@ -130,9 +131,9 @@ const Board = (props) => {
       if (props.boardState[coordinates].isKing === true) {
         props.playingCrown
           ? props.boardState[coordinates].player === "player1"
-            ? squareClasses.push("king" + " " + props.playingCrown.p1)
-            : squareClasses.push("king" + " " + props.playingCrown.p2)
-          : squareClasses.push("king" + " " + crownType);
+            ? squareClasses.push("king " + props.playingCrown.p1)
+            : squareClasses.push("king " + props.playingCrown.p2)
+          : squareClasses.push("king " + crownType);
       }
     }
 
