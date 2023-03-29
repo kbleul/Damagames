@@ -392,7 +392,6 @@ const Game = () => {
   //update the game state after move
   function updateStatePostMove(postMoveState, gametrackes) {
     let track;
-    console.log(firstMove);
 
     if (id != 1 && firstMove) {
       const tempObj = localStorage.getItem("playerOne")
@@ -726,8 +725,6 @@ const Game = () => {
     let cPlayer = currentPlayer;
 
     socket.on("getCrownType", (data) => {
-      // data.p1 && playingCrowns.current = { ...playingCrowns.current, p1: data.p1 };
-      // data.p2 && setplayingCrowns({ ...playingCrowns, p2: data.p2 });
 
       playingCrowns.current = data.p1
         ? { ...playingCrowns.current, p1: data.p1 }
