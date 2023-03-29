@@ -1287,7 +1287,7 @@ const Game = () => {
             <h1 className="text-white font-normal">Your turn</h1>
           ))}
       </div>
-      <div className={""}>
+      <div className="border p-3 border-yellow-500 rounded-md">
         <div
           className={`box   ${!id
             ? currentPlayer === true

@@ -129,7 +129,7 @@ const Board = (props) => {
       squareClasses.push(
         props.boardState[coordinates].player + " " + pawnType + " piece"
       );
-      console.log({ crownType, a: user.default_crown })
+
       if (props.boardState[coordinates].isKing === true) {
         props.playingCrown
           ? props.boardState[coordinates].player === "player1"
