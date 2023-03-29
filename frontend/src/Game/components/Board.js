@@ -77,12 +77,12 @@ const Board = (props) => {
 
     const evenColor = user
       ? user.default_board
-        ? `${user.default_board.name} primary`
+        ? `${user.default_board?.name} primary`
         : "Default primary"
       : "Default primary";
     const oddColor = user
       ? user.default_board
-        ? user.default_board.name === `${user.default_board.name} secondary`
+        ? `${user.default_board?.name} secondary`
         : "Default secondary"
       : "Default secondary";
 
@@ -110,13 +110,13 @@ const Board = (props) => {
 
     const pawnType = user
       ? user.default_board
-        ? user.default_board.name
+        ? user.default_board?.name
         : "Default"
       : "Default";
 
     let crownType = user
       ? user.default_crown
-        ? user.default_crown?.name === "Crown" ? "Default" : user.default_crown.name
+        ? user.default_crown?.name === "Crown" ? "Default" : user.default_crown?.name
         : "Default"
       : "Default";
 
