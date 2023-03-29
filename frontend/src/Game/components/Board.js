@@ -77,12 +77,14 @@ const Board = (props) => {
 
     const evenColor = user
       ? user.default_board
-        ? `${user.default_board.name} primary`
+        ? user.default_board.name === "Golden" ?
+          `${user.default_board.name} secondary` : `${user.default_board.name} primary`
         : "Default primary"
       : "Default primary";
     const oddColor = user
       ? user.default_board
-        ? `${user.default_board.name} secondary`
+        ? user.default_board.name === "Golden" ?
+          `${user.default_board.name} primary` : `${user.default_board.name} secondary`
         : "Default secondary"
       : "Default secondary";
 
@@ -116,9 +118,11 @@ const Board = (props) => {
 
     let crownType = user
       ? user.default_crown
-        ? user.default_crown.name
+        ? user.default_crown?.name === "Crown" ? "Default" : user.default_crown.name
         : "Default"
       : "Default";
+
+
 
     // const pawnType = "Default"
     // let crownType = "Royals"
@@ -127,7 +131,7 @@ const Board = (props) => {
       squareClasses.push(
         props.boardState[coordinates].player + " " + pawnType + " piece"
       );
-
+      console.log({ crownType, a: user.default_crown })
       if (props.boardState[coordinates].isKing === true) {
         props.playingCrown
           ? props.boardState[coordinates].player === "player1"
