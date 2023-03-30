@@ -392,20 +392,20 @@ const Game = () => {
   //update the game state after move
   function updateStatePostMove(postMoveState, gametrackes) {
     let track;
-
+    // console.log(playingCrowns.current)
     if (id != 1 && firstMove) {
       const tempObj = localStorage.getItem("playerOne")
         ? {
           p1: user
             ? user.default_crown
-              ? user.default_crown
+              ? user.default_crown.name
               : "Default"
             : "Default",
         }
         : {
           p2: user
             ? user.default_crown
-              ? user.default_crown
+              ? user.default_crown.name
               : "Default"
             : "Default",
         };
@@ -1317,7 +1317,7 @@ const Game = () => {
             numberOfPlayers={gameState.players}
             tracker={gameState.tracker ? gameState.tracker : null}
             playingCrown={
-              playingCrowns.p1 && playingCrowns.p2 ? playingCrowns : null
+              playingCrowns.current.p1 && playingCrowns.current.p2 ? playingCrowns.current : null
             }
           />
         </div>

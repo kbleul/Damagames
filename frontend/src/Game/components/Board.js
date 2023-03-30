@@ -114,16 +114,30 @@ const Board = (props) => {
         : "Default"
       : "Default";
 
-    let crownType = user
-      ? user.default_crown
-        ? user.default_crown?.name === "Crown" ? "Default" : user.default_crown?.name
-        : "Default"
-      : "Default";
+    let crownType
 
+    if (props.playingCrown && props.boardState[coordinates]) {
+      crownType = props.boardState[coordinates].player === "player1" ?
+        props.playingCrown.p1 : props.playingCrown.p2
+    } else {
+      crownType = user
+        ? user.default_crown
+          ? user.default_crown?.name === "Crown" ? "Default" : user.default_crown?.name
+          : "Default"
+        : "Default";
+    }
 
 
     // const pawnType = "Default"
     // let crownType = "Royals"
+
+
+
+    // props.playingCrown
+    // ? props.boardState[coordinates].player === "player1"
+    //   ? squareClasses.push("king " + props.playingCrown.p1)
+    //   : squareClasses.push("king " + props.playingCrown.p2)
+    // :
 
     if (props.boardState[coordinates] !== null) {
       squareClasses.push(
@@ -131,11 +145,7 @@ const Board = (props) => {
       );
 
       if (props.boardState[coordinates].isKing === true) {
-        props.playingCrown
-          ? props.boardState[coordinates].player === "player1"
-            ? squareClasses.push("king " + props.playingCrown.p1)
-            : squareClasses.push("king " + props.playingCrown.p2)
-          : squareClasses.push("king " + crownType);
+        squareClasses.push("king " + crownType);
       }
     }
 
