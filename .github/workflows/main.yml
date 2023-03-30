@@ -23,7 +23,7 @@ jobs:
     if: ${{ !contains(github.ref, '-rc') }}
     uses: ./.github/workflows/docker_deploy.yml
     secrets: inherit
-    release: "deploy_staging"
+    needs: "deploy_staging"
 
   # e2e-test:
   #   uses: ./.github/workflows/playwright.yml
