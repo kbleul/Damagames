@@ -173,6 +173,12 @@ class AdminController extends Controller
         }
     }
 
+    public function store_item_show(Store $store)
+    {
+        return $store;
+    }
+
+
     public function store_items()
     {
         return [
