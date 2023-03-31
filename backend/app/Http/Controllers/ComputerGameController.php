@@ -52,7 +52,6 @@ class ComputerGameController extends Controller
      */
     public function update($computerGame)
     {
-        ComputerGame::find($computerGame);
 
         if ($computerGame->status == 1) {
             abort(400, "Incorrect game");
