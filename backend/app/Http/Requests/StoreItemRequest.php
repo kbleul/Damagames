@@ -24,7 +24,7 @@ class StoreItemRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|uxnique:stores,name',
+            'name' => 'required|unique:stores,name',
             'price' => 'required|integer',
             'type' => 'required|in:Avatar,Crown,Board',
             'item' => 'required|mimes:png,jpeg,jpg,svg|max:5000',
@@ -35,6 +35,10 @@ class StoreItemRequest extends FormRequest
             'board_pawn2' => 'required_if:type,Board',
             'board_pawn1_turn' => 'required_if:type,Board',
             'board_pawn2_turn' => 'required_if:type,Board',
+            'board_pawn_king1' => 'required_if:type,Board',
+            'board_pawn_king2' => 'required_if:type,Board',
+            'board_pawn_king1_turn' => 'required_if:type,Board',
+            'board_pawn_king2_turn' => 'required_if:type,Board',
         ];
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreGameRequest;
 use App\Http\Requests\UpdateGameRequest;
+use App\Models\ComputerGame;
 use App\Models\Game;
 use App\Models\Score;
 use App\Models\User;
@@ -15,11 +16,17 @@ class GameController extends Controller
     {
 
 
-        $played = Game::where('playerOne', auth()->id())->orWhere('playerTwo', auth()->id())->withCount('scores')->get()->sum('scores_count');
+        $played = Game::where('playerOne', auth()->id())
+            ->orWhere('playerTwo', auth()->id())
+            ->withCount('scores')
+            ->get()
+            ->sum('scores_count');
 
-        $wins = Game::where('playerOne', auth()->id())->orWhere('playerTwo', auth()->id())->withCount(['scores' => function ($query) {
-            $query->where('winner', auth()->id());
-        }])->get()->sum('scores_count');
+        $wins = Game::where('playerOne', auth()->id())->orWhere('playerTwo', auth()->id())
+            ->withCount(['scores' => function ($query) {
+                $query->where('winner', auth()->id());
+            }])->get()
+            ->sum('scores_count');
 
         $coin = User::find(auth()->id());
 
@@ -31,6 +38,7 @@ class GameController extends Controller
             [
                 'rank' => $this->getRanking(auth()->id()),
                 'played' => $played,
+                'playedWithComputer' => ComputerGame::where('player', auth()->id())->count(),
                 'wins' => $wins,
                 'draw' =>  $draw,
                 'losses' => $played - ($wins + $draw),

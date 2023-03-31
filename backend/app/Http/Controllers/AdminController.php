@@ -98,6 +98,22 @@ class AdminController extends Controller
             if ($request->hasFile('board_pawn2_turn') && $request->file('board_pawn2_turn')->isValid()) {
                 $item->addMediaFromRequest('board_pawn2_turn')->toMediaCollection('board_pawn2_turn');
             }
+
+            if ($request->hasFile('board_pawn_king1') && $request->file('board_pawn_king1')->isValid()) {
+                $item->addMediaFromRequest('board_pawn_king1')->toMediaCollection('board_pawn_king1');
+            }
+
+            if ($request->hasFile('board_pawn_king2') && $request->file('board_pawn_king2')->isValid()) {
+                $item->addMediaFromRequest('board_pawn_king2')->toMediaCollection('board_pawn_king2');
+            }
+
+            if ($request->hasFile('board_pawn_king1_turn') && $request->file('board_pawn_king1_turn')->isValid()) {
+                $item->addMediaFromRequest('board_pawn_king1_turn')->toMediaCollection('board_pawn_king1_turn');
+            }
+
+            if ($request->hasFile('board_pawn_king2_turn') && $request->file('board_pawn_king2_turn')->isValid()) {
+                $item->addMediaFromRequest('board_pawn_king2_turn')->toMediaCollection('board_pawn_king2_turn');
+            }
         }
 
         $item->addMediaFromRequest('item')->toMediaCollection('item');
@@ -116,6 +132,7 @@ class AdminController extends Controller
             'color' => [
                 'color1' => $request->color1 ?? $store->color['color1'],
                 'color2' => $request->color2 ?? $store->color['color2'],
+                'lastMoveColor' => $request->lastMoveColor ?? $store->color['lastMoveColor'],
             ],
         ]);
 
@@ -142,6 +159,26 @@ class AdminController extends Controller
             if ($request->hasFile('board_pawn2_turn') && $request->file('board_pawn2_turn')->isValid()) {
                 $store->clearMediaCollection('board_pawn2_turn');
                 $store->addMediaFromRequest('board_pawn2_turn')->toMediaCollection('board_pawn2_turn');
+            }
+
+            if ($request->hasFile('board_pawn_king1') && $request->file('board_pawn_king1')->isValid()) {
+                $store->clearMediaCollection('board_pawn_king1');
+                $store->addMediaFromRequest('board_pawn_king1')->toMediaCollection('board_pawn_king1');
+            }
+
+            if ($request->hasFile('board_pawn_king2') && $request->file('board_pawn_king2')->isValid()) {
+                $store->clearMediaCollection('board_pawn_king2');
+                $store->addMediaFromRequest('board_pawn_king2')->toMediaCollection('board_pawn_king2');
+            }
+
+            if ($request->hasFile('board_pawn_king1_turn') && $request->file('board_pawn_king1_turn')->isValid()) {
+                $store->clearMediaCollection('board_pawn_king1_turn');
+                $store->addMediaFromRequest('board_pawn_king1_turn')->toMediaCollection('board_pawn_king1_turn');
+            }
+
+            if ($request->hasFile('board_pawn_king2_turn') && $request->file('board_pawn_king2_turn')->isValid()) {
+                $store->clearMediaCollection('board_pawn_king2_turn');
+                $store->addMediaFromRequest('board_pawn_king2_turn')->toMediaCollection('board_pawn_king2_turn');
             }
         }
 
@@ -171,6 +208,12 @@ class AdminController extends Controller
             return  "Hidden";
         }
     }
+
+    public function store_item_show(Store $store)
+    {
+        return $store;
+    }
+
 
     public function store_items()
     {

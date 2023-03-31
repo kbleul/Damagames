@@ -4,6 +4,7 @@ use App\Events\TestEvent;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AuthPlayerController;
+use App\Http\Controllers\ComputerGameController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\PlayersController;
 use App\Http\Controllers\PusherAuthController;
@@ -66,6 +67,7 @@ Route::middleware('response')->group(function () {
 Route::resource('security-questions', SecurityQuestionController::class);
 
 Route::middleware('response', 'auth:sanctum')->group(function () {
+
     Route::get('profile', function () {
         return User::find(auth()->id());
     });
@@ -78,8 +80,10 @@ Route::middleware('response', 'auth:sanctum')->group(function () {
     Route::post('auth-join-game/{game}', [AuthPlayerController::class, 'join_game']);
     Route::post('auth-join-game-via-code', [AuthPlayerController::class, 'join_game_via_code']);
     Route::post('auth-start-game/{game}', [AuthPlayerController::class, 'start_game']);
-    Route::post('security-question-answer', [AuthController::class, 'user_answer']);
+    // Route::post('security-question-answer', [AuthController::class, 'user_answer']);
 
+    Route::post('play-with-computer', [ComputerGameController::class, 'store']);
+    Route::post('play-with-computer-done/{computerGame}', [ComputerGameController::class, 'update']);
 
     Route::post('purchase-item', [StoreController::class, 'purchase']);
     Route::get('my-items', [StoreController::class, 'my_items']);
@@ -101,6 +105,7 @@ Route::middleware(['response', 'auth:sanctum', 'admin'])->prefix('admin')->group
     Route::post('update-store-item/{store}', [AdminController::class, 'store_item_update']);
     Route::delete('delete-store-item/{store}', [AdminController::class, 'store_item_delete']);
     Route::post('store-item-status/{store}', [AdminController::class, 'store_item_status']);
+    Route::get('store-item-show/{store}', [AdminController::class, 'store_item_show']);
     Route::get('coin-settings', [AdminController::class, 'coin_settings']);
     Route::patch('coin-setting-update/{coinSetting}', [AdminController::class, 'coin_setting']);
 });
