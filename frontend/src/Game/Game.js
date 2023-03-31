@@ -32,36 +32,118 @@ import NewGameRequestModal from "./components/NewGameRequestModal.js";
 
 //crowns
 //crowns
-import kingIcon from "../assets/kingIcon.svg";
+import yellowCoin from "../assets/yellow-coin.svg";
+import yellowWhiteCoin from "../assets/yellow-coin-white.svg";
 import redNegus from "../assets/redNegus.svg";
+import yellowNegus from "../assets/YellowNegus.svg";
+import yellowNegusWhite from "../assets/YellowNegus-white.svg";
+import orangeCoin from "../assets/orange-coin.svg";
+import orangeWhiteCoin from "../assets/orange-coin-white.svg";
 import redNegusWhite from "../assets/redNegus-white.svg";
 import { useHome } from "../context/HomeContext.js";
 const Game = () => {
   const { id } = useParams();
   const { user, token } = useAuth();
 
-  const { playerOneCrown, setPlayerOneCrown } = useHome();
+  // const { playerCrown, playerBoard } = useHome();
   useEffect(() => {
     if (id) {
       document.documentElement.style.setProperty(
-        "--playerOneCrown",
+        "--playerTwoPawn",
         !user && !token
-          ? `url(${redNegus})`
-          : playerOneCrown
-          ? `url(${redNegus})`
-          : `url(${kingIcon})`
+          ? `url(${yellowCoin})`
+          : user?.default_board
+          ? `url(${user?.default_board?.board_pawn2})`
+          : `url(${yellowCoin})`
       );
       document.documentElement.style.setProperty(
-        "--playerOneCrownTurn",
+        "--playerTwoPawnTurn",
         !user && !token
-          ? `url(${redNegusWhite})`
-          : playerOneCrown
-          ? `url(${redNegusWhite})`
-          : `url(${redNegus})`
+          ? `url(${yellowWhiteCoin})`
+          : user?.default_board
+          ? `url(${user?.default_board?.board_pawn2_turn})`
+          : `url(${yellowWhiteCoin})`
       );
-    } else {
+      //king icon
+      document.documentElement.style.setProperty(
+        "--playerTwoPawnKing",
+        !user && !token
+          ? `url(${yellowNegus})`
+          : user?.default_board
+          ? user?.default_board?.board_pawn1
+          : `url(${yellowNegus})`
+      );
+      //king icon turn
+      document.documentElement.style.setProperty(
+        "--playerTwoPawnKingTurn",
+        !user && !token
+          ? `url(${yellowNegusWhite})`
+          : user?.default_board
+          ? user?.default_board?.board_pawn1
+          : `url(${yellowNegusWhite})`
+      );
     }
-  }, []);
+    document.documentElement.style.setProperty(
+      "--playerOnePawn",
+      !user && !token
+        ? `url(${orangeCoin})`
+        : user?.default_board
+        ? `url(${user?.default_board?.board_pawn1})`
+        : `url(${orangeCoin})`
+    );
+    document.documentElement.style.setProperty(
+      "--playerOnePawnTurn",
+      !user && !token
+        ? `url(${orangeWhiteCoin})`
+        : user?.default_board
+        ? `url(${user?.default_board?.board_pawn1_turn})`
+        : `url(${orangeWhiteCoin})`
+    );
+    //king icon and king turn
+    document.documentElement.style.setProperty(
+      "--playerOnePawnKing",
+      !user && !token
+        ? `url(${redNegus})`
+        : user?.default_board
+        ? user?.default_board?.board_pawn1
+        : `url(${redNegus})`
+    );
+    document.documentElement.style.setProperty(
+      "--playerOnePawnKingTurn",
+      !user && !token
+        ? `url(${redNegusWhite})`
+        : user?.default_board
+        ? `url(${redNegusWhite})`
+        : `url(${redNegusWhite})`
+    );
+    //board and pawn
+    document.documentElement.style.setProperty(
+      "--playerSquareBoard",
+      !user && !token
+        ? `#181920`
+        : user?.default_board
+        ? user?.default_board?.color?.color1
+        : `#181920`
+    );
+    document.documentElement.style.setProperty(
+      "--playerBoardColor",
+      !user && !token
+        ? `#2c2c37`
+        : user?.default_board
+        ? user?.default_board?.color?.color2
+        : `#2c2c37`
+    );
+    // last move shower
+    document.documentElement.style.setProperty(
+      "--lastMoveColor",
+      !user && !token
+        ? `#858484`
+        : user?.default_board
+        ? user?.default_board?.color?.astMoveColor
+        : `#858484`
+    );
+  }, [id,  user, token]);
+
   const navigate = useNavigate();
   const [playMove] = useSound(moveSound);
   const [playStrike] = useSound(strikeSound);

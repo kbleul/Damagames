@@ -11,14 +11,12 @@ export function HomeProvider({ children }) {
   const [isBet, setIsBet] = useState(false);
   const [betCoin, setBetCoin] = useState(0);
   const [messageType, setMessageType] = useState(null);
-  const [playerOneCrown, setPlayerOneCrown] = useState(
-    localStorage.getItem("playerOneCrown")
+  const [playerCrown, setPlayerCrown] = useState(
+    localStorage.getItem("playerCrown")
   );
-  const [playerTwoCrown, setPlayerTwoCrown] = useState(
-    localStorage.getItem("playerTwoCrown")
+  const [playerBoard, setPlayerBoard] = useState(
+    localStorage.getItem("playerBoard")
   );
-
-  // const [tokenExpirationDate, setTokenExpirationDate] = useState();
 
   useEffect(() => {
     setTimeout(() => setChecked(true), 2000);
@@ -35,10 +33,10 @@ export function HomeProvider({ children }) {
         setBetCoin,
         messageType,
         setMessageType,
-        playerOneCrown,
-        setPlayerOneCrown,
-        playerTwoCrown,
-        setPlayerTwoCrown,
+        playerCrown,
+        setPlayerCrown,
+        playerBoard,
+        setPlayerBoard,
       }}
     >
       {children}
