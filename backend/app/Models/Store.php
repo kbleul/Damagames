@@ -40,7 +40,7 @@ class Store extends Model  implements HasMedia
         }
     }
 
-    public $appends = ['item', 'board_pawn1', 'board_pawn2', 'board_pawn1_turn', 'board_pawn2_turn'];
+    public $appends = ['item', 'board_pawn1', 'board_pawn2', 'board_pawn1_turn', 'board_pawn2_turn', 'board_pawn_king1', 'board_pawn_king2', 'board_pawn_king1_turn', 'board_pawn_king2_turn'];
 
     public function getItemAttribute()
     {
@@ -83,6 +83,46 @@ class Store extends Model  implements HasMedia
     }
 
     public function getBoardPawn2TurnAttribute()
+    {
+        $image = $this->getMedia('board_pawn2_turn')->last();
+
+        if (!empty($image)) {
+            return $image->getUrl();
+        }
+        return "";
+    }
+
+    public function getBoardPawnKing1Attribute()
+    {
+        $image = $this->getMedia('board_pawn_king1')->last();
+
+        if (!empty($image)) {
+            return $image->getUrl();
+        }
+        return "";
+    }
+
+    public function getBoardPawnKing2Attribute()
+    {
+        $image = $this->getMedia('board_pawn_king2')->last();
+
+        if (!empty($image)) {
+            return $image->getUrl();
+        }
+        return "";
+    }
+
+    public function getBoardPawnKing1TurnAttribute()
+    {
+        $image = $this->getMedia('board_pawn2_turn')->last();
+
+        if (!empty($image)) {
+            return $image->getUrl();
+        }
+        return "";
+    }
+
+    public function getBoardPawnKing2TurnAttribute()
     {
         $image = $this->getMedia('board_pawn2_turn')->last();
 
