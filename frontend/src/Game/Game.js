@@ -32,23 +32,118 @@ import NewGameRequestModal from "./components/NewGameRequestModal.js";
 
 //crowns
 //crowns
-import kingIcon from '../assets/kingIcon.svg'
-import redNegus from '../assets/redNegus.svg'
-import redNegusWhite from '../assets/redNegus-white.svg'
+import yellowCoin from "../assets/yellow-coin.svg";
+import yellowWhiteCoin from "../assets/yellow-coin-white.svg";
+import redNegus from "../assets/redNegus.svg";
+import yellowNegus from "../assets/YellowNegus.svg";
+import yellowNegusWhite from "../assets/YellowNegus-white.svg";
+import orangeCoin from "../assets/orange-coin.svg";
+import orangeWhiteCoin from "../assets/orange-coin-white.svg";
+import redNegusWhite from "../assets/redNegus-white.svg";
 import { useHome } from "../context/HomeContext.js";
 const Game = () => {
   const { id } = useParams();
   const { user, token } = useAuth();
 
-  const { playerOneCrown,setPlayerOneCrown}=useHome()
+  // const { playerCrown, playerBoard } = useHome();
   useEffect(() => {
-    if(id){
-       document.documentElement.style.setProperty('--playerOneCrown',!user && !token ?   `url(${redNegus})` : playerOneCrown ? `url(${redNegus})` : `url(${kingIcon})`);
-       document.documentElement.style.setProperty('--playerOneCrownTurn',!user && !token ?  `url(${redNegusWhite})` : playerOneCrown ? `url(${redNegusWhite})` : `url(${redNegus})`);
-     }else{
+    if (id) {
+      document.documentElement.style.setProperty(
+        "--playerTwoPawn",
+        !user && !token
+          ? `url(${yellowCoin})`
+          : user?.default_board
+          ? `url(${user?.default_board?.board_pawn2})`
+          : `url(${yellowCoin})`
+      );
+      document.documentElement.style.setProperty(
+        "--playerTwoPawnTurn",
+        !user && !token
+          ? `url(${yellowWhiteCoin})`
+          : user?.default_board
+          ? `url(${user?.default_board?.board_pawn2_turn})`
+          : `url(${yellowWhiteCoin})`
+      );
+      //king icon
+      document.documentElement.style.setProperty(
+        "--playerTwoPawnKing",
+        !user && !token
+          ? `url(${yellowNegus})`
+          : user?.default_board
+          ? user?.default_board?.board_pawn1
+          : `url(${yellowNegus})`
+      );
+      //king icon turn
+      document.documentElement.style.setProperty(
+        "--playerTwoPawnKingTurn",
+        !user && !token
+          ? `url(${yellowNegusWhite})`
+          : user?.default_board
+          ? user?.default_board?.board_pawn1
+          : `url(${yellowNegusWhite})`
+      );
+    }
+    document.documentElement.style.setProperty(
+      "--playerOnePawn",
+      !user && !token
+        ? `url(${orangeCoin})`
+        : user?.default_board
+        ? `url(${user?.default_board?.board_pawn1})`
+        : `url(${orangeCoin})`
+    );
+    document.documentElement.style.setProperty(
+      "--playerOnePawnTurn",
+      !user && !token
+        ? `url(${orangeWhiteCoin})`
+        : user?.default_board
+        ? `url(${user?.default_board?.board_pawn1_turn})`
+        : `url(${orangeWhiteCoin})`
+    );
+    //king icon and king turn
+    document.documentElement.style.setProperty(
+      "--playerOnePawnKing",
+      !user && !token
+        ? `url(${redNegus})`
+        : user?.default_board
+        ? user?.default_board?.board_pawn1
+        : `url(${redNegus})`
+    );
+    document.documentElement.style.setProperty(
+      "--playerOnePawnKingTurn",
+      !user && !token
+        ? `url(${redNegusWhite})`
+        : user?.default_board
+        ? `url(${redNegusWhite})`
+        : `url(${redNegusWhite})`
+    );
+    //board and pawn
+    document.documentElement.style.setProperty(
+      "--playerSquareBoard",
+      !user && !token
+        ? `#181920`
+        : user?.default_board
+        ? user?.default_board?.color?.color1
+        : `#181920`
+    );
+    document.documentElement.style.setProperty(
+      "--playerBoardColor",
+      !user && !token
+        ? `#2c2c37`
+        : user?.default_board
+        ? user?.default_board?.color?.color2
+        : `#2c2c37`
+    );
+    // last move shower
+    document.documentElement.style.setProperty(
+      "--lastMoveColor",
+      !user && !token
+        ? `#858484`
+        : user?.default_board
+        ? user?.default_board?.color?.astMoveColor
+        : `#858484`
+    );
+  }, [id,  user, token]);
 
-     }
-  }, []);
   const navigate = useNavigate();
   const [playMove] = useSound(moveSound);
   const [playStrike] = useSound(strikeSound);
@@ -345,9 +440,9 @@ const Game = () => {
       setTimeout(() => {
         const postMoveState = movesData[1]
           ? movePiece(columns, mergerObj.moves[0], {
-            ...mergerObj,
-            jumpKills: movesData[1],
-          })
+              ...mergerObj,
+              jumpKills: movesData[1],
+            })
           : movePiece(columns, mergerObj.moves[0], mergerObj);
         if (postMoveState === null) {
           return;
@@ -393,42 +488,42 @@ const Game = () => {
 
     id == 1
       ? setGameState((prevGameState) => {
-        return {
-          ...prevGameState,
+          return {
+            ...prevGameState,
 
-          history: gameState.history.concat([
-            {
-              boardState: postMoveState.boardState,
-              currentPlayer: postMoveState.currentPlayer,
-            },
-          ]),
-          activePiece: postMoveState.activePiece,
-          moves: postMoveState.moves,
-          jumpKills: postMoveState.jumpKills,
-          hasJumped: postMoveState.hasJumped,
-          stepNumber: gameState.history.length,
-          winner: postMoveState.winner,
-          tracker: track,
-        };
-      })
+            history: gameState.history.concat([
+              {
+                boardState: postMoveState.boardState,
+                currentPlayer: postMoveState.currentPlayer,
+              },
+            ]),
+            activePiece: postMoveState.activePiece,
+            moves: postMoveState.moves,
+            jumpKills: postMoveState.jumpKills,
+            hasJumped: postMoveState.hasJumped,
+            stepNumber: gameState.history.length,
+            winner: postMoveState.winner,
+            tracker: track,
+          };
+        })
       : setGameState((prevGameState) => {
-        return {
-          ...prevGameState,
+          return {
+            ...prevGameState,
 
-          history: gameState.history.concat([
-            {
-              boardState: postMoveState.boardState,
-              currentPlayer: postMoveState.currentPlayer,
-            },
-          ]),
-          activePiece: postMoveState.activePiece,
-          moves: postMoveState.moves,
-          jumpKills: postMoveState.jumpKills,
-          hasJumped: postMoveState.hasJumped,
-          stepNumber: gameState.history.length,
-          winner: postMoveState.winner,
-        };
-      });
+            history: gameState.history.concat([
+              {
+                boardState: postMoveState.boardState,
+                currentPlayer: postMoveState.currentPlayer,
+              },
+            ]),
+            activePiece: postMoveState.activePiece,
+            moves: postMoveState.moves,
+            jumpKills: postMoveState.jumpKills,
+            hasJumped: postMoveState.hasJumped,
+            stepNumber: gameState.history.length,
+            winner: postMoveState.winner,
+          };
+        });
 
     if (gameState.players == 1) {
       setMyTurn(postMoveState.currentPlayer ? "player1" : "player2");
@@ -456,8 +551,10 @@ const Game = () => {
   const playerOneIp = localStorage.getItem("playerOneIp");
   const playerTwoIp = localStorage.getItem("playerTwoIp");
   const btCoin = localStorage.getItem("bt_coin_amount");
-  const temp = JSON.parse(localStorage.getItem("p2Info"))
-  const p2Info = temp?.username ? JSON.parse(localStorage.getItem("p2Info")) : JSON.parse(JSON.parse(localStorage.getItem("p2Info")))
+  const temp = JSON.parse(localStorage.getItem("p2Info"));
+  const p2Info = temp?.username
+    ? JSON.parse(localStorage.getItem("p2Info"))
+    : JSON.parse(JSON.parse(localStorage.getItem("p2Info")));
   const p1Info = localStorage.getItem("p1");
   let gameStatus;
   switch (gameState.winner) {
@@ -547,7 +644,6 @@ const Game = () => {
         }
       }
     }
-
   }, [gameState, gameStatus, winnerPlayer]);
   const resetGame = () => {
     moveRef.current = [0, 0];
@@ -871,7 +967,11 @@ const Game = () => {
           });
         }
       }, 1000);
-    } else if (id != 1 && !currentPlayer && localStorage.getItem("playerTwoIp")) {
+    } else if (
+      id != 1 &&
+      !currentPlayer &&
+      localStorage.getItem("playerTwoIp")
+    ) {
       intervalRef.current = setInterval(() => {
         if (myCounter === 0) {
           setTimerP2(15);
@@ -969,11 +1069,11 @@ const Game = () => {
           game_id: gameId,
         },
         {
-          onSuccess: (responseData) => { },
-          onError: (err) => { },
+          onSuccess: (responseData) => {},
+          onError: (err) => {},
         }
       );
-    } catch (err) { }
+    } catch (err) {}
   };
 
   const changeSound = () => {
@@ -1101,10 +1201,10 @@ const Game = () => {
                 ? user.username
                 : "You"
               : playerOneIp && user
-                ? user?.username
-                : playerOneIp
-                  ? firstPlayer?.username
-                  : p1Info}
+              ? user?.username
+              : playerOneIp
+              ? firstPlayer?.username
+              : p1Info}
           </h4>
         </div>
 
@@ -1136,12 +1236,12 @@ const Game = () => {
             {id == 1
               ? "Computer"
               : playerTwoIp && user
-                ? user?.username
-                : playerTwoIp
-                  ? secondPlayer?.username
-                  : p1Info
-                    ? p1Info
-                    : p2Info?.username}
+              ? user?.username
+              : playerTwoIp
+              ? secondPlayer?.username
+              : p1Info
+              ? p1Info
+              : p2Info?.username}
           </h4>
         </div>
       </section>
@@ -1236,28 +1336,29 @@ const Game = () => {
       </div>
       <div className={""}>
         <div
-          className={`box   ${!id
-            ? currentPlayer === true
-              ? currentPlayer === true && !firstPlayer
-                ? "pointer-events-none"
-                : ""
-              : currentPlayer === false
+          className={`box   ${
+            !id
+              ? currentPlayer === true
+                ? currentPlayer === true && !firstPlayer
+                  ? "pointer-events-none"
+                  : ""
+                : currentPlayer === false
                 ? currentPlayer === false && !secondPlayer
                   ? "pointer-events-none"
                   : ""
                 : ""
-            : ""
-            }`}
+              : ""
+          }`}
         >
           <Board
             boardState={
               id === "1"
                 ? dict_reverse(boardState)
                 : !id
-                  ? localStorage.getItem("playerOne")
-                    ? dict_reverse(boardState)
-                    : boardState
+                ? localStorage.getItem("playerOne")
+                  ? dict_reverse(boardState)
                   : boardState
+                : boardState
             }
             currentPlayer={currentPlayer}
             activePiece={gameState.activePiece}
