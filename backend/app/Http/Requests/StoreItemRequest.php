@@ -35,6 +35,10 @@ class StoreItemRequest extends FormRequest
             'board_pawn2' => 'required_if:type,Board',
             'board_pawn1_turn' => 'required_if:type,Board',
             'board_pawn2_turn' => 'required_if:type,Board',
+            'board_pawn_king1' => 'required_if:type,Board',
+            'board_pawn_king2' => 'required_if:type,Board',
+            'board_pawn_king1_turn' => 'required_if:type,Board',
+            'board_pawn_king2_turn' => 'required_if:type,Board',
         ];
     }
 }
