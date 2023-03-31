@@ -69,8 +69,8 @@ const Game = () => {
         "--playerTwoPawnKing",
         !user && !token
           ? `url(${yellowNegus})`
-          : user?.default_board
-          ? user?.default_board?.board_pawn1
+          : user?.default_crown?.board_pawn_king2
+          ? `url(${user?.default_crown?.board_pawn_king2})`
           : `url(${yellowNegus})`
       );
       //king icon turn
@@ -79,7 +79,7 @@ const Game = () => {
         !user && !token
           ? `url(${yellowNegusWhite})`
           : user?.default_board
-          ? user?.default_board?.board_pawn1
+          ? `url(${user?.default_board?.board_pawn_king2_turn})`
           : `url(${yellowNegusWhite})`
       );
     }
@@ -104,16 +104,16 @@ const Game = () => {
       "--playerOnePawnKing",
       !user && !token
         ? `url(${redNegus})`
-        : user?.default_board
-        ? user?.default_board?.board_pawn1
+        : user?.default_crown?.board_pawn_king1
+        ? `url(${user?.default_crown?.board_pawn_king1})`
         : `url(${redNegus})`
     );
     document.documentElement.style.setProperty(
       "--playerOnePawnKingTurn",
       !user && !token
         ? `url(${redNegusWhite})`
-        : user?.default_board
-        ? `url(${redNegusWhite})`
+        : user?.default_crown?.board_pawn_king1_turn
+        ? `url(${user?.default_crown?.board_pawn_king1_turn})`
         : `url(${redNegusWhite})`
     );
     //board and pawn
@@ -139,7 +139,7 @@ const Game = () => {
       !user && !token
         ? `#858484`
         : user?.default_board
-        ? user?.default_board?.color?.astMoveColor
+        ? user?.default_board?.color?.lastMoveColor
         : `#858484`
     );
   }, [id,  user, token]);
@@ -182,9 +182,6 @@ const Game = () => {
   const [showResetWaiting, setShowResetWaiting] = useState(false);
   const [msgSender, setMsgSender] = useState(null);
 
-  const [firstMove, setFirstMove] = useState(true);
-  const playingCrowns = useRef({});
-
   useEffect(() => {
     if (!id && !localStorage.getItem("gameId")) {
       navigate("/create-game");
@@ -220,30 +217,30 @@ const Game = () => {
     const player1 = [
       "a8",
       "c8",
-      "e8",
-      "g8",
-      "b7",
-      "d7",
-      "f7",
-      "h7",
-      "a6",
-      "c6",
-      "e6",
-      "g6",
+      // "e8",
+      // "g8",
+      // "b7",
+      // "d7",
+      // "f7",
+      // "h7",
+      // "a6",
+      // "c6",
+      // "e6",
+      // "g6",
     ];
     const player2 = [
       "b3",
       "d3",
-      "f3",
-      "h3",
-      "a2",
-      "c2",
-      "e2",
-      "g2",
-      "b1",
-      "d1",
-      "f1",
-      "h1",
+      // "f3",
+      // "h3",
+      // "a2",
+      // "c2",
+      // "e2",
+      // "g2",
+      // "b1",
+      // "d1",
+      // "f1",
+      // "h1",
     ];
 
     player1.forEach(function (i) {
@@ -474,29 +471,6 @@ const Game = () => {
   //update the game state after move
   function updateStatePostMove(postMoveState, gametrackes) {
     let track;
-    console.log(firstMove);
-
-    if (id != 1 && firstMove) {
-      const tempObj = localStorage.getItem("playerOne")
-        ? {
-            p1: user
-              ? user.default_crown
-                ? user.default_crown
-                : "Default"
-              : "Default",
-          }
-        : {
-            p2: user
-              ? user.default_crown
-                ? user.default_crown
-                : "Default"
-              : "Default",
-          };
-
-      socket.emit("sendCrownType", tempObj);
-
-      firstMove && setFirstMove(false);
-    }
 
     if (!gametrackes == 1) {
       if (gameState.moves.length === 1) {
@@ -805,16 +779,7 @@ const Game = () => {
   let lastElement = array[array.length - 1];
 
   useEffect(() => {
-    let cPlayer = currentPlayer;
-
-    socket.on("getCrownType", (data) => {
-      // data.p1 && playingCrowns.current = { ...playingCrowns.current, p1: data.p1 };
-      // data.p2 && setplayingCrowns({ ...playingCrowns, p2: data.p2 });
-
-      playingCrowns.current = data.p1
-        ? { ...playingCrowns.current, p1: data.p1 }
-        : { ...playingCrowns.current, p2: data.p2 };
-    });
+    // let cPlayer = currentPlayer
     socket.on(
       "getGameMessage",
       ({ winnerPlayer, boardState, currentPlayer, turnPlayer, tracker }) => {
@@ -1402,9 +1367,6 @@ const Game = () => {
             onClick={(coordinates) => handleClick(coordinates)}
             numberOfPlayers={gameState.players}
             tracker={gameState.tracker ? gameState.tracker : null}
-            playingCrown={
-              playingCrowns.p1 && playingCrowns.p2 ? playingCrowns : null
-            }
           />
         </div>
       </div>
