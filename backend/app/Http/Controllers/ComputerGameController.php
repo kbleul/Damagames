@@ -50,9 +50,11 @@ class ComputerGameController extends Controller
      * @param  \App\Models\ComputerGame  $computerGame
      * @return \Illuminate\Http\Response
      */
-    public function update(ComputerGame $computerGame)
+    public function update($computerGameId)
     {
-        if ($computerGame->status == 1) {
+        $computerGame = ComputerGame::find($computerGameId);
+
+        if (empty($computerGame) || $computerGame->status == 1) {
             abort(400, "Incorrect game");
         }
 
