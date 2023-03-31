@@ -50,15 +50,15 @@ class ComputerGameController extends Controller
      * @param  \App\Models\ComputerGame  $computerGame
      * @return \Illuminate\Http\Response
      */
-    public function update($computerGameId)
+    public function update($computerGame)
     {
-        $computerGame = ComputerGame::find($computerGameId);
+        ComputerGame::find($computerGame);
 
-        if (empty($computerGame) || $computerGame->status == 1) {
+        if ($computerGame->status == 1) {
             abort(400, "Incorrect game");
         }
 
-        $Winer = User::find($computerGame->player->id);
+        $Winer = User::find($computerGame->player);
 
         $Winer->update([
             'current_point' => ($Winer->current_point + CoinSetting::first()->winnerCoins),
