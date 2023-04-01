@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        DOCKER_HOST = "ssh://${{ vars.REMOTE_USER }}@${{ vars.REMOTE_HOST }}"
+        DOCKER_HOST = "ssh://${vars.REMOTE_USER}@${vars.REMOTE_HOST}"
         REMOTE_HOST = "${{ vars.REMOTE_HOST }}"
         APP_ENV = "${{ vars.APP_ENV }}"
         APP_URL = "${{ vars.STAGE_REACT_APP_FRONTEND_URL }}"
