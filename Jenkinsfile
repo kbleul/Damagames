@@ -15,7 +15,7 @@ pipeline {
 
         stage("Verify SSH connection to server") {
             steps {
-                sshagent(credentials: ['root']) {
+                sshagent(credentials: ['damagames']) {
                     sh '''
                         ssh -o StrictHostKeyChecking=no root@13.40.116.143 whoami
                     '''
