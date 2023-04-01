@@ -33,11 +33,6 @@ pipeline {
     }
 
     stages {
-        stage('Set version') {
-        steps {
-            sh 'php ./update-version-file.php'
-        }
-        }
 
         stage('Install SSH key') {
         steps {
