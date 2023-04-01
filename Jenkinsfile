@@ -3,27 +3,37 @@ pipeline {
 
     stages {
 
-        stage('Set version') {
+        stage("Verify tooling") {
             steps {
-                sh 'php ./jenkins/update-version-file.php'
+                sh '''
+                    docker info
+                    docker version
+                    docker compose version
+                '''
             }
         }
 
-        stage('Install SSH key') {
+        stage("Verify SSH connection to server") {
             steps {
-                withCredentials([sshUserPrivateKey(credentialsId: 'SSH_PRIVATE_KEY', keyFileVariable: 'SSH_PRIVATE_KEY_FILE', passphraseVariable: '', usernameVariable: 'REMOTE_USER')]) {
-                    sh 'ssh-keyscan $REMOTE_HOST > ~/.ssh/known_hosts'
-                    sh 'ssh-add $SSH_PRIVATE_KEY_FILE'
+                sshagent(credentials: ['root']) {
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no root@13.40.116.143 whoami
+                    '''
+                }
+            }
+        }    
+
+        xstage("Clear all running docker containers") {
+            steps {
+                script {
+                    try {
+                        sh 'docker rm -f $(docker ps -a -q)'
+                    } catch (Exception e) {
+                        echo 'No running container to clear up...'
+                    }
                 }
             }
         }
-
-        stage('Create docker context') {
-            steps {
-                sh 'docker context create test --docker "host=ssh://$REMOTE_USER@$REMOTE_HOST"'
-            }
-        }
-
         stage('Deploy Docker Containers') {
             steps {
                 withEnv([
