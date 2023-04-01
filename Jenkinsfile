@@ -17,7 +17,7 @@ pipeline {
             steps {
                 sshagent(credentials: ['damagames']) {
                     sh '''
-                        ssh -o StrictHostKeyChecking=no root@13.40.116.143 whoami
+                        ssh -o StrictHostKeyChecking=no root@damagames.com whoami
                     '''
                 }
             }
