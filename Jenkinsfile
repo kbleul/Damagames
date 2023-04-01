@@ -23,7 +23,7 @@ pipeline {
             }
         }    
 
-        xstage("Clear all running docker containers") {
+        stage("Clear all running docker containers") {
             steps {
                 script {
                     try {
