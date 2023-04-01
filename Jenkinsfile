@@ -1,12 +1,7 @@
 pipeline {
     agent any
-    
+
     stages {
-        stage('Checkout') {
-            steps {
-                checkout()
-            }
-        }
 
         stage('Set version') {
             steps {
