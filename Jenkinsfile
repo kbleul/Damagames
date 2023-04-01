@@ -53,7 +53,7 @@ pipeline {
       }
     }
 
-    stage('Deploy Docker Containers') {
+   stage('Deploy Docker Containers') {
       steps {
         withEnv([
           "DOCKER_HOST=ssh://$REMOTE_USER@$REMOTE_HOST",
@@ -70,4 +70,12 @@ pipeline {
           "TELEBIRR_APP_ID=$TELEBIRR_APP_ID",
           "TELEBIRR_APP_KEY=$TELEBIRR_APP_KEY",
           "TELEBIRR_PUBLIC_KEY=$TELEBIRR_PUBLIC_KEY",
-          "TELEBIRR_SHORT_CODE=$TELEBIRR_SHORT
+          "TELEBIRR_SHORT_CODE=$TELEBIRR_SHORT_CODE",
+          "TELEBIRR_TB_APP_URL=$TELEBIRR_TB_APP_URL",
+          "TELEBIRR_TB_WEB_URL=$TELEBIRR_TB_WEB_URL",
+          "TELEBIRR_TB_SDK_URL=$TELEBIRR_TB_SDK_URL",
+          "TELEBIRR_NOTIFY_URL=$TELEBIRR_NOTIFY_URL",
+          "TELEBIRR_RETURN_URL=$TELEBIRR_RETURN_URL",
+          "TELEBIRR_SUBJECT=$TELEBIRR_SUBJECT",
+          "TELEBIRR_RECIEVE_NAME=$TELEBIRR_RECIEVE_NAME",
+          "OTP_URL=$OTP_URL",
