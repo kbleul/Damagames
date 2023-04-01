@@ -11,7 +11,7 @@ jobs:
 
   cleanup:
    #run cleanup only is size greater than or equal 3gb == 3221225472 bytes
-    if: ${{ (fromJSON(run: 'sudo docker system df --format "{{.Size}}" | head -n 1') | int) >= 3221225472 }}
+    # if: ${{ (fromJSON(run: 'sudo docker system df --format "{{.Size}}" | head -n 1') | int) >= 3221225472 }}
     runs-on: ubuntu-latest
     steps:
     - name: Prune Docker system
