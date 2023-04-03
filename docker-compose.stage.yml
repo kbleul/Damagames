@@ -50,11 +50,11 @@ services:
       - REACT_APP_BACKEND_URL
       - RELEASE_VERSION
     labels:
-      - "traefik.frontend.priority=1"
+      - "traefik.admin.priority=1"
       - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=(Host(`admin.${REMOTE_HOST}`))"
-      - "traefik.http.routers.frontend.entrypoints=websecure"
-      - "traefik.http.routers.frontend.tls.certresolver=myresolver"
+      - "traefik.http.routers.admin.rule=(Host(`admin.${REMOTE_HOST}`))"
+      - "traefik.http.routers.admin.entrypoints=websecure"
+      - "traefik.http.routers.admin.tls.certresolver=myresolver"
 
   # PHP services
 
