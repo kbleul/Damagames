@@ -15,14 +15,14 @@ jobs:
   #   uses: ./.github/workflows/release.yml
   #   needs: ["build_arc_docs", "e2e-test"]
 
-  # deploy_staging:
-  #   uses: ./.github/workflows/docker_stage.yml
-  #   secrets: inherit
-
-  deploy_production:
-    if: ${{ !contains(github.ref, '-rc') }}
-    uses: ./.github/workflows/docker_deploy.yml
+  deploy_staging:
+    uses: ./.github/workflows/docker_stage.yml
     secrets: inherit
+
+  # deploy_production:
+  #   if: ${{ !contains(github.ref, '-rc') }}
+  #   uses: ./.github/workflows/docker_deploy.yml
+  #   secrets: inherit
     # needs: "deploy_staging"
 
   # e2e-test:

@@ -40,9 +40,22 @@ services:
         - "traefik.http.routers.frontend.rule=Host(`${REMOTE_HOST}`) || (Host(`www.${REMOTE_HOST}`))"
         - "traefik.http.routers.frontend.entrypoints=websecure"
         - "traefik.http.routers.frontend.tls.certresolver=myresolver"
-
-
-    # PHP services
+    admin:
+        build:
+            context: ./admin/
+        environment:
+            - PUBLIC_URL=${REACT_APP_FRONTEND_URL}
+            - NODE_ENV=${APP_ENV}
+            - REACT_APP_FRONTEND_URL
+            - REACT_APP_BACKEND_URL
+            - RELEASE_VERSION
+        labels:
+            - "traefik.frontend.priority=1"
+            - "traefik.enable=true"
+            - "traefik.http.routers.frontend.rule=(Host(`admin.${REMOTE_HOST}`))"
+            - "traefik.http.routers.frontend.entrypoints=websecure"
+            - "traefik.http.routers.frontend.tls.certresolver=myresolver"
+        # PHP services
 
     api:
         build:
