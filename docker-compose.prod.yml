@@ -37,7 +37,7 @@ services:
         labels:
         - "traefik.frontend.priority=1"
         - "traefik.enable=true"
-        - "traefik.http.routers.frontend.rule=Host(`${REMOTE_HOST}`) || (Host(`app.${REMOTE_HOST}`))"
+        - "traefik.http.routers.frontend.rule=Host(`${REMOTE_HOST}`) || (Host(`www.${REMOTE_HOST}`))"
         - "traefik.http.routers.frontend.entrypoints=websecure"
         - "traefik.http.routers.frontend.tls.certresolver=myresolver"
 
