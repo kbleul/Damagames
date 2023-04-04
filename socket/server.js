@@ -127,6 +127,10 @@ io.on("connection", (socket) => {
       // io.to(room).broadcast.emit("getResetGameRequest", data);
       socket.broadcast.to(room).emit("getResetGameRequest", data);
     });
+    //send king icons
+      socket.on("sendGameKingIcon", (data) => {
+      socket.broadcast.to(room).emit("getGameKingIcon", data);
+    });
     socket.on("sendResetGameMessage", (data) => {
       io.to(room).emit("getResetGameMessage", data);
     });
