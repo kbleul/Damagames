@@ -67,22 +67,41 @@ self.addEventListener('install', (event) => {
   console.log("service worker installed")
 });
 
+
 self.addEventListener('activate', (event) => {
-  console.log("activeted")
 
   event.waitUntil(
-    caches.keys().then(keys => { console.log(keys) }))
+    caches.keys().then(keys => { console.log(keys) })
+  );
+
+
+  // event.waitUntil(
+  //   // clear previous caches and update cache with new resources
+  //   caches.delete('cacheName').then(() => self.clients.claim())
+  // );
+
+  // send message to all active clients to reload the page
+  self.clients.matchAll().then(clients => {
+    clients.forEach(client => {
+      client.postMessage({
+        type: 'updateAvailable',
+        message: 'A new version is available. Please reload the page to update.'
+      });
+    });
+
+  });
 });
+
 
 
 
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
-});
+// self.addEventListener('message', (event) => {
+//   if (event.data && event.data.type === 'SKIP_WAITING') {
+//     self.skipWaiting();
+//   }
+// });
 
 
 // Any other custom service worker logic can go here.

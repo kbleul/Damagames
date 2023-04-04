@@ -58,15 +58,23 @@ const App = () => {
         Cookies[i] + "=;expires=" + new Date(0).toUTCString();
   }
 
-  useEffect(() => {
-    if (showReload && waitingWorker) {
-      // eslint-disable-next-line no-restricted-globals
-      const alert = confirm("A new version is available. Refresh now")
-      alert && reloadPage()
-    }
-    else { console.log("A new version is unavailable") }
-  }, [waitingWorker, showReload, reloadPage]);
+  // useEffect(() => {
+  //   if (showReload && waitingWorker) {
+  //     // eslint-disable-next-line no-restricted-globals
+  //     const alert = confirm("A new version is available. Refresh now")
+  //     alert && reloadPage()
+  //   }
+  //   else { console.log("A new version is unavailable") }
+  // }, [waitingWorker, showReload, reloadPage]);
 
+  useEffect(() => {
+    navigator.serviceWorker.addEventListener('message', (event) => {
+      if (event.data.type === 'updateAvailable') {
+        alert(event.data.message);
+      }
+    });
+  }, []);
+  
   useEffect(() => {
     TagManager.initialize(tagManagerArgs);
     deleteCookies()
