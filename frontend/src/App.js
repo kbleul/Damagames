@@ -12,6 +12,7 @@ import {
 } from "react-router-dom";
 import { Circles } from "react-loader-spinner";
 import ToastContainer from "./utils/ToastContainer";
+import { useServiceWorker } from "./Hook/useServiceWorker";
 //'G-YM283P3T0J'
 const tagManagerArgs = {
   gtmId: process.env.REACT_APP_GTM_ID,
@@ -40,7 +41,11 @@ const Game = React.lazy(() => import("./Game/Game"));
 const Store = React.lazy(() => import("./components/Store/Store"));
 const ErrorPage = React.lazy(() => import("./components/ErrorPage"));
 const PrivacyPolicy = React.lazy(() => import("./components/PrivacyPolicy"));
+
+
 const App = () => {
+  const { waitingWorker, showReload, reloadPage } = useServiceWorker();
+
   const { checked } = useHome();
   const { user, token } = useAuth();
 
@@ -52,6 +57,15 @@ const App = () => {
       document.cookie =
         Cookies[i] + "=;expires=" + new Date(0).toUTCString();
   }
+
+  useEffect(() => {
+    if (showReload && waitingWorker) {
+      // eslint-disable-next-line no-restricted-globals
+      const alert = confirm("A new version is available. Refresh now")
+      alert && reloadPage()
+    }
+    else { console.log("A new version is unavailable") }
+  }, [waitingWorker, showReload, reloadPage]);
 
   useEffect(() => {
     TagManager.initialize(tagManagerArgs);
@@ -131,7 +145,7 @@ const App = () => {
     <>
       {checked ? (
         <Suspense fallback={<SplashScreen />}>
-          <ToastContainer/>
+          <ToastContainer />
           <RoutComp />
         </Suspense>
       ) : (
