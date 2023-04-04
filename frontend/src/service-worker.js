@@ -76,6 +76,52 @@ self.addEventListener('install', (event) => {
   console.log("service worker installed")
 });
 
+self.addEventListener('activate', (event) => {
+  // Claim any clients immediately to ensure that the service worker
+  // takes control of the page on first load
+//   event.waitUntil(self.clients.claim());
+
+//   // Delete any outdated caches that don't match the current cache name
+//   event.waitUntil(
+//     caches.keys()
+//       .then((cacheNames) => {
+//         return Promise.all(
+//           cacheNames.map((name) => {
+//             if (name !== CACHE_NAME) {
+//               return caches.delete(name);
+//             }
+//           })
+//         );
+//       })
+//   );
+console.log("activeted")
+ });
+
+// Intercept network requests and serve assets from cache
+self.addEventListener('fetch', (event) => {
+  // event.respondWith(
+  //   caches.match(event.request)
+  //     .then((response) => {
+  //       if (response) {
+  //         // Serve the asset from cache
+  //         return response;
+  //       }
+  //       // Otherwise, fetch the asset from the network and cache it
+  //       return fetch(event.request)
+  //         .then((response) => {
+  //           return caches.open(CACHE_NAME)
+  //             .then((cache) => {
+  //               cache.put(event.request, response.clone());
+  //               return response;
+  //             });
+  //         });
+  //     })
+  // );
+
+console.log("fetch")
+
+});
+
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
 self.addEventListener('message', (event) => {
