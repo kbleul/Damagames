@@ -62,6 +62,20 @@ registerRoute(
   })
 );
 
+self.addEventListener('install', (event) => {
+  // event.waitUntil(
+  //   caches.open('my-cache').then((cache) => {
+  //     return cache.addAll([
+  //       '/index.html',
+  //       '/main.css',
+  //       '/main.js',
+  //       '/image.png'
+  //     ]);
+  //   })
+  // );
+  console.log("service worker installed")
+});
+
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
 self.addEventListener('message', (event) => {
