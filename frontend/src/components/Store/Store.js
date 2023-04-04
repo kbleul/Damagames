@@ -157,7 +157,7 @@ const Store = () => {
       </div>}
 
       {!viewAll && !itemIsLoading && !itemsError && <> <article className="h-[52vh] w-full  overflow-y-hidden px-2">
-        <h2 className={viewAll ? "mr-2 text-white font-bold text-right " : "mr-2 text-white font-bold mt-4 text-right "}>Avatars</h2>
+        <h2 className={viewAll ? "md:text-center md:mt-16 mr-2 text-white font-bold text-right " : "md:text-center md:mt-16 mr-2 text-white font-bold mt-4 text-right "}>Avatars</h2>
         <section>
           {storeItems.avatars?.map((avatar) => (
             <Avatar
@@ -172,8 +172,8 @@ const Store = () => {
         </section>
 
       </article>
-        <div className="w-full my-2 flex items-center gap-2">
-          <p className="text-orange-color text-left ml-4 font-bold"
+        <div className="w-full my-2 flex justify-center items-center gap-2 md:w-1/5 md:ml-[40%] ">
+          <p className="text-orange-color text-left md:text-center  ml-4 font-bold"
             onClick={() => setViewAll(true)}>view all</p>
 
 
@@ -184,8 +184,8 @@ const Store = () => {
           </IconContext.Provider>;
         </div>
         <article className="h-[30vh] w-full  mb-[2vh] px-2">
-          <h2 className="mr-2 text-white font-bold mb-2 text-right ">Boards</h2>
-          <section className="flex overflow-x-scroll pt-2 border-2 rounded-3xl" style={{
+          <h2 className="md:text-center md:mt-16 mr-2 text-white font-bold mb-2 text-right ">Boards</h2>
+          <section className="md:w-1/2 md:ml-[25%]  flex overflow-x-scroll pt-2 border-2 rounded-3xl" style={{
             background: `linear-gradient(120deg, rgb(39, 138, 134) 1%, rgba(11, 42, 43, 0.32) 10%, rgb(22, 85, 82) 98%) repeat scroll 0% 0%`,
           }}>
             {storeItems.boards?.map((board) => (
@@ -203,8 +203,8 @@ const Store = () => {
         </article>
 
         <article className="my-6 w-full px-2">
-          <h2 className="mr-2 text-white font-bold mb-2 text-right ">Crowns</h2>
-          <section className="flex overflow-x-scroll  pt-4 border-2 rounded-3xl" style={{
+          <h2 className="md:text-center md:mt-16 mr-2 text-white font-bold mb-2 text-right ">Crowns</h2>
+          <section className="md:w-1/2 md:ml-[25%]  flex overflow-x-scroll  pt-4 border-2 rounded-3xl" style={{
             background: `linear-gradient(120deg, rgb(39, 138, 134) 1%, rgba(11, 42, 43, 0.32) 10%, rgb(22, 85, 82) 98%) repeat scroll 0% 0%`,
           }}>
             {storeItems?.crowns?.map((crown) => (
@@ -269,7 +269,7 @@ const Avatar = ({
 
   return (
     <article
-      className="flex relative  items-center  w-full  border-2  p-2 rounded-md mb-4 hover:opacity-80 focus:opacity-80 h-full "
+      className="md:w-1/2 md:ml-[25%] flex relative  items-center  w-full  border-2  p-2 rounded-md mb-4 hover:opacity-80 focus:opacity-80 h-full "
       style={{
         background: `linear-gradient(120deg, rgb(39, 138, 134) 1%, rgba(11, 42, 43, 0.32) 10%, rgb(22, 85, 82) 98%) repeat scroll 0% 0%`,
       }}

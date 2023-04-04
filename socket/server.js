@@ -90,7 +90,7 @@ io.on("connection", (socket) => {
 
   socket.on("join-room", async (room) => {
     const clients = await io.of("/").in(room).fetchSockets();
-
+    console.log("joined")
     // , { clients, room, id: socket.id }
     let tempSocketObj = roomSocketObj[room];
     if (tempSocketObj && tempSocketObj.includes(socket.id)) {

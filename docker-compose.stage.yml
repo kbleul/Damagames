@@ -37,9 +37,24 @@ services:
     labels:
       - "traefik.frontend.priority=1"
       - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`${REMOTE_HOST}`) || (Host(`app.${REMOTE_HOST}`))"
+      - "traefik.http.routers.frontend.rule=Host(`${REMOTE_HOST}`) || (Host(`www.${REMOTE_HOST}`))"
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls.certresolver=myresolver"
+  admin:
+    build:
+      context: ./admin/
+    environment:
+      - PUBLIC_URL=${REACT_APP_FRONTEND_URL}
+      - NODE_ENV=${APP_ENV}
+      - REACT_APP_FRONTEND_URL
+      - REACT_APP_BACKEND_URL
+      - RELEASE_VERSION
+    labels:
+      - "traefik.admin.priority=1"
+      - "traefik.enable=true"
+      - "traefik.http.routers.admin.rule=(Host(`admin.${REMOTE_HOST}`))"
+      - "traefik.http.routers.admin.entrypoints=websecure"
+      - "traefik.http.routers.admin.tls.certresolver=myresolver"
 
   # PHP services
 

@@ -6,7 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useAuth } from "../../context/auth";
 import { MdOutlineCancel } from "react-icons/md";
-import Tele from '../../assets/Tele.png'
+import Tele from '../../assets/TeleNew.jpg'
 const CoinModal = ({ isCoinModalOpen, setIsCoinModalOpen }) => {
   const { user, token, setUser } = useAuth();
   const headers = {

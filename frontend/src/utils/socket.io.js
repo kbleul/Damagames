@@ -9,15 +9,16 @@ const socket = io(
     reconnectionDelay: 1000,
     reconnectionDelayMax: 5000,
     timeout: 20000,
-  }
-);
+  });
 
-// const socket = io(`http://localhost:7744`, {
-//   reconnection: true,
-//   reconnectionAttempts: Infinity,
-//   reconnectionDelay: 1000,
-//   reconnectionDelayMax: 5000,
-//   timeout: 20000,
-// });
+// const socket = io(
+//   `http://localhost:7744`,
+//   {
+//     reconnection: true,
+//     reconnectionAttempts: Infinity,
+//     reconnectionDelay: 1000,
+//     reconnectionDelayMax: 5000,
+//     timeout: 20000,
+//   });
 
 export default socket;
