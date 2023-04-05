@@ -13,6 +13,7 @@ import {
 import { Circles } from "react-loader-spinner";
 import ToastContainer from "./utils/ToastContainer";
 import { useServiceWorker } from "./Hook/useServiceWorker";
+import { useState } from "react";
 //'G-YM283P3T0J'
 const tagManagerArgs = {
   gtmId: process.env.REACT_APP_GTM_ID,
@@ -49,6 +50,10 @@ const App = () => {
   const { checked } = useHome();
   const { user, token } = useAuth();
 
+  const [newVersion, setNewVersion] = useState(false)
+  const [newUpdateMsg, setNewUpdateMsg] = useState(null)
+
+
   // function to delete cookies
   function deleteCookies() {
     var Cookies = document.cookie.split(";");
@@ -69,12 +74,13 @@ const App = () => {
 
   useEffect(() => {
     navigator.serviceWorker.addEventListener('message', (event) => {
-      if (event.data.type === 'updateAvailable') {
-        alert(event.data.message);
+      if (event.data?.type === 'updateAvailable') {
+        setNewVersion(true)
+        setNewUpdateMsg(event.data?.message)
       }
     });
   }, []);
-  
+
   useEffect(() => {
     TagManager.initialize(tagManagerArgs);
     deleteCookies()
@@ -90,6 +96,11 @@ const App = () => {
   const HomeComp = () => {
     return (
       <>
+        <div className="bg-orange-500 absolute top-0 w-full h-16 z-10">
+          <p>New version</p>
+          <button>Reload now</button>
+        </div>
+
         <Routes>
           <Route path="*" element={<Navigate to="/create-game" />} />
           <Route path="/create-game" element={<CreateGame />} />
@@ -119,6 +130,11 @@ const App = () => {
   const AuthComp = () => {
     return (
       <>
+        <div className="bg-orange-500 absolute top-0 w-full h-16 z-10">
+          <p>New version</p>
+          <button className="border">Reload now</button>
+        </div>
+
         <Routes>
           <Route path="" element={<Navigate to="/create-game" />} />
           <Route path="/create-game" element={<CreateGame />} />
