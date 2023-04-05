@@ -44,7 +44,6 @@ const PrivacyPolicy = React.lazy(() => import("./components/PrivacyPolicy"));
 
 
 const App = () => {
-  const { waitingWorker, showReload, reloadPage } = useServiceWorker();
 
   const { checked } = useHome();
   const { user, token } = useAuth();
