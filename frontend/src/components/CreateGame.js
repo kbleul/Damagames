@@ -48,7 +48,7 @@ const CreateGame = () => {
         <div className="w-full grid grid-cols-2 gap-3">
           <button
             onClick={() => handleSecond("new-game")}
-            className="relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+            className="relative w-full p-2 bg-black rounded-md cursor-pointer select-none
     active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
     active:border-b-[0px] flex items-center justify-center
     transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
