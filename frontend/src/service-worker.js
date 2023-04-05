@@ -88,7 +88,7 @@ self.addEventListener('install', (event) => {
     console.log("Service worker unregistered");
 
     // Reload the page
-    location.reload();
+    window.location.reload();
   });
 });
 
