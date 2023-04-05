@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import Joyride, { ACTIONS, CallBackProps, EVENTS, STATUS, Step } from 'react-joyride';
+
 import SideMenu from "./SideMenu";
 import { useNavigate } from "react-router-dom";
 import background from "../assets/backdrop.jpg";
@@ -8,6 +10,7 @@ import { Link } from "react-router-dom";
 import { clearCookie } from "../utils/data";
 
 import "./style.css";
+import { Footer } from "./Footer";
 const CreateGame = () => {
   const navigate = useNavigate();
   const { user, token } = useAuth();
@@ -25,6 +28,44 @@ const CreateGame = () => {
     }, 300);
   }
 
+  const menu = useRef()
+  const create = useRef()
+  const sidebar = useRef()
+  const join = useRef()
+  const publicGame = useRef()
+  const ai = useRef()
+
+
+
+  const [state, setState] = useState({});
+
+  useEffect(() => {
+    setState({
+      run: true,
+      steps: [
+        {
+          target: '.first-step',
+          content: 'This is my awesome feature!',
+        },
+        {
+          target: '.second-step',
+          content: 'This second-step awesome feature!',
+        },
+        {
+          target: '.third-step',
+          content: 'This is my awesome feature!',
+        },
+        {
+          target: '.fourth-step',
+          content: 'This third-step awesome feature!',
+        },
+        {
+          target: '.fifth-step',
+          content: 'This is my fifth-step feature!',
+        }
+      ]
+    })
+  }, [])
 
   return (
     <div
@@ -39,6 +80,27 @@ const CreateGame = () => {
         position: "relative",
       }}
     >
+      <Joyride
+        steps={state.steps}
+        stepIndex="5"
+        continuous
+        hideCloseButton
+        run={state.run}
+        scrollToFirstStep
+        showProgress
+        showSkipButton
+        styles={{
+          options: {
+            arrowColor: '#FF4C01',
+            overlayColor: 'rgba(79, 26, 0, 0.4)',
+            primaryColor: '#000',
+            textColor: '#000',
+            zIndex: 1000,
+            backgroundColor: "#FF4C01",
+          },
+        }}
+      />
+
       <SideMenu showMenu={showMenu} setShowMenu={setShowMenu} />
 
       <div onClick={() => setShowMenu(false)} className="max-w-xs p-3 mx-auto flex flex-col items-center justify-center gap-y-2 min-h-screen space-y-2">
@@ -46,9 +108,9 @@ const CreateGame = () => {
           <img src={avatar} className="" alt="avatar" />
         </div>
         <div className="w-full grid grid-cols-2 gap-3">
-          <button
+          <button ref={create}
             onClick={() => handleSecond("new-game")}
-            className="relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+            className="first-step relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
     active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
     active:border-b-[0px] flex items-center justify-center
     transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
@@ -58,9 +120,9 @@ const CreateGame = () => {
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
             Create Game
           </button>
-          <button
+          <button ref={join}
             onClick={() => handleSecond("join-game")}
-            className="relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+            className="second-step relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
             active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
             active:border-b-[0px] flex items-center justify-center
             transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
@@ -71,9 +133,9 @@ const CreateGame = () => {
             Join Game
           </button>
         </div>
-        <button
+        <button ref={ai}
           onClick={() => handleSecond(`game/${1}`)}
-          className="relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+          className="third-step relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
           active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
           active:border-b-[0px] flex items-center justify-center
           transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
@@ -85,9 +147,9 @@ const CreateGame = () => {
           {/* <span>offline</span> */}
         </button>
 
-        <button
+        <button ref={publicGame}
           onClick={() => handleSecond("new-game-public")}
-          className="relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+          className="fourth-step relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
           active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
           active:border-b-[0px] flex items-center justify-center
           transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
@@ -101,11 +163,11 @@ const CreateGame = () => {
         <>
           {!user && !token && (
             <div className=" absolute right-4 top-4">
-              <button
+              <button ref={menu}
                 onClick={() => {
                   handleSecond("login");
                 }}
-                className="relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none px-5
+                className="fifth-step relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none px-5
     active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
     active:border-b-[0px] flex items-center justify-center
     transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
@@ -161,7 +223,7 @@ const CreateGame = () => {
             <p className="text-orange-color text-[.7rem]">Store</p>
           </Link>
         </section>
-        {/* <Footer /> */}
+        <Footer />
       </div>
 
     </div>
