@@ -93,13 +93,23 @@ const App = () => {
 
   });
 
+  const reloadNow = () => {
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => caches.delete(cacheName))
+      );
+    }).then(() => {
+      window.location.reload();
+    });
+  }
+
   const HomeComp = () => {
     return (
       <>
-        <div className="bg-orange-500 absolute top-0 w-full h-16 z-10">
+        {newVersion && <div className="bg-orange-500 absolute top-0 w-full h-16 z-10">
           <p>New version</p>
-          <button>Reload now</button>
-        </div>
+          <button onClick={reloadNow} className="border">Reload now</button>
+        </div>}
 
         <Routes>
           <Route path="*" element={<Navigate to="/create-game" />} />
@@ -130,10 +140,10 @@ const App = () => {
   const AuthComp = () => {
     return (
       <>
-        <div className="bg-orange-500 absolute top-0 w-full h-16 z-10">
+        {newVersion && <div className="bg-orange-500 absolute top-0 w-full h-16 z-10">
           <p>New version</p>
-          <button className="border">Reload now</button>
-        </div>
+          <button onClick={reloadNow} className="border">Reload now</button>
+        </div>}
 
         <Routes>
           <Route path="" element={<Navigate to="/create-game" />} />
