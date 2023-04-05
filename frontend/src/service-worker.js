@@ -73,15 +73,15 @@ self.addEventListener('install', (event) => {
   );
 
   // Remove all caches
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          return caches.delete(cacheName);
-        })
-      );
-    })
-  );
+  // event.waitUntil(
+  //   caches.keys().then((cacheNames) => {
+  //     return Promise.all(
+  //       cacheNames.map((cacheName) => {
+  //         return caches.delete(cacheName);
+  //       })
+  //     );
+  //   })
+  // );
 
   // Unregister the service worker
   self.registration.unregister().then(() => {
