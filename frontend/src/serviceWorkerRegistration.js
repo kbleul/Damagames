@@ -1,5 +1,4 @@
 
-import toast, { Toaster } from "react-hot-toast";
 
 // This optional code is used to register a service worker.
 // register() is not called by default.
@@ -76,7 +75,7 @@ function registerValidSW(swUrl, config) {
               //     'tabs for this page are closed. See https://cra.link/PWA.'
               // );
 
-              toast(`Update available! To update, close all windows and reopen.`);
+
               // Execute callback
               // Execute callback
               if (config && config.onUpdate) {
