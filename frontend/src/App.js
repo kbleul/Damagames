@@ -73,12 +73,8 @@ const App = () => {
   // }, [waitingWorker, showReload, reloadPage]);
 
   useEffect(() => {
-    navigator.serviceWorker.addEventListener('message', (event) => {
-      if (event.data?.type === 'updateAvailable') {
-        setNewVersion(true)
-        setNewUpdateMsg(event.data?.message)
-      }
-    });
+    window.location.reload();
+
   }, []);
 
   useEffect(() => {
