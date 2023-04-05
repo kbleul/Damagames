@@ -72,10 +72,6 @@ const App = () => {
   //   else { console.log("A new version is unavailable") }
   // }, [waitingWorker, showReload, reloadPage]);
 
-  useEffect(() => {
-    window.location.reload();
-
-  }, []);
 
   useEffect(() => {
     TagManager.initialize(tagManagerArgs);
