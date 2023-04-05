@@ -12,7 +12,6 @@ import {
 } from "react-router-dom";
 import { Circles } from "react-loader-spinner";
 import ToastContainer from "./utils/ToastContainer";
-import { useServiceWorker } from "./Hook/useServiceWorker";
 import { useState } from "react";
 //'G-YM283P3T0J'
 const tagManagerArgs = {
@@ -50,32 +49,9 @@ const App = () => {
   const { checked } = useHome();
   const { user, token } = useAuth();
 
-  const [newVersion, setNewVersion] = useState(false)
-  const [newUpdateMsg, setNewUpdateMsg] = useState(null)
-
-
-  // function to delete cookies
-  function deleteCookies() {
-    var Cookies = document.cookie.split(";");
-    // set 1 Jan, 1970 expiry for every cookies
-    for (let i = 0; i < Cookies.length; i++)
-      document.cookie =
-        Cookies[i] + "=;expires=" + new Date(0).toUTCString();
-  }
-
-  // useEffect(() => {
-  //   if (showReload && waitingWorker) {
-  //     // eslint-disable-next-line no-restricted-globals
-  //     const alert = confirm("A new version is available. Refresh now")
-  //     alert && reloadPage()
-  //   }
-  //   else { console.log("A new version is unavailable") }
-  // }, [waitingWorker, showReload, reloadPage]);
-
 
   useEffect(() => {
     TagManager.initialize(tagManagerArgs);
-    deleteCookies()
   }, []);
 
   useEffect(() => {
@@ -85,24 +61,10 @@ const App = () => {
 
   });
 
-  const reloadNow = () => {
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => caches.delete(cacheName))
-      );
-    }).then(() => {
-      window.location.reload();
-    });
-  }
 
   const HomeComp = () => {
     return (
       <>
-        {newVersion && <div className="bg-orange-500 absolute top-0 w-full h-16 z-10">
-          <p>New version</p>
-          <button onClick={reloadNow} className="border">Reload now</button>
-        </div>}
-
         <Routes>
           <Route path="*" element={<Navigate to="/create-game" />} />
           <Route path="/create-game" element={<CreateGame />} />
@@ -132,11 +94,6 @@ const App = () => {
   const AuthComp = () => {
     return (
       <>
-        {newVersion && <div className="bg-orange-500 absolute top-0 w-full h-16 z-10">
-          <p>New version</p>
-          <button onClick={reloadNow} className="border">Reload now</button>
-        </div>}
-
         <Routes>
           <Route path="" element={<Navigate to="/create-game" />} />
           <Route path="/create-game" element={<CreateGame />} />
