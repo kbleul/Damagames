@@ -28,19 +28,12 @@ const CreateGame = () => {
     }, 300);
   }
 
-  const menu = useRef()
-  const create = useRef()
-  const sidebar = useRef()
-  const join = useRef()
-  const publicGame = useRef()
-  const ai = useRef()
 
+  const [tourItems, setTourItems] = useState(null);
 
+  const startTour = () => {
 
-  const [state, setState] = useState({});
-
-  useEffect(() => {
-    setState({
+    setTourItems({
       run: true,
       steps: [
         {
@@ -63,9 +56,19 @@ const CreateGame = () => {
           target: '.fifth-step',
           content: 'This is my fifth-step feature!',
         }
+        ,
+        {
+          target: '.sixth-step',
+          content: 'This is my fifth-step feature!',
+        }
+        ,
+        {
+          target: '.seventh-step',
+          content: 'This is my fifth-step feature!',
+        }
       ]
     })
-  }, [])
+  }
 
   return (
     <div
@@ -80,15 +83,15 @@ const CreateGame = () => {
         position: "relative",
       }}
     >
-      <Joyride
-        steps={state.steps}
-        stepIndex="5"
+      {tourItems && <Joyride
+        steps={tourItems.steps}
         continuous
         hideCloseButton
-        run={state.run}
+        run={tourItems.run}
         scrollToFirstStep
         showProgress
         showSkipButton
+        spotlightClicks={false}
         styles={{
           options: {
             arrowColor: '#FF4C01',
@@ -99,16 +102,20 @@ const CreateGame = () => {
             backgroundColor: "#FF4C01",
           },
         }}
-      />
+      />}
 
       <SideMenu showMenu={showMenu} setShowMenu={setShowMenu} />
+
+      <div className="absolute top-[25%] h-24 bg-yellow-300 w-3/5 ml-[20%]">
+        <button className="border border-black w-2/4" onClick={startTour}>ok</button>
+      </div>
 
       <div onClick={() => setShowMenu(false)} className="max-w-xs p-3 mx-auto flex flex-col items-center justify-center gap-y-2 min-h-screen space-y-2">
         <div className="h-[180px] w-[200px] bg-inherit mt-18 mb-8 ">
           <img src={avatar} className="" alt="avatar" />
         </div>
         <div className="w-full grid grid-cols-2 gap-3">
-          <button ref={create}
+          <button
             onClick={() => handleSecond("new-game")}
             className="first-step relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
     active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
@@ -120,7 +127,7 @@ const CreateGame = () => {
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
             Create Game
           </button>
-          <button ref={join}
+          <button
             onClick={() => handleSecond("join-game")}
             className="second-step relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
             active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
@@ -133,7 +140,7 @@ const CreateGame = () => {
             Join Game
           </button>
         </div>
-        <button ref={ai}
+        <button
           onClick={() => handleSecond(`game/${1}`)}
           className="third-step relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
           active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
@@ -147,7 +154,7 @@ const CreateGame = () => {
           {/* <span>offline</span> */}
         </button>
 
-        <button ref={publicGame}
+        <button
           onClick={() => handleSecond("new-game-public")}
           className="fourth-step relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
           active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
@@ -163,7 +170,7 @@ const CreateGame = () => {
         <>
           {!user && !token && (
             <div className=" absolute right-4 top-4">
-              <button ref={menu}
+              <button
                 onClick={() => {
                   handleSecond("login");
                 }}
@@ -184,7 +191,7 @@ const CreateGame = () => {
         <section className="w-4/5 max-w-[30rem] flex items-center justify-evenly mt-[12vh]">
           <Link
             to="/score-board"
-            className="flex flex-col justify-evenly items-center "
+            className="sixth-step flex flex-col justify-evenly items-center "
           >
             <div className="h-6 w-8 bg-orange-color px-2 flex justify-center items-center rounded-sm">
               <svg
@@ -204,9 +211,10 @@ const CreateGame = () => {
           </Link>
           <Link
             to="/store"
-            className="flex flex-col justify-evenly items-center"
+            className="seventh-step flex flex-col justify-evenly items-center"
           >
-            <div className="h-6 w-8 bg-orange-color px-2 flex justify-center items-center ">
+            <div className="h-6 w-8 bg-orange-color px-2 fle
+            x justify-center items-center ">
               <svg
                 width="22"
                 height="22"
