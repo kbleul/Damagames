@@ -2,184 +2,220 @@
 
 export const Localization = {
     "Login": {
-        amh: "ይግቡ",
-        eng: ""
+        Amh: "ይግቡ",
+        Eng: ""
     },
     "Create Game": {
-        amh: "አዲስ ጨዋታ",
-        eng: ""
+        Amh: "አዲስ ጨዋታ",
+        Eng: ""
     },
     "Join Game": {
-        amh: "ጨዋታ ይቀላቀሉ",
-        eng: ""
+        Amh: "ጨዋታ ይቀላቀሉ",
+        Eng: ""
     },
     "Play With Computer": {
-        amh: "ከኮምፒውተር ጋር ይጫወቱ",
-        eng: ""
+        Amh: "ከኮምፒውተር ጋር ይጫወቱ",
+        Eng: ""
     },
     "Public Game": {
-        amh: "የጋራ ጨዋታ",
-        eng: ""
+        Amh: "የጋራ ጨዋታ",
+        Eng: ""
     },
     "Forgot Password": {
-        amh: "ይለፍቃል ረስተዋል ?",
-        eng: ""
+        Amh: "ይለፍቃል ረስተዋል ?",
+        Eng: ""
     },
     "password": {
-        amh: "ይለፍቃል",
-        eng: ""
+        Amh: "ይለፍቃል",
+        Eng: ""
     },
     "Don't have account": {
-        amh: "መለያ የለህም ?",
-        eng: ""
+        Amh: "መለያ የለህም ?",
+        Eng: ""
     },
     "Sign up": {
-        amh: "መመዝገብ",
-        eng: ""
+        Amh: "መመዝገብ",
+        Eng: ""
     },
     "Coins earned": {
-        amh: "የተገኙ ሳንቲሞች",
-        eng: ""
+        Amh: "የተገኙ ሳንቲሞች",
+        Eng: ""
     },
     "Games played": {
-        amh: "የተጫወቷቸው ጨዋታዎች",
-        eng: ""
+        Amh: "የተጫወቷቸው ጨዋታዎች",
+        Eng: ""
     },
     "Wins": {
-        amh: "ያሸነፍከው",
-        eng: ""
+        Amh: "ያሸነፍከው",
+        Eng: ""
     },
     "Draw": {
-        amh: "እኩሊታ",
-        eng: ""
+        Amh: "እኩሊታ",
+        Eng: ""
     },
     "Loss": {
-        amh: "ሽንፈቶች",
-        eng: ""
+        Amh: "ሽንፈቶች",
+        Eng: ""
     },
     "Profile": {
-        amh: "መገለጫ",
-        eng: ""
+        Amh: "መገለጫ",
+        Eng: ""
     },
     "Log out": {
-        amh: "ውጣ",
-        eng: ""
+        Amh: "ውጣ",
+        Eng: ""
     },
     "Score board": {
-        amh: "የውጤት ሰሌዳ",
-        eng: ""
+        Amh: "የውጤት ሰሌዳ",
+        Eng: ""
     },
     "Store": {
-        amh: "ማከማቻ",
-        eng: ""
+        Amh: "ማከማቻ",
+        Eng: ""
     },
     "Tell us your name": {
-        amh: "ስምህን ንገረን",
-        eng: ""
+        Amh: "ስምህን ንገረን",
+        Eng: ""
     },
     "Create": {
-        amh: "መፍጠር",
-        eng: ""
+        Amh: "መፍጠር",
+        Eng: ""
     },
     "Creating": {
-        amh: "እየተፈጠሩ ነው ...",
-        eng: ""
+        Amh: "እየተፈጠሩ ነው ...",
+        Eng: ""
     },
     "Play for coin": {
-        amh: "ለሳንቲም ይጫወቱ",
-        eng: ""
+        Amh: "ለሳንቲም ይጫወቱ",
+        Eng: ""
     },
     "Great work": {
-        amh: "ጥሩ ስራ",
-        eng: ""
+        Amh: "ጥሩ ስራ",
+        Eng: ""
     },
     "Now send this": {
-        amh: "አሁን ይህንን ሊንክ ለጓደኛዎ ይላኩ ።",
-        eng: ""
+        Amh: "አሁን ይህንን ሊንክ ለጓደኛዎ ይላኩ ።",
+        Eng: ""
     },
     "Copy": {
-        amh: "ገልብጥ",
-        eng: ""
+        Amh: "ገልብጥ",
+        Eng: ""
     },
     "Copied": {
-        amh: "ተገልብጧል",
-        eng: ""
+        Amh: "ተገልብጧል",
+        Eng: ""
     },
     "Share": {
-        amh: "አጋራ",
-        eng: ""
+        Amh: "አጋራ",
+        Eng: ""
     },
     "you are about to": {
-        amh: "ይህን ጨዋታ ለቀዉ ሊሄዱነው ።",
-        eng: ""
+        Amh: "ይህን ጨዋታ ለቀዉ ሊሄዱነው ።",
+        Eng: ""
     },
     "Yes": {
-        amh: "አዎ",
-        eng: ""
+        Amh: "አዎ",
+        Eng: ""
     },
     "No": {
-        amh: "አይ",
-        eng: ""
+        Amh: "አይ",
+        Eng: ""
     },
     "Are you sure ": {
-        amh: "እርግጠኛ ነህ መውጣት ትፈልጋለህ ? አሁን ከሄድክ ጓደኛህ ይህን ጨዋታ መቀላቀል አይችልም !",
-        eng: ""
+        Amh: "እርግጠኛ ነህ መውጣት ትፈልጋለህ ? አሁን ከሄድክ ጓደኛህ ይህን ጨዋታ መቀላቀል አይችልም !",
+        Eng: ""
     },
     "Are you sure": {
-        amh: "እርግጠኛ ነህ መውጣት ትፈልጋለህ ? አሁን ከሄድክ ጓደኛህ ይህን ጨዋታ መቀላቀል አይችልም !",
-        eng: ""
+        Amh: "እርግጠኛ ነህ መውጣት ትፈልጋለህ ? አሁን ከሄድክ ጓደኛህ ይህን ጨዋታ መቀላቀል አይችልም !",
+        Eng: ""
     },
     "sound on": {
-        amh: "ድምጽ ማሰማት",
-        eng: ""
+        Amh: "ድምጽ ማሰማት",
+        Eng: ""
     },
     "sound off": {
-        amh: "ድምፅ ጠፍቷል",
-        eng: ""
+        Amh: "ድምፅ ጠፍቷል",
+        Eng: ""
     },
     "exit": {
-        amh: "መውጣት",
-        eng: ""
+        Amh: "መውጣት",
+        Eng: ""
     },
     "computer": {
-        amh: "ኮምፒውተር",
-        eng: ""
+        Amh: "ኮምፒውተር",
+        Eng: ""
     },
     "Your turn": {
-        amh: "ያንተ ተራ",
-        eng: ""
+        Amh: "ያንተ ተራ",
+        Eng: ""
     },
     "Moves": {
-        amh: "እንቅስቃሴ",
-        eng: ""
+        Amh: "እንቅስቃሴ",
+        Eng: ""
     },
     "Pawns": {
-        amh: "ፓውንስ",
-        eng: ""
+        Amh: "ፓውንስ",
+        Eng: ""
     },
     "are you sure two": {
-        amh: "እርግጠኛ ነህ ጨዋታውን መልቀቅ ትፈልጋለህ ?",
-        eng: ""
+        Amh: "እርግጠኛ ነህ ጨዋታውን መልቀቅ ትፈልጋለህ ?",
+        Eng: ""
     },
     "Your coins": {
-        amh: "የእርስዎ ሳንቲሞች",
-        eng: ""
+        Amh: "የእርስዎ ሳንቲሞች",
+        Eng: ""
     },
     "Play for coins": {
-        amh: "ለሳንቲሞች ይጫወቱ",
-        eng: ""
+        Amh: "ለሳንቲሞች ይጫወቱ",
+        Eng: ""
     },
     "Great Work": {
-        amh: "በጣም ጥሩ !",
-        eng: ""
+        Amh: "በጣም ጥሩ !",
+        Eng: ""
     },
     "enter code": {
-        amh: "ኮድ አስገባ",
-        eng: ""
+        Amh: "ኮድ አስገባ",
+        Eng: ""
     },
     "Submit": {
-        amh: "አስገባ",
-        eng: ""
-    }
+        Amh: "አስገባ",
+        Eng: ""
+    },
+    "Or": {
+        Amh: "ወይም",
+        Eng: ""
+    },
+    "Log in to bet coins": {
+        Amh: "ሳንቲሞችን ለመወራረድ Login ያድርጉ",
+        Eng: ""
+    },
+    "Here": {
+        Amh: "እዚ ጋር",
+        Eng: ""
+    },
+    "Loading": {
+        Amh: "በመካሄድ ላይ ...",
+        Eng: ""
+    },
+    "Your Friend": {
+        Amh: "ጓደኛህ",
+        Eng: ""
+    },
+    "waiting for you.": {
+        Amh: " እየጠበኩህ ነው::",
+        Eng: ""
+    },
+    "Join Now !!": {
+        Amh: "አሁን ይቀላቀሉ !!",
+        Eng: ""
+    },
+    "Join": {
+        Amh: "ግባ",
+        Eng: ""
+    },
+
+
+
+
 
 }

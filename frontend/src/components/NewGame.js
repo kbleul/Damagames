@@ -306,7 +306,7 @@ const NewGame = () => {
          items-center justify-center min-h-screen space-y-2 p-5 "
         >
           <h2 className="font-medium text-white text-lg pt-5">
-            {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Tell us your name"]?.amh : "Tell Us Your name" : "Tell Us Your name"}
+            {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Tell us your name"]?.Amh : "Tell Us Your name" : "Tell Us Your name"}
           </h2>
           <input
             type="text"
@@ -315,7 +315,7 @@ const NewGame = () => {
             value={user ? user.username : name}
             className="bg-transparent border  border-orange-color  p-2 w-full rounded-md
                text-white focus:outline-none focus:ring-0  font-medium "
-            placeholder="Tell Us Your name"
+            placeholder={localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Tell us your name"]?.Amh : "Tell Us Your name" : "Tell Us Your name"}
           />
           <div className="flex justify-evenly items-center  w-3/5 accent-orange-600">
             <input
@@ -341,12 +341,12 @@ const NewGame = () => {
             />
 
             <label for="bet" className="text-white">
-              {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Play for coins"]?.amh : "Play for coins" : "Play for coins"}
+              {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Play for coins"]?.Amh : "Play for coins" : "Play for coins"}
             </label>
           </div>
           {profileData?.data?.data?.data?.coins && (
             <p className="text-white">
-              {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Your coins"]?.amh : "Your coins" : "Your coins"}
+              {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Your coins"]?.Amh : "Your coins" : "Your coins"}
               : {profileData?.data?.data?.data?.coins}
             </p>
           )}
@@ -354,13 +354,14 @@ const NewGame = () => {
           {coinError && <p className="text-red-400 text-sm">{coinError}</p>}
           {loginPrompt && (
             <p className="text-red-400 text-sm">
-              Log in to bet coins{" "}
+              <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Log in to bet coins"]?.Amh : "Log in to bet coins" : "Log in to bet coins"}</>
+              {" "}
               <span
                 onClick={() => navigate("/login")}
                 className="text-white font-bold cursor-pointer"
                 href="/login"
               >
-                Here
+                {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Here"]?.Amh : "Here" : "Here"}
               </span>
             </p>
           )}
@@ -411,8 +412,8 @@ const NewGame = () => {
           >
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
             {nameMutation.isLoading || loggedInMutation.isLoading
-              ? <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Creating"]?.amh : "Creating..." : "Creating..."}</>
-              : <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Create"]?.amh : "Create" : "Create"}</>
+              ? <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Creating"]?.Amh : "Creating..." : "Creating..."}</>
+              : <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Create"]?.Amh : "Create" : "Create"}</>
             }
           </button>
         </div>
@@ -428,10 +429,10 @@ const NewGame = () => {
             p-3 rounded-md"
           >
             <h2 className="font-medium text-white text-lg ">
-              {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Great Work"]?.amh : "Great Work !" : "Great Work !"}
+              {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Great Work"]?.Amh : "Great Work !" : "Great Work !"}
             </h2>
             <p className="text-gray-200 pb-2  ">
-              {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Now send this"]?.amh : "Now send this Link to your Friend" : "Now send this Link to your Friend"}
+              {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Now send this"]?.Amh : "Now send this Link to your Friend" : "Now send this Link to your Friend"}
             </p>
 
             <div className="z-40 flex items-center border border-gray-400  w-full rounded-xl">
@@ -454,7 +455,7 @@ const NewGame = () => {
                 >
                   {isCopied ? (
                     <p className="w-6 h-6 text-xs text-green-500">
-                      <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Copied"]?.amh : "Copied" : "Copied"}</>
+                      <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Copied"]?.Amh : "Copied" : "Copied"}</>
                     </p>
                   ) : (
                     <IoIosCopy
@@ -469,8 +470,8 @@ const NewGame = () => {
                   }
                 >
                   {isCopied ?
-                    <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Copied"]?.amh : "Copied" : "Copied"}</>
-                    : <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Copy"]?.amh : "Copy" : "Copy"}</>
+                    <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Copied"]?.Amh : "Copied" : "Copied"}</>
+                    : <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Copy"]?.Amh : "Copy" : "Copy"}</>
                   }
                 </p>
               </div>
@@ -478,7 +479,9 @@ const NewGame = () => {
             {/* via code */}
             <div className="flex items-center space-x-2 justify-center">
               <div className="bg-orange-bg w-20 h-[1px]" />
-              <p className="text-center text-orange-color py-2">or</p>
+              <p className="text-center text-orange-color py-2">
+                {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Or"]?.Amh : "Or" : "Or"}
+              </p>
               <div className="bg-orange-bg w-20 h-[1px]" />
             </div>
             {/* code */}
@@ -502,7 +505,7 @@ const NewGame = () => {
                 >
                   {codeCopied ? (
                     <p className="w-6 h-6 text-xs text-green-500">
-                      <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Copied"]?.amh : "Copied" : "Copied"}</>
+                      <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Copied"]?.Amh : "Copied" : "Copied"}</>
                     </p>
                   ) : (
                     <IoIosCopy
@@ -517,8 +520,8 @@ const NewGame = () => {
                   }
                 >
                   {codeCopied ?
-                    <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Copied"]?.amh : "Copied" : "Copied"}</>
-                    : <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Copy"]?.amh : "Copy" : "Copy"}</>
+                    <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Copied"]?.Amh : "Copied" : "Copied"}</>
+                    : <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Copy"]?.Amh : "Copy" : "Copy"}</>
                   }
                 </p>
               </div>
@@ -536,7 +539,7 @@ const NewGame = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
               <IoIosShareAlt className="w-6 h-6" />
               <p>
-                {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Share"]?.amh : "Share" : "Share"}
+                {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Share"]?.Amh : "Share" : "Share"}
               </p>
             </div>
           </div>

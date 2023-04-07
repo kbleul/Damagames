@@ -144,7 +144,7 @@ const CreateGame = () => {
   "
           >
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-            {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Create Game"]?.amh : "Create Game" : "Create Game"}
+            {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Create Game"]?.Amh : "Create Game" : "Create Game"}
           </button>
           <button
             onClick={() => handleSecond("join-game")}
@@ -156,7 +156,7 @@ const CreateGame = () => {
           "
           >
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-            {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Join Game"]?.amh : "Join Game" : "Join Game"}
+            {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Join Game"]?.Amh : "Join Game" : "Join Game"}
           </button>
         </div>
         <button
@@ -169,7 +169,7 @@ const CreateGame = () => {
         "
         >
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-          {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Play With Computer"]?.amh : "Play with Computer" : "Play with Computer"}
+          {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Play With Computer"]?.Amh : "Play with Computer" : "Play with Computer"}
         </button>
 
         <button
@@ -182,7 +182,7 @@ const CreateGame = () => {
         "
         >
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-          {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Public Game"]?.amh : "Public Game" : "Public Game"}
+          {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Public Game"]?.Amh : "Public Game" : "Public Game"}
         </button>
 
         <>
@@ -200,7 +200,7 @@ const CreateGame = () => {
   "
               >
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-                {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Login"]?.amh : "Log in" : "Log in"}
+                {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Login"]?.Amh : "Log in" : "Log in"}
               </button>
             </div>
           )}
@@ -226,7 +226,7 @@ const CreateGame = () => {
               </svg>
             </div>
             <p className="text-orange-color text-[.7rem]">
-              {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Score board"]?.amh : "Score board" : "Score board"}
+              {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Score board"]?.Amh : "Score board" : "Score board"}
             </p>
           </Link>
           <Link
@@ -249,7 +249,7 @@ const CreateGame = () => {
               </svg>
             </div>
             <p className="text-orange-color text-[.7rem]">
-              {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Store"]?.amh : "Store" : "Store"}
+              {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Store"]?.Amh : "Store" : "Store"}
             </p>
           </Link>
         </section>

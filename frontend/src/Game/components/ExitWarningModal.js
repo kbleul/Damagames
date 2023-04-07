@@ -103,14 +103,14 @@ export default function ExitWarningModal({
                     as="h3"
                     className="text-lg font-medium leading-6 text-white text-center"
                   >
-                    {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["you are about to"]?.amh : "You are about to leave this game !" : "You are about to leave this game !"}
+                    {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["you are about to"]?.Amh : "You are about to leave this game !" : "You are about to leave this game !"}
                   </Dialog.Title>
 
 
                   {beforeGame ? <div className="mt-2">
                     <p className="text-sm text-gray-500 text-center ">
                       {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ?
-                        Localization["Are you sure"]?.amh :
+                        Localization["Are you sure"]?.Amh :
                         "Are you sure you want to leave ? Your friend won't be able to join this game if you leave now !" :
                         "Are you sure you want to leave ? Your friend won't be able to join this game if you leave now !"}
                     </p>
@@ -118,7 +118,7 @@ export default function ExitWarningModal({
                     <div className="mt-2">
                       <p className="text-sm text-gray-500 text-center ">
                         {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ?
-                          Localization["Are you sure "]?.amh :
+                          Localization["Are you sure "]?.Amh :
                           "Are you sure you want to leave ?" :
                           "Are you sure you want to leave ?"}
                       </p>
@@ -137,7 +137,7 @@ export default function ExitWarningModal({
                       onClick={handleExit}
                     >
                       {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ?
-                        Localization["Yes"]?.amh : "Yes" : "Yes"}
+                        Localization["Yes"]?.Amh : "Yes" : "Yes"}
                     </button>
                     <button
                       type="button"
@@ -151,7 +151,7 @@ export default function ExitWarningModal({
 
                     >
                       {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ?
-                        Localization["No"]?.amh : "No" : "No"}
+                        Localization["No"]?.Amh : "No" : "No"}
                     </button>
                   </div>
                 </Dialog.Panel>

@@ -84,7 +84,7 @@ const SideMenu = ({ showMenu, setShowMenu, isprofile }) => {
                   navigate("/profile");
                 }}
               >
-                {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Profile"]?.amh : "Profile" : "Profile"}
+                {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Profile"]?.Amh : "Profile" : "Profile"}
               </li>
               <li
                 className="py-2 w-full border-b border-black hover:border-black hover:bg-orange-color"
@@ -92,7 +92,7 @@ const SideMenu = ({ showMenu, setShowMenu, isprofile }) => {
                   userLogOut();
                 }}
               >
-                {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Log out"]?.amh : "Logout" : "Logout"}
+                {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Log out"]?.Amh : "Logout" : "Logout"}
               </li>
             </ul>
           }
@@ -111,10 +111,10 @@ const SideMenu = ({ showMenu, setShowMenu, isprofile }) => {
                   </div>
                   <div className="flex justify-between">
                     <p className="text-xs text-left ml-2">
-                      {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Coins earned"]?.amh : "Coins earned" : "Coins earned"} : {user.coin}
+                      {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Coins earned"]?.Amh : "Coins earned" : "Coins earned"} : {user.coin}
                     </p>
                     <p className="text-xs mr-2">
-                      {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Games played"]?.amh : "Games played -" : "Games played -"} - {historyData?.data?.data?.data?.played}
+                      {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Games played"]?.Amh : "Games played -" : "Games played -"} - {historyData?.data?.data?.data?.played}
                     </p>
                   </div>
 
@@ -129,19 +129,19 @@ const SideMenu = ({ showMenu, setShowMenu, isprofile }) => {
             <section className="w-[60%] ml-[20%] flex items-center justify-center font-bold">
               <div className="w-[33.33%] flex justify-center items-center gap-2 text-xs">
                 <h5>
-                  {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Wins"]?.amh : "Win" : "Win"} -
+                  {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Wins"]?.Amh : "Win" : "Win"} -
                 </h5>
                 <p>{historyData?.data?.data?.data?.wins}</p>
               </div>
               <div className="w-[33.33%] flex justify-center items-center gap-2 text-xs">
                 <h5>
-                  {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Draw"]?.amh : "Draw" : "Draw"} -
+                  {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Draw"]?.Amh : "Draw" : "Draw"} -
                 </h5>
                 <p>{historyData?.data?.data?.data?.draw}</p>
               </div>
               <div className="w-[33.33%] flex justify-center items-center gap-2 text-xs">
                 <h5> -
-                  {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Loss"]?.amh : "Loss" : "Loss"} -
+                  {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Loss"]?.Amh : "Loss" : "Loss"} -
                 </h5>
                 <p>{historyData?.data?.data?.data?.losses}</p>
               </div>

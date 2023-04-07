@@ -172,12 +172,12 @@ const Login = () => {
                   onClick={() => navigate("/forgot-password")}
                   className="text-white font-medium text-end self-end justify-end text-sm cursor-pointer"
                 >
-                  {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Forgot Password"]?.amh : "Forgot password" : "Forgot password"}
+                  {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Forgot Password"]?.Amh : "Forgot password" : "Forgot password"}
                 </p>
                 <Field
                   as="input"
                   type="password"
-                  placeholder={localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["password"]?.amh : "Password" : "Password"}
+                  placeholder={localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["password"]?.Amh : "Password" : "Password"}
                   name="password"
                   className={`rounded-[4px] pl-3 w-full h-[42px] bg-transparent font-medium  focus:outline-none focus:ring-0   text-gray-200 
                   ${errors.password && touched.password
@@ -217,7 +217,7 @@ const Login = () => {
                   {
                     localStorage.getItem("lang") ?
                       localStorage.getItem("lang") === "Amh" ?
-                        Localization["Login"]?.amh : "Password" : "Password"
+                        Localization["Login"]?.Amh : "Password" : "Password"
                   }</>
                 }
               </button>
@@ -239,12 +239,12 @@ const Login = () => {
         >
           {localStorage.getItem("lang") ?
             localStorage.getItem("lang") === "Amh" ?
-              Localization["Don't have account"]?.amh : "Don't have account ?" : "Don't have account ?"
+              Localization["Don't have account"]?.Amh : "Don't have account ?" : "Don't have account ?"
           }
           {" "}<span onClick={() => navigate("/signup")} className="text-orange-color underline font-bold ml-1">
             {localStorage.getItem("lang") ?
               localStorage.getItem("lang") === "Amh" ?
-                Localization["Sign up"]?.amh : "SignUp" : "SignUp"
+                Localization["Sign up"]?.Amh : "SignUp" : "SignUp"
             }
           </span>
         </p>
