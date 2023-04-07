@@ -66,7 +66,6 @@ registerRoute(
 
 
 self.addEventListener('install', (event) => {
-  console.log("Service worker installed");
 
   event.waitUntil(
     caches.keys().then(keys => { console.log(keys) })
@@ -84,39 +83,15 @@ self.addEventListener('install', (event) => {
   );
 
   // Unregister the service worker
-  self.registration.unregister().then(() => {
-    console.log("Service worker unregistered");
-
-    // Reload the page
-    location.reload();
-  });
+  self.registration.unregister()
 });
 
-self.addEventListener('activate', (event) => {
+// self.addEventListener('activate', (event) => {
 
-  event.waitUntil(
-    caches.keys().then(keys => { console.log(keys) })
-  );
+//   event.waitUntil(
+//     caches.keys().then(keys => { console.log(keys) })
+//   );
 
-
-  // event.waitUntil(
-  //   // clear previous caches and update cache with new resources
-  //   caches.delete('cacheName').then(() => self.clients.claim())
-  // );
-
-  // send message to all active clients to reload the page
-
-});
-
-
-
-
-// This allows the web app to trigger skipWaiting via
-// registration.waiting.postMessage({type: 'SKIP_WAITING'})
-// self.addEventListener('message', (event) => {
-//   if (event.data && event.data.type === 'SKIP_WAITING') {
-//     self.skipWaiting();
-//   }
 // });
 
 

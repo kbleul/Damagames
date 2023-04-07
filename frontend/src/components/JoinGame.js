@@ -6,10 +6,10 @@ import { useMutation } from "@tanstack/react-query";
 import toast, { Toaster } from "react-hot-toast";
 import socket from "../utils/socket.io";
 import { useAuth } from "../context/auth";
-import { useHome } from "../context/HomeContext";
 
 import { clearCookie } from "../utils/data";
 import { Footer } from "./Footer";
+import { Localization } from "../utils/language";
 
 const JoinGame = () => {
   const { user, token } = useAuth();
@@ -22,10 +22,8 @@ const JoinGame = () => {
   const { id } = useParams();
   const gameId = localStorage.getItem("gameId");
   const [code, setCode] = useState("");
-  const [success, setSuccess] = useState(false);
   //store player one name
   const [myFriend, setMyFriend] = useState("");
-  // const { setIsBet, setBetCoin } = useHome();
 
   // to check if  creater and the joining player are the same
   const sameUser = useRef(false);
@@ -53,18 +51,6 @@ const JoinGame = () => {
     });
   }, [isMessageListened]);
 
-  const playerIp = localStorage.getItem("");
-  // useEffect(() => {
-  //   if(isMessageSent && !isMessageListened){
-  //     if (ipRef.current !== playerIp) {
-  //       socket.emit("sendMessage", {
-  //         status: "started",
-  //         player2: JSON.stringify(tempPlayer),
-  //       });
-  //     }
-  //   }
-  // }, [isMessageListened])
-
   setInterval(() => {
     if (!useLess.current) {
       if (isMessageSent && !isMessageListened) {
@@ -72,14 +58,7 @@ const JoinGame = () => {
           status: "started",
           player2: JSON.stringify(tempPlayer),
         });
-        // console.log(
-        //   "isMessageSent:",
-        //   isMessageSent,
-        //   "isMessageListened:",
-        //   isMessageListened,
-        //   "use",
-        //   useLess.current
-        // );
+
       }
     }
   }, 500);
@@ -339,12 +318,6 @@ const JoinGame = () => {
                 responseData?.data?.data?.bet_coin
               );
 
-              // if (responseData?.data.data.bet_coin === 0) {
-              //   setIsBet(false)
-              // } else {
-              //   setIsBet(true);
-              //   setBetCoin(responseData?.data.data.bet_coin)
-              // }
               socket.emit("leave", gameId);
               socket.emit("leave", id);
               setIsVerified(true);
@@ -528,12 +501,14 @@ const JoinGame = () => {
              p-3 rounded-sm w-full bg-dark-bg max-w-[600px] "
           >
             <h2 className="font-medium text-white text-lg capitalize">
-              enter code
+              {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ?
+                Localization["enter code"]?.amh : "enter code" : "enter code"}
             </h2>
 
             <input
               type="text"
-              placeholder="Enter code"
+              placeholder={localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ?
+                Localization["enter code"]?.amh : "Enter code" : "Enter code"}
               value={code}
               onChange={(e) => setCode(e.target.value)}
               className="bg-transparent  border border-orange-color w-full

@@ -8,6 +8,8 @@ import { ThreeDots } from "react-loader-spinner";
 import { useNavigate } from "react-router-dom";
 import { Footer } from "../Footer";
 import { useHome } from "../../context/HomeContext";
+import { Localization } from "../../utils/language"
+
 const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -18,7 +20,7 @@ const Login = () => {
     : secondPlayer;
   const playerTwoId = localStorage.getItem("playerTwoIp");
   const [errorMessage, setErrorMessage] = useState("");
-  const {setMessageType } = useHome()
+  const { setMessageType } = useHome()
 
   const singUpValidationSchema = Yup.object().shape({
     phone: Yup.string()
@@ -74,7 +76,7 @@ const Login = () => {
       );
     } catch (err) { }
   };
-  return (
+  return (<>
     <main className="relative">
       <button
         className={"z-10 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 fixed top-0 left-2 md:left-4"}
@@ -170,12 +172,12 @@ const Login = () => {
                   onClick={() => navigate("/forgot-password")}
                   className="text-white font-medium text-end self-end justify-end text-sm cursor-pointer"
                 >
-                  Forgot password
+                  {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Forgot Password"]?.amh : "Forgot password" : "Forgot password"}
                 </p>
                 <Field
                   as="input"
                   type="password"
-                  placeholder="password"
+                  placeholder={localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["password"]?.amh : "Password" : "Password"}
                   name="password"
                   className={`rounded-[4px] pl-3 w-full h-[42px] bg-transparent font-medium  focus:outline-none focus:ring-0   text-gray-200 
                   ${errors.password && touched.password
@@ -211,9 +213,13 @@ const Login = () => {
                     wrapperClassName=""
                     visible={true}
                   />
-                ) : (
-                  " Log in"
-                )}
+                ) : <>
+                  {
+                    localStorage.getItem("lang") ?
+                      localStorage.getItem("lang") === "Amh" ?
+                        Localization["Login"]?.amh : "Password" : "Password"
+                  }</>
+                }
               </button>
             </Form>
           )}
@@ -231,11 +237,22 @@ const Login = () => {
         <p
           className=" text-xs text-gray-400 text-right text-center w-full  cursor-pointer  "
         >
-          Don't have account ?{" "}<span onClick={() => navigate("/signup")} className="text-orange-color underline font-bold ml-1">SignUp</span>
+          {localStorage.getItem("lang") ?
+            localStorage.getItem("lang") === "Amh" ?
+              Localization["Don't have account"]?.amh : "Don't have account ?" : "Don't have account ?"
+          }
+          {" "}<span onClick={() => navigate("/signup")} className="text-orange-color underline font-bold ml-1">
+            {localStorage.getItem("lang") ?
+              localStorage.getItem("lang") === "Amh" ?
+                Localization["Sign up"]?.amh : "SignUp" : "SignUp"
+            }
+          </span>
         </p>
       </div>
-      <Footer />
     </main>
+    <Footer />
+
+  </>
   );
 };
 

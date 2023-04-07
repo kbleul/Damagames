@@ -26,3 +26,8 @@
   width: 100%;
   overflow: hidden;
 }
+
+.onboarding_prompt {
+  background: rgba(60, 0, 0, 0.8);
+  color: rgb(231, 212, 181);
+}

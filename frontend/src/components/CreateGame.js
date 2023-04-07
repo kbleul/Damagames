@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import Joyride, { ACTIONS, CallBackProps, EVENTS, STATUS, Step } from 'react-joyride';
+import Joyride from 'react-joyride';
 
 import SideMenu from "./SideMenu";
 import { useNavigate } from "react-router-dom";
@@ -7,20 +7,15 @@ import background from "../assets/backdrop.jpg";
 import avatar from "../assets/logo.png";
 import { useAuth } from "../context/auth";
 import { Link } from "react-router-dom";
-import { clearCookie } from "../utils/data";
-
+import { Localization } from "../utils/language"
 import "./style.css";
 import { Footer } from "./Footer";
 const CreateGame = () => {
   const navigate = useNavigate();
   const { user, token } = useAuth();
   const [showMenu, setShowMenu] = useState(false);
-  const handleNavigate = (url) => {
-    clearCookie.forEach((data) => {
-      localStorage.getItem(data) && localStorage.removeItem(data);
-      navigate(url);
-    });
-  };
+  const [showTourPrompt, setShowTourPrompt] = useState(false);
+
 
   function handleSecond(url) {
     setTimeout(() => {
@@ -32,13 +27,14 @@ const CreateGame = () => {
   const [tourItems, setTourItems] = useState(null);
 
   const startTour = () => {
-
+    setShowTourPrompt(false)
     setTourItems({
       run: true,
       steps: [
         {
           target: '.first-step',
           content: 'This is my awesome feature!',
+          disableBeacon: true
         },
         {
           target: '.second-step',
@@ -51,10 +47,6 @@ const CreateGame = () => {
         {
           target: '.fourth-step',
           content: 'This third-step awesome feature!',
-        },
-        {
-          target: '.fifth-step',
-          content: 'This is my fifth-step feature!',
         }
         ,
         {
@@ -65,10 +57,30 @@ const CreateGame = () => {
         {
           target: '.seventh-step',
           content: 'This is my fifth-step feature!',
+        },
+        {
+          target: '.fifth-step',
+          content: 'This is my fifth-step feature!',
         }
       ]
     })
   }
+
+
+  useEffect(() => {
+    !localStorage.getItem("onBoardig") &&
+      setTimeout(() => setShowTourPrompt(true), 1000)
+  }, [])
+
+
+  const handleJoyrideCallback = data => {
+    const { action, status } = data;
+
+    if (status === "finished" || status === "skipped" || action === "close") {
+      localStorage.setItem("onBoardig", true)
+    }
+  };
+
 
   return (
     <div
@@ -83,7 +95,9 @@ const CreateGame = () => {
         position: "relative",
       }}
     >
+
       {tourItems && <Joyride
+        callback={handleJoyrideCallback}
         steps={tourItems.steps}
         continuous
         hideCloseButton
@@ -94,21 +108,26 @@ const CreateGame = () => {
         spotlightClicks={false}
         styles={{
           options: {
-            arrowColor: '#FF4C01',
+            arrowColor: 'rgba(80, 0, 0, 0.9)',
             overlayColor: 'rgba(79, 26, 0, 0.4)',
             primaryColor: '#000',
-            textColor: '#000',
+            textColor: 'rgb(231, 212, 181)',
             zIndex: 1000,
-            backgroundColor: "#FF4C01",
+            backgroundColor: "rgba(80, 0, 0, 0.9)",
           },
         }}
       />}
 
       <SideMenu showMenu={showMenu} setShowMenu={setShowMenu} />
 
-      <div className="absolute top-[25%] h-24 bg-yellow-300 w-3/5 ml-[20%]">
-        <button className="border border-black w-2/4" onClick={startTour}>ok</button>
-      </div>
+      {showTourPrompt && <section className="absolute top-0 h-[100vh] flex items-center justify-center w-full z-10">
+        <div className=" w-[90%] max-w-[450px] py-8 onboarding_prompt">
+          <h3 className="pb-6 font-bold text-3xl">Lorem ipsom</h3>
+          <p className="pb-6">Lorem Ipsum is simply dummy text of the printing and typesetting industry. </p>
+          <button className="border border-black px-6 py-2 rounded-full border-white text-black bg-white 
+           focus:bg-gray-300  hover:bg-gray-300 font-bold" onClick={startTour}>Start Tour</button>
+        </div>
+      </section>}
 
       <div onClick={() => setShowMenu(false)} className="max-w-xs p-3 mx-auto flex flex-col items-center justify-center gap-y-2 min-h-screen space-y-2">
         <div className="h-[180px] w-[200px] bg-inherit mt-18 mb-8 ">
@@ -125,7 +144,7 @@ const CreateGame = () => {
   "
           >
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-            Create Game
+            {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Create Game"]?.amh : "Create Game" : "Create Game"}
           </button>
           <button
             onClick={() => handleSecond("join-game")}
@@ -137,7 +156,7 @@ const CreateGame = () => {
           "
           >
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-            Join Game
+            {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Join Game"]?.amh : "Join Game" : "Join Game"}
           </button>
         </div>
         <button
@@ -150,8 +169,7 @@ const CreateGame = () => {
         "
         >
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-          <span>Play with Computer</span>
-          {/* <span>offline</span> */}
+          {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Play With Computer"]?.amh : "Play with Computer" : "Play with Computer"}
         </button>
 
         <button
@@ -164,7 +182,7 @@ const CreateGame = () => {
         "
         >
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-          Public Game
+          {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Public Game"]?.amh : "Public Game" : "Public Game"}
         </button>
 
         <>
@@ -182,7 +200,7 @@ const CreateGame = () => {
   "
               >
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-                Log in
+                {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Login"]?.amh : "Log in" : "Log in"}
               </button>
             </div>
           )}
@@ -207,17 +225,19 @@ const CreateGame = () => {
                 />
               </svg>
             </div>
-            <p className="text-orange-color text-[.7rem]">Score board</p>
+            <p className="text-orange-color text-[.7rem]">
+              {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Score board"]?.amh : "Score board" : "Score board"}
+            </p>
           </Link>
           <Link
             to="/store"
             className="seventh-step flex flex-col justify-evenly items-center"
           >
             <div className="h-6 w-8 bg-orange-color px-2 fle
-            x justify-center items-center ">
+            x justify-center items-center pt-1">
               <svg
-                width="22"
-                height="22"
+                width="18"
+                height="18"
                 viewBox="0 0 22 22"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -228,7 +248,9 @@ const CreateGame = () => {
                 />
               </svg>
             </div>
-            <p className="text-orange-color text-[.7rem]">Store</p>
+            <p className="text-orange-color text-[.7rem]">
+              {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Store"]?.amh : "Store" : "Store"}
+            </p>
           </Link>
         </section>
         <Footer />

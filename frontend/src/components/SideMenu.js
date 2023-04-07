@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { BiMenu } from 'react-icons/bi';
 import { CiMenuKebab } from 'react-icons/ci';
 import Avatar from "../assets/Avatar.png"
+import { Localization } from "../utils/language";
 
 
 
@@ -83,7 +84,7 @@ const SideMenu = ({ showMenu, setShowMenu, isprofile }) => {
                   navigate("/profile");
                 }}
               >
-                Profile
+                {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Profile"]?.amh : "Profile" : "Profile"}
               </li>
               <li
                 className="py-2 w-full border-b border-black hover:border-black hover:bg-orange-color"
@@ -91,7 +92,7 @@ const SideMenu = ({ showMenu, setShowMenu, isprofile }) => {
                   userLogOut();
                 }}
               >
-                Logout
+                {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Log out"]?.amh : "Logout" : "Logout"}
               </li>
             </ul>
           }
@@ -109,8 +110,12 @@ const SideMenu = ({ showMenu, setShowMenu, isprofile }) => {
                     <h5 className="text-left font-bold text-black text-base md:text-[1.2rem] ml-2">{user.username}</h5>
                   </div>
                   <div className="flex justify-between">
-                    <p className="text-xs text-left ml-2">Coins earned : {user.coin}</p>
-                    <p className="text-xs mr-2">Games played - {historyData?.data?.data?.data?.played}</p>
+                    <p className="text-xs text-left ml-2">
+                      {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Coins earned"]?.amh : "Coins earned" : "Coins earned"} : {user.coin}
+                    </p>
+                    <p className="text-xs mr-2">
+                      {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Games played"]?.amh : "Games played -" : "Games played -"} - {historyData?.data?.data?.data?.played}
+                    </p>
                   </div>
 
                 </div>
@@ -123,15 +128,21 @@ const SideMenu = ({ showMenu, setShowMenu, isprofile }) => {
 
             <section className="w-[60%] ml-[20%] flex items-center justify-center font-bold">
               <div className="w-[33.33%] flex justify-center items-center gap-2 text-xs">
-                <h5>Win - </h5>
+                <h5>
+                  {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Wins"]?.amh : "Win" : "Win"} -
+                </h5>
                 <p>{historyData?.data?.data?.data?.wins}</p>
               </div>
               <div className="w-[33.33%] flex justify-center items-center gap-2 text-xs">
-                <h5>Draw - </h5>
+                <h5>
+                  {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Draw"]?.amh : "Draw" : "Draw"} -
+                </h5>
                 <p>{historyData?.data?.data?.data?.draw}</p>
               </div>
               <div className="w-[33.33%] flex justify-center items-center gap-2 text-xs">
-                <h5>Loss - </h5>
+                <h5> -
+                  {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Loss"]?.amh : "Loss" : "Loss"} -
+                </h5>
                 <p>{historyData?.data?.data?.data?.losses}</p>
               </div>
             </section>

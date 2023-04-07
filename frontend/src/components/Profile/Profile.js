@@ -66,6 +66,10 @@ const Profile = () => {
     }
   );
 
+  const handleLangChange = (e) => {
+    if (e.target.value !== "") { localStorage.setItem("lang", e.target.value) }
+  }
+
   return (
     <article className="relative">
       <button
@@ -185,6 +189,15 @@ const Profile = () => {
           <div className="py-2 border rounded-md border-orange-color text-orange-color text-sm flex gap-2 items-center justify-center ">
             <p>+{user.phone}</p>
           </div>
+        </section>
+
+        <section className="w-[70%] md:max-w-[600px] ">
+
+          <select onChange={e => handleLangChange(e)} name="pets" id="pet-select" className="text-black py-2 border w-full bg-inherit text-center rounded-md border-orange-color text-orange-color text-sm flex gap-2 items-center justify-center">
+            <option value="">Language</option>
+            <option value="Eng">English</option>
+            <option value="Amh">አማርኛ</option>
+          </select>
         </section>
       </article>
 

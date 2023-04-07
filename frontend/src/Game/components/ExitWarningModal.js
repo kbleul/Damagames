@@ -5,6 +5,7 @@ import socket from "../../utils/socket.io";
 import { clearCookie } from "../../utils/data";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { Localization } from "../../utils/language";
 
 export default function ExitWarningModal({
   isExitModalOpen,
@@ -44,7 +45,7 @@ export default function ExitWarningModal({
             //console.log(responseData?.data)
           },
           onError: (err) => {
-           // console.log(err)
+            // console.log(err)
 
           },
         }
@@ -102,18 +103,24 @@ export default function ExitWarningModal({
                     as="h3"
                     className="text-lg font-medium leading-6 text-white text-center"
                   >
-                    You are about to leave this game !
+                    {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["you are about to"]?.amh : "You are about to leave this game !" : "You are about to leave this game !"}
                   </Dialog.Title>
 
 
                   {beforeGame ? <div className="mt-2">
                     <p className="text-sm text-gray-500 text-center ">
-                      Are you sure you want to leave ? Your friend won't be able to join this game if you leave now !
+                      {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ?
+                        Localization["Are you sure"]?.amh :
+                        "Are you sure you want to leave ? Your friend won't be able to join this game if you leave now !" :
+                        "Are you sure you want to leave ? Your friend won't be able to join this game if you leave now !"}
                     </p>
                   </div> :
                     <div className="mt-2">
                       <p className="text-sm text-gray-500 text-center ">
-                        Are you sure you want to leave ?
+                        {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ?
+                          Localization["Are you sure "]?.amh :
+                          "Are you sure you want to leave ?" :
+                          "Are you sure you want to leave ?"}
                       </p>
                     </div>
                   }
@@ -129,7 +136,8 @@ export default function ExitWarningModal({
                      "
                       onClick={handleExit}
                     >
-                      Yes
+                      {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ?
+                        Localization["Yes"]?.amh : "Yes" : "Yes"}
                     </button>
                     <button
                       type="button"
@@ -142,7 +150,8 @@ export default function ExitWarningModal({
                     "
 
                     >
-                      No
+                      {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ?
+                        Localization["No"]?.amh : "No" : "No"}
                     </button>
                   </div>
                 </Dialog.Panel>

@@ -6,13 +6,9 @@ import socket from "./utils/socket.io";
 import {
   Route,
   Routes,
-  Navigate,
-  NavLink,
-  useNavigate,
+  Navigate
 } from "react-router-dom";
-import { Circles } from "react-loader-spinner";
 import ToastContainer from "./utils/ToastContainer";
-import { useState } from "react";
 //'G-YM283P3T0J'
 const tagManagerArgs = {
   gtmId: process.env.REACT_APP_GTM_ID,
