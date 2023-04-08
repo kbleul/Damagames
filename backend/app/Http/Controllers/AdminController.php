@@ -28,32 +28,30 @@ class AdminController extends Controller
     public function users()
     {
         $users = User::paginate(10);
-        // $users->getCollection();
-        return [
-            'users' => $users->getCollection()->map(function ($que) {
-                $played = Game::where('playerOne', $que->id)->orWhere('playerTwo', $que->id)->withCount('scores')->get()->sum('scores_count');
+        $mapping = $users->map(function ($que) {
+            $played = Game::where('playerOne', $que->id)->orWhere('playerTwo', $que->id)->withCount('scores')->get()->sum('scores_count');
 
-                $wins = Game::where('playerOne', $que->id)->orWhere('playerTwo', $que->id)->withCount(['scores' => function ($query) use ($que) {
-                    $query->where('winner', $que->id);
-                }])->get()->sum('scores_count');
+            $wins = Game::where('playerOne', $que->id)->orWhere('playerTwo', $que->id)->withCount(['scores' => function ($query) use ($que) {
+                $query->where('winner', $que->id);
+            }])->get()->sum('scores_count');
 
-                $coin = User::find($que->id);
+            $coin = User::find($que->id);
 
-                $draw = Game::where('playerOne', $que->id)->orWhere('playerTwo', $que->id)->withCount(['scores' => function ($query) {
-                    $query->where('draw', true);
-                }])->get()->sum('scores_count');
-                $que->match_history =  [
-                    'rank' => $this->getRanking(auth()->id()),
-                    'played' => $played,
-                    'wins' => $wins,
-                    'draw' =>  $draw,
-                    'losses' => $played - ($wins + $draw),
-                    'coins' => $coin->current_point,
-                ];
+            $draw = Game::where('playerOne', $que->id)->orWhere('playerTwo', $que->id)->withCount(['scores' => function ($query) {
+                $query->where('draw', true);
+            }])->get()->sum('scores_count');
+            $que->match_history =  [
+                'rank' => $this->getRanking(auth()->id()),
+                'played' => $played,
+                'wins' => $wins,
+                'draw' =>  $draw,
+                'losses' => $played - ($wins + $draw),
+                'coins' => $coin->current_point,
+            ];
 
-                return $que;
-            }),
-        ];
+            return $que;
+        });
+        return  $users->setCollection(collect($mapping));
     }
 
     public function getRanking($id)
