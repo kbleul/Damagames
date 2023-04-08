@@ -7,6 +7,7 @@ use App\Http\Requests\StoreItemStatusRequest;
 use App\Http\Requests\StoreItemUpdateRequest;
 use App\Models\CoinSetting;
 use App\Models\Game;
+use App\Models\Score;
 use App\Models\Store;
 use App\Models\User;
 use GrahamCampbell\ResultType\Success;
@@ -18,7 +19,8 @@ class AdminController extends Controller
     {
         return [
             'users' => User::count(),
-            'daily_playd' => 1000,
+            'users_subscribed' => User::where('phone_verified_at', '!=', null)->count(),
+            'total_games' => Score::count(),
             'weekly_playd' => 10200,
             'monthly_playd' => 100999,
             'yearly_played' => 1000999,
