@@ -27,8 +27,10 @@ class AdminController extends Controller
 
     public function users()
     {
+        $users = User::paginate(10);
+        // $users->getCollection();
         return [
-            'users' => User::paginate(10)->through(function ($que) {
+            'users' => $users->getCollection()->map(function ($que) {
                 $played = Game::where('playerOne', $que->id)->orWhere('playerTwo', $que->id)->withCount('scores')->get()->sum('scores_count');
 
                 $wins = Game::where('playerOne', $que->id)->orWhere('playerTwo', $que->id)->withCount(['scores' => function ($query) use ($que) {
