@@ -8,9 +8,6 @@ import { Circles } from "react-loader-spinner";
 import { IconContext } from "react-icons";
 import axios from "axios";
 
-
-import { FaChevronCircleUp } from "react-icons/fa";
-import { FaChevronCircleDown } from "react-icons/fa";
 import { RiLock2Fill } from "react-icons/ri";
 import { ImUnlocked } from "react-icons/im";
 import { AiFillDownCircle } from "react-icons/ai";
@@ -18,10 +15,11 @@ import { AiFillDownCircle } from "react-icons/ai";
 
 import StoreItemView from "./StoreItemViewModal";
 import LoginPromptModal from "./LoginPromptModal";
+import { Localization } from "../../utils/language";
 
 const Store = () => {
   const navigate = useNavigate();
-  const { token } = useAuth();
+  const { token, lang } = useAuth();
 
   const [storeItems, setStoreItems] = useState({});
   const [itemIsLoading, setItemIsLoading] = useState(true);
@@ -157,7 +155,9 @@ const Store = () => {
       </div>}
 
       {!viewAll && !itemIsLoading && !itemsError && <> <article className="h-[52vh] w-full  overflow-y-hidden px-2">
-        <h2 className={viewAll ? "md:text-center md:mt-16 mr-2 text-white font-bold text-right " : "md:text-center md:mt-16 mr-2 text-white font-bold mt-4 text-right "}>Avatars</h2>
+        <h2 className={viewAll ? "md:text-center md:mt-16 mr-2 text-white font-bold text-right " : "md:text-center md:mt-16 mr-2 text-white font-bold mt-4 text-right "}>
+          {Localization["Avatars"][lang]}
+        </h2>
         <section>
           {storeItems.avatars?.map((avatar) => (
             <Avatar
@@ -174,7 +174,9 @@ const Store = () => {
       </article>
         <div className="w-full my-2 flex justify-center items-center gap-2 md:w-1/5 md:ml-[40%] ">
           <p className="text-orange-color text-left md:text-center  ml-4 font-bold"
-            onClick={() => setViewAll(true)}>view all</p>
+            onClick={() => setViewAll(true)}>
+            {Localization["view all"][lang]}
+          </p>
 
 
           <IconContext.Provider value={{ color: "#FF4C01", className: "global-class-name" }}>
@@ -184,7 +186,9 @@ const Store = () => {
           </IconContext.Provider>;
         </div>
         <article className="h-[30vh] w-full  mb-[2vh] px-2">
-          <h2 className="md:text-center md:mt-16 mr-2 text-white font-bold mb-2 text-right ">Boards</h2>
+          <h2 className="md:text-center md:mt-16 mr-2 text-white font-bold mb-2 text-right ">
+            {Localization["Boards"][lang]}
+          </h2>
           <section className="md:w-1/2 md:ml-[25%]  flex overflow-x-scroll pt-2 border-2 rounded-3xl" style={{
             background: `linear-gradient(120deg, rgb(39, 138, 134) 1%, rgba(11, 42, 43, 0.32) 10%, rgb(22, 85, 82) 98%) repeat scroll 0% 0%`,
           }}>
@@ -203,7 +207,9 @@ const Store = () => {
         </article>
 
         <article className="my-6 w-full px-2">
-          <h2 className="md:text-center md:mt-16 mr-2 text-white font-bold mb-2 text-right ">Crowns</h2>
+          <h2 className="md:text-center md:mt-16 mr-2 text-white font-bold mb-2 text-right ">
+            {Localization["Crowns"][lang]}
+          </h2>
           <section className="md:w-1/2 md:ml-[25%]  flex overflow-x-scroll  pt-4 border-2 rounded-3xl" style={{
             background: `linear-gradient(120deg, rgb(39, 138, 134) 1%, rgba(11, 42, 43, 0.32) 10%, rgb(22, 85, 82) 98%) repeat scroll 0% 0%`,
           }}>
@@ -265,7 +271,7 @@ const Avatar = ({
   setShowLoginModal,
   myAvatarsId,
 }) => {
-  const { user, token } = useAuth();
+  const { user, token, lang } = useAuth();
 
   return (
     <article
@@ -292,11 +298,11 @@ const Avatar = ({
       </section>
       <section className="w-[60%] text-sm md:text-lg text-left mr-4 py-2 text-white border-r-2 border-orange-color">
         <p className="">{avatar.name}</p>
-        <p className="font-bold text-xs md:text-base">{avatar.nickname}</p>
+
       </section>
       {user && token && myAvatarsId.includes(avatar.id) ?
         <p className="w-[25%] flex text-black text-xs bg-orange-50 font-extrabold px-1 ">
-          Purchased
+          {Localization["Purchased"][lang]}
         </p> :
         <section className="w-[20%] flex  justify-center items-center text-sm ">
           <p>
@@ -334,7 +340,7 @@ const Board = ({
   setShowLoginModal,
   myBoardsId,
 }) => {
-  const { user, token } = useAuth();
+  const { user, token, lang } = useAuth();
 
   return (
     <article
@@ -361,7 +367,8 @@ const Board = ({
 
       {user && token && myBoardsId.includes(board.id) ?
         <p className="w-4/5 ml-[10%] text-black text-xs bg-orange-50 font-extrabold px-2 ">
-          Purchased
+          {Localization["Purchased"][lang]}
+
         </p> :
 
         <div className="mt-1 flex items-center justify-center gap-1">
@@ -401,7 +408,7 @@ const Crown = ({
   isOn,
   myCrownsId,
 }) => {
-  const { user, token } = useAuth();
+  const { user, token, lang } = useAuth();
 
   return (
     <article
@@ -433,7 +440,8 @@ const Crown = ({
         {user && token && myCrownsId.includes(crown.id) ?
           <p
             className="w-4/5 ml-[10%] text-black text-xs bg-orange-50 font-extrabold px-2 "
-          > Purchased
+          >{Localization["Purchased"][lang]}
+
           </p> :
           <div className="mt-1 flex items-center justify-center gap-1">
             <svg width="22" height="24" viewBox="0 0 32 36" fill="none" xmlns="http://www.w3.org/2000/svg">

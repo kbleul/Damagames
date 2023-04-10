@@ -2,216 +2,400 @@
 
 export const Localization = {
     "Login": {
-        Amh: "ይግቡ",
-        Eng: ""
+        AMH: "ይግቡ",
+        ENG: "Log in"
     },
     "Create Game": {
-        Amh: "አዲስ ጨዋታ",
-        Eng: ""
+        AMH: "አዲስ ጨዋታ",
+        ENG: "Create Game"
     },
     "Join Game": {
-        Amh: "ጨዋታ ይቀላቀሉ",
-        Eng: ""
+        AMH: "ጨዋታ ይቀላቀሉ",
+        ENG: "Join Game"
     },
     "Play With Computer": {
-        Amh: "ከኮምፒውተር ጋር ይጫወቱ",
-        Eng: ""
+        AMH: "ከኮምፒውተር ጋር ይጫወቱ",
+        ENG: "Play with Computer"
     },
     "Public Game": {
-        Amh: "የጋራ ጨዋታ",
-        Eng: ""
+        AMH: "የጋራ ጨዋታ",
+        ENG: "Public Game"
     },
     "Forgot Password": {
-        Amh: "ይለፍቃል ረስተዋል ?",
-        Eng: ""
+        AMH: "ይለፍቃል ረስተዋል ?",
+        ENG: ""
     },
     "password": {
-        Amh: "ይለፍቃል",
-        Eng: ""
+        AMH: "ይለፍቃል",
+        ENG: ""
     },
     "Don't have account": {
-        Amh: "መለያ የለህም ?",
-        Eng: ""
+        AMH: "መለያ የለህም ?",
+        ENG: ""
     },
     "Sign up": {
-        Amh: "መመዝገብ",
-        Eng: ""
+        AMH: "መመዝገብ",
+        ENG: "Sign up"
+    },
+    "please fill the space !": {
+        AMH: "እባክዎን ቦታውን ይሙሉ !",
+        ENG: "please fill the space !"
+    },
+    "please enter a valid phone !": {
+        AMH: "እባክዎ ትክክለኛ ስልክ ያስገቡ !",
+        ENG: "please enter a valid phone !"
+    },
+    "please enter a strong password !": {
+        AMH: "እባክዎ ትክክለኛ ስልክ ያስገቡ !",
+        ENG: "please enter a strong password !"
     },
     "Coins earned": {
-        Amh: "የተገኙ ሳንቲሞች",
-        Eng: ""
+        AMH: "የተገኙ ሳንቲሞች",
+        ENG: ""
     },
     "Games played": {
-        Amh: "የተጫወቷቸው ጨዋታዎች",
-        Eng: ""
+        AMH: "የተጫወቷቸው ጨዋታዎች",
+        ENG: ""
     },
     "Wins": {
-        Amh: "ያሸነፍከው",
-        Eng: ""
+        AMH: "ያሸነፍከው",
+        ENG: "Wins"
     },
     "Draw": {
-        Amh: "እኩሊታ",
-        Eng: ""
+        AMH: "አቻ",
+        ENG: "Draw"
     },
     "Loss": {
-        Amh: "ሽንፈቶች",
-        Eng: ""
+        AMH: "ሽንፈቶች",
+        ENG: "Loss"
     },
     "Profile": {
-        Amh: "መገለጫ",
-        Eng: ""
+        AMH: "መገለጫ",
+        ENG: ""
     },
     "Log out": {
-        Amh: "ውጣ",
-        Eng: ""
+        AMH: "ውጣ",
+        ENG: ""
     },
     "Score board": {
-        Amh: "የውጤት ሰሌዳ",
-        Eng: ""
+        AMH: "የውጤት ሰሌዳ",
+        ENG: "Score board"
     },
     "Store": {
-        Amh: "ማከማቻ",
-        Eng: ""
+        AMH: "ማከማቻ",
+        ENG: "Store"
     },
     "Tell us your name": {
-        Amh: "ስምህን ንገረን",
-        Eng: ""
+        AMH: "ስምህን ንገረን",
+        ENG: "Tell us your name"
     },
     "Create": {
-        Amh: "መፍጠር",
-        Eng: ""
+        AMH: "ፍጠር",
+        ENG: "Create"
     },
     "Creating": {
-        Amh: "እየተፈጠሩ ነው ...",
-        Eng: ""
+        AMH: "እየተፈጠሩ ነው ...",
+        ENG: "Creating ..."
     },
     "Play for coin": {
-        Amh: "ለሳንቲም ይጫወቱ",
-        Eng: ""
+        AMH: "ለሳንቲም ይጫወቱ",
+        ENG: ""
     },
     "Great work": {
-        Amh: "ጥሩ ስራ",
-        Eng: ""
+        AMH: "ጥሩ ስራ",
+        ENG: "Great work"
     },
     "Now send this": {
-        Amh: "አሁን ይህንን ሊንክ ለጓደኛዎ ይላኩ ።",
-        Eng: ""
+        AMH: "አሁን ይህንን ሊንክ ለጓደኛዎ ይላኩ ።",
+        ENG: "Now send this Link to your Friend"
     },
     "Copy": {
-        Amh: "ገልብጥ",
-        Eng: ""
+        AMH: "ገልብጥ",
+        ENG: "Copy"
     },
     "Copied": {
-        Amh: "ተገልብጧል",
-        Eng: ""
+        AMH: "ተገልብጧል",
+        ENG: "Copied"
     },
     "Share": {
-        Amh: "አጋራ",
-        Eng: ""
+        AMH: "አጋራ",
+        ENG: "Share"
     },
     "you are about to": {
-        Amh: "ይህን ጨዋታ ለቀዉ ሊሄዱነው ።",
-        Eng: ""
+        AMH: "ይህን ጨዋታ ለቀዉ ሊሄዱነው ።",
+        ENG: ""
     },
     "Yes": {
-        Amh: "አዎ",
-        Eng: ""
+        AMH: "አዎ",
+        ENG: ""
     },
     "No": {
-        Amh: "አይ",
-        Eng: ""
+        AMH: "አይ",
+        ENG: ""
     },
     "Are you sure ": {
-        Amh: "እርግጠኛ ነህ መውጣት ትፈልጋለህ ? አሁን ከሄድክ ጓደኛህ ይህን ጨዋታ መቀላቀል አይችልም !",
-        Eng: ""
+        AMH: "እርግጠኛ ነህ መውጣት ትፈልጋለህ ? አሁን ከሄድክ ጓደኛህ ይህን ጨዋታ መቀላቀል አይችልም !",
+        ENG: ""
     },
     "Are you sure": {
-        Amh: "እርግጠኛ ነህ መውጣት ትፈልጋለህ ? አሁን ከሄድክ ጓደኛህ ይህን ጨዋታ መቀላቀል አይችልም !",
-        Eng: ""
+        AMH: "እርግጠኛ ነህ መውጣት ትፈልጋለህ ? አሁን ከሄድክ ጓደኛህ ይህን ጨዋታ መቀላቀል አይችልም !",
+        ENG: ""
     },
     "sound on": {
-        Amh: "ድምጽ ማሰማት",
-        Eng: ""
+        AMH: "ድምጽ ማሰማት",
+        ENG: ""
     },
     "sound off": {
-        Amh: "ድምፅ ጠፍቷል",
-        Eng: ""
+        AMH: "ድምፅ ጠፍቷል",
+        ENG: ""
     },
     "exit": {
-        Amh: "መውጣት",
-        Eng: ""
+        AMH: "መውጣት",
+        ENG: ""
     },
     "computer": {
-        Amh: "ኮምፒውተር",
-        Eng: ""
+        AMH: "ኮምፒውተር",
+        ENG: ""
     },
     "Your turn": {
-        Amh: "ያንተ ተራ",
-        Eng: ""
+        AMH: "ያንተ ተራ",
+        ENG: ""
     },
     "Moves": {
-        Amh: "እንቅስቃሴ",
-        Eng: ""
+        AMH: "እንቅስቃሴ",
+        ENG: ""
     },
     "Pawns": {
-        Amh: "ፓውንስ",
-        Eng: ""
+        AMH: "ፓውንስ",
+        ENG: ""
     },
     "are you sure two": {
-        Amh: "እርግጠኛ ነህ ጨዋታውን መልቀቅ ትፈልጋለህ ?",
-        Eng: ""
+        AMH: "እርግጠኛ ነህ ጨዋታውን መልቀቅ ትፈልጋለህ ?",
+        ENG: ""
     },
     "Your coins": {
-        Amh: "የእርስዎ ሳንቲሞች",
-        Eng: ""
+        AMH: "የእርስዎ ሳንቲሞች",
+        ENG: "Your coins"
     },
     "Play for coins": {
-        Amh: "ለሳንቲሞች ይጫወቱ",
-        Eng: ""
+        AMH: "ለሳንቲሞች ይጫወቱ",
+        ENG: "Play for coins"
     },
     "Great Work": {
-        Amh: "በጣም ጥሩ !",
-        Eng: ""
+        AMH: "በጣም ጥሩ !",
+        ENG: ""
     },
     "enter code": {
-        Amh: "ኮድ አስገባ",
-        Eng: ""
+        AMH: "ኮድ አስገባ",
+        ENG: "Enter code"
     },
     "Submit": {
-        Amh: "አስገባ",
-        Eng: ""
+        AMH: "አስገባ",
+        ENG: ""
     },
     "Or": {
-        Amh: "ወይም",
-        Eng: ""
+        AMH: "ወይም",
+        ENG: "Or"
     },
     "Log in to bet coins": {
-        Amh: "ሳንቲሞችን ለመወራረድ Login ያድርጉ",
-        Eng: ""
+        AMH: "ሳንቲሞችን ለመወራረድ ወደ አካዉንቶ ይግቡ ",
+        ENG: ""
     },
     "Here": {
-        Amh: "እዚ ጋር",
-        Eng: ""
+        AMH: "እዚ ጋር",
+        ENG: "Here"
     },
     "Loading": {
-        Amh: "በመካሄድ ላይ ...",
-        Eng: ""
+        AMH: "በመካሄድ ላይ ...",
+        ENG: "Loading ..."
     },
     "Your Friend": {
-        Amh: "ጓደኛህ",
-        Eng: ""
+        AMH: "ጓደኛህ",
+        ENG: "Your Friend"
     },
     "waiting for you.": {
-        Amh: " እየጠበኩህ ነው::",
-        Eng: ""
+        AMH: " እየጠበኩህ ነው::",
+        ENG: " is waiting for you."
     },
     "Join Now !!": {
-        Amh: "አሁን ይቀላቀሉ !!",
-        Eng: ""
+        AMH: "አሁን ይቀላቀሉ !!",
+        ENG: "Join Now !!"
     },
     "Join": {
-        Amh: "ግባ",
-        Eng: ""
+        AMH: "ግባ",
+        ENG: ""
+    },
+    "Avatars": {
+        AMH: "የመገለጫ ስዕል",
+        ENG: "Avatars"
+    },
+    "Boards": {
+        AMH: "የመጫወቻ ሳጥን",
+        ENG: "Boards"
+    },
+    "Crowns": {
+        AMH: "ዘውዶች",
+        ENG: "Crowns"
+    },
+    "view all": {
+        AMH: "ሁሉንም አሳይ",
+        ENG: "view all"
+    },
+    "You need to login to buy items.": {
+        AMH: "ለመግዛት በመለያ መግባት አለብዎት.",
+        ENG: "You need to login to buy items."
+    },
+    "Buy Now": {
+        AMH: "ግዛ",
+        ENG: "Buy Now"
+    },
+    "Purchased": {
+        AMH: "የተገዛ",
+        ENG: "Purchased"
+    },
+    "You don't have sufficient coins": {
+        AMH: "በቂ ሳንቲሞች የሎትም። ተጨማሪ ጨዋታዎችን ይጫወቱ ወይም ሳንቲሞችን ይግዙ.",
+        ENG: "You don't have sufficient coins"
+    },
+    "Play Game": {
+        AMH: "ጨዋታ ተጫወታ",
+        ENG: "Play Game"
+    },
+    "Buy Coins": {
+        AMH: "ሳንቲሞችን ይግዙ",
+        ENG: "Buy Coins"
+    },
+    "Select Coin": {
+        AMH: "አንዱን ይምረጡ",
+        ENG: "Select Coin"
+    },
+    "coins": {
+        AMH: " ሳንቲሞች",
+        ENG: " coins"
+    },
+    "birr": {
+        AMH: " ብር",
+        ENG: "birr"
+    },
+    "Buy": {
+        AMH: "ግዛ",
+        ENG: "Buy"
+    },
+    "Amount": {
+        AMH: "መጠን",
+        ENG: "Amount"
+    },
+    "Pay with": {
+        AMH: "ይክፈሉ",
+        ENG: "Pay with"
+    },
+    "Payment Successful!": {
+        AMH: "ክፍያ ተሳክቷል! ስለግዢዎ እናመሰግናለን",
+        ENG: "Payment Successful! Thank you for your purchase"
+    },
+    "Go to Shop": {
+        AMH: "ወደ ሱቅ ይሂዱ",
+        ENG: "Go to Shop"
+    },
+    "Change Password": {
+        AMH: "የሚስጥር ቁልፍ ቀይር",
+        ENG: "Change Password"
+    },
+    "Language": {
+        AMH: "ቋንቋ",
+        ENG: "Language"
+    },
+    "My Boards": {
+        AMH: "የእኔ መጫወቻ ሳጥኖች",
+        ENG: "My Boards"
+    },
+    "My Crowns": {
+        AMH: "የኔ ዘውዶች",
+        ENG: "My Crowns"
+    },
+    "Shop": {
+        AMH: "ወደ ሱቅ ይሂዱ",
+        ENG: "Shop"
+    },
+    "You don't have any boards yet.": {
+        AMH: "ወደ ሱቅ ይሂዱ",
+        ENG: "እስካሁን ምንም ሳጥኖች የሎትም።"
+    },
+    "You don't have any crowns yet.": {
+        AMH: "ወደ ሱቅ ይሂዱ",
+        ENG: "እስካሁን ምንም ዘውዶች የሎትም።"
+    },
+    "Go to the store to buy one": {
+        AMH: "ለመግዛት ወደ መደብሩ ይሂዱ",
+        ENG: "Go to the store to buy one"
+    },
+    "Username": {
+        AMH: "የተጠቃሚ ስም",
+        ENG: "Username"
+    },
+    "Change Username": {
+        AMH: "የተጠቃሚ ስም ቀይር",
+        ENG: "Change Username"
+    },
+    "Username changed.": {
+        AMH: "የተጠቃሚ ስም ተቀይሯል።",
+        ENG: "Username changed."
+    },
+    "Password changed.": {
+        AMH: "የይለፍ ቃል ተቀይሯል።",
+        ENG: "Password changed."
+    },
+    "Confirm Password": {
+        AMH: "አዲስ የይለፍ ቃል አረጋግጥ",
+        ENG: "Confirm Password"
+    },
+    "Current Password": {
+        AMH: "ሚስጥራዊ ማለፊያ ቁልፍ",
+        ENG: "Current Password"
+    },
+    "New Password": {
+        AMH: "አዲስ የይለፍ ቃል",
+        ENG: "New Password"
+    },
+    "Update default board": {
+        AMH: "አዲስ የይለፍ ቃል",
+        ENG: "Update default board"
+    },
+    "Update default crown": {
+        AMH: "ዘውድ ቀይር",
+        ENG: "Update default crown"
+    },
+    "Board changed.": {
+        AMH: "የመጫወቻ ሳጥን ተለውጧል።",
+        ENG: "Board changed."
+    },
+    "Crown changed.": {
+        AMH: "ዘውዱ ተለውጧል::",
+        ENG: "Crown changed."
+    },
+    "No public games currently !": {
+        AMH: "በአሁኑ ጊዜ ምንም ክፈት ጨዋታዎች የሉም ::",
+        ENG: "No public games available right now !"
+    },
+    "Play": {
+        AMH: "ተጫወት",
+        ENG: "Play"
+    },
+    "someone has already": {
+        AMH: "ሌላ ሰው አስቀድሞ ጨዋታውን ተቀላቅሏል።",
+        ENG: "someone has already joined the game"
+    },
+    "Back": {
+        AMH: "ተመለስ",
+        ENG: "Back"
+    },
+    "Close": {
+        AMH: "ዝጋ",
+        ENG: "Close"
+    },
+    "Update": {
+        AMH: "ለዉጥ",
+        ENG: "Update"
     },
 
 

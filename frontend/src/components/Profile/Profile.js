@@ -15,6 +15,7 @@ import ChangeProfile from "./ChangeProfile";
 import ForgotPassword from "./ForgotPassword";
 import { Navigate, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import { Localization } from "../../utils/language";
 
 const Profile = () => {
   const [changePasswordModal, setChangePasswordModal] = useState(false);
@@ -30,7 +31,7 @@ const Profile = () => {
   const [showChangeBoardModal, setShowChangeBoardModal] = useState(false);
   const [showChangeCrownModal, setShowChangeCrownModal] = useState(false);
 
-  const { user, token } = useAuth();
+  const { user, token, lang } = useAuth();
   const navigate = useNavigate();
 
   const headers = {
@@ -167,7 +168,9 @@ const Profile = () => {
             onClick={() => setChangePasswordModal(true)}
             className="py-2 border rounded-md border-orange-color text-orange-color text-sm flex gap-2 items-center justify-center "
           >
-            <p className="w-3/5">Change Password</p>
+            <p className="w-3/5">
+              {Localization["Change Password"][lang]}
+            </p>
             <svg
               width="14"
               height="15"
@@ -194,7 +197,9 @@ const Profile = () => {
         <section className="w-[70%] md:max-w-[600px] ">
 
           <select onChange={e => handleLangChange(e)} name="pets" id="pet-select" className="text-black py-2 border w-full bg-inherit text-center rounded-md border-orange-color text-orange-color text-sm flex gap-2 items-center justify-center">
-            <option value="">Language</option>
+            <option value="">
+              {Localization["Language"][lang]}
+            </option>
             <option value="Eng">English</option>
             <option value="Amh">አማርኛ</option>
           </select>
@@ -208,17 +213,21 @@ const Profile = () => {
             background: `linear-gradient(90deg, #FF4C01 0%, rgba(0, 0, 0, 0) 139.19%)`,
           }}
         >
-          <h2 className="text-black font-extrabold">My Boards</h2>
+          <h2 className="text-black font-extrabold">
+            {Localization["My Boards"][lang]}
+          </h2>
 
           {myBoards?.length === 0 ? (
             <div className="text-white py-4">
-              <p>You don't have any boards yet.</p>
-              <p>Go to the store to buy one</p>
+              <p>{Localization["My Boards"][lang]}
+              </p>
+              <p>{Localization["You don't have any boards yet."][lang]}
+              </p>
               <button
                 className="bg-white text-black font-bold px-8 py-2 rounded-3xl mt-2 cursor-pointer"
                 onClick={() => navigate("/store")}
               >
-                Store
+                {Localization["Shop"][lang]}
               </button>
             </div>
           ) : (
@@ -257,17 +266,20 @@ const Profile = () => {
             background: `linear-gradient(90deg, #FF4C01 0%, rgba(0, 0, 0, 0) 139.19%)`,
           }}
         >
-          <h2 className="text-black font-extrabold">My Crowns</h2>
+          <h2 className="text-black font-extrabold">
+            {Localization["My Crowns"][lang]}
+          </h2>
 
           {myCrowns?.length === 0 ? (
             <div className="text-white py-4">
-              <p>You don't have any crowns yet.</p>
-              <p>Go to the store to buy one</p>
+              <p>{Localization["You don't have any crowns yet."][lang]}</p>
+              <p>{Localization["Go to the store to buy one"][lang]}
+              </p>
               <button
                 className="bg-white text-black font-bold px-8 py-2 rounded-3xl mt-2 cursor-pointer"
                 onClick={() => navigate("/store")}
               >
-                Store
+                {Localization["Shop"][lang]}
               </button>
             </div>
           ) : (

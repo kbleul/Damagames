@@ -5,9 +5,10 @@ import money from "../assets/money.svg";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useAuth } from "../context/auth";
+import { Localization } from "../utils/language";
 const Success = () => {
   const navigate = useNavigate();
-  const { user, token, setUser } = useAuth();
+  const { user, token, setUser, lang } = useAuth();
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -47,9 +48,9 @@ const Success = () => {
   );
   return (
     <div className="flex flex-col space-y-2 items-center justify-center max-w-xl mx-auto p-3">
-      <img src={money} />
+      <img src={money} alt="" />
       <h3 className="text-white font-medium">
-        Payment Successful! Thank you for your purchase
+        {Localization["Payment Successful!"][lang]}
       </h3>
       <button
         className="relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
@@ -60,9 +61,9 @@ const Success = () => {
           "
         onClick={() => navigate("/store")}
       >
-        Go to Store
+        {Localization["Go to Shop"][lang]}
       </button>
-    </div>
+    </div >
   );
 };
 

@@ -14,6 +14,7 @@ import { clearCookie } from "../utils/data";
 import background from "../assets/backdrop.jpg";
 import { Footer } from "./Footer";
 import ExitWarningModal from "../Game/components/ExitWarningModal";
+import { Localization } from "../utils/language";
 
 
 const ACTION = {
@@ -23,7 +24,7 @@ const ACTION = {
 };
 
 const NewGamePublic = () => {
-  const { user, token } = useAuth();
+  const { user, token, lang } = useAuth();
   const navigate = useNavigate();
 
   //"menu" || "creating" || "created"
@@ -237,7 +238,7 @@ const NewGamePublic = () => {
               "
           >
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-            Create Game
+            {Localization["Create Game"][lang]}
           </button>
 
           <button
@@ -250,7 +251,7 @@ const NewGamePublic = () => {
               "
           >
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-            Join Game
+            {Localization["Join Game"][lang]}
           </button>
         </section>
       )}

@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import CoinModal from "./CoinModal";
+import { Localization } from "../../utils/language";
 
 const StoreItemView = ({
 	isShowModalOpen,
@@ -17,7 +18,7 @@ const StoreItemView = ({
 	myBoardsId,
 	myCrownsId,
 }) => {
-	const { user, token, setUser } = useAuth();
+	const { user, token, setUser, lang } = useAuth();
 	const navigate = useNavigate();
 	const [showPurchasedItemModal, setShowPurchasedItemModal] = useState(false);
 	const [isCoinModalOpen, setIsCoinModalOpen] = useState(false);
@@ -203,13 +204,12 @@ const StoreItemView = ({
 														className='rounded-md bg-orange-600 px-6  p-2
                            text-sm font-medium text-white hover:bg-orange-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
 														onClick={purchaseMutationSubmitHandler}>
-														Buy Now
+														{Localization["Buy Now"][lang]}
 													</button>
 												) : (
 													<div>
 														<p className='text-center capitalize'>
-															You don't have sufficient coins. Play more games
-															or buy coins.
+															{Localization["You don't have sufficient coins"][lang]}
 														</p>
 
 														<div className='w-full flex flex-col space-y-2  justify-center mt-4'>
@@ -223,7 +223,7 @@ const StoreItemView = ({
                                 border-b-[1px] border-gray-400/50 font-semibold text-white
                               '>
 																<div className='absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md' />
-																Play Game
+																{Localization["Play Game"][lang]}
 															</button>
 															<button
 																onClick={() => {
@@ -237,7 +237,7 @@ const StoreItemView = ({
                                 border-b-[1px] border-gray-400/50 font-semibold text-white
                                 '>
 																<div className='absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md' />
-																Buy Coins
+																{Localization["Buy Coins"][lang]}
 															</button>
 														</div>
 													</div>

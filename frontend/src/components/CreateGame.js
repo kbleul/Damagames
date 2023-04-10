@@ -12,7 +12,7 @@ import "./style.css";
 import { Footer } from "./Footer";
 const CreateGame = () => {
   const navigate = useNavigate();
-  const { user, token } = useAuth();
+  const { user, token, lang, setLanguage } = useAuth();
   const [showMenu, setShowMenu] = useState(false);
   const [showTourPrompt, setShowTourPrompt] = useState(false);
 
@@ -144,7 +144,7 @@ const CreateGame = () => {
   "
           >
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-            {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Create Game"]?.Amh : "Create Game" : "Create Game"}
+            {Localization["Create Game"][lang]}
           </button>
           <button
             onClick={() => handleSecond("join-game")}
@@ -156,7 +156,7 @@ const CreateGame = () => {
           "
           >
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-            {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Join Game"]?.Amh : "Join Game" : "Join Game"}
+            {Localization["Join Game"][lang]}
           </button>
         </div>
         <button
@@ -169,7 +169,7 @@ const CreateGame = () => {
         "
         >
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-          {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Play With Computer"]?.Amh : "Play with Computer" : "Play with Computer"}
+          {Localization["Play With Computer"][lang]}
         </button>
 
         <button
@@ -182,17 +182,21 @@ const CreateGame = () => {
         "
         >
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-          {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Public Game"]?.Amh : "Public Game" : "Public Game"}
+          {Localization["Public Game"][lang]}
         </button>
 
         <>
           {!user && !token && (
-            <div className=" absolute right-4 top-4">
+            <div className="border w-full absolute right-4 top-4 flex justify-between">
+              <div>
+                <button className="text-white w-24 ml-4 h-full"
+                  onClick={() => setLanguage("AMH")}>here</button>
+              </div>
               <button
                 onClick={() => {
                   handleSecond("login");
                 }}
-                className="fifth-step relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none px-5
+                className="fifth-step relative w-22 p-2 bg-orange-bg rounded-md cursor-pointer select-none px-5
     active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
     active:border-b-[0px] flex items-center justify-center
     transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
@@ -200,7 +204,7 @@ const CreateGame = () => {
   "
               >
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-                {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Login"]?.Amh : "Log in" : "Log in"}
+                {Localization["Login"][lang]}
               </button>
             </div>
           )}
@@ -226,7 +230,7 @@ const CreateGame = () => {
               </svg>
             </div>
             <p className="text-orange-color text-[.7rem]">
-              {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Score board"]?.Amh : "Score board" : "Score board"}
+              {Localization["Score board"][lang]}
             </p>
           </Link>
           <Link
@@ -249,7 +253,7 @@ const CreateGame = () => {
               </svg>
             </div>
             <p className="text-orange-color text-[.7rem]">
-              {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Store"]?.Amh : "Store" : "Store"}
+              {Localization["Store"][lang]}
             </p>
           </Link>
         </section>

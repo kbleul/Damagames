@@ -12,7 +12,7 @@ import { Footer } from "./Footer";
 import { Localization } from "../utils/language";
 
 const JoinGame = () => {
-  const { user, token } = useAuth();
+  const { user, token, lang } = useAuth();
   const [isMessageSent, setIsMessageSent] = useState(false);
   const [isMessageListened, setIsMessageListened] = useState(false);
   const [socketLoading, setsocketLoading] = useState(false);
@@ -403,7 +403,7 @@ const JoinGame = () => {
       min-h-screen  p-5 "
           >
             <h2 className="text-white font-semibold">
-              {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Loading"]?.Amh : "Loading" : "Loading"}
+              {Localization["Loading"][lang]}
             </h2>
           </div>
         ) : (
@@ -417,22 +417,22 @@ const JoinGame = () => {
             >
               <h2 className="font-medium text-white text-lg pt-4">
                 {!user && !token &&
-                  <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Tell us your name"]?.Amh : "Tell Us Your Name" : "Tell Us Your Name"}</>
+                  <>{Localization["Tell us your name"][lang]}</>
                 }
               </h2>
               <p className="text-gray-400 pb-2">
-                <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Your Friend"]?.Amh : "Your Friend" : "Your Friend"}</>
+                <>{Localization["Your Friend"][lang]}</>
                 {" "}
                 <span className={"text-orange-color"}>{myFriend}</span>
-                <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["waiting for you."]?.Amh : " is waiting for you." : " is waiting for you."}</>
+                <>{Localization["waiting for you."][lang]}</>
                 <br />
-                <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Join Now !!"]?.Amh : "Join Now !!" : "Join Now !!"}</>
+                <>{Localization["Join Now !!"][lang]}</>
               </p>
 
               <input
                 disabled={user && token}
                 type="text"
-                placeholder={localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Tell us your name"]?.Amh : "Tell Us Your Name" : "Tell Us Your Name"}
+                placeholder={Localization["Tell us your name"][lang]}
 
                 onChange={(e) => setName(e.target.value)}
                 value={name}
@@ -451,8 +451,8 @@ const JoinGame = () => {
               >
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
                 {nameMutation.isLoading ?
-                  <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Loading"]?.Amh : "Loading" : "Loading"}</>
-                  : <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Join"]?.Amh : "Join" : "Join"}</>
+                  <>{Localization["Loading"][lang]}</>
+                  : <>{Localization["Join"][lang]}</>
                 }
               </button>
             </div>
@@ -468,22 +468,22 @@ const JoinGame = () => {
              border-orange-color p-3 rounded-sm w-full max-w-xs mx-auto"
           >
             <h2 className="font-medium text-white text-lg pt-4">
-              {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Tell us your name"]?.Amh : "Tell Us Your Name" : "Tell Us Your Name"}
+              {Localization["Tell us your name"][lang]}
             </h2>
             <p className="text-gray-400 pb-2">
 
-              {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Your Friend"]?.Amh : "Your Friend" : "Your Friend"}
+              {Localization["Your Friend"][lang]}
               {" "}
               <span className={"text-orange-color"}>{myFriend}</span>
-              <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["waiting for you."]?.Amh : " is waiting for you." : " is waiting for you."}</>
+              <>{Localization["waiting for you."][lang]}</>
               <br />
-              <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Join Now !!"]?.Amh : "Join Now !!" : "Join Now !!"}</>
+              <>{Localization["Join Now !!"][lang]}</>
             </p>
 
             <input
               disabled={user && token}
               type="text"
-              placeholder={localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Tell us your name"]?.Amh : "Tell Us Your Name" : "Tell Us Your Name"}
+              placeholder={Localization["Tell us your name"][lang]}
 
               onChange={(e) => setName(e.target.value)}
               value={name}
@@ -502,8 +502,8 @@ const JoinGame = () => {
             >
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
               {nameMutation.isLoading || socketLoading ?
-                <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Loading"]?.Amh : "Loading" : "Loading"}</>
-                : <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Join"]?.Amh : "Join" : "Join"}</>
+                <>{Localization["Loading"][lang]}</>
+                : <>{Localization["Join"][lang]}</>
               }
             </button>
           </div>
@@ -518,14 +518,12 @@ const JoinGame = () => {
              p-3 rounded-sm w-full bg-dark-bg max-w-[600px] "
           >
             <h2 className="font-medium text-white text-lg capitalize">
-              {localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ?
-                Localization["enter code"]?.Amh : "enter code" : "enter code"}
+              {Localization["enter code"][lang]}
             </h2>
 
             <input
               type="text"
-              placeholder={localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ?
-                Localization["enter code"]?.Amh : "Enter code" : "Enter code"}
+              placeholder={Localization["enter code"][lang]}
               value={code}
               onChange={(e) => setCode(e.target.value)}
               className="bg-transparent  border border-orange-color w-full
@@ -546,8 +544,8 @@ const JoinGame = () => {
             >
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
               {joinViaCodeMutation.isLoading || joinBetViaCodeMutation.isLoading
-                ? <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Loading"]?.Amh : "Loading" : "Loading"}</>
-                : <>{localStorage.getItem("lang") ? localStorage.getItem("lang") === "Amh" ? Localization["Submit"]?.Amh : "Submit" : "Submit"}</>}
+                ? <>{Localization["Loading"][lang]}</>
+                : <>{Localization["Submit"][lang]}</>}
             </button>
           </div>
         </div>

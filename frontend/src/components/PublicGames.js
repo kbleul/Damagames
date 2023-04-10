@@ -8,9 +8,9 @@ import { useAuth } from "../context/auth";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Footer } from "./Footer";
-import { clearCookie } from "../utils/data";
+import { Localization } from "../utils/language";
 const PubicGames = () => {
-  const { user, token } = useAuth();
+  const { user, token, lang } = useAuth();
   const [isMessageSent, setIsMessageSent] = useState(false);
   const [isMessageListened, setIsMessageListened] = useState(false);
   const [socketLoading, setsocketLoading] = useState(false);
@@ -118,17 +118,6 @@ const PubicGames = () => {
           setTempPlayer(JSON.stringify(responseData?.data?.data?.playerTwo));
           setIsMessageSent(true);
           setsocketLoading(true);
-          //first clear local storage
-
-          // localStorage.setItem("p1", responseData?.data?.data?.playerOne?.username);
-          // localStorage.setItem("p2", responseData?.data?.data?.playerTwo?.username);
-          // localStorage.setItem("playerTwoIp", responseData?.data?.data?.ip);
-          // localStorage.setItem(
-          //   "playerTwo",
-          //   JSON.stringify(responseData?.data?.data?.playerTwo)
-          // );
-          // localStorage.setItem("gameId", responseData?.data?.data?.game);
-
 
         },
         onError: (err) => {
@@ -210,7 +199,7 @@ const PubicGames = () => {
           </div>
           {publicGames?.length === 0 && (
             <p className="my-4 mt-[30vh] ml-[2%] w-[96%] max-w-[600px] text-orange-color font-bold">
-              No public games currently !
+              {Localization["No public games currently !"][lang]}
             </p>
           )}
           {publicGames?.map((game) => (
@@ -241,6 +230,7 @@ const PubicGames = () => {
                   className="w-[20%] mr-4 bg-orange-color hover:bg-orange-600 text-black font-bold px-12 flex items-center justify-center"
                 >
                   Play
+                  {Localization["Play"][lang]}
                 </a>
               </section>
               <section className="flex justify-between mt-2"></section>

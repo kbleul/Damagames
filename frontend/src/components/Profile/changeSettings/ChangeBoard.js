@@ -8,13 +8,14 @@ import { useAuth } from "../../../context/auth";
 import { FaTimes } from "react-icons/fa";
 import { useState } from "react";
 import { AiFillCheckCircle } from "react-icons/ai";
+import { Localization } from "../../../utils/language";
 
 const ChangeBoard = ({
   board,
   showChangeBoardModal,
   setShowChangeBoardModal,
 }) => {
-  const { login, token, user } = useAuth();
+  const { login, token, user, lang } = useAuth();
   const [successMessage, setSuccessMessage] = useState(null);
 
   const headers = {
@@ -44,7 +45,16 @@ const ChangeBoard = ({
         {},
         {
           onSuccess: (responseData) => {
-            setSuccessMessage("Board changed.");
+
+            if (localStorage.getItem("lang")) {
+              if (localStorage.getItem("lang") === "Amh") {
+                setSuccessMessage(Localization["Board changed."]?.Amh)
+              } else {
+                setSuccessMessage("Board changed.")
+              }
+            } else {
+              setSuccessMessage("Board changed.")
+            }
 
             setTimeout(() => {
               login(token, { ...user, default_board: board });
@@ -55,7 +65,7 @@ const ChangeBoard = ({
           },
         }
       );
-    } catch (err) {}
+    } catch (err) { }
   };
 
   return (
@@ -120,8 +130,8 @@ const ChangeBoard = ({
                   >
                     {" "}
                     {boardSelectMutation.isLoading
-                      ? "Loading..."
-                      : "Update default board"}
+                      ? <>{Localization["Loading"][lang]}</>
+                      : <>{Localization["Update default board"][lang]}</>}
                   </button>
                 </div>
               </Dialog.Panel>
