@@ -33,11 +33,18 @@ class AdminController extends Controller
     {
         $users = User::paginate(10);
         $mapping = $users->map(function ($que) {
-            $played = Game::where('playerOne', $que->id)
+
+            $completed = Game::where('playerOne', $que->id)
                 ->orWhere('playerTwo', $que->id)
+                ->whereHas('scores')
                 ->withCount('scores')
                 ->get()
                 ->sum('scores_count');
+
+            $incompleted = Game::where('playerOne', $que->id)
+                ->orWhere('playerTwo', $que->id)
+                ->whereDoesntHave('scores')
+                ->count();
 
             $wins = Game::where('playerOne', $que->id)
                 ->orWhere('playerTwo', $que->id)
@@ -58,11 +65,12 @@ class AdminController extends Controller
                 ->sum('scores_count');
             $que->match_history =  [
                 'rank' => $this->getRanking(auth()->id()),
-                'played' => $played,
+                'started' => $completed + $incompleted,
+                'completed' => $completed,
+                'incompleted' => $incompleted,
                 'wins' => $wins,
                 'draw' =>  $draw,
-                'losses' => $played - ($wins + $draw),
-                'completed' => $played - ($wins + $draw),
+                'losses' => $completed - ($wins + $draw),
                 'coins' => $coin->current_point,
             ];
 
