@@ -31,7 +31,7 @@ const Dashboard = () => {
       onSuccess: (res) => {},
     }
   );
-  // console.log(dashboardData?.data?.data?.data);
+  console.log(dashboardData?.data?.data?.data);
 
   return (
     <>
@@ -49,15 +49,27 @@ const Dashboard = () => {
                 </h1>
               </div>
             </div>
+            {/* verified users */}
+            <div className="flex items-center justify-between p-5 bg-white  rounded-md shadow-md">
+              <FaUser size={70} className="text-main-color" />
+              <div className="flex flex-col items-center space-y-2">
+                <p className="font-bold text-dark-color dark:text-white text-2xl">
+                  {dashboardData?.data?.data?.data?.users_subscribed}
+                </p>
+                <h1 className=" font-normal px-3 capitalize text-white bg-main-bg p-[2px] rounded-md text-sm">
+                verified users
+                </h1>
+              </div>
+            </div>
             {/* dayly played */}
             <div className="flex items-center justify-between p-5 bg-white  rounded-md shadow-md">
               <RiGamepadFill size={70} className="text-[#0891b2] " />
               <div className="flex flex-col items-center space-y-2">
                 <p className="font-bold text-dark-color dark:text-white text-2xl">
-                  {dashboardData?.data?.data?.data?.daily_playd}
+                  {dashboardData?.data?.data?.data?.total_games}
                 </p>
                 <h1 className=" font-normal px-3 capitalize text-white bg-[#0891b2] p-[2px] rounded-md text-sm">
-                  Daily Played
+                  Total Games
                 </h1>
               </div>
             </div>
@@ -66,7 +78,7 @@ const Dashboard = () => {
               <RiGamepadFill size={70} className="text-[#10b981]" />
               <div className="flex flex-col items-center space-y-2">
                 <p className="font-bold text-dark-color dark:text-white text-2xl">
-                  {dashboardData?.data?.data?.data?.weekly_playd}
+                  {dashboardData?.data?.data?.data?.weekly_played}
                 </p>
                 <h1 className=" font-normal px-3 capitalize text-white bg-[#10b981] p-[2px] rounded-md text-sm">
                   weekly played
@@ -78,7 +90,7 @@ const Dashboard = () => {
               <RiGamepadFill size={70} className="text-[#333e4b]" />
               <div className="flex flex-col items-center space-y-2">
                 <p className="font-bold text-dark-color dark:text-white text-2xl">
-                  {dashboardData?.data?.data?.data?.monthly_playd}
+                  {dashboardData?.data?.data?.data?.monthly_played}
                 </p>
                 <h1 className=" font-normal px-3 capitalize text-white bg-[#333e4b] p-[2px] rounded-md text-sm">
                   Monthly Played

@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import React, { useState, useRef } from "react";
 import { useAuth } from "../../../context/Auth";
@@ -26,7 +26,7 @@ const AddStoreItemsForm = ({
   const typeRef = useRef<HTMLSelectElement>(null);
   const headers = {
     "Content-Type": "multipart/form-data",
-    Accept: "multipart/form-data",
+    Accept: "application/json",
     Authorization: `Bearer ${token}`,
   };
 
@@ -103,10 +103,11 @@ const AddStoreItemsForm = ({
         formData.append("price", priceRef.current?.value);
       typeRef.current?.value && formData.append("type", typeRef.current?.value);
       fileRef?.current?.files &&
-        formData.append("item", fileRef?.current?.files[0]);
+        formData.append("item", storeData?.data?.data?.data?.item ? storeData?.data?.data?.data?.item : fileRef?.current?.files[0]);
       editStoreItemMutation.mutate(formData, {
         onSuccess: (responseData: any) => {
           setIsUpdated((prev) => !prev);
+          setEditId(null)
           setIsModalOpen(false);
           setError("");
         },
@@ -120,6 +121,26 @@ const AddStoreItemsForm = ({
       setError("Oops! Some error occurred.");
     }
   };
+
+
+  //fetch if id is there
+  const storeData = useQuery(
+    ["singlestoreDataApi", editId],
+    async () =>
+      await axios.get(`${process.env.REACT_APP_BACKEND_URL}admin/store-item-show/${editId}`, {
+        headers,
+      }),
+    {
+      keepPreviousData: true,
+      refetchOnWindowFocus: false,
+      retry: false,
+      enabled: !!token,
+      onSuccess: (res) => {
+        
+      }}
+      );
+      console.log(storeData?.data?.data?.data);
+
   return (
     <div className="w-full flex flex-col items-center justify-center">
       <h1 className="font-medium">
@@ -158,6 +179,7 @@ const AddStoreItemsForm = ({
             id=""
             placeholder="Name"
             className="w-full p-2 rounded-sm border border-gray-300 focus:outline-none ring-0"
+            defaultValue={editId ? storeData?.data?.data?.data?.name : ""}
             required
           />
           <input
@@ -168,6 +190,7 @@ const AddStoreItemsForm = ({
             placeholder="Nick Name"
             className="w-full p-2 rounded-sm border border-gray-300 focus:outline-none ring-0"
             required
+            defaultValue={editId ? storeData?.data?.data?.data?.nickname : ""}
           />
           <input
             ref={priceRef}
@@ -177,6 +200,7 @@ const AddStoreItemsForm = ({
             placeholder="Price"
             className="w-full p-2 rounded-sm border border-gray-300 focus:outline-none ring-0"
             required
+            defaultValue={editId ? storeData?.data?.data?.data?.price : ""}
           />
           <select
             name=""
@@ -184,6 +208,7 @@ const AddStoreItemsForm = ({
             className="w-full p-2 rounded-sm border border-gray-300 focus:outline-none ring-0"
             ref={typeRef}
             required
+            defaultValue={editId ? storeData?.data?.data?.data?.type : ""}
           >
             <option value="Avatar">Avatar</option>
             <option value="Crown">Crown</option>
@@ -195,7 +220,8 @@ const AddStoreItemsForm = ({
             name=""
             accept="image/*"
             className="w-full p-2 rounded-sm border border-gray-300 focus:outline-none ring-0"
-            required
+            required={editId ? false : true}
+    
           />
 
           <button
