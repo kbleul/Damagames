@@ -47,42 +47,41 @@ const Game = () => {
 
   // const { playerCrown, playerBoard } = useHome();
   useEffect(() => {
-    if (id) {
-      document.documentElement.style.setProperty(
-        "--playerTwoPawn",
-        !user && !token
-          ? `url(${yellowCoin})`
-          : user?.default_board
-          ? `url(${user?.default_board?.board_pawn2})`
-          : `url(${yellowCoin})`
-      );
-      document.documentElement.style.setProperty(
-        "--playerTwoPawnTurn",
-        !user && !token
-          ? `url(${yellowWhiteCoin})`
-          : user?.default_board
-          ? `url(${user?.default_board?.board_pawn2_turn})`
-          : `url(${yellowWhiteCoin})`
-      );
-      //king icon
-      document.documentElement.style.setProperty(
-        "--playerTwoPawnKing",
-        !user && !token
-          ? `url(${yellowNegus})`
-          : user?.default_crown?.board_pawn_king2
-          ? `url(${user?.default_crown?.board_pawn_king2})`
-          : `url(${yellowNegus})`
-      );
-      //king icon turn
-      document.documentElement.style.setProperty(
-        "--playerTwoPawnKingTurn",
-        !user && !token
-          ? `url(${yellowNegusWhite})`
-          : user?.default_board
-          ? `url(${user?.default_board?.board_pawn_king2_turn})`
-          : `url(${yellowNegusWhite})`
-      );
-    }
+ 
+    document.documentElement.style.setProperty(
+      "--playerTwoPawn",
+      !user && !token
+        ? `url(${yellowCoin})`
+        : user?.default_board
+        ? `url(${user?.default_board?.board_pawn2})`
+        : `url(${yellowCoin})`
+    );
+    document.documentElement.style.setProperty(
+      "--playerTwoPawnTurn",
+      !user && !token
+        ? `url(${yellowWhiteCoin})`
+        : user?.default_board
+        ? `url(${user?.default_board?.board_pawn2_turn})`
+        : `url(${yellowWhiteCoin})`
+    );
+    //king icon
+    document.documentElement.style.setProperty(
+      "--playerTwoPawnKing",
+      !user && !token
+        ? `url(${yellowNegus})`
+        : user?.default_crown?.board_pawn_king2
+        ? `url(${user?.default_crown?.board_pawn_king2})`
+        : `url(${yellowNegus})`
+    );
+    //king icon turn
+    document.documentElement.style.setProperty(
+      "--playerTwoPawnKingTurn",
+      !user && !token
+        ? `url(${yellowNegusWhite})`
+        : user?.default_board
+        ? `url(${user?.default_board?.board_pawn_king2_turn})`
+        : `url(${yellowNegusWhite})`
+    );
     document.documentElement.style.setProperty(
       "--playerOnePawn",
       !user && !token
@@ -182,6 +181,8 @@ const Game = () => {
   const [showResetWaiting, setShowResetWaiting] = useState(false);
   const [msgSender, setMsgSender] = useState(null);
 
+  //send king icon
+  const [isListened, setIsListened] = useState(false)
   useEffect(() => {
     if (!id && !localStorage.getItem("gameId")) {
       navigate("/create-game");
@@ -217,30 +218,30 @@ const Game = () => {
     const player1 = [
       "a8",
       "c8",
-      "e8",
-      "g8",
-      "b7",
-      "d7",
-      "f7",
-      "h7",
-      "a6",
-      "c6",
-      "e6",
-      "g6",
+      // "e8",
+      // "g8",
+      // "b7",
+      // "d7",
+      // "f7",
+      // "h7",
+      // "a6",
+      // "c6",
+      // "e6",
+      // "g6",
     ];
     const player2 = [
       "b3",
       "d3",
-      "f3",
-      "h3",
-      "a2",
-      "c2",
-      "e2",
-      "g2",
-      "b1",
-      "d1",
-      "f1",
-      "h1",
+      // "f3",
+      // "h3",
+      // "a2",
+      // "c2",
+      // "e2",
+      // "g2",
+      // "b1",
+      // "d1",
+      // "f1",
+      // "h1",
     ];
 
     player1.forEach(function (i) {
@@ -539,6 +540,10 @@ const Game = () => {
       });
 
     calcPawns(postMoveState.boardState);
+    user?.default_crown && socket.emit("sendCrownType",{
+      normal:user?.default_crown?.board_pawn_king1,
+      active:user?.default_crown?.board_pawn_king1_turn
+    })
   }
 
   const stateHistory = gameState.history;
@@ -779,6 +784,11 @@ const Game = () => {
   let lastElement = array[array.length - 1];
 
   useEffect(() => {
+
+    //listen for king icon
+    socket.on("getCrownType",(data)=>{
+     console.log("getCrownType",data)
+    })
     // let cPlayer = currentPlayer
     socket.on(
       "getGameMessage",
