@@ -6,6 +6,7 @@ use App\Http\Requests\StoreItemRequest;
 use App\Http\Requests\StoreItemStatusRequest;
 use App\Http\Requests\StoreItemUpdateRequest;
 use App\Models\CoinSetting;
+use App\Models\ComputerGame;
 use App\Models\Game;
 use App\Models\Score;
 use App\Models\Store;
@@ -68,6 +69,7 @@ class AdminController extends Controller
                 'started' => $completed + $incompleted,
                 'completed' => $completed,
                 'incompleted' => $incompleted,
+                'playWithComputer' => ComputerGame::where('player', $que->id)->count(),
                 'wins' => $wins,
                 'draw' =>  $draw,
                 'losses' => $completed - ($wins + $draw),
