@@ -201,6 +201,16 @@ class AuthController extends SendSmsController
         return User::find(auth()->id());
     }
 
+    public function update_language(Request $request)
+    {
+        $user =  User::find(auth()->id());
+
+        $user->update([
+            'language' => $request->language,
+        ]);
+        return User::find(auth()->id());
+    }
+
     public function logout()
     {
         User::find(auth()->id())->tokens()->delete();

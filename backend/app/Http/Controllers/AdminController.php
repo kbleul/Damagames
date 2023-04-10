@@ -10,6 +10,7 @@ use App\Models\Game;
 use App\Models\Score;
 use App\Models\Store;
 use App\Models\User;
+use Carbon\Carbon;
 use GrahamCampbell\ResultType\Success;
 use Illuminate\Http\Request;
 
@@ -21,9 +22,10 @@ class AdminController extends Controller
             'users' => User::count(),
             'users_subscribed' => User::where('phone_verified_at', '!=', null)->count(),
             'total_games' => Score::count(),
-            'weekly_playd' => 10200,
-            'monthly_playd' => 100999,
-            'yearly_played' => 1000999,
+            'daily_played' => Score::whereDate('created_at', Carbon::today())->count(),
+            'weekly_played' => Score::whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count(),
+            'monthly_played' => Score::whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->count(),
+            'yearly_played' => Score::whereBetween('created_at', [Carbon::now()->startOfYear(), Carbon::now()->endOfYear()])->count(),
         ];
     }
 
@@ -31,23 +33,36 @@ class AdminController extends Controller
     {
         $users = User::paginate(10);
         $mapping = $users->map(function ($que) {
-            $played = Game::where('playerOne', $que->id)->orWhere('playerTwo', $que->id)->withCount('scores')->get()->sum('scores_count');
+            $played = Game::where('playerOne', $que->id)
+                ->orWhere('playerTwo', $que->id)
+                ->withCount('scores')
+                ->get()
+                ->sum('scores_count');
 
-            $wins = Game::where('playerOne', $que->id)->orWhere('playerTwo', $que->id)->withCount(['scores' => function ($query) use ($que) {
-                $query->where('winner', $que->id);
-            }])->get()->sum('scores_count');
+            $wins = Game::where('playerOne', $que->id)
+                ->orWhere('playerTwo', $que->id)
+                ->withCount(['scores' => function ($query) use ($que) {
+                    $query->where('winner', $que->id);
+                }])
+                ->get()
+                ->sum('scores_count');
 
             $coin = User::find($que->id);
 
-            $draw = Game::where('playerOne', $que->id)->orWhere('playerTwo', $que->id)->withCount(['scores' => function ($query) {
-                $query->where('draw', true);
-            }])->get()->sum('scores_count');
+            $draw = Game::where('playerOne', $que->id)
+                ->orWhere('playerTwo', $que->id)
+                ->withCount(['scores' => function ($query) {
+                    $query->where('draw', true);
+                }])
+                ->get()
+                ->sum('scores_count');
             $que->match_history =  [
                 'rank' => $this->getRanking(auth()->id()),
                 'played' => $played,
                 'wins' => $wins,
                 'draw' =>  $draw,
                 'losses' => $played - ($wins + $draw),
+                'completed' => $played - ($wins + $draw),
                 'coins' => $coin->current_point,
             ];
 
@@ -125,18 +140,28 @@ class AdminController extends Controller
 
     public function store_item_update(StoreItemUpdateRequest $request, Store $store)
     {
-        $store->update([
-            'name' => $request->name ?? $store->name,
-            'nickname' => $request->nickname ?? $store->nickname,
-            'price' => $request->price ?? $store->price,
-            'discount' => $request->discount ?? $store->discount,
-            'type' => $request->type ?? $store->type,
-            'color' => [
-                'color1' => $request->color1 ?? $store->color['color1'],
-                'color2' => $request->color2 ?? $store->color['color2'],
-                'lastMoveColor' => $request->lastMoveColor ?? $store->color['lastMoveColor'],
-            ],
-        ]);
+        if ($store->type === "Board") {
+            $store->update([
+                'name' => $request->name ?? $store->name,
+                'nickname' => $request->nickname ?? $store->nickname,
+                'price' => $request->price ?? $store->price,
+                'discount' => $request->discount ?? $store->discount,
+                'type' => $request->type ?? $store->type,
+                'color' => [
+                    'color1' => $request->color1 ?? $store->color['color1'],
+                    'color2' => $request->color2 ?? $store->color['color2'],
+                    'lastMoveColor' => $request->lastMoveColor ?? $store->color['lastMoveColor'],
+                ],
+            ]);
+        } else {
+            $store->update([
+                'name' => $request->name ?? $store->name,
+                'nickname' => $request->nickname ?? $store->nickname,
+                'price' => $request->price ?? $store->price,
+                'discount' => $request->discount ?? $store->discount,
+                'type' => $request->type ?? $store->type
+            ]);
+        }
 
         if ($request->hasFile('item') && $request->file('item')->isValid()) {
             $store->clearMediaCollection('item');
@@ -195,14 +220,12 @@ class AdminController extends Controller
 
     public function store_item_status(StoreItemStatusRequest $request, Store $store)
     {
-        // dd($request->active);
         if ($request->active) {
             $store->update([
                 'status' => 0,
             ]);
             return  "Active";
         } else {
-
             $store->update([
                 'status' => 1,
             ]);
