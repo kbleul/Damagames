@@ -4,7 +4,7 @@ import { TurnContext } from "../../context/TurnContext";
 import { useAuth } from "../../context/auth.js";
 
 const Board = (props) => {
-  const { login, token, user } = useAuth();
+  const { user } = useAuth();
 
   let tracker = props.tracker;
 

@@ -5,10 +5,11 @@ import ChangeUsername from "./ChangeUsername";
 import { AiFillCamera } from "react-icons/ai";
 import ChangeBoard from "./changeSettings/ChangeBoard";
 import ChangeCrown from "./changeSettings/ChangeCrown";
-import { AiFillStar } from "react-icons/ai";
 import { AiFillCheckCircle } from "react-icons/ai";
+import { BsFillCaretDownFill } from "react-icons/bs";
 
-import { useQuery } from "@tanstack/react-query";
+
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useAuth } from "../../context/auth";
 import ChangeProfile from "./ChangeProfile";
@@ -16,6 +17,12 @@ import ForgotPassword from "./ForgotPassword";
 import { Navigate, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import { Localization } from "../../utils/language";
+
+
+const LANG = {
+  "AMH": "Amharic",
+  "ENG": "English"
+}
 
 const Profile = () => {
   const [changePasswordModal, setChangePasswordModal] = useState(false);
@@ -30,8 +37,9 @@ const Profile = () => {
   const [selectedCrown, setSelectedCrown] = useState(null);
   const [showChangeBoardModal, setShowChangeBoardModal] = useState(false);
   const [showChangeCrownModal, setShowChangeCrownModal] = useState(false);
+  const [showLangMenu, setShowLangMenu] = useState(false);
 
-  const { user, token, lang } = useAuth();
+  const { user, token, lang, setLanguage } = useAuth();
   const navigate = useNavigate();
 
   const headers = {
@@ -69,6 +77,43 @@ const Profile = () => {
 
   const handleLangChange = (e) => {
     if (e.target.value !== "") { localStorage.setItem("lang", e.target.value) }
+  }
+
+
+  const langMutation = useMutation(
+    async (newData) =>
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}update-language`,
+        newData,
+        {
+          headers,
+        }
+      ),
+    {
+      retry: false,
+    }
+  );
+  const langMutationSubmitHandler = async (values) => {
+    try {
+      console.log(values)
+      langMutation.mutate(
+        { language: values },
+        {
+          onSuccess: (responseData) => {
+
+          },
+          onError: (err) => { },
+        }
+      );
+    } catch (err) { }
+  };
+
+
+
+  const saveLang = (pref) => {
+    setLanguage(pref);
+
+    langMutationSubmitHandler(pref)
   }
 
   return (
@@ -194,123 +239,141 @@ const Profile = () => {
           </div>
         </section>
 
-        <section className="w-[70%] md:max-w-[600px] ">
+        {/* <section className="w-[70%] md:max-w-[600px] "> */}
 
-          <select onChange={e => handleLangChange(e)} name="pets" id="pet-select" className="text-black py-2 border w-full bg-inherit text-center rounded-md border-orange-color text-orange-color text-sm flex gap-2 items-center justify-center">
+        {/* <select onChange={e => handleLangChange(e)} name="pets" id="pet-select" className="text-black py-2 border w-full bg-inherit text-center rounded-md border-orange-color text-orange-color text-sm flex gap-2 items-center justify-center">
             <option value="">
               {Localization["Language"][lang]}
             </option>
             <option value="Eng">English</option>
             <option value="Amh">አማርኛ</option>
           </select>
-        </section>
+        </section> */}
+        <div className="flex flex-col w-1/2 text-white w-[70%] md:max-w-[600px]">
+
+          <button className="py-2 border rounded-md border-orange-color text-orange-color text-sm flex gap-2 items-center justify-center "
+            onClick={() => setShowLangMenu(prev => !prev)}>{LANG[lang]}
+            <BsFillCaretDownFill />
+          </button>
+
+          {showLangMenu && <ul className="w-full text-sm text-orange-color border-b border-orange-color border-b-0 mt-1">
+            {Object.keys(LANG).filter(tempL => tempL !== lang).map(tempL =>
+              (<li onClick={() => saveLang(tempL)} className="py-2 border-b rounded-md border-orange-color text-orange-color text-sm flex gap-2 items-center justify-center ">{LANG[tempL]}</li>))}
+          </ul>}
+
+
+        </div>
       </article>
 
-      {myBoards && (
-        <article
-          className="mt-16 mb-2 border-2 rounded-3xl mx-2 md:w-1/2 md:ml-[25%]"
-          style={{
-            background: `linear-gradient(90deg, #FF4C01 0%, rgba(0, 0, 0, 0) 139.19%)`,
-          }}
-        >
-          <h2 className="text-black font-extrabold">
-            {Localization["My Boards"][lang]}
-          </h2>
+      {
+        myBoards && (
+          <article
+            className="mt-16 mb-2 border-2 rounded-3xl mx-2 md:w-1/2 md:ml-[25%]"
+            style={{
+              background: `linear-gradient(90deg, #FF4C01 0%, rgba(0, 0, 0, 0) 139.19%)`,
+            }}
+          >
+            <h2 className="text-black font-extrabold">
+              {Localization["My Boards"][lang]}
+            </h2>
 
-          {myBoards?.length === 0 ? (
-            <div className="text-white py-4">
-              <p>{Localization["My Boards"][lang]}
-              </p>
-              <p>{Localization["You don't have any boards yet."][lang]}
-              </p>
-              <button
-                className="bg-white text-black font-bold px-8 py-2 rounded-3xl mt-2 cursor-pointer"
-                onClick={() => navigate("/store")}
-              >
-                {Localization["Shop"][lang]}
-              </button>
-            </div>
-          ) : (
-            <section className="flex overflow-x-scroll text-white">
-              {myBoards?.map((board) => (
-                <div
-                  onClick={() => {
-                    user.default_board?.id !== board.id &&
-                      setSelectedBoard(board);
-                    user.default_board?.id !== board.id &&
-                      setShowChangeBoardModal(true);
-                  }}
-                  className="flex-shrink-0 w-1/2 flex flex-col items-center justify-center pb-3"
-                  key={board.id}
+            {myBoards?.length === 0 ? (
+              <div className="text-white py-4">
+                <p>{Localization["My Boards"][lang]}
+                </p>
+                <p>{Localization["You don't have any boards yet."][lang]}
+                </p>
+                <button
+                  className="bg-white text-black font-bold px-8 py-2 rounded-3xl mt-2 cursor-pointer"
+                  onClick={() => navigate("/store")}
                 >
-                  <h2 className="text-center">{board.name}</h2>
-                  <div className="relative max-h-[30vh] w-[70%]">
-                    <img className="" src={board.item} alt="" />
-                    {user.default_board?.id === board.id && (
-                      <AiFillCheckCircle
-                        size={30}
-                        className="absolute bottom-0 right-0 text-green-400"
-                      />
-                    )}
+                  {Localization["Shop"][lang]}
+                </button>
+              </div>
+            ) : (
+              <section className="flex overflow-x-scroll text-white">
+                {myBoards?.map((board) => (
+                  <div
+                    onClick={() => {
+                      user.default_board?.id !== board.id &&
+                        setSelectedBoard(board);
+                      user.default_board?.id !== board.id &&
+                        setShowChangeBoardModal(true);
+                    }}
+                    className="flex-shrink-0 w-1/2 flex flex-col items-center justify-center pb-3"
+                    key={board.id}
+                  >
+                    <h2 className="text-center">{board.name}</h2>
+                    <div className="relative max-h-[30vh] w-[70%]">
+                      <img className="" src={board.item} alt="" />
+                      {user.default_board?.id === board.id && (
+                        <AiFillCheckCircle
+                          size={30}
+                          className="absolute bottom-0 right-0 text-green-400"
+                        />
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </section>
-          )}
-        </article>
-      )}
-      {myCrowns && (
-        <article
-          className="mt-16 mb-2 border-2 rounded-3xl mx-2 md:w-1/2 md:ml-[25%]"
-          style={{
-            background: `linear-gradient(90deg, #FF4C01 0%, rgba(0, 0, 0, 0) 139.19%)`,
-          }}
-        >
-          <h2 className="text-black font-extrabold">
-            {Localization["My Crowns"][lang]}
-          </h2>
+                ))}
+              </section>
+            )}
+          </article>
+        )
+      }
+      {
+        myCrowns && (
+          <article
+            className="mt-16 mb-2 border-2 rounded-3xl mx-2 md:w-1/2 md:ml-[25%]"
+            style={{
+              background: `linear-gradient(90deg, #FF4C01 0%, rgba(0, 0, 0, 0) 139.19%)`,
+            }}
+          >
+            <h2 className="text-black font-extrabold">
+              {Localization["My Crowns"][lang]}
+            </h2>
 
-          {myCrowns?.length === 0 ? (
-            <div className="text-white py-4">
-              <p>{Localization["You don't have any crowns yet."][lang]}</p>
-              <p>{Localization["Go to the store to buy one"][lang]}
-              </p>
-              <button
-                className="bg-white text-black font-bold px-8 py-2 rounded-3xl mt-2 cursor-pointer"
-                onClick={() => navigate("/store")}
-              >
-                {Localization["Shop"][lang]}
-              </button>
-            </div>
-          ) : (
-            <section className="flex overflow-x-scroll text-white">
-              {myCrowns?.map((crown) => (
-                <div
-                  onClick={() => {
-                    user.default_crown?.id !== crown.id &&
-                      setSelectedCrown(crown);
-                    user.default_crown?.id !== crown.id &&
-                      setShowChangeCrownModal(true);
-                  }}
-                  className="flex-shrink-0 w-1/2 flex flex-col items-center justify-center pb-3"
-                  id={crown.id}
+            {myCrowns?.length === 0 ? (
+              <div className="text-white py-4">
+                <p>{Localization["You don't have any crowns yet."][lang]}</p>
+                <p>{Localization["Go to the store to buy one"][lang]}
+                </p>
+                <button
+                  className="bg-white text-black font-bold px-8 py-2 rounded-3xl mt-2 cursor-pointer"
+                  onClick={() => navigate("/store")}
                 >
-                  <h2 className="text-center">{crown.name}</h2>
-                  <div className="relative max-h-[30vh] w-[70%]">
-                    <img className="" src={crown.item} alt="" />
-                    {user.default_crown?.id === crown.id && (
-                      <AiFillCheckCircle
-                        size={30}
-                        className="absolute bottom-0 right-0  text-green-400"
-                      />
-                    )}
+                  {Localization["Shop"][lang]}
+                </button>
+              </div>
+            ) : (
+              <section className="flex overflow-x-scroll text-white">
+                {myCrowns?.map((crown) => (
+                  <div
+                    onClick={() => {
+                      user.default_crown?.id !== crown.id &&
+                        setSelectedCrown(crown);
+                      user.default_crown?.id !== crown.id &&
+                        setShowChangeCrownModal(true);
+                    }}
+                    className="flex-shrink-0 w-1/2 flex flex-col items-center justify-center pb-3"
+                    id={crown.id}
+                  >
+                    <h2 className="text-center">{crown.name}</h2>
+                    <div className="relative max-h-[30vh] w-[70%]">
+                      <img className="" src={crown.item} alt="" />
+                      {user.default_crown?.id === crown.id && (
+                        <AiFillCheckCircle
+                          size={30}
+                          className="absolute bottom-0 right-0  text-green-400"
+                        />
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </section>
-          )}
-        </article>
-      )}
+                ))}
+              </section>
+            )}
+          </article>
+        )
+      }
 
       <ChangeBoard
         board={selectedBoard}
@@ -322,7 +385,7 @@ const Profile = () => {
         showChangeCrownModal={showChangeCrownModal}
         setShowChangeCrownModal={setShowChangeCrownModal}
       />
-    </article>
+    </article >
   );
 };
 

@@ -229,7 +229,6 @@ const PubicGames = () => {
                   }}
                   className="w-[20%] mr-4 bg-orange-color hover:bg-orange-600 text-black font-bold px-12 flex items-center justify-center"
                 >
-                  Play
                   {Localization["Play"][lang]}
                 </a>
               </section>
@@ -267,26 +266,26 @@ const PubicGames = () => {
              border-orange-color p-3 rounded-sm w-full max-w-xs mx-auto"
             >
               <h2 className="font-medium text-white text-lg pt-4">
-                Tell Us Your Name
+                {Localization["Tell us your name"][lang]}
               </h2>
               <p className="text-gray-400 pb-2">
                 <span
                   className={
-                    myFriend === "Your Friend"
+                    myFriend === Localization["Your Friend"][lang]
                       ? ""
                       : "font-bold text-orange-400"
                   }
                 >
                   {myFriend}
                 </span>{" "}
-                is waiting for you. <br />
-                Join Now !
+                {Localization["waiting for you."][lang]} <br />
+                {Localization["Join Now !!"][lang]}
               </p>
 
               <input
                 disabled={user && token}
                 type="text"
-                placeholder="Tell us Your name"
+                placeholder={Localization["Tell us your name"][lang]}
                 onChange={(e) => setName(e.target.value)}
                 value={name}
                 className="bg-transparent  border border-orange-color w-full
@@ -303,13 +302,13 @@ const PubicGames = () => {
           "
               >
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-                {nameMutation.isLoading || socketLoading ? "Loading.." : "Join"}
+                {nameMutation.isLoading || socketLoading ? Localization["Loading"][lang] : Localization["Join"][lang]}
               </button>
               <p
                 onClick={() => navigate("/create-game")}
                 className="text-orange-color text-center pt-3 cursor-pointer"
               >
-                Back
+                {Localization["Back"][lang]}
               </p>
             </div>
           </div>

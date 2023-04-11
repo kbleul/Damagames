@@ -23,15 +23,15 @@ export const Localization = {
     },
     "Forgot Password": {
         AMH: "ይለፍቃል ረስተዋል ?",
-        ENG: ""
+        ENG: "Forgot Password"
     },
     "password": {
         AMH: "ይለፍቃል",
-        ENG: ""
+        ENG: "Password"
     },
     "Don't have account": {
         AMH: "መለያ የለህም ?",
-        ENG: ""
+        ENG: "Don't have account"
     },
     "Sign up": {
         AMH: "መመዝገብ",
@@ -51,11 +51,11 @@ export const Localization = {
     },
     "Coins earned": {
         AMH: "የተገኙ ሳንቲሞች",
-        ENG: ""
+        ENG: "Coins earned"
     },
     "Games played": {
         AMH: "የተጫወቷቸው ጨዋታዎች",
-        ENG: ""
+        ENG: "Games played"
     },
     "Wins": {
         AMH: "ያሸነፍከው",
@@ -69,13 +69,17 @@ export const Localization = {
         AMH: "ሽንፈቶች",
         ENG: "Loss"
     },
+    "Chat": {
+        AMH: "ሽንፈቶች",
+        ENG: "Chat"
+    },
     "Profile": {
         AMH: "መገለጫ",
-        ENG: ""
+        ENG: "Profile"
     },
     "Log out": {
         AMH: "ውጣ",
-        ENG: ""
+        ENG: "Log out"
     },
     "Score board": {
         AMH: "የውጤት ሰሌዳ",
@@ -99,11 +103,11 @@ export const Localization = {
     },
     "Play for coin": {
         AMH: "ለሳንቲም ይጫወቱ",
-        ENG: ""
+        ENG: "Play for coin"
     },
     "Great work": {
-        AMH: "ጥሩ ስራ",
-        ENG: "Great work"
+        AMH: "ጥሩ ስራ !",
+        ENG: "Great work !"
     },
     "Now send this": {
         AMH: "አሁን ይህንን ሊንክ ለጓደኛዎ ይላኩ ።",
@@ -123,51 +127,71 @@ export const Localization = {
     },
     "you are about to": {
         AMH: "ይህን ጨዋታ ለቀዉ ሊሄዱነው ።",
-        ENG: ""
+        ENG: "You are about to leave this game !"
     },
     "Yes": {
         AMH: "አዎ",
-        ENG: ""
+        ENG: "Yes"
     },
     "No": {
         AMH: "አይ",
-        ENG: ""
+        ENG: "No"
     },
-    "Are you sure ": {
-        AMH: "እርግጠኛ ነህ መውጣት ትፈልጋለህ ? አሁን ከሄድክ ጓደኛህ ይህን ጨዋታ መቀላቀል አይችልም !",
-        ENG: ""
+    "Are you sure_": {
+        AMH: "እርግጠኛ ነህ መውጣት ትፈልጋለህ ?",
+        ENG: "Are you sure you want to leave ?"
     },
     "Are you sure": {
         AMH: "እርግጠኛ ነህ መውጣት ትፈልጋለህ ? አሁን ከሄድክ ጓደኛህ ይህን ጨዋታ መቀላቀል አይችልም !",
-        ENG: ""
+        ENG: "Are you sure you want to leave ? Your friend won't be able to join this game if you leave now !"
     },
     "sound on": {
         AMH: "ድምጽ ማሰማት",
-        ENG: ""
+        ENG: "sound on"
     },
     "sound off": {
         AMH: "ድምፅ ጠፍቷል",
-        ENG: ""
+        ENG: "sound off"
     },
     "exit": {
         AMH: "መውጣት",
-        ENG: ""
+        ENG: "exit"
     },
     "computer": {
         AMH: "ኮምፒውተር",
         ENG: ""
     },
+    "Rematch": {
+        AMH: "ድጋሜ ግጥሚያ",
+        ENG: "Rematch"
+    },
+    "New Game": {
+        AMH: "አዲስ ጨዋታ",
+        ENG: "New Game"
+    },
+    "Congratulations": {
+        AMH: "እንኳን ደስ አላችሁ !",
+        ENG: "Congratulations !"
+    },
+    "Previous": {
+        AMH: "በፊት የነበረዎት",
+        ENG: "Previous"
+    },
+    "Total": {
+        AMH: "ጠቅላላ",
+        ENG: "Total"
+    },
     "Your turn": {
         AMH: "ያንተ ተራ",
-        ENG: ""
+        ENG: "Your turn"
     },
     "Moves": {
         AMH: "እንቅስቃሴ",
-        ENG: ""
+        ENG: "Moves"
     },
     "Pawns": {
         AMH: "ፓውንስ",
-        ENG: ""
+        ENG: "Pawns"
     },
     "are you sure two": {
         AMH: "እርግጠኛ ነህ ጨዋታውን መልቀቅ ትፈልጋለህ ?",
@@ -201,6 +225,10 @@ export const Localization = {
         AMH: "ሳንቲሞችን ለመወራረድ ወደ አካዉንቶ ይግቡ ",
         ENG: ""
     },
+    "Bet": {
+        AMH: "ውርርድ",
+        ENG: "Bet"
+    },
     "Here": {
         AMH: "እዚ ጋር",
         ENG: "Here"
@@ -223,7 +251,7 @@ export const Localization = {
     },
     "Join": {
         AMH: "ግባ",
-        ENG: ""
+        ENG: "Join"
     },
     "Avatars": {
         AMH: "የመገለጫ ስዕል",
@@ -272,6 +300,18 @@ export const Localization = {
     "coins": {
         AMH: " ሳንቲሞች",
         ENG: " coins"
+    },
+    "You Lost !": {
+        AMH: "ተሸነፋ !",
+        ENG: "You Lost !"
+    },
+    "You won 0 coins.": {
+        AMH: "0 ሳንቲም አሸንፈዋል።",
+        ENG: "You won 0 coins."
+    },
+    "write your message...": {
+        AMH: "መልእክትህን ጻፍ",
+        ENG: "write your message..."
     },
     "birr": {
         AMH: " ብር",
@@ -397,7 +437,94 @@ export const Localization = {
         AMH: "ለዉጥ",
         ENG: "Update"
     },
-
+    "SoundOn": {
+        AMH: "ድምጽ በርቷል",
+        ENG: "SoundOn"
+    },
+    "SoundOff": {
+        AMH: "ድምጽ ጠፍቷል",
+        ENG: "SoundOff"
+    },
+    "Timer": {
+        AMH: "ሰዓት ቆጣሪ",
+        ENG: "Timer"
+    },
+    "You will lose": {
+        AMH: "ቀጥለህ ካልተንቀሳቀስክ ትሸነፋለህ",
+        ENG: "You will lose if you don't move next"
+    },
+    "Exit": {
+        AMH: "ውጣ",
+        ENG: "Exit"
+    },
+    "Leave": {
+        AMH: "ውጣ",
+        ENG: "Leave"
+    },
+    "Accept": {
+        AMH: "ተቀበል",
+        ENG: "Accept"
+    },
+    "Reject": {
+        AMH: "አይ",
+        ENG: "Reject"
+    },
+    "Your friend has left": {
+        AMH: "ጓደኛዎ ጨዋታውን ትቶ ወጥአል ።",
+        ENG: " Your friend has left out the game !"
+    },
+    "You can't continue playing": {
+        AMH: "ጨዋታውን መጫወት መቀጠል አይችሉም !",
+        ENG: "You can't continue playing the game !"
+    },
+    "your friend has requested": {
+        AMH: "ጓደኛዎ ድጋሜ ለጫወት ጠይቆል",
+        ENG: "your friend has requested for a rematch ?"
+    },
+    "You friend did not accept the request !": {
+        AMH: "ጓደኛዎ ጥያቄውን አልተቀበለም !",
+        ENG: "You friend did not accept the request !"
+    },
+    "You friend has requested for a draw ?": {
+        AMH: "ጓደኛዎ አቻ ለመዉጣት ጠይቀዋል",
+        ENG: "You friend has requested for a draw ?"
+    },
+    "Waiting for your friend": {
+        AMH: "ጓደኛዎን በመጠበቅ ላይ...",
+        ENG: "Waiting for your friend"
+    },
+    "Fetch store items failed.": {
+        AMH: "የሱቅ ዕቃዎችን ማምጣት አልተሳካም። እንደገና ይሞክሩ።",
+        ENG: "Fetch store items failed."
+    },
+    "Enter your Phone and we'll send": {
+        AMH: "ስልክህን አስገባ እና የይለፍ ቃልህን እንድታስተካክል መመሪያዎችን እንልክልሃለን።",
+        ENG: "Enter your Phone and we'll send you instructions to reset your password"
+    },
+    "Enter Your New Password": {
+        AMH: "አዲሱን የይለፍ ቃልዎን ያስገቡ",
+        ENG: "Enter Your New Password"
+    },
+    "Your OTP Code:": {
+        AMH: "የእርስዎ OTP ኮድ",
+        ENG: "Your OTP Code:"
+    },
+    "Phone no": {
+        AMH: "ስልክ ቁጥር",
+        ENG: "Phone no"
+    },
+    "Send": {
+        AMH: "ላክ",
+        ENG: "Send"
+    },
+    "Re-Send": {
+        AMH: "እንደገና ላክ",
+        ENG: "Re-Send"
+    },
+    "Back to login": {
+        AMH: "ወደ መግቢያ ተመለስ",
+        ENG: " Back to login"
+    }
 
 
 

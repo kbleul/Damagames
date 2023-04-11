@@ -1,8 +1,11 @@
 import React, { Component, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { Link, useNavigate } from "react-router-dom";
+import { Localization } from "../../utils/language";
+import { useAuth } from "../../context/auth";
 const NewGameRequestModal = ({ isNewGameModalOpen, setIsNewGameModalOpen }) => {
-  const navigate = useNavigate();
+
+  const { lang } = useAuth();
+
   return (
     <>
       <Transition appear show={isNewGameModalOpen} as={Fragment}>
@@ -40,7 +43,7 @@ const NewGameRequestModal = ({ isNewGameModalOpen, setIsNewGameModalOpen }) => {
                 >
                   <div className="p-2 flex flex-col items-center space-y-4">
                     <h1 className="text-white font-medium capitalize text-center">
-                      You friend did not accept the request !
+                      {Localization["You friend did not accept the request !"][lang]}
                     </h1>
                     <div className="pt-3 w-full">
                       <button
@@ -52,7 +55,7 @@ const NewGameRequestModal = ({ isNewGameModalOpen, setIsNewGameModalOpen }) => {
                  "
                         onClick={() => setIsNewGameModalOpen(false)}
                       >
-                        Accept
+                        {Localization["Accept"][lang]}
                       </button>
                     </div>
                   </div>

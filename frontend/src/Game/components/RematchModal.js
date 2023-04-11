@@ -3,13 +3,17 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Link, useNavigate } from "react-router-dom";
 import wancha from "../../assets/wancha.svg";
 import { clearCookie } from "../../utils/data";
+import { useAuth } from "../../context/auth";
+import { Localization } from "../../utils/language";
 const RematchModal = ({
   isRematchModalOpen,
   setIsRematchModalOpen,
   acceptGameRequest,
   rejectGameRequest,
 }) => {
+  const { lang } = useAuth();
   const navigate = useNavigate();
+
   return (
     <>
       <Transition appear show={isRematchModalOpen} as={Fragment}>
@@ -47,39 +51,39 @@ const RematchModal = ({
                 >
                   <div className="p-2 flex flex-col items-center space-y-4">
                     <h1 className="text-white font-medium capitalize text-center">
-                      You friend is request for rematch? You want to reMatch?
+                      {Localization["your friend has requested"][lang]}
                     </h1>
-        <div className="grid grid-cols-2 gap-3 w-full">
+                    <div className="grid grid-cols-2 gap-3 w-full">
 
-                    <button
-                      className="w-full p-2 bg-sky-700 rounded-md cursor-pointer select-none
+                      <button
+                        className="w-full p-2 bg-sky-700 rounded-md cursor-pointer select-none
                    active:translate-y-2  active:[box-shadow:0_0px_0_0_#026ca4,0_0px_0_0_#026ca4]
                    active:border-b-[0px]
                    transition-all duration-150 [box-shadow:0_5px_0_0_#026ca4,0_5px_0_0_#026ca4]
                    border-b-[1px] border-gray-300/50 font-medium text-white
                  "
-                      onClick={acceptGameRequest}
-                    >
-                      Accept
-                    </button>
-                    <button
-                      className="w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+                        onClick={acceptGameRequest}
+                      >
+                        {Localization["Accept"][lang]}
+                      </button>
+                      <button
+                        className="w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
                   active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
                   active:border-b-[0px]
                   transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
                   border-b-[1px] border-gray-300/50 font-medium text-white
                 "
-                      onClick={() => {
-                        rejectGameRequest();
-                        clearCookie.forEach((data) => {
-                          localStorage.getItem(data) && localStorage.removeItem(data);
-                        });
-                        navigate("/create-game");
-                      }}
-                    >
-                      Reject
-                    </button>
-        </div>
+                        onClick={() => {
+                          rejectGameRequest();
+                          clearCookie.forEach((data) => {
+                            localStorage.getItem(data) && localStorage.removeItem(data);
+                          });
+                          navigate("/create-game");
+                        }}
+                      >
+                        {Localization["Reject"][lang]}
+                      </button>
+                    </div>
                   </div>
                 </Dialog.Panel>
               </Transition.Child>

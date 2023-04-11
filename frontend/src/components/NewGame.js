@@ -386,18 +386,6 @@ const NewGame = () => {
                 </div>
               )}
 
-              {/* (
-                <input
-                  className="bg-transparent border  border-orange-color  p-2 w-[60%] rounded-md
-                text-white focus:outline-none focus:ring-0 text-center font-medium"
-                  onChange={(e) => checkCoinAmoute(e)}
-                  type="number"
-                  placeholder="Enter number of coins"
-                  min="1"
-                  max="10"
-                  value={coinAmount}
-                />
-              ) */}
             </>
           )}
           <button

@@ -3,11 +3,14 @@ import { Fragment, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import socket from "../../utils/socket.io";
 import { clearCookie } from "../../utils/data";
+import { Localization } from "../../utils/language";
+import { useAuth } from "../../context/auth";
 
 export default function UserLeavesModal({
   isLeaveModalOpen,
   setIsLeaveModalOpen,
 }) {
+  const { lang } = useAuth();
   const navigate = useNavigate();
   const gameId = localStorage.getItem("gameId");
   const handleExit = () => {
@@ -53,26 +56,26 @@ export default function UserLeavesModal({
                     as="h3"
                     className="text-lg font-medium leading-6 text-white text-center"
                   >
-                    Your friend has left out the game !
+                    {Localization["Your friend has left"][lang]}
                   </Dialog.Title>
                   <div className="mt-2 flex flex-col items-center space-y-3">
                     <p className="text-sm text-gray-500 text-center ">
-                      You can't continue playing the game!
+                      {Localization["You can't continue playing"][lang]}
                     </p>
 
-                  <button
-                    type="button"
-                    className="w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+                    <button
+                      type="button"
+                      className="w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
                     active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
                     active:border-b-[0px]
                     transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
                     border-b-[1px] border-gray-300/50 font-medium text-white
                   "
-                    onClick={handleExit}
+                      onClick={handleExit}
                     >
-                    Leave
-                  </button>
-                    </div>
+                      {Localization["Leave"][lang]}
+                    </button>
+                  </div>
                 </Dialog.Panel>
               </Transition.Child>
             </div>

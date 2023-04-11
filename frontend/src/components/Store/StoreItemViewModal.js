@@ -144,10 +144,7 @@ const StoreItemView = ({
 												{item.name}{" "}
 											</Dialog.Title>
 											<section className='mt-2 flex items-center justify-center'>
-												{/* <div className="flex flex-col items-center justify-center">
-                                                <img src={item.value ? item.value : item.img} alt="" />
-                                                <h2 className="text-white text-center capitalize text-sm mb-4">{item.name}</h2>
-                                            </div> */}
+
 												<section className='w-4/5 ml-[10%] text-xs font-light '>
 													<div className='text-white  flex justify-around items-center py-4'>
 														<p className='text-5xl text-right mr-2 w-3/5 font-bold '>
@@ -275,6 +272,8 @@ const PurchasedNotifyModal = ({
 	name,
 	type,
 }) => {
+	const { lang } = useAuth();
+
 	return (
 		<>
 			<Transition appear show={showPurchasedItemModal} as={Fragment}>
@@ -312,12 +311,11 @@ const PurchasedNotifyModal = ({
 									<Dialog.Title
 										as='h3'
 										className='text-sm font-medium leading-6 text-white text-center'>
-										{" "}
-										Purchased{" "}
+										Purchased
+										{Localization["Purchased"][lang]}
 										<span className='text-orange-color'>
 											{name} {type}
 										</span>{" "}
-										sucessfully !
 									</Dialog.Title>
 								</Dialog.Panel>
 							</Transition.Child>

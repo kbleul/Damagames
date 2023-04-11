@@ -194,9 +194,7 @@ const CoinModal = ({ isCoinModalOpen, setIsCoinModalOpen }) => {
                   ) : (
                     <div className="flex flex-col items-center space-y-2 mt-4">
                       <div className="flex items-center space-x-2">
-                        {/* <h3 className="text-white font-medium capitalize">
-                          selected coin
-                        </h3> */}
+
                         <h3 className="text-white font-medium capitalize">
                           <span className="text-orange-color text-3xl font-semibold">{selectedCoin?.coinAmount}</span>
                           {Localization["coins"][lang]}
