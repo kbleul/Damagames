@@ -125,7 +125,7 @@ class Store extends Model  implements HasMedia
 
     public function getBoardPawnKing1TurnAttribute()
     {
-        $image = $this->getMedia('board_pawn2_turn')->last();
+        $image = $this->getMedia('board_pawn_king1_turn')->last();
 
         if (!empty($image)) {
             return $image->getUrl();
@@ -135,7 +135,7 @@ class Store extends Model  implements HasMedia
 
     public function getBoardPawnKing2TurnAttribute()
     {
-        $image = $this->getMedia('board_pawn2_turn')->last();
+        $image = $this->getMedia('board_pawn_king2_turn')->last();
 
         if (!empty($image)) {
             return $image->getUrl();

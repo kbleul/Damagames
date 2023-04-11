@@ -208,10 +208,12 @@ class AdminController extends Controller
                 $store->addMediaFromRequest('board_pawn_king2')->toMediaCollection('board_pawn_king2');
             }
 
+            // dd($request->file('board_pawn_king1_turn')->isValid());
             if ($request->hasFile('board_pawn_king1_turn') && $request->file('board_pawn_king1_turn')->isValid()) {
                 $store->clearMediaCollection('board_pawn_king1_turn');
                 $store->addMediaFromRequest('board_pawn_king1_turn')->toMediaCollection('board_pawn_king1_turn');
             }
+
 
             if ($request->hasFile('board_pawn_king2_turn') && $request->file('board_pawn_king2_turn')->isValid()) {
                 $store->clearMediaCollection('board_pawn_king2_turn');
