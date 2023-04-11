@@ -45,8 +45,9 @@ import { useHome } from "../context/HomeContext.js";
 import { Localization } from "../utils/language"
 
 const Game = () => {
+  
   const { id } = useParams();
-  const { user, token } = useAuth();
+  const { user, token ,lang} = useAuth();
   const playingCrowns = useRef({});
   const [sample, setSample] = useState(null)
   const isPlayerOne = JSON.parse(localStorage.getItem("playerOne"));
