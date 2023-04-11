@@ -95,6 +95,7 @@ class User extends Authenticatable
             ->sum('scores_count');
         $match_history =  [
             'rank' => $this->getRanking(auth()->id()),
+            'played' => $completed + $incompleted,
             'started' => $completed + $incompleted,
             'completed' => $completed,
             'incompleted' => $incompleted,
