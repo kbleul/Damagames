@@ -10,11 +10,19 @@ import { Link } from "react-router-dom";
 import { Localization } from "../utils/language"
 import "./style.css";
 import { Footer } from "./Footer";
+
+
+const LANG = {
+  "AMH": "Amh",
+  "ENG": "Eng"
+}
 const CreateGame = () => {
   const navigate = useNavigate();
   const { user, token, lang, setLanguage } = useAuth();
   const [showMenu, setShowMenu] = useState(false);
   const [showTourPrompt, setShowTourPrompt] = useState(false);
+  const [showLangMenu, setShowLangMenu] = useState(false);
+
 
 
   function handleSecond(url) {
@@ -187,26 +195,36 @@ const CreateGame = () => {
 
         <>
           {!user && !token && (
-            <div className="border w-full absolute right-4 top-4 flex justify-between">
-              <div>
-                <button className="text-white w-24 ml-4 h-full"
-                  onClick={() => setLanguage("AMH")}>here</button>
+            <section className=" w-[90%]  absolute top-4 flex items-center">
+              <div className="flex flex-col w-1/2 text-white ">
+                <button className=" w-20 ml-8 text-sm text-orange-color pointer-cursor border border-orange-color"
+                  onClick={() => setShowLangMenu(prev => !prev)}>{LANG[lang]}</button>
+
+                {showLangMenu && <ul className="w-20 ml-8 text-sm text-orange-color  border border-orange-color border-b-0 mt-1">
+                  {Object.keys(LANG).filter(tempL => tempL !== lang).map(tempL =>
+                    (<li onClick={() => setLanguage(tempL)} className="border-b cursor-pointer">{LANG[tempL]}</li>))}
+                </ul>}
+
               </div>
-              <button
-                onClick={() => {
-                  handleSecond("login");
-                }}
-                className="fifth-step relative w-22 p-2 bg-orange-bg rounded-md cursor-pointer select-none px-5
+              <div className=" w-1/2 flex justify-end self-start">
+
+                <button
+                  onClick={() => {
+                    handleSecond("login");
+                  }}
+                  className="fifth-step relative w-22 p-2 bg-orange-bg rounded-md cursor-pointer select-none px-5
     active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
     active:border-b-[0px] flex items-center justify-center
     transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
     border-b-[1px] border-gray-400/50 font-semibold text-white
   "
-              >
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-                {Localization["Login"][lang]}
-              </button>
-            </div>
+                >
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
+                  {Localization["Login"][lang]}
+                </button>
+              </div>
+            </section>
+
           )}
         </>
 
