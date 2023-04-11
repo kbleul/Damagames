@@ -90,7 +90,7 @@ io.on("connection", (socket) => {
 
   socket.on("join-room", async (room) => {
     const clients = await io.of("/").in(room).fetchSockets();
-    console.log("joined")
+    console.log("joined");
     // , { clients, room, id: socket.id }
     let tempSocketObj = roomSocketObj[room];
     if (tempSocketObj && tempSocketObj.includes(socket.id)) {
@@ -116,7 +116,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("sendCrownType", (data) => {
-      io.to(room).emit("getCrownType", data);
+      socket.broadcast.to(room).emit("getCrownType", data);
     });
 
     socket.on("sendGameMessage", (data) => {
@@ -128,7 +128,7 @@ io.on("connection", (socket) => {
       socket.broadcast.to(room).emit("getResetGameRequest", data);
     });
     //send king icons
-      socket.on("sendGameKingIcon", (data) => {
+    socket.on("sendGameKingIcon", (data) => {
       socket.broadcast.to(room).emit("getGameKingIcon", data);
     });
     socket.on("sendResetGameMessage", (data) => {
