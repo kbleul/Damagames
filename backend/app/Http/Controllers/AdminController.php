@@ -32,53 +32,10 @@ class AdminController extends Controller
 
     public function users()
     {
-        $users = User::paginate(10);
-        $mapping = $users->map(function ($que) {
-
-            $completed = Game::where('playerOne', $que->id)
-                ->orWhere('playerTwo', $que->id)
-                ->whereHas('scores')
-                ->withCount('scores')
-                ->get()
-                ->sum('scores_count');
-
-            $incompleted = Game::where('playerOne', $que->id)
-                ->orWhere('playerTwo', $que->id)
-                ->whereDoesntHave('scores')
-                ->count();
-
-            $wins = Game::where('playerOne', $que->id)
-                ->orWhere('playerTwo', $que->id)
-                ->withCount(['scores' => function ($query) use ($que) {
-                    $query->where('winner', $que->id);
-                }])
-                ->get()
-                ->sum('scores_count');
-
-            $coin = User::find($que->id);
-
-            $draw = Game::where('playerOne', $que->id)
-                ->orWhere('playerTwo', $que->id)
-                ->withCount(['scores' => function ($query) {
-                    $query->where('draw', true);
-                }])
-                ->get()
-                ->sum('scores_count');
-            $que->match_history =  [
-                'rank' => $this->getRanking(auth()->id()),
-                'started' => $completed + $incompleted,
-                'completed' => $completed,
-                'incompleted' => $incompleted,
-                'playWithComputer' => ComputerGame::where('player', $que->id)->count(),
-                'wins' => $wins,
-                'draw' =>  $draw,
-                'losses' => $completed - ($wins + $draw),
-                'coins' => $coin->current_point,
-            ];
-
-            return $que;
-        });
-        return  $users->setCollection(collect($mapping));
+        return User::orderBy('current_point', 'desc')
+            ->orderBy('phone_verified_at', 'desc')
+            ->orderBy('created_at', 'asc')
+            ->paginate(10);
     }
 
     public function getRanking($id)

@@ -50,7 +50,7 @@ class ComputerGameController extends Controller
      * @param  \App\Models\ComputerGame  $computerGame
      * @return \Illuminate\Http\Response
      */
-    public function update(ComputerGame $computerGame)
+    public function update(Request $request, ComputerGame $computerGame)
     {
         if ($computerGame->status == 1) {
             abort(400, "Incorrect game");
@@ -64,6 +64,7 @@ class ComputerGameController extends Controller
 
         $computerGame->update([
             'status' => 1,
+            'is_user_win' => $request->is_user_win ?? false,
         ]);
 
         return $Winer;
