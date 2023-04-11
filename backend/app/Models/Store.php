@@ -40,7 +40,18 @@ class Store extends Model  implements HasMedia
         }
     }
 
-    public $appends = ['item', 'board_pawn1', 'board_pawn2', 'board_pawn1_turn', 'board_pawn2_turn', 'board_pawn_king1', 'board_pawn_king2', 'board_pawn_king1_turn', 'board_pawn_king2_turn'];
+    public $appends = [
+        'item',
+        'board_pawn1',
+        'board_pawn2',
+        'board_pawn1_turn',
+        'board_pawn2_turn',
+        'board_pawn_king1',
+        'board_pawn_king2',
+        'board_pawn_king1_turn',
+        'board_pawn_king2_turn'
+
+    ];
 
     public function getItemAttribute()
     {

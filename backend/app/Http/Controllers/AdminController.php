@@ -110,7 +110,7 @@ class AdminController extends Controller
             ],
         ]);
 
-        if ($request->type === "Board") {
+        if ($request->type === "Board" || $request->type === "Crown") {
             if ($request->hasFile('board_pawn1') && $request->file('board_pawn1')->isValid()) {
                 $item->addMediaFromRequest('board_pawn1')->toMediaCollection('board_pawn1');
             }
@@ -178,7 +178,7 @@ class AdminController extends Controller
             $store->addMediaFromRequest('item')->toMediaCollection('item');
         }
 
-        if ($store->type === "Board") {
+        if ($store->type === "Board" || $store->type === "Crown") {
             if ($request->hasFile('board_pawn1') && $request->file('board_pawn1')->isValid()) {
                 $store->clearMediaCollection('board_pawn1');
                 $store->addMediaFromRequest('board_pawn1')->toMediaCollection('board_pawn1');
@@ -252,10 +252,32 @@ class AdminController extends Controller
 
     public function store_items()
     {
+        $avatars = Store::where('type', "Avatar")->orderBy('price', 'ASC')->get();
+        $avatars->makeHidden([
+            'color',
+            'board_pawn1',
+            'board_pawn2',
+            'board_pawn1_turn',
+            'board_pawn2_turn',
+            'board_pawn_king1',
+            'board_pawn_king2',
+            'board_pawn_king1_turn',
+            'board_pawn_king2_turn',
+        ]);
+        $boards = Store::where('type', "Board")->orderBy('price', 'ASC')->get();
+        $crowns = Store::where('type', "Crown")->orderBy('price', 'ASC')->get();
+        $crowns->makeHidden([
+            'color',
+            'board_pawn1',
+            'board_pawn2',
+            'board_pawn1_turn',
+            'board_pawn2_turn',
+        ]);
+
         return [
-            'avatars' =>  Store::where('type', "Avatar")->orderBy('price', 'ASC')->get(),
-            'boards' =>  Store::where('type', "Board")->orderBy('price', 'ASC')->get(),
-            'crowns' =>  Store::where('type', "Crown")->get(),
+            'avatars' =>  $avatars,
+            'boards' =>   $boards,
+            'crowns' =>  $crowns,
         ];
     }
 
