@@ -51,7 +51,6 @@ const ScoreBoard = () => {
           />
         </svg>
       </button>
-      {/* // ads with no set-up */}
 
       {scoreBoardData.isFetched ? (
         scoreBoardData?.data?.data?.data?.map((score) => (

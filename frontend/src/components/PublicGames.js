@@ -8,9 +8,9 @@ import { useAuth } from "../context/auth";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Footer } from "./Footer";
-import { clearCookie } from "../utils/data";
+import { Localization } from "../utils/language";
 const PubicGames = () => {
-  const { user, token } = useAuth();
+  const { user, token, lang } = useAuth();
   const [isMessageSent, setIsMessageSent] = useState(false);
   const [isMessageListened, setIsMessageListened] = useState(false);
   const [socketLoading, setsocketLoading] = useState(false);
@@ -118,17 +118,6 @@ const PubicGames = () => {
           setTempPlayer(JSON.stringify(responseData?.data?.data?.playerTwo));
           setIsMessageSent(true);
           setsocketLoading(true);
-          //first clear local storage
-
-          // localStorage.setItem("p1", responseData?.data?.data?.playerOne?.username);
-          // localStorage.setItem("p2", responseData?.data?.data?.playerTwo?.username);
-          // localStorage.setItem("playerTwoIp", responseData?.data?.data?.ip);
-          // localStorage.setItem(
-          //   "playerTwo",
-          //   JSON.stringify(responseData?.data?.data?.playerTwo)
-          // );
-          // localStorage.setItem("gameId", responseData?.data?.data?.game);
-
 
         },
         onError: (err) => {
@@ -210,7 +199,7 @@ const PubicGames = () => {
           </div>
           {publicGames?.length === 0 && (
             <p className="my-4 mt-[30vh] ml-[2%] w-[96%] max-w-[600px] text-orange-color font-bold">
-              No public games currently !
+              {Localization["No public games currently !"][lang]}
             </p>
           )}
           {publicGames?.map((game) => (
@@ -240,7 +229,7 @@ const PubicGames = () => {
                   }}
                   className="w-[20%] mr-4 bg-orange-color hover:bg-orange-600 text-black font-bold px-12 flex items-center justify-center"
                 >
-                  Play
+                  {Localization["Play"][lang]}
                 </a>
               </section>
               <section className="flex justify-between mt-2"></section>
@@ -277,26 +266,26 @@ const PubicGames = () => {
              border-orange-color p-3 rounded-sm w-full max-w-xs mx-auto"
             >
               <h2 className="font-medium text-white text-lg pt-4">
-                Tell Us Your Name
+                {Localization["Tell us your name"][lang]}
               </h2>
               <p className="text-gray-400 pb-2">
                 <span
                   className={
-                    myFriend === "Your Friend"
+                    myFriend === Localization["Your Friend"][lang]
                       ? ""
                       : "font-bold text-orange-400"
                   }
                 >
                   {myFriend}
                 </span>{" "}
-                is waiting for you. <br />
-                Join Now !
+                {Localization["waiting for you."][lang]} <br />
+                {Localization["Join Now !!"][lang]}
               </p>
 
               <input
                 disabled={user && token}
                 type="text"
-                placeholder="Tell us Your name"
+                placeholder={Localization["Tell us your name"][lang]}
                 onChange={(e) => setName(e.target.value)}
                 value={name}
                 className="bg-transparent  border border-orange-color w-full
@@ -313,13 +302,13 @@ const PubicGames = () => {
           "
               >
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-                {nameMutation.isLoading || socketLoading ? "Loading.." : "Join"}
+                {nameMutation.isLoading || socketLoading ? Localization["Loading"][lang] : Localization["Join"][lang]}
               </button>
               <p
                 onClick={() => navigate("/create-game")}
                 className="text-orange-color text-center pt-3 cursor-pointer"
               >
-                Back
+                {Localization["Back"][lang]}
               </p>
             </div>
           </div>

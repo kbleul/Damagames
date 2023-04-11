@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import PrivatePolicyModal from "../Game/components/PrivatePolicyModal";
 
 const PrivacyPolicy = () => {
-    const navigate = useNavigate();
     const [isPrivacyModalOpen, set_isPrivateModalOpen] = useState(false)
 
     return (<><article className='leading-6  text-gray-100 text-left mt-2 px-2 pr-4 h-[100vh] overflow-y-scroll' style={{

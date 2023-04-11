@@ -41,6 +41,9 @@ import orangeCoin from "../assets/orange-coin.svg";
 import orangeWhiteCoin from "../assets/orange-coin-white.svg";
 import redNegusWhite from "../assets/redNegus-white.svg";
 import { useHome } from "../context/HomeContext.js";
+
+import { Localization } from "../utils/language"
+
 const Game = () => {
   const { id } = useParams();
   const { user, token } = useAuth();
@@ -1248,7 +1251,7 @@ const Game = () => {
                 fill="#FF4C01"
               />
             </svg>
-            <p className="text-white text-xs">SoundOn</p>
+            <p className="text-white text-xs">{Localization["SoundOn"][lang]}</p>
           </button>
         ) : (
           <button
@@ -1267,7 +1270,7 @@ const Game = () => {
                 fill="#FF4C01"
               />
             </svg>
-            <p className="text-white text-xs">SoundOff</p>
+            <p className="text-white text-xs">{Localization["SoundOff"][lang]}</p>
           </button>
         )}
         {/* currentPlayer && localStorage.getItem("playerOneIp") && 
@@ -1275,15 +1278,15 @@ const Game = () => {
         <section className="flex flex-col">
           <div>
             {currentPlayer && localStorage.getItem("playerOneIp") && (
-              <p className="text-white font-bold text-sm">Timer : {timerP1}</p>
+              <p className="text-white font-bold text-sm">{Localization["Timer"][lang]} : {timerP1}</p>
             )}
             {!currentPlayer && localStorage.getItem("playerTwoIp") && (
-              <p className="text-white font-bold text-sm">Timer : {timerP2}</p>
+              <p className="text-white font-bold text-sm">{Localization["Timer"][lang]} : {timerP2}</p>
             )}
           </div>
           {passedCounter === 3 && (
             <p className="text-yellow-400 font-bold text-xs">
-              You will lose if you don't move next
+              {Localization["You will lose"][lang]}
             </p>
           )}
         </section>
@@ -1313,7 +1316,7 @@ const Game = () => {
               strokeLinejoin="round"
             />
           </svg>
-          <p className="text-white text-xs">Exit</p>
+          <p className="text-white text-xs">{Localization["Exit"][lang]}</p>
         </button>
       </section>
       <section className="flex justify-evenly items-center w-full ">
@@ -1393,13 +1396,13 @@ const Game = () => {
         <div className="border-r-[3px] border-gray-400 text-white w-1/2 ">
           <div className="flex justify-center items-center text-[.7rem] gap-x-2 font-bold mb-2">
             <p className="bg-gray-300 text-black pr-[.2rem] w-12 rounded">
-              Moves
+              {Localization["Moves"][lang]}
             </p>
             <p>{moveRef.current[0]}</p>
           </div>
           <div className="flex justify-center items-center text-[.7rem] gap-x-2 font-bold mb-2">
             <p className="bg-gray-300 text-black pr-[.2rem] w-12 rounded">
-              Pawns
+              {Localization["Pawns"][lang]}
             </p>
             <p>{pawns[0]}</p>
           </div>
@@ -1409,13 +1412,13 @@ const Game = () => {
           <div className="flex justify-center items-center text-[.7rem] gap-x-2 font-bold mb-2">
             <p>{moveRef.current[1]}</p>
             <p className="bg-gray-300 text-black pr-[.2rem] w-12 rounded">
-              Moves
+              {Localization["Moves"][lang]}
             </p>
           </div>
           <div className="flex justify-center items-center text-[.7rem] gap-x-2 font-bold mb-2">
             <p>{pawns[1]}</p>
             <p className="bg-gray-300 text-black pr-[.2rem] w-12 rounded">
-              Pawns
+              {Localization["Pawns"][lang]}
             </p>
           </div>
         </div>
@@ -1437,7 +1440,7 @@ const Game = () => {
             visible={true}
           />
         ) : (
-          <h1 className="text-white font-normal">Your turn</h1>
+          <h1 className="text-white font-normal">{Localization["Your turn"][lang]}</h1>
         )}
       </div>
 
@@ -1459,7 +1462,7 @@ const Game = () => {
               visible={true}
             />
           ) : (
-            <h1 className="text-white font-normal">Your turn</h1>
+            <h1 className="text-white font-normal">{Localization["Your turn"][lang]}</h1>
           ))}
         {playerTwoIp &&
           (currentPlayer ? (
@@ -1474,7 +1477,7 @@ const Game = () => {
               visible={true}
             />
           ) : (
-            <h1 className="text-white font-normal">Your turn</h1>
+            <h1 className="text-white font-normal">{Localization["Your turn"][lang]}</h1>
           ))}
       </div>
       <div className={""}>
@@ -1531,7 +1534,7 @@ const Game = () => {
                 />
               </svg>
             </div>
-            <p className="text-xs font-bold text-white">Draw</p>
+            <p className="text-xs font-bold text-white">{Localization["Draw"][lang]}</p>
           </div>
         )}
         {id != 1 && (
@@ -1541,7 +1544,7 @@ const Game = () => {
               size={30}
               className="text-orange-color"
             />
-            <p className="text-xs font-bold text-white">Chat</p>
+            <p className="text-xs font-bold text-white">{Localization["Draw"][lang]}</p>
           </div>
         )}
       </div>
@@ -1551,9 +1554,6 @@ const Game = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ type: "tween", duration: 1, ease: "easeInOut" }}
-          //     className={`absolute top-36  bg-white max-w-sm  p-1 w-44 ${playerOneIp ? "left-3" : "right-3"
-          //       }
-          //  border border-orange-color rounded-lg m-3`}
           className={
             msgSender === "playerOne"
               ? "absolute top-36  bg-white max-w-sm  p-1 w-44 left-3  border border-orange-color rounded-lg m-3"
@@ -1592,7 +1592,7 @@ const Game = () => {
               ref={messageInputRef}
               autoFocus
               onKeyDown={handleSubmit}
-              placeholder="write your message..."
+              placeholder={Localization["write your message..."][lang]}
               type="text"
               className="bg-transparent  p-2 flex-grow w-full
                text-white focus:outline-none focus:ring-0  font-medium "
@@ -1607,7 +1607,7 @@ const Game = () => {
       )}
       <div>
         {btCoin && (
-          <p className="text-xs font-bold text-white">Bet : {btCoin} coins</p>
+          <p className="text-xs font-bold text-white">{Localization["Bet"][lang]} {btCoin} {Localization["coins"][lang]}</p>
         )}
       </div>
       <ExitWarningModal
@@ -1653,33 +1653,4 @@ const Game = () => {
 
 export default Game;
 
-/*
 
-
-{!winnerPlayer && currentPlayer === true
-          ? currentPlayer === true && !firstPlayer
-            ? "flex flex-col items-center space-y-2 p-1 rounded-full border border-yellow-400"
-            : "flex flex-col items-center space-y-2 p-1 rounded-full border-4 border-yellow-400"
-          : currentPlayer === false
-          ? currentPlayer === false && !secondPlayer
-            ? "flex flex-col items-center space-y-2 p-1 rounded-full border-4 border-yellow-color"
-            : "flex flex-col items-center space-y-2 p-1 rounded-full border-4 border-yellow-400"
-          : "flex flex-col items-center space-y-2 p-1 rounded-full border border-orange-color"}
-
-            // <div className="p-3">
-      //   {/* {gameStatus} }
-      //   <div className={`py-1 px-3 rounded-lg ${currentPlayer === true ? "bg-red-500" : "bg-amber-500"}`}>
-      //     <h1 className={`font-medium text-white `}>
-      //       {!winnerPlayer && currentPlayer === true
-      //         ? currentPlayer === true && !firstPlayer
-      //           ? "Your Friend"
-      //           : "You"
-      //         : currentPlayer === false
-      //         ? currentPlayer === false && !secondPlayer
-      //           ? "Your Friend"
-      //           : "You"
-      //         : ""}
-      //     </h1>
-      //   </div>
-      // </div>
-  */

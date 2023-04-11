@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { Link, useNavigate } from "react-router-dom";
-import wancha from "../../assets/wancha.svg";
 import { ThreeDots } from "react-loader-spinner";
+import { Localization } from "../../utils/language";
+import { useAuth } from "../../context/auth";
 
 const DrawGameModal = ({
   isDrawModalOpen,
@@ -11,7 +11,8 @@ const DrawGameModal = ({
   rejectGameRequest,
   showResetWaiting,
 }) => {
-  const navigate = useNavigate();
+  const { lang } = useAuth();
+
   return (
     <>
       <Transition appear show={isDrawModalOpen} as={Fragment}>
@@ -49,7 +50,7 @@ const DrawGameModal = ({
                 >
                   <div className="p-2 flex flex-col items-center space-y-2">
                     <h1 className="text-white font-medium capitalize text-center">
-                      You friend has requested for a draw ?
+                      {Localization["You friend has requested for a draw ?"][lang]}
                     </h1>
 
                     <div className="grid grid-cols-2 gap-3 w-full">
@@ -62,7 +63,7 @@ border-b-[1px] border-gray-300/50 font-medium text-white
 "
                         onClick={acceptGameRequest}
                       >
-                        Accept
+                        {Localization["Accept"][lang]}
                       </button>
                       <button
                         className="w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
@@ -73,7 +74,7 @@ border-b-[1px] border-gray-300/50 font-medium text-white
 "
                         onClick={rejectGameRequest}
                       >
-                        Reject
+                        {Localization["Reject"][lang]}
                       </button>
                     </div>
                   </div>
@@ -119,7 +120,7 @@ border-b-[1px] border-gray-300/50 font-medium text-white
                 >
                   <div className="p-2 flex flex-col items-center space-y-2">
                     <h1 className="text-white font-medium text-center">
-                      Waiting for your friend
+                      {Localization["Waiting for your friend"][lang]}
                     </h1>
 
                     <ThreeDots />

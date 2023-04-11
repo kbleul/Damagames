@@ -1,29 +1,123 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import Joyride from 'react-joyride';
+
 import SideMenu from "./SideMenu";
 import { useNavigate } from "react-router-dom";
 import background from "../assets/backdrop.jpg";
 import avatar from "../assets/logo.png";
 import { useAuth } from "../context/auth";
 import { Link } from "react-router-dom";
-import { clearCookie } from "../utils/data";
-
+import { Localization } from "../utils/language"
 import "./style.css";
+import { Footer } from "./Footer";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+
+
+const LANG = {
+  "AMH": "Amh",
+  "ENG": "Eng"
+}
 const CreateGame = () => {
   const navigate = useNavigate();
-  const { user, token } = useAuth();
+  const { user, token, lang, setLanguage } = useAuth();
   const [showMenu, setShowMenu] = useState(false);
-  const handleNavigate = (url) => {
-    clearCookie.forEach((data) => {
-      localStorage.getItem(data) && localStorage.removeItem(data);
-      navigate(url);
-    });
-  };
+  const [showTourPrompt, setShowTourPrompt] = useState(false);
+  const [showLangMenu, setShowLangMenu] = useState(false);
 
   function handleSecond(url) {
     setTimeout(() => {
       navigate(`/${url}`);
     }, 300);
   }
+
+  const [tourItems, setTourItems] = useState(null);
+
+  const startTour = () => {
+    setShowTourPrompt(false)
+    setTourItems({
+      run: true,
+      steps: [
+        {
+          target: '.first-step',
+          content: 'This is my awesome feature!',
+          disableBeacon: true
+        },
+        {
+          target: '.second-step',
+          content: 'This second-step awesome feature!',
+        },
+        {
+          target: '.third-step',
+          content: 'This is my awesome feature!',
+        },
+        {
+          target: '.fourth-step',
+          content: 'This third-step awesome feature!',
+        }
+        ,
+        {
+          target: '.sixth-step',
+          content: 'This is my fifth-step feature!',
+        }
+        ,
+        {
+          target: '.seventh-step',
+          content: 'This is my fifth-step feature!',
+        },
+        {
+          target: '.fifth-step',
+          content: 'This is my fifth-step feature!',
+        }
+      ]
+    })
+  }
+
+  const headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+
+  const createGameMutation = useMutation(
+    async (newData) =>
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}play-with-computer`, newData, {
+        headers,
+      }),
+    {
+      retry: false,
+    }
+  );
+
+  const createGameAI = async (values) => {
+    try {
+      createGameMutation.mutate(
+        {},
+        {
+          onSuccess: (responseData) => {
+            localStorage.setItem("gameId", responseData?.data?.data?.id)
+            handleSecond(`game/${1}`)
+          },
+          onError: (err) => { },
+        }
+      );
+    } catch (err) { }
+  };
+
+
+  useEffect(() => {
+    !localStorage.getItem("onBoardig") &&
+      setTimeout(() => setShowTourPrompt(true), 1000)
+  }, [])
+
+
+  const handleJoyrideCallback = data => {
+    const { action, status } = data;
+
+    if (status === "finished" || status === "skipped" || action === "close") {
+      localStorage.setItem("onBoardig", true)
+    }
+  };
 
 
   return (
@@ -39,16 +133,63 @@ const CreateGame = () => {
         position: "relative",
       }}
     >
+
+      {tourItems && <Joyride
+        callback={handleJoyrideCallback}
+        steps={tourItems.steps}
+        continuous
+        hideCloseButton
+        run={tourItems.run}
+        scrollToFirstStep
+        showProgress
+        showSkipButton
+        spotlightClicks={false}
+        styles={{
+          options: {
+            arrowColor: 'rgba(80, 0, 0, 0.9)',
+            overlayColor: 'rgba(79, 26, 0, 0.4)',
+            primaryColor: '#000',
+            textColor: 'rgb(231, 212, 181)',
+            zIndex: 1000,
+            backgroundColor: "rgba(80, 0, 0, 0.9)",
+          },
+        }}
+      />}
+
       <SideMenu showMenu={showMenu} setShowMenu={setShowMenu} />
+
+      {showTourPrompt && <section className="absolute top-0 h-[100vh] flex items-center justify-center w-full z-10">
+        <div className=" w-[90%] max-w-[450px] py-8 onboarding_prompt">
+          <h3 className="pb-6 font-bold text-3xl">Lorem ipsom</h3>
+          <p className="pb-6">Lorem Ipsum is simply dummy text of the printing and typesetting industry. </p>
+          <button className="border border-black px-6 py-2 rounded-full border-white text-black bg-white 
+           focus:bg-gray-300  hover:bg-gray-300 font-bold" onClick={startTour}>Start Tour</button>
+        </div>
+      </section>}
 
       <div onClick={() => setShowMenu(false)} className="max-w-xs p-3 mx-auto flex flex-col items-center justify-center gap-y-2 min-h-screen space-y-2">
         <div className="h-[180px] w-[200px] bg-inherit mt-18 mb-8 ">
           <img src={avatar} className="" alt="avatar" />
         </div>
+        <button
+          onClick={() => {
+            user && token ? createGameAI() : handleSecond(`game/${1}`)
+          }}
+          className="third-step relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+          active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
+          active:border-b-[0px] flex items-center justify-center
+          transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+          border-b-[1px] border-gray-400/50 font-semibold text-white
+        "
+        >
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
+          {Localization["Play With Computer"][lang]}
+        </button>
         <div className="w-full grid grid-cols-2 gap-3">
+
           <button
             onClick={() => handleSecond("new-game")}
-            className="relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+            className="first-step relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
     active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
     active:border-b-[0px] flex items-center justify-center
     transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
@@ -56,11 +197,11 @@ const CreateGame = () => {
   "
           >
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-            Create Game
+            {Localization["Create Game"][lang]}
           </button>
           <button
             onClick={() => handleSecond("join-game")}
-            className="relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+            className="second-step relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
             active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
             active:border-b-[0px] flex items-center justify-center
             transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
@@ -68,26 +209,13 @@ const CreateGame = () => {
           "
           >
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-            Join Game
+            {Localization["Join Game"][lang]}
           </button>
         </div>
-        <button
-          onClick={() => handleSecond(`game/${1}`)}
-          className="relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
-          active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
-          active:border-b-[0px] flex items-center justify-center
-          transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
-          border-b-[1px] border-gray-400/50 font-semibold text-white
-        "
-        >
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-          <span>Play with Computer</span>
-          {/* <span>offline</span> */}
-        </button>
 
         <button
           onClick={() => handleSecond("new-game-public")}
-          className="relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+          className="fourth-step relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
           active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
           active:border-b-[0px] flex items-center justify-center
           transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
@@ -95,34 +223,47 @@ const CreateGame = () => {
         "
         >
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-          Public Game
+          {Localization["Public Game"][lang]}
         </button>
 
         <>
           {!user && !token && (
-            <div className=" absolute right-4 top-4">
-              <button
-                onClick={() => {
-                  handleSecond("login");
-                }}
-                className="relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none px-5
+            <section className=" w-[90%]  absolute top-4 flex items-center">
+              {!user && <div className="flex flex-col w-1/2 text-white ">
+                <button className=" w-20 ml-8 text-sm text-orange-color pointer-cursor border-b border-orange-color"
+                  onClick={() => setShowLangMenu(prev => !prev)}>{LANG[lang]}</button>
+
+                {showLangMenu && <ul className="w-20 ml-8 text-sm text-orange-color  border-b border-orange-color border-b-0 mt-1">
+                  {Object.keys(LANG).filter(tempL => tempL !== lang).map(tempL =>
+                    (<li onClick={() => setLanguage(tempL)} className="border-b cursor-pointer">{LANG[tempL]}</li>))}
+                </ul>}
+
+              </div>}
+              <div className=" w-1/2 flex justify-end self-start">
+
+                <button
+                  onClick={() => {
+                    handleSecond("login");
+                  }}
+                  className="fifth-step relative w-22 p-2 bg-orange-bg rounded-md cursor-pointer select-none px-5
     active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
     active:border-b-[0px] flex items-center justify-center
     transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
     border-b-[1px] border-gray-400/50 font-semibold text-white
-  "
-              >
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-                Log in
-              </button>
-            </div>
+  ">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
+                  {Localization["Login"][lang]}
+                </button>
+              </div>
+            </section>
+
           )}
         </>
 
         <section className="w-4/5 max-w-[30rem] flex items-center justify-evenly mt-[12vh]">
           <Link
             to="/score-board"
-            className="flex flex-col justify-evenly items-center "
+            className="sixth-step flex flex-col justify-evenly items-center "
           >
             <div className="h-6 w-8 bg-orange-color px-2 flex justify-center items-center rounded-sm">
               <svg
@@ -138,16 +279,19 @@ const CreateGame = () => {
                 />
               </svg>
             </div>
-            <p className="text-orange-color text-[.7rem]">Score board</p>
+            <p className="text-orange-color text-[.7rem]">
+              {Localization["Score board"][lang]}
+            </p>
           </Link>
           <Link
             to="/store"
-            className="flex flex-col justify-evenly items-center"
+            className="seventh-step flex flex-col justify-evenly items-center"
           >
-            <div className="h-6 w-8 bg-orange-color px-2 flex justify-center items-center ">
+            <div className="h-6 w-8 bg-orange-color px-2 fle
+            x justify-center items-center pt-1">
               <svg
-                width="22"
-                height="22"
+                width="18"
+                height="18"
                 viewBox="0 0 22 22"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -158,10 +302,12 @@ const CreateGame = () => {
                 />
               </svg>
             </div>
-            <p className="text-orange-color text-[.7rem]">Store</p>
+            <p className="text-orange-color text-[.7rem]">
+              {Localization["Store"][lang]}
+            </p>
           </Link>
         </section>
-        {/* <Footer /> */}
+        <Footer />
       </div>
 
     </div>

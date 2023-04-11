@@ -8,8 +8,10 @@ import { ThreeDots } from "react-loader-spinner";
 import { useNavigate } from "react-router-dom";
 import { Footer } from "../Footer";
 import { useHome } from "../../context/HomeContext";
+import { Localization } from "../../utils/language"
+
 const Login = () => {
-  const { login } = useAuth();
+  const { login, lang } = useAuth();
   const navigate = useNavigate();
   const firstPlayer = JSON.parse(localStorage.getItem("playerOne"));
   const secondPlayer = JSON.parse(localStorage.getItem("playerTwo"));
@@ -18,7 +20,7 @@ const Login = () => {
     : secondPlayer;
   const playerTwoId = localStorage.getItem("playerTwoIp");
   const [errorMessage, setErrorMessage] = useState("");
-  const {setMessageType } = useHome()
+  const { setMessageType } = useHome()
 
   const singUpValidationSchema = Yup.object().shape({
     phone: Yup.string()
@@ -74,7 +76,7 @@ const Login = () => {
       );
     } catch (err) { }
   };
-  return (
+  return (<>
     <main className="relative">
       <button
         className={"z-10 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 fixed top-0 left-2 md:left-4"}
@@ -118,7 +120,7 @@ const Login = () => {
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
               >
-                <title>Close</title>
+                <title>{Localization["Close"][lang]}</title>
                 <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
               </svg>
             </span>
@@ -135,7 +137,6 @@ const Login = () => {
           {({ errors, touched, values, setTouched, setFieldValue }) => (
             <Form className="flex flex-col items-start space-y-2 w-full">
               <div className="flex flex-col items-start space-y-2 w-full">
-                {/* phone */}
                 <div
                   className={`input flex items-center h-[42px]  border rounded-[4px]  w-full ${errors.phone && touched.phone
                     ? "border border-red-500"
@@ -170,12 +171,12 @@ const Login = () => {
                   onClick={() => navigate("/forgot-password")}
                   className="text-white font-medium text-end self-end justify-end text-sm cursor-pointer"
                 >
-                  Forgot password
+                  {Localization["Forgot Password"][lang]}
                 </p>
                 <Field
                   as="input"
                   type="password"
-                  placeholder="password"
+                  placeholder={Localization["password"][lang]}
                   name="password"
                   className={`rounded-[4px] pl-3 w-full h-[42px] bg-transparent font-medium  focus:outline-none focus:ring-0   text-gray-200 
                   ${errors.password && touched.password
@@ -211,31 +212,28 @@ const Login = () => {
                     wrapperClassName=""
                     visible={true}
                   />
-                ) : (
-                  " Log in"
-                )}
+                ) : <>
+                  {Localization["Login"][lang]}</>
+                }
               </button>
             </Form>
           )}
         </Formik>
-        {/* <p className="text-white font-medium">
-          Don't have account ?{" "}
-          <span
-            onClick={() => navigate("/signup")}
-            className="text-orange-color underline cursor-pointer"
-          >
-            SignUp
-          </span>
-        </p> */}
+
 
         <p
           className=" text-xs text-gray-400 text-right text-center w-full  cursor-pointer  "
         >
-          Don't have account ?{" "}<span onClick={() => navigate("/signup")} className="text-orange-color underline font-bold ml-1">SignUp</span>
+          {Localization["Don't have account"][lang]}
+          {" "}<span onClick={() => navigate("/signup")} className="text-orange-color underline font-bold ml-1">
+            {Localization["Sign up"][lang]}
+          </span>
         </p>
       </div>
-      <Footer />
     </main>
+    <Footer />
+
+  </>
   );
 };
 

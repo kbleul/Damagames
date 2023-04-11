@@ -3,6 +3,9 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import wancha from "../../assets/wancha.svg";
 import { useAuth } from "../../context/auth";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { Localization } from "../../utils/language";
 
 const WinnerModal = ({
   isWinnerModalOpen,
@@ -13,7 +16,7 @@ const WinnerModal = ({
   gameState,
   setNewGameWithComputer,
 }) => {
-  const { user, token, setUser } = useAuth();
+  const { user, token, setUser, lang } = useAuth();
   const navigate = useNavigate();
   const playerOneIp = localStorage.getItem("playerOneIp");
   const playerTwoIp = localStorage.getItem("playerTwoIp");
@@ -33,21 +36,61 @@ const WinnerModal = ({
 
   const userCoin = token ? JSON.parse(localStorage.getItem("dama_user_data")).user.coin : null
 
+  const headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+
+
+  const finishGameMutation = useMutation(
+    async (newData) =>
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}play-with-computer-done/${localStorage.getItem("gameId")}`, newData, {
+        headers,
+      }),
+    {
+      retry: false,
+    }
+  );
+
+  const finishGameAI = async (values) => {
+    try {
+      finishGameMutation.mutate(
+        { is_user_win: values },
+        {
+          onSuccess: (responseData) => {
+            localStorage.removeItem("gameId")
+          },
+          onError: (err) => { },
+        }
+      );
+    } catch (err) { }
+  };
+
+  useEffect(() => {
+
+    if (isWinnerModalOpen && gameState.players === 1) {
+      if (gameState.winner === "player1pieces" || gameState.winner === "player1moves") { finishGameAI(true) }
+      else { finishGameAI(false) }
+    }
+  }, [isWinnerModalOpen])
+
+
   const CongraMsg = () => {
     return ((token && userCoin)
       ? <div className="text-white flex flex-col items-center justify-center gap-3 text-sm">
-        <h2 className="text-2xl">Congratulations!</h2>
-        <p>Previous = {userCoin - 50} coins</p>
-        <p>Total = {userCoin} coins</p>
-      </div> : <div className="text-white">Congratulations! You won 50 coins</div>)
+        <h2 className="text-2xl">{Localization["Congratulations"][lang]}</h2>
+        <p>{Localization["Previous"][lang]} = {userCoin - 50} {Localization["coins"][lang]}</p>
+        <p>{Localization["Total"][lang]} = {userCoin} {Localization["coins"][lang]}</p>
+      </div> : <div className="text-white">{Localization["Congratulations"][lang]}</div>)
   }
 
   const LostMsg = () => {
     return (token && userCoin ? <div className="text-white flex flex-col items-center justify-center gap-3 text-sm">
-      <h2 className="text-2xl">You Lost ! </h2>
-      <p>You won 0 coins.</p>
-      <p>Total = {userCoin} coins</p>
-    </div> : <div className="text-white">You Lost! You won 0 coins.</div>)
+      <h2 className="text-2xl">{Localization["You Lost !"][lang]}</h2>
+      <p>{Localization["You won 0 coins."][lang]}</p>
+      <p>{Localization["Total"][lang]} = {userCoin} {Localization["coins"][lang]}</p>
+    </div> : <div className="text-white">{Localization["You Lost !"][lang]} {Localization["You won 0 coins."][lang]}</div>)
   }
 
 
@@ -145,7 +188,7 @@ const WinnerModal = ({
                         navigate("/create-game");
                       }}
                     >
-                      NewGame
+                      New Game
                     </button>
                   </div>
                 </Dialog.Panel>

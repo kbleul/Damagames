@@ -26,6 +26,7 @@
     "react-gtm-module": "^2.0.11",
     "react-hot-toast": "^2.4.0",
     "react-icons": "^4.7.1",
+    "react-joyride": "^2.5.3",
     "react-loader-spinner": "^5.3.4",
     "react-mobile-share": "^1.0.30",
     "react-router-dom": "^6.4.3",

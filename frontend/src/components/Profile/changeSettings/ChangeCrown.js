@@ -7,13 +7,14 @@ import { useAuth } from "../../../context/auth";
 
 import { FaTimes } from "react-icons/fa";
 import { AiFillCheckCircle } from "react-icons/ai";
+import { Localization } from "../../../utils/language";
 
 const ChangeCrown = ({
   crown,
   showChangeCrownModal,
   setShowChangeCrownModal,
 }) => {
-  const { login, token, user } = useAuth();
+  const { login, token, user, lang } = useAuth();
   const [successMessage, setSuccessMessage] = useState(null);
 
   const headers = {
@@ -43,8 +44,15 @@ const ChangeCrown = ({
         {},
         {
           onSuccess: (responseData) => {
-            setSuccessMessage("Crown changed.");
-
+            if (localStorage.getItem("lang")) {
+              if (localStorage.getItem("lang") === "Amh") {
+                setSuccessMessage(Localization["Crown changed."]?.Amh)
+              } else {
+                setSuccessMessage("Crown changed.")
+              }
+            } else {
+              setSuccessMessage("Crown changed.")
+            }
             setTimeout(() => {
               login(token, { ...user, default_crown: crown });
             }, 800);
@@ -54,7 +62,7 @@ const ChangeCrown = ({
           },
         }
       );
-    } catch (err) {}
+    } catch (err) { }
   };
 
   return (
@@ -119,8 +127,8 @@ const ChangeCrown = ({
                   >
                     {" "}
                     {crownSelectMutation.isLoading
-                      ? "Loading..."
-                      : "Update default board"}
+                      ? <>{Localization["Loading"][lang]}</>
+                      : <>{Localization["Update default crown"][lang]}</>}
                   </button>
                 </div>
               </Dialog.Panel>

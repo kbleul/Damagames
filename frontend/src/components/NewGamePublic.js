@@ -14,6 +14,7 @@ import { clearCookie } from "../utils/data";
 import background from "../assets/backdrop.jpg";
 import { Footer } from "./Footer";
 import ExitWarningModal from "../Game/components/ExitWarningModal";
+import { Localization } from "../utils/language";
 
 
 const ACTION = {
@@ -23,13 +24,12 @@ const ACTION = {
 };
 
 const NewGamePublic = () => {
-  const { user, token } = useAuth();
+  const { user, token, lang } = useAuth();
   const navigate = useNavigate();
 
   //"menu" || "creating" || "created"
   const [action, setAction] = useState(ACTION.MENU);
   const [name, setName] = useState("");
-  const [open, setOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [isCreated, setIsCreated] = useState(false);
 
@@ -76,14 +76,13 @@ const NewGamePublic = () => {
               responseData?.data?.data?.game
             );
             setCode(responseData?.data?.data?.code);
-            //first clear local storage
-            // localStorage.clear();
+
             localStorage.setItem("gameId", responseData?.data?.data?.game);
             localStorage.setItem(
               "playerOne",
               JSON.stringify(responseData?.data?.data?.playerOne)
             );
-            // localStorage.setItem("playerOneToken", responseData?.data?.data?.token);
+
             localStorage.setItem("playerOneIp", responseData?.data?.data?.ip);
           },
           onError: (err) => { },
@@ -237,7 +236,7 @@ const NewGamePublic = () => {
               "
           >
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-            Create Game
+            {Localization["Create Game"][lang]}
           </button>
 
           <button
@@ -250,7 +249,7 @@ const NewGamePublic = () => {
               "
           >
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-            Join Game
+            {Localization["Join Game"][lang]}
           </button>
         </section>
       )}
@@ -260,7 +259,7 @@ const NewGamePublic = () => {
             items-center justify-center min-h-screen space-y-2 p-5 "
         >
           <h2 className="font-medium text-white text-lg pt-5">
-            Tell Us Your name
+            {Localization["Tell us your name"][lang]}
           </h2>
           <input
             type="text"
@@ -269,7 +268,7 @@ const NewGamePublic = () => {
             value={user ? user.username : name}
             className="bg-transparent border  border-orange-color  p-2 w-full rounded-md
                 text-white focus:outline-none focus:ring-0  font-medium "
-            placeholder="Tell Us Your name"
+            placeholder={Localization["Tell us your name"][lang]}
           />
           <button
             onClick={submitName}
@@ -282,8 +281,8 @@ const NewGamePublic = () => {
           >
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
             {nameMutation.isLoading || loggedInMutation.isLoading
-              ? "Creating..."
-              : "Create"}
+              ? Localization["Creating"][lang]
+              : Localization["Create"][lang]}
           </button>
         </div>
       )}
@@ -297,9 +296,9 @@ const NewGamePublic = () => {
             className="flex flex-col items-center justify-center max-w-xl mx-auto w-full 
            border-2 border-orange-color p-3 rounded-md"
           >
-            <h2 className="font-medium text-white text-lg ">Great Work!</h2>
+            <h2 className="font-medium text-white text-lg ">{Localization["Great work"][lang]}</h2>
             <p className="text-gray-200 pb-2 capitalize ">
-              Now send this link to your friend
+              {Localization["Now send this"][lang]}
             </p>
             <div className="z-40 flex items-center border border-gray-400 p-2 rounded-sm w-full">
               <input
@@ -310,7 +309,7 @@ const NewGamePublic = () => {
               />
               <CopyToClipboard text={value} onCopy={() => setIsCopied(true)}>
                 {isCopied ? (
-                  <p className="text-xs text-green-500">Copied</p>
+                  <p className="text-xs text-green-500">{Localization["Copied"][lang]}</p>
                 ) : (
                   <IoIosCopy
                     className={`${isCopied ? "text-green-500" : "text-gray-300"
@@ -322,7 +321,7 @@ const NewGamePublic = () => {
             {/* via code */}
             <div className="flex items-center space-x-2 justify-center">
               <div className="bg-orange-bg w-20 h-[1px]" />
-              <p className="text-center text-orange-color py-2">or</p>
+              <p className="text-center text-orange-color py-2">{Localization["Or"][lang]}</p>
               <div className="bg-orange-bg w-20 h-[1px]" />
             </div>
             {/* code */}
@@ -335,7 +334,7 @@ const NewGamePublic = () => {
               />
               <CopyToClipboard text={code} onCopy={() => setCodeCopied(true)}>
                 {codeCopied ? (
-                  <p className="text-xs text-green-500">Copied</p>
+                  <p className="text-xs text-green-500">{Localization["Copied"][lang]}</p>
                 ) : (
                   <IoIosCopy
                     className={`${codeCopied ? "text-green-500" : "text-gray-400"
@@ -356,7 +355,7 @@ const NewGamePublic = () => {
             >
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
               <IoIosShareAlt className="w-6 h-6" />
-              <p>Share</p>
+              <p>{Localization["Share"][lang]}</p>
             </div>
           </div>
         </div>

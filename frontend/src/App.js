@@ -6,11 +6,8 @@ import socket from "./utils/socket.io";
 import {
   Route,
   Routes,
-  Navigate,
-  NavLink,
-  useNavigate,
+  Navigate
 } from "react-router-dom";
-import { Circles } from "react-loader-spinner";
 import ToastContainer from "./utils/ToastContainer";
 //'G-YM283P3T0J'
 const tagManagerArgs = {
@@ -40,22 +37,16 @@ const Game = React.lazy(() => import("./Game/Game"));
 const Store = React.lazy(() => import("./components/Store/Store"));
 const ErrorPage = React.lazy(() => import("./components/ErrorPage"));
 const PrivacyPolicy = React.lazy(() => import("./components/PrivacyPolicy"));
+
+
 const App = () => {
+
   const { checked } = useHome();
   const { user, token } = useAuth();
 
-  // function to delete cookies
-  function deleteCookies() {
-    var Cookies = document.cookie.split(";");
-    // set 1 Jan, 1970 expiry for every cookies
-    for (let i = 0; i < Cookies.length; i++)
-      document.cookie =
-        Cookies[i] + "=;expires=" + new Date(0).toUTCString();
-  }
 
   useEffect(() => {
     TagManager.initialize(tagManagerArgs);
-    deleteCookies()
   }, []);
 
   useEffect(() => {
@@ -64,6 +55,7 @@ const App = () => {
     });
 
   });
+
 
   const HomeComp = () => {
     return (
@@ -131,7 +123,7 @@ const App = () => {
     <>
       {checked ? (
         <Suspense fallback={<SplashScreen />}>
-          <ToastContainer/>
+          <ToastContainer />
           <RoutComp />
         </Suspense>
       ) : (
