@@ -44,10 +44,13 @@ import { useHome } from "../context/HomeContext.js";
 const Game = () => {
   const { id } = useParams();
   const { user, token } = useAuth();
-
+  const playingCrowns = useRef({});
+  const [sample, setSample] = useState(null)
+  const isPlayerOne = JSON.parse(localStorage.getItem("playerOne"));
+  const [isCrownChanged, setIsCrownChanged] = useState(false);
   // const { playerCrown, playerBoard } = useHome();
   useEffect(() => {
- 
+
     document.documentElement.style.setProperty(
       "--playerTwoPawn",
       !user && !token
@@ -64,24 +67,7 @@ const Game = () => {
         ? `url(${user?.default_board?.board_pawn2_turn})`
         : `url(${yellowWhiteCoin})`
     );
-    //king icon
-    document.documentElement.style.setProperty(
-      "--playerTwoPawnKing",
-      !user && !token
-        ? `url(${yellowNegus})`
-        : user?.default_crown?.board_pawn_king2
-        ? `url(${user?.default_crown?.board_pawn_king2})`
-        : `url(${yellowNegus})`
-    );
-    //king icon turn
-    document.documentElement.style.setProperty(
-      "--playerTwoPawnKingTurn",
-      !user && !token
-        ? `url(${yellowNegusWhite})`
-        : user?.default_board
-        ? `url(${user?.default_board?.board_pawn_king2_turn})`
-        : `url(${yellowNegusWhite})`
-    );
+
     document.documentElement.style.setProperty(
       "--playerOnePawn",
       !user && !token
@@ -99,22 +85,125 @@ const Game = () => {
         : `url(${orangeWhiteCoin})`
     );
     //king icon and king turn
-    document.documentElement.style.setProperty(
-      "--playerOnePawnKing",
-      !user && !token
-        ? `url(${redNegus})`
-        : user?.default_crown?.board_pawn_king1
-        ? `url(${user?.default_crown?.board_pawn_king1})`
-        : `url(${redNegus})`
-    );
-    document.documentElement.style.setProperty(
-      "--playerOnePawnKingTurn",
-      !user && !token
-        ? `url(${redNegusWhite})`
-        : user?.default_crown?.board_pawn_king1_turn
-        ? `url(${user?.default_crown?.board_pawn_king1_turn})`
-        : `url(${redNegusWhite})`
-    );
+    if (id) {
+      //king icon
+      document.documentElement.style.setProperty(
+        "--playerTwoPawnKing",
+        !user && !token
+          ? `url(${yellowNegus})`
+          : user?.default_crown?.board_pawn_king2
+          ? `url(${user?.default_crown?.board_pawn_king2})`
+          : `url(${yellowNegus})`
+      );
+      //king icon turn
+      document.documentElement.style.setProperty(
+        "--playerTwoPawnKingTurn",
+        !user && !token
+          ? `url(${yellowNegusWhite})`
+          : user?.default_crown?.board_pawn_king2_turn
+          ? `url(${user?.default_crown?.board_pawn_king2_turn})`
+          : `url(${yellowNegusWhite})`
+      );
+      document.documentElement.style.setProperty(
+        "--playerOnePawnKing",
+        !user && !token
+          ? `url(${redNegus})`
+          : user?.default_crown?.board_pawn_king1
+          ? `url(${user?.default_crown?.board_pawn_king1})`
+          : `url(${redNegus})`
+      );
+      document.documentElement.style.setProperty(
+        "--playerOnePawnKingTurn",
+        !user && !token
+          ? `url(${redNegusWhite})`
+          : user?.default_crown?.board_pawn_king1_turn
+          ? `url(${user?.default_crown?.board_pawn_king1_turn})`
+          : `url(${redNegusWhite})`
+      );
+    } else {
+      console.log("playingCrowns", playingCrowns);
+      if (isPlayerOne) {
+        document.documentElement.style.setProperty(
+          "--playerTwoPawnKing",
+          !user && !token
+            ? `url(${yellowNegus})`
+            : playingCrowns.current?.normal
+            ? `url(${playingCrowns.current?.normal})`
+            : user?.default_crown?.board_pawn_king2
+            ? `url(${user?.default_crown?.board_pawn_king2})`
+            : `url(${yellowNegus})`
+        );
+        //king icon turn
+        document.documentElement.style.setProperty(
+          "--playerTwoPawnKingTurn",
+          !user && !token
+            ? `url(${yellowNegusWhite})`
+            : playingCrowns.current?.active
+            ? `url(${playingCrowns.current?.active})`
+            : user?.default_board
+            ? `url(${user?.default_board?.board_pawn_king2_turn})`
+            : `url(${yellowNegusWhite})`
+        );
+        document.documentElement.style.setProperty(
+          "--playerOnePawnKing",
+          !user && !token
+            ? `url(${redNegus})`
+            : user?.default_crown?.board_pawn_king1
+            ? `url(${user?.default_crown?.board_pawn_king1})`
+            : `url(${redNegus})`
+        );
+        document.documentElement.style.setProperty(
+          "--playerOnePawnKingTurn",
+          !user && !token
+            ? `url(${redNegusWhite})`
+            : user?.default_crown?.board_pawn_king1_turn
+            ? `url(${user?.default_crown?.board_pawn_king1_turn})`
+            : `url(${redNegusWhite})`
+        );
+      } else {
+        console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz", playingCrowns?.current?.normal);
+       
+        //it is second player
+        document.documentElement.style.setProperty(
+          "--playerOnePawnKing",
+          !user && !token
+            ? `url(${redNegus})`
+            : playingCrowns.current?.normal
+            ? `url(${playingCrowns.current?.normal})`
+            : user?.default_crown?.board_pawn_king1
+            ? `url(${user?.default_crown?.board_pawn_king1})`
+            : `url(${redNegus})`
+        );
+        //king icon turn
+        document.documentElement.style.setProperty(
+          "--playerOnePawnKingTurn",
+          !user && !token
+            ? `url(${redNegusWhite})`
+            : playingCrowns.current?.active
+            ? `url(${playingCrowns.current?.active})`
+            : user?.default_board
+            ? `url(${user?.default_board?.board_pawn_king1_turn})`
+            : `url(${redNegusWhite})`
+        );
+        document.documentElement.style.setProperty(
+          "--playerTwoPawnKing",
+          !user && !token
+            ? `url(${yellowNegus})`
+            : user?.default_crown?.board_pawn_king2
+            ? `url(${user?.default_crown?.board_pawn_king2})`
+            : `url(${yellowNegus})`
+        );
+        document.documentElement.style.setProperty(
+          "--playerTwoPawnKingTurn",
+          !user && !token
+            ? `url(${yellowNegusWhite})`
+            : user?.default_crown?.board_pawn_king1_turn
+            ? `url(${user?.default_crown?.board_pawn_king2_turn})`
+            : `url(${yellowNegusWhite})`
+        );
+      }
+    }
+
     //board and pawn
     document.documentElement.style.setProperty(
       "--playerSquareBoard",
@@ -141,7 +230,8 @@ const Game = () => {
         ? user?.default_board?.color?.lastMoveColor
         : `#858484`
     );
-  }, [id, user, token]);
+  
+  }, [id, user, token,playingCrowns]);
 
   const navigate = useNavigate();
   const [playMove] = useSound(moveSound);
@@ -182,7 +272,7 @@ const Game = () => {
   const [msgSender, setMsgSender] = useState(null);
 
   //send king icon
-  const [isListened, setIsListened] = useState(false)
+  const [isListened, setIsListened] = useState(false);
   useEffect(() => {
     if (!id && !localStorage.getItem("gameId")) {
       navigate("/create-game");
@@ -540,10 +630,40 @@ const Game = () => {
       });
 
     calcPawns(postMoveState.boardState);
-    user?.default_crown && socket.emit("sendCrownType",{
-      normal:user?.default_crown?.board_pawn_king1,
-      active:user?.default_crown?.board_pawn_king1_turn
-    })
+
+    // user?.default_board?.board_pawn2
+    const tempObj = localStorage.getItem("playerOne")
+      ? {
+          p1: user
+            ? user.default_crown
+              ? {
+                  normal: user?.default_crown?.board_pawn_king1,
+                  active: user?.default_crown?.board_pawn_king1_turn,
+                }
+              : user?.default_board
+              ? {
+                  normal: user?.default_crown?.board_pawn_king1,
+                  active: user?.default_board?.board_pawn_king1_turn,
+                }
+              : null
+            : null,
+        }
+      : {
+          p2: user
+            ? user.default_crown
+              ? {
+                  normal: user?.default_crown?.board_pawn_king2,
+                  active: user?.default_crown?.board_pawn_king2_turn,
+                }
+              : user?.default_board
+              ? {
+                  normal: user?.default_crown?.board_pawn_king2,
+                  active: user?.default_board?.board_pawn_king2_turn,
+                }
+              : null
+            : null,
+        };
+    socket.emit("sendCrownType", tempObj);
   }
 
   const stateHistory = gameState.history;
@@ -783,12 +903,25 @@ const Game = () => {
   let array = gameState.history;
   let lastElement = array[array.length - 1];
 
-  useEffect(() => {
 
+
+  useEffect(() => {
     //listen for king icon
-    socket.on("getCrownType",(data)=>{
-     console.log("getCrownType",data)
-    })
+  
+
+    {
+      !isCrownChanged &&
+        socket.on("getCrownType", (data) => {
+          const tempObj = localStorage.getItem("playerOne")
+            ? (playingCrowns.current = data.p2)
+            : (playingCrowns.current = data.p1);
+            localStorage.getItem("playerOne") ?  setSample(data.p2) :  setSample(data.p1)
+          // playingCrowns.current = data
+          // ? { ...playingCrowns.current, p1: data.p1 }
+          // : { ...playingCrowns.current, p2: data.p2 };
+          console.log(playingCrowns.current, isCrownChanged);
+        });
+    }
     // let cPlayer = currentPlayer
     socket.on(
       "getGameMessage",
