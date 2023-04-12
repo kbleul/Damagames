@@ -14,6 +14,7 @@ import { Switch } from "@headlessui/react";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useAuth } from "../../../context/Auth";
+import { useNavigate } from "react-router-dom";
 interface Props {
   avatars: Array<object>;
   setIsUpdated: React.Dispatch<React.SetStateAction<boolean>>;
@@ -27,6 +28,7 @@ const CrownTable = ({
   setEditId,
 }: Props) => {
   const [selected, setSelected] = useState<string | null>(null);
+  const navigate = useNavigate()
   const { token } = useAuth();
   const headers = {
     "Content-Type": "application/json",
@@ -76,6 +78,71 @@ const CrownTable = ({
       },
     },
     {
+      field: "board_pawn_king1",
+      headerName: "Pawn king1",
+      sortable: false,
+      filterable: false,
+      width: 150,
+      renderCell: (params: GridCellParams) => {
+        return (
+          <img
+            src={params.row.board_pawn_king1}
+            alt=""
+            className="h-11 w-11 rounded-sm object-cover"
+          />
+        );
+      },
+    },
+    {
+      field: "board_pawn_king1_turn",
+      headerName: "Pawn king turn",
+      sortable: false,
+      filterable: false,
+      width: 150,
+      renderCell: (params: GridCellParams) => {
+        return (
+          <img
+            src={params.row.board_pawn_king1_turn}
+            alt=""
+            className="h-11 w-11 rounded-sm object-cover"
+          />
+        );
+      },
+    },
+
+    {
+      field: "board_pawn_king2",
+      headerName: "Pawn king2",
+      sortable: false,
+      filterable: false,
+      width: 150,
+      renderCell: (params: GridCellParams) => {
+        return (
+          <img
+            src={params.row.board_pawn_king2}
+            alt=""
+            className="h-11 w-11 rounded-sm object-cover"
+          />
+        );
+      },
+    },
+    {
+      field: "board_pawn_king2_turn",
+      headerName: "Pawn king2 turn",
+      sortable: false,
+      filterable: false,
+      width: 150,
+      renderCell: (params: GridCellParams) => {
+        return (
+          <img
+            src={params.row.board_pawn_king2_turn}
+            alt=""
+            className="h-11 w-11 rounded-sm object-cover"
+          />
+        );
+      },
+    },
+    {
       field: "status",
       headerName: "Status",
       width: 150,
@@ -100,10 +167,7 @@ const CrownTable = ({
             <button
               className="bg-main-bg rounded-sm hover:opacity-80
                 text-center px-5 p-1 font-medium text-sm text-white"
-              onClick={() => {
-                setIsModalOpen(true);
-                setEditId(params.row.id);
-              }}
+              onClick={() => navigate(`/pawn/create/${params.row.id}`)}
             >
               Edit
             </button>

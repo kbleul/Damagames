@@ -42,19 +42,17 @@ import orangeWhiteCoin from "../assets/orange-coin-white.svg";
 import redNegusWhite from "../assets/redNegus-white.svg";
 import { useHome } from "../context/HomeContext.js";
 
-import { Localization } from "../utils/language"
+import { Localization } from "../utils/language";
 
 const Game = () => {
-  
   const { id } = useParams();
-  const { user, token ,lang} = useAuth();
+  const { user, token, lang } = useAuth();
   const playingCrowns = useRef({});
-  const [sample, setSample] = useState(null)
+  const [sample, setSample] = useState(null);
   const isPlayerOne = JSON.parse(localStorage.getItem("playerOne"));
   const [isCrownChanged, setIsCrownChanged] = useState(false);
   // const { playerCrown, playerBoard } = useHome();
   useEffect(() => {
-
     document.documentElement.style.setProperty(
       "--playerTwoPawn",
       !user && !token
@@ -97,16 +95,21 @@ const Game = () => {
           ? `url(${yellowNegus})`
           : user?.default_crown?.board_pawn_king2
           ? `url(${user?.default_crown?.board_pawn_king2})`
+          : user?.default_board?.board_pawn_king2
+          ? `url(${user?.default_board?.board_pawn_king2})`
           : `url(${yellowNegus})`
       );
-      //king icon turn
+      //king icon turn user?.default_board?.board_pawn_king1
       document.documentElement.style.setProperty(
         "--playerTwoPawnKingTurn",
         !user && !token
           ? `url(${yellowNegusWhite})`
           : user?.default_crown?.board_pawn_king2_turn
           ? `url(${user?.default_crown?.board_pawn_king2_turn})`
+          : user?.default_board?.board_pawn_king2_turn
+          ? `url(${user?.default_board?.board_pawn_king2_turn})`
           : `url(${yellowNegusWhite})`
+        //
       );
       document.documentElement.style.setProperty(
         "--playerOnePawnKing",
@@ -114,6 +117,8 @@ const Game = () => {
           ? `url(${redNegus})`
           : user?.default_crown?.board_pawn_king1
           ? `url(${user?.default_crown?.board_pawn_king1})`
+          : user?.default_board?.board_pawn_king1
+          ? `url(${user?.default_board?.board_pawn_king1})`
           : `url(${redNegus})`
       );
       document.documentElement.style.setProperty(
@@ -122,7 +127,10 @@ const Game = () => {
           ? `url(${redNegusWhite})`
           : user?.default_crown?.board_pawn_king1_turn
           ? `url(${user?.default_crown?.board_pawn_king1_turn})`
+          : user?.default_board?.board_pawn_king1_turn
+          ? `url(${user?.default_board?.board_pawn_king1_turn})`
           : `url(${redNegusWhite})`
+        //
       );
     } else {
       console.log("playingCrowns", playingCrowns);
@@ -131,10 +139,12 @@ const Game = () => {
           "--playerTwoPawnKing",
           !user && !token
             ? `url(${yellowNegus})`
-            : playingCrowns.current?.normal
-            ? `url(${playingCrowns.current?.normal})`
+            : JSON.parse(localStorage.getItem("pawns"))?.normal
+            ? `url(${JSON.parse(localStorage.getItem("pawns"))?.normal})`
             : user?.default_crown?.board_pawn_king2
             ? `url(${user?.default_crown?.board_pawn_king2})`
+            : user?.default_board?.board_pawn_king2
+            ? `url(${user?.default_board?.board_pawn_king2})`
             : `url(${yellowNegus})`
         );
         //king icon turn
@@ -142,9 +152,11 @@ const Game = () => {
           "--playerTwoPawnKingTurn",
           !user && !token
             ? `url(${yellowNegusWhite})`
-            : playingCrowns.current?.active
-            ? `url(${playingCrowns.current?.active})`
-            : user?.default_board
+            : JSON.parse(localStorage.getItem("pawns"))?.active
+            ? `url(${JSON.parse(localStorage.getItem("pawns"))?.active})`
+            : user?.default_crown?.board_pawn_king2_turn
+            ? `url(${user?.default_crown?.board_pawn_king2_turn})`
+            : user?.default_board?.board_pawn_king2_turn
             ? `url(${user?.default_board?.board_pawn_king2_turn})`
             : `url(${yellowNegusWhite})`
         );
@@ -154,6 +166,8 @@ const Game = () => {
             ? `url(${redNegus})`
             : user?.default_crown?.board_pawn_king1
             ? `url(${user?.default_crown?.board_pawn_king1})`
+            : user?.default_board?.board_pawn_king1
+            ? `url(${user?.default_board?.board_pawn_king1})`
             : `url(${redNegus})`
         );
         document.documentElement.style.setProperty(
@@ -162,20 +176,22 @@ const Game = () => {
             ? `url(${redNegusWhite})`
             : user?.default_crown?.board_pawn_king1_turn
             ? `url(${user?.default_crown?.board_pawn_king1_turn})`
+            : user?.default_board?.board_pawn_king1_turn
+            ? `url(${user?.default_board?.board_pawn_king1_turn})`
             : `url(${redNegusWhite})`
         );
       } else {
-        console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz", playingCrowns?.current?.normal);
-       
         //it is second player
         document.documentElement.style.setProperty(
           "--playerOnePawnKing",
           !user && !token
             ? `url(${redNegus})`
-            : playingCrowns.current?.normal
-            ? `url(${playingCrowns.current?.normal})`
+            : JSON.parse(localStorage.getItem("pawns"))?.normal
+            ? `url(${JSON.parse(localStorage.getItem("pawns"))?.normal})`
             : user?.default_crown?.board_pawn_king1
             ? `url(${user?.default_crown?.board_pawn_king1})`
+            : user?.default_board?.board_pawn_king1
+            ? `url(${user?.default_board?.board_pawn_king1})`
             : `url(${redNegus})`
         );
         //king icon turn
@@ -183,9 +199,11 @@ const Game = () => {
           "--playerOnePawnKingTurn",
           !user && !token
             ? `url(${redNegusWhite})`
-            : playingCrowns.current?.active
-            ? `url(${playingCrowns.current?.active})`
-            : user?.default_board
+            : JSON.parse(localStorage.getItem("pawns"))?.active
+            ? `url(${JSON.parse(localStorage.getItem("pawns"))?.active})`
+            : user?.default_crown?.board_pawn_king1_turn
+            ? `url(${user?.default_crown?.board_pawn_king1_turn})`
+            : user?.default_board?.board_pawn_king1_turn
             ? `url(${user?.default_board?.board_pawn_king1_turn})`
             : `url(${redNegusWhite})`
         );
@@ -195,14 +213,18 @@ const Game = () => {
             ? `url(${yellowNegus})`
             : user?.default_crown?.board_pawn_king2
             ? `url(${user?.default_crown?.board_pawn_king2})`
+            : user?.default_board?.board_pawn_king2
+            ? `url(${user?.default_board?.board_pawn_king2})`
             : `url(${yellowNegus})`
         );
         document.documentElement.style.setProperty(
           "--playerTwoPawnKingTurn",
           !user && !token
             ? `url(${yellowNegusWhite})`
-            : user?.default_crown?.board_pawn_king1_turn
+            : user?.default_crown?.board_pawn_king2_turn
             ? `url(${user?.default_crown?.board_pawn_king2_turn})`
+            : user?.default_board?.board_pawn_king2_turn
+            ? `url(${user?.default_board?.board_pawn_king2_turn})`
             : `url(${yellowNegusWhite})`
         );
       }
@@ -234,8 +256,7 @@ const Game = () => {
         ? user?.default_board?.color?.lastMoveColor
         : `#858484`
     );
-  
-  }, [id, user, token,playingCrowns]);
+  }, [id, user, token]);
 
   const navigate = useNavigate();
   const [playMove] = useSound(moveSound);
@@ -312,30 +333,30 @@ const Game = () => {
     const player1 = [
       "a8",
       "c8",
-      "e8",
-      "g8",
-      "b7",
-      "d7",
-      "f7",
-      "h7",
-      "a6",
-      "c6",
-      "e6",
-      "g6",
+      // "e8",
+      // "g8",
+      // "b7",
+      // "d7",
+      // "f7",
+      // "h7",
+      // "a6",
+      // "c6",
+      // "e6",
+      // "g6",
     ];
     const player2 = [
       "b3",
       "d3",
-      "f3",
-      "h3",
-      "a2",
-      "c2",
-      "e2",
-      "g2",
-      "b1",
-      "d1",
-      "f1",
-      "h1",
+      // "f3",
+      // "h3",
+      // "a2",
+      // "c2",
+      // "e2",
+      // "g2",
+      // "b1",
+      // "d1",
+      // "f1",
+      // "h1",
     ];
 
     player1.forEach(function (i) {
@@ -907,11 +928,8 @@ const Game = () => {
   let array = gameState.history;
   let lastElement = array[array.length - 1];
 
-
-
   useEffect(() => {
     //listen for king icon
-  
 
     {
       !isCrownChanged &&
@@ -919,11 +937,15 @@ const Game = () => {
           const tempObj = localStorage.getItem("playerOne")
             ? (playingCrowns.current = data.p2)
             : (playingCrowns.current = data.p1);
-            localStorage.getItem("playerOne") ?  setSample(data.p2) :  setSample(data.p1)
+          !JSON.parse(localStorage.getItem("pawns")) &&
+            localStorage.setItem("pawns", JSON.stringify(tempObj));
+          localStorage.getItem("playerOne")
+            ? setSample(data.p2)
+            : setSample(data.p1);
           // playingCrowns.current = data
           // ? { ...playingCrowns.current, p1: data.p1 }
           // : { ...playingCrowns.current, p2: data.p2 };
-          console.log(playingCrowns.current, isCrownChanged);
+          console.log(JSON.parse(localStorage.getItem("pawns")));
         });
     }
     // let cPlayer = currentPlayer
@@ -1252,7 +1274,9 @@ const Game = () => {
                 fill="#FF4C01"
               />
             </svg>
-            <p className="text-white text-xs">{Localization["SoundOn"][lang]}</p>
+            <p className="text-white text-xs">
+              {Localization["SoundOn"][lang]}
+            </p>
           </button>
         ) : (
           <button
@@ -1271,7 +1295,9 @@ const Game = () => {
                 fill="#FF4C01"
               />
             </svg>
-            <p className="text-white text-xs">{Localization["SoundOff"][lang]}</p>
+            <p className="text-white text-xs">
+              {Localization["SoundOff"][lang]}
+            </p>
           </button>
         )}
         {/* currentPlayer && localStorage.getItem("playerOneIp") && 
@@ -1279,10 +1305,14 @@ const Game = () => {
         <section className="flex flex-col">
           <div>
             {currentPlayer && localStorage.getItem("playerOneIp") && (
-              <p className="text-white font-bold text-sm">{Localization["Timer"][lang]} : {timerP1}</p>
+              <p className="text-white font-bold text-sm">
+                {Localization["Timer"][lang]} : {timerP1}
+              </p>
             )}
             {!currentPlayer && localStorage.getItem("playerTwoIp") && (
-              <p className="text-white font-bold text-sm">{Localization["Timer"][lang]} : {timerP2}</p>
+              <p className="text-white font-bold text-sm">
+                {Localization["Timer"][lang]} : {timerP2}
+              </p>
             )}
           </div>
           {passedCounter === 3 && (
@@ -1441,7 +1471,9 @@ const Game = () => {
             visible={true}
           />
         ) : (
-          <h1 className="text-white font-normal">{Localization["Your turn"][lang]}</h1>
+          <h1 className="text-white font-normal">
+            {Localization["Your turn"][lang]}
+          </h1>
         )}
       </div>
 
@@ -1463,7 +1495,9 @@ const Game = () => {
               visible={true}
             />
           ) : (
-            <h1 className="text-white font-normal">{Localization["Your turn"][lang]}</h1>
+            <h1 className="text-white font-normal">
+              {Localization["Your turn"][lang]}
+            </h1>
           ))}
         {playerTwoIp &&
           (currentPlayer ? (
@@ -1478,7 +1512,9 @@ const Game = () => {
               visible={true}
             />
           ) : (
-            <h1 className="text-white font-normal">{Localization["Your turn"][lang]}</h1>
+            <h1 className="text-white font-normal">
+              {Localization["Your turn"][lang]}
+            </h1>
           ))}
       </div>
       <div className={""}>
@@ -1535,7 +1571,9 @@ const Game = () => {
                 />
               </svg>
             </div>
-            <p className="text-xs font-bold text-white">{Localization["Draw"][lang]}</p>
+            <p className="text-xs font-bold text-white">
+              {Localization["Draw"][lang]}
+            </p>
           </div>
         )}
         {id != 1 && (
@@ -1545,7 +1583,9 @@ const Game = () => {
               size={30}
               className="text-orange-color"
             />
-            <p className="text-xs font-bold text-white">{Localization["Draw"][lang]}</p>
+            <p className="text-xs font-bold text-white">
+              {Localization["Draw"][lang]}
+            </p>
           </div>
         )}
       </div>
@@ -1608,7 +1648,9 @@ const Game = () => {
       )}
       <div>
         {btCoin && (
-          <p className="text-xs font-bold text-white">{Localization["Bet"][lang]} {btCoin} {Localization["coins"][lang]}</p>
+          <p className="text-xs font-bold text-white">
+            {Localization["Bet"][lang]} {btCoin} {Localization["coins"][lang]}
+          </p>
         )}
       </div>
       <ExitWarningModal
@@ -1653,5 +1695,3 @@ const Game = () => {
 };
 
 export default Game;
-
-

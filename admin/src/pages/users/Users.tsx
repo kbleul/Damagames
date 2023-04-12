@@ -27,26 +27,29 @@ interface UserProps {
 const Users = () => {
   const { token, user } = useAuth();
   const [users, setUsers] = useState<Array<UserProps>>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
     Authorization: `Bearer ${token}`,
   };
   const usersData = useQuery(
-    ["usersDataApi"],
+    ["usersDataApi",currentPage],
     async () =>
-      await axios.get(`${process.env.REACT_APP_BACKEND_URL}admin/users`, {
-        headers,
-      }),
+      await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}admin/users?page=${currentPage}`,
+        {
+          headers,
+        }
+      ),
     {
       keepPreviousData: false,
       refetchOnWindowFocus: false,
       retry: false,
       enabled: !!token,
       onSuccess: (res) => {
-        console.log(res?.data?.data?.users);
         setUsers(
-          res?.data?.data?.users?.map((data: any, index: number) => ({
+          res?.data?.data?.data?.map((data: any, index: number) => ({
             ...data,
             index: index + 1,
           }))
@@ -54,7 +57,7 @@ const Users = () => {
       },
     }
   );
-  console.log(users);
+  console.log(usersData?.data?.data?.data);
 
   function Row(props: { row: ReturnType<any> }) {
     const { row } = props;
@@ -93,8 +96,10 @@ const Users = () => {
                       <TableCell align="center">coins</TableCell>
                       <TableCell align="center">draw</TableCell>
                       <TableCell align="center">losses</TableCell>
-                      <TableCell align="center">played</TableCell>
+                      <TableCell align="center">started</TableCell>
                       <TableCell align="center">wins</TableCell>
+                      <TableCell align="center">completed</TableCell>
+                      <TableCell align="center">incomplete</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -109,10 +114,16 @@ const Users = () => {
                         {row.match_history?.losses}
                       </TableCell>
                       <TableCell component="th" scope="row" align="center">
-                        {row.match_history?.played}
+                        {row.match_history?.started}
                       </TableCell>
                       <TableCell component="td" scope="row" align="center">
                         {row.match_history?.wins}
+                      </TableCell>
+                      <TableCell component="th" scope="row" align="center">
+                        {row.match_history?.completed}
+                      </TableCell>
+                      <TableCell component="td" scope="row" align="center">
+                        {row.match_history?.incompleted}
                       </TableCell>
                     </TableRow>
                   </TableBody>
@@ -128,29 +139,47 @@ const Users = () => {
   return (
     <div>
       {usersData.isFetched ? (
-        <TableContainer component={Paper}>
-          <Table aria-label="collapsible table">
-            <TableHead>
-              <TableRow>
-                <TableCell />
-                <TableCell width={300}>userName</TableCell>
-                <TableCell width={100} align="center">
-                  Rank
-                </TableCell>
-                <TableCell width={200} align="center">
-                  Phone
-                </TableCell>
-                <TableCell align="center">current Point</TableCell>
-                <TableCell align="center">coin</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {users?.map((row) => (
-                <Row key={row.id} row={row} />
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <div>
+          <TableContainer component={Paper}>
+            <Table aria-label="collapsible table">
+              <TableHead>
+                <TableRow>
+                  <TableCell />
+                  <TableCell width={300}>userName</TableCell>
+                  <TableCell width={100} align="center">
+                    Rank
+                  </TableCell>
+                  <TableCell width={200} align="center">
+                    Phone
+                  </TableCell>
+                  <TableCell align="center">current Point</TableCell>
+                  <TableCell align="center">coin</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {users?.map((row) => (
+                  <Row key={row.id} row={row} />
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <div className="flex items-center space-x-2 justify-center py-10">
+            {usersData?.data?.data?.data?.prev_page_url && (
+              <button 
+              onClick={()=>setCurrentPage((prev)=>prev - 1)}
+              className="bg-amber-500 p-2 px-5 text-white font-medium">
+                Previous
+              </button>
+            )}
+            {usersData?.data?.data?.data?.next_page_url && (
+              <button 
+              onClick={()=>setCurrentPage((prev)=>prev + 1)}
+              className="bg-orange-500 p-2 px-5 text-white font-medium">
+                next
+              </button>
+            )}
+          </div>
+        </div>
       ) : (
         <div className="flex items-center justify-center">
           <PulseLoader color="#FF4C01" />
