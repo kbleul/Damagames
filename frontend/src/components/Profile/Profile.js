@@ -20,7 +20,7 @@ import { Localization } from "../../utils/language";
 
 
 const LANG = {
-  "AMH": "Amharic",
+  "AMH": "አማርኛ",
   "ENG": "English"
 }
 

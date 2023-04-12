@@ -44,21 +44,13 @@ const ChangeCrown = ({
         {},
         {
           onSuccess: (responseData) => {
-            if (localStorage.getItem("lang")) {
-              if (localStorage.getItem("lang") === "Amh") {
-                setSuccessMessage(Localization["Crown changed."]?.Amh)
-              } else {
-                setSuccessMessage("Crown changed.")
-              }
-            } else {
-              setSuccessMessage("Crown changed.")
-            }
+            setSuccessMessage(Localization["Crown changed."][lang])
+
             setTimeout(() => {
               login(token, { ...user, default_crown: crown });
             }, 800);
           },
           onError: (err) => {
-            //  setErrorMessage(err?.response?.data?.data);
           },
         }
       );

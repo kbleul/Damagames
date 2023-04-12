@@ -158,7 +158,7 @@ const JoinGame = () => {
 
   const handleJoin = () => {
     if (!name) {
-      toast("name is required.");
+      toast(Localization["name is required."][lang]);
 
       return;
     }
@@ -274,7 +274,7 @@ const JoinGame = () => {
 
   const handleSubmitCode = () => {
     if (!code || [...code].length !== 6) {
-      toast("code character should be 6");
+      toast(Localization["code character should be 6"][lang]);
       return;
     }
     joinViaCodeMutationSubmitHandler();

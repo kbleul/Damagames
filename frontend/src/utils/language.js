@@ -30,11 +30,11 @@ export const Localization = {
         ENG: "Password"
     },
     "Don't have account": {
-        AMH: "መለያ የለህም ?",
-        ENG: "Don't have account"
+        AMH: "መለያ የሎትሞ ?",
+        ENG: "Don't have account ?"
     },
     "Sign up": {
-        AMH: "መመዝገብ",
+        AMH: "ይመዝገቡ",
         ENG: "Sign up"
     },
     "please fill the space !": {
@@ -46,19 +46,19 @@ export const Localization = {
         ENG: "please enter a valid phone !"
     },
     "please enter a strong password !": {
-        AMH: "እባክዎ ትክክለኛ ስልክ ያስገቡ !",
+        AMH: "እባክዎ ጠንካራ የይለፍ ቃል ያስገቡ !",
         ENG: "please enter a strong password !"
     },
     "Coins earned": {
-        AMH: "የተገኙ ሳንቲሞች",
+        AMH: "ሳንቲሞች",
         ENG: "Coins earned"
     },
     "Games played": {
-        AMH: "የተጫወቷቸው ጨዋታዎች",
+        AMH: "ጨዋታዎች",
         ENG: "Games played"
     },
     "Wins": {
-        AMH: "ያሸነፍከው",
+        AMH: "ያሸነፉት",
         ENG: "Wins"
     },
     "Draw": {
@@ -70,7 +70,7 @@ export const Localization = {
         ENG: "Loss"
     },
     "Chat": {
-        AMH: "ሽንፈቶች",
+        AMH: "መልእክት ተላላክ",
         ENG: "Chat"
     },
     "Profile": {
@@ -157,9 +157,9 @@ export const Localization = {
         AMH: "መውጣት",
         ENG: "exit"
     },
-    "computer": {
+    "Computer": {
         AMH: "ኮምፒውተር",
-        ENG: ""
+        ENG: "Computer"
     },
     "Rematch": {
         AMH: "ድጋሜ ግጥሚያ",
@@ -207,7 +207,7 @@ export const Localization = {
     },
     "Great Work": {
         AMH: "በጣም ጥሩ !",
-        ENG: ""
+        ENG: "Great Work"
     },
     "enter code": {
         AMH: "ኮድ አስገባ",
@@ -215,7 +215,7 @@ export const Localization = {
     },
     "Submit": {
         AMH: "አስገባ",
-        ENG: ""
+        ENG: "Submit"
     },
     "Or": {
         AMH: "ወይም",
@@ -223,7 +223,7 @@ export const Localization = {
     },
     "Log in to bet coins": {
         AMH: "ሳንቲሞችን ለመወራረድ ወደ አካዉንቶ ይግቡ ",
-        ENG: ""
+        ENG: "Log in to bet coins"
     },
     "Bet": {
         AMH: "ውርርድ",
@@ -358,12 +358,12 @@ export const Localization = {
         ENG: "Shop"
     },
     "You don't have any boards yet.": {
-        AMH: "ወደ ሱቅ ይሂዱ",
-        ENG: "እስካሁን ምንም ሳጥኖች የሎትም።"
+        AMH: "እስካሁን ምንም ሳጥኖች የሎትም።",
+        ENG: "You don't have any boards yet."
     },
     "You don't have any crowns yet.": {
-        AMH: "ወደ ሱቅ ይሂዱ",
-        ENG: "እስካሁን ምንም ዘውዶች የሎትም።"
+        AMH: "እስካሁን ምንም ዘውዶች የሎትም።",
+        ENG: "You don't have any crowns yet."
     },
     "Go to the store to buy one": {
         AMH: "ለመግዛት ወደ መደብሩ ይሂዱ",
@@ -509,6 +509,10 @@ export const Localization = {
         AMH: "የእርስዎ OTP ኮድ",
         ENG: "Your OTP Code:"
     },
+    "OTP is sent to your phone": {
+        AMH: "OTP ወደ ስልክህ ተልኳል።",
+        ENG: "OTP is sent to your phone"
+    },
     "Phone no": {
         AMH: "ስልክ ቁጥር",
         ENG: "Phone no"
@@ -517,6 +521,18 @@ export const Localization = {
         AMH: "ላክ",
         ENG: "Send"
     },
+    "success": {
+        AMH: "ተሳክቷል",
+        ENG: "success"
+    },
+    "SUCCESS": {
+        AMH: "ተሳክቷል",
+        ENG: "success"
+    },
+    "ERROR": {
+        AMH: "አልተሳካሞ",
+        ENG: "ERROR"
+    },
     "Re-Send": {
         AMH: "እንደገና ላክ",
         ENG: "Re-Send"
@@ -524,7 +540,103 @@ export const Localization = {
     "Back to login": {
         AMH: "ወደ መግቢያ ተመለስ",
         ENG: " Back to login"
-    }
+    },
+    "Rank": {
+        AMH: "ደረጃ",
+        ENG: "Rank"
+    },
+    "Enter Your username and password": {
+        AMH: "የተጠቃሚ ስምህን እና የይለፍ ቃልህን አስገባ",
+        ENG: "Enter Your username and password"
+    },
+    "Already have account ?": {
+        AMH: "አካዉንት አለዎት ?",
+        ENG: "Already have account ?"
+    },
+    "name is required.": {
+        AMH: "አካዉንት አለዎት ?",
+        ENG: "name is required."
+    },
+    "Amount has to be less than you coins": {
+        AMH: "መጠኑ ከእርስዎ ሳንቲሞች ያነሰ መሆን አለበት ።",
+        ENG: "Amount has to be less than you coins"
+    },
+    "Invalid Amount": {
+        AMH: "ያልተፈቀደ መጠን",
+        ENG: "Invalid Amount"
+    },
+    "code character should be 6": {
+        AMH: "የኮድ ቁምፊ 6 መሆን አለበት",
+        ENG: "code character should be 6"
+    },
+    "please fill your answer": {
+        AMH: "እባክዎን መልስዎን ይሙሉ",
+        ENG: "please fill your answer"
+    },
+    "profile changed successfully": {
+        AMH: "መገለጫ በተሳካ ሁኔታ ተቀይሯል",
+        ENG: "profile changed successfully"
+    },
+    "current password is required": {
+        AMH: "የአሁኑ የይለፍ ቃል ያስፈልጋል",
+        ENG: "current password is required"
+    },
+    "new password is required": {
+        AMH: "አዲስ የይለፍ ቃል ያስፈልጋል",
+        ENG: "new password is required"
+    },
+    "new password does not match": {
+        AMH: "አዲስ የይለፍ ቃል አይዛመድም።",
+        ENG: "new password does not match"
+    },
+    "Username is too short !": {
+        AMH: "የተጠቃሚ ስም በጣም አጭር ነው !",
+        ENG: "Username is too short !"
+    },
+    "please enter PhoneNo": {
+        AMH: "እባክዎን ስልክ ቁጥር ያስገቡ",
+        ENG: "please enter Phone number"
+    },
+    "Verification Code must 4 digits": {
+        AMH: "የማረጋገጫ ኮድ 4 አሃዝ መሆን አለበት።",
+        ENG: "Verification Code must 4 digits"
+    },
+    "Verification Code must 6 digits": {
+        AMH: "የማረጋገጫ ኮድ 6 አሃዝ መሆን አለበት።",
+        ENG: "Verification Code must 6 digits"
+    },
+    "please enter username": {
+        AMH: "እባክዎ የተጠቃሚ ስም ያስገቡ",
+        ENG: "please enter username"
+    },
+    "please enter password": {
+        AMH: "እባክዎ የይለፍ ቃል ያስገቡ",
+        ENG: "please enter password"
+    },
+    "password does not match": {
+        AMH: "የይለፍ ቃል አይዛመድም።",
+        ENG: "password does not match"
+    },
+    "phone number starts with 9": {
+        AMH: "ስልክ ቁጥር በ9 ይጀምራል እና 9 ቁምፊ ርዝመቶች ይሁኑ",
+        ENG: "phone number starts with 9"
+    },
+    "password is required": {
+        AMH: "የይለፍ ቃል ያስፈልጋል",
+        ENG: "password is required"
+    },
+    "phone is required": {
+        AMH: "ስልክ ያስፈልጋል",
+        ENG: "phone is required"
+    },
+    "Login successful!": {
+        AMH: "መግባት ተሳክቷል ።",
+        ENG: "Login successful !"
+    },
+    "password has been successfully changed": {
+        AMH: "የይለፍ ቃል በተሳካ ሁኔታ ተቀይሯል ።",
+        ENG: "password has been successfully changed"
+    },
 
 
 

@@ -119,7 +119,6 @@ const NewGamePublic = () => {
             );
             setCode(responseData?.data?.data?.code);
             //first clear local storage
-            //first clear local storage
             clearCookie.forEach((data) => {
               localStorage.getItem(data) && localStorage.removeItem(data);
             });
@@ -159,7 +158,7 @@ const NewGamePublic = () => {
       loggedInNameMutationSubmitHandler();
     } else {
       if (!name) {
-        toast("name is required.");
+        toast(Localization["name is required."][lang]);
         return;
       }
       setIsCreated(true)
@@ -185,7 +184,6 @@ const NewGamePublic = () => {
   useEffect(() => {
     socket.on("getMessage", (data) => {
       if (data.status === "started") {
-        // localStorage.setItem("p1", data.player1);
         localStorage.setItem("p2", data.player2);
         navigate("/game");
       }

@@ -46,22 +46,13 @@ const ChangeBoard = ({
         {
           onSuccess: (responseData) => {
 
-            if (localStorage.getItem("lang")) {
-              if (localStorage.getItem("lang") === "Amh") {
-                setSuccessMessage(Localization["Board changed."]?.Amh)
-              } else {
-                setSuccessMessage("Board changed.")
-              }
-            } else {
-              setSuccessMessage("Board changed.")
-            }
+            setSuccessMessage(Localization["Board changed."][lang])
 
             setTimeout(() => {
               login(token, { ...user, default_board: board });
             }, 800);
           },
           onError: (err) => {
-            //  setErrorMessage(err?.response?.data?.data);
           },
         }
       );

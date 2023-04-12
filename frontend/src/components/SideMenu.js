@@ -109,11 +109,11 @@ const SideMenu = ({ showMenu, setShowMenu, isprofile }) => {
                   <div className="flex justify-between items-center w-full">
                     <h5 className="text-left font-bold text-black text-base md:text-[1.2rem] ml-2">{user.username}</h5>
                   </div>
-                  <div className="flex justify-between">
-                    <p className="text-xs text-left ml-2">
+                  <div className="text-xs flex justify-between sidemenu-wrapper">
+                    <p className="text-left ml-2">
                       {Localization["Coins earned"][lang]} : {user.coin}
                     </p>
-                    <p className="text-xs mr-2">
+                    <p className="mr-2">
                       {Localization["Games played"][lang]} - {historyData?.data?.data?.data?.played}
                     </p>
                   </div>
@@ -126,20 +126,20 @@ const SideMenu = ({ showMenu, setShowMenu, isprofile }) => {
               </div>
             </article>
 
-            <section className="w-[60%] ml-[20%] flex items-center justify-center font-bold">
-              <div className="w-[33.33%] flex justify-center items-center gap-2 text-xs">
+            <section className="w-[60%] ml-[20%] flex items-center justify-center font-bold text-xs sidemenu-wrapper">
+              <div className="w-[33.33%] flex justify-center items-center gap-2">
                 <h5>
                   {Localization["Wins"][lang]} -
                 </h5>
                 <p>{historyData?.data?.data?.data?.wins}</p>
               </div>
-              <div className="w-[33.33%] flex justify-center items-center gap-2 text-xs">
+              <div className="w-[33.33%] flex justify-center items-center gap-2">
                 <h5>
                   {Localization["Draw"][lang]} -
                 </h5>
                 <p>{historyData?.data?.data?.data?.draw}</p>
               </div>
-              <div className="w-[33.33%] flex justify-center items-center gap-2 text-xs">
+              <div className="w-[33.33%] flex justify-center items-center gap-2">
                 <h5>
                   {Localization["Loss"][lang]} -
                 </h5>

@@ -20,27 +20,63 @@ const WinnerModal = ({
   const navigate = useNavigate();
   const playerOneIp = localStorage.getItem("playerOneIp");
   const playerTwoIp = localStorage.getItem("playerTwoIp");
-  const handleResetGame = () => {
-    calcPts()
-    if (gameState.players > 1) {
-      resetGame();
-    } else {
-      setIsWinnerModalOpen(false);
-      setNewGameWithComputer();
-    }
-  };
 
-  const calcPts = () => {
-    token && setUser({ ...user, coin: user.coin + 50 })
-  }
-
-  const userCoin = token ? JSON.parse(localStorage.getItem("dama_user_data")).user.coin : null
 
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
     Authorization: `Bearer ${token}`,
   };
+
+  // const createGameMutation = useMutation(
+
+  //   async (newData) =>
+  //     await axios.post(`${process.env.REACT_APP_BACKEND_URL}play-with-computer`, newData, {
+  //       headers,
+  //     }),
+  //   {
+  //     retry: false,
+  //   }
+  // );
+
+  // const createGameAI = async (values) => {
+  //   console.log("opo")
+
+  //   try {
+  //     createGameMutation.mutate(
+  //       {},
+  //       {
+  //         onSuccess: (responseData) => {
+  //           localStorage.setItem("gameId", responseData?.data?.data?.id)
+  //           console.log("opo")
+  //         },
+  //         onError: (err) => {
+  //           console.log("opo")
+  //         },
+  //       }
+  //     );
+  //   } catch (err) { }
+  // };
+
+
+  const handleResetGame = () => {
+    calcPts()
+    if (gameState.players > 1) {
+      resetGame();
+    } else {
+      setIsWinnerModalOpen(false);
+      // user && createGameAI()
+      // setNewGameWithComputer();
+    }
+  };
+
+  const calcPts = () => {
+    token && setUser({ ...user, coin: user.coin + 50 })
+    token && localStorage.setItem("dama_user_data", { ...user, coin: user.coin + 50 })
+
+  }
+
+  const userCoin = token ? JSON.parse(localStorage.getItem("dama_user_data")).user.coin : null
 
 
   const finishGameMutation = useMutation(
@@ -80,8 +116,8 @@ const WinnerModal = ({
     return ((token && userCoin)
       ? <div className="text-white flex flex-col items-center justify-center gap-3 text-sm">
         <h2 className="text-2xl">{Localization["Congratulations"][lang]}</h2>
-        <p>{Localization["Previous"][lang]} = {userCoin - 50} {Localization["coins"][lang]}</p>
-        <p>{Localization["Total"][lang]} = {userCoin} {Localization["coins"][lang]}</p>
+        <p>{Localization["Previous"][lang]} = {userCoin} {Localization["coins"][lang]}</p>
+        <p>{Localization["Total"][lang]} = {userCoin + 50} {Localization["coins"][lang]}</p>
       </div> : <div className="text-white">{Localization["Congratulations"][lang]}</div>)
   }
 

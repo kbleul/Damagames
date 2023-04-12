@@ -40,34 +40,40 @@ const CreateGame = () => {
       steps: [
         {
           target: '.first-step',
-          content: 'This is my awesome feature!',
+          content: `Sharpen your skills with a challenging game against a skilled computer opponent. 
+          Practice your strategies and tactics to level up your game and become a dama master!`,
           disableBeacon: true
         },
         {
           target: '.second-step',
-          content: 'This second-step awesome feature!',
+          content: `Start your own exciting dama/checkers game and challenge your friends or other players around the world! 
+          Just create the game and send the link or code to your friend.`,
         },
         {
           target: '.third-step',
-          content: 'This is my awesome feature!',
+          content: `Join a game your friend created and experience the thrill of competition. 
+          Test your skills against other skilled players and see if you have what it takes to come out on top !`,
         },
         {
           target: '.fourth-step',
-          content: 'This third-step awesome feature!',
+          content: `Dive into the action with a public dama game! Play against opponents from diverse backgrounds and 
+          one your dama/checkers prowess in an engaging and dynamic environment!`,
         }
         ,
         {
           target: '.sixth-step',
-          content: 'This is my fifth-step feature!',
+          content: `Keep track of your progress and compare your skills with other players on the scoreboard. 
+          Climb the ranks, earn achievements, and show off your dama expertise to the world!`,
         }
         ,
         {
           target: '.seventh-step',
-          content: 'This is my fifth-step feature!',
+          content: 'Customize your game with unique pawns, boards, and crows from the store. Personalize your checkers experience and make your game truly your own!',
         },
         {
           target: '.fifth-step',
-          content: 'This is my fifth-step feature!',
+          content: `Join the community of dama enthusiasts by creating an account or logging in. 
+          Unlock exclusive features, custo0mize your profile, and embark on an exciting dama journey!`,
         }
       ]
     })
@@ -146,12 +152,12 @@ const CreateGame = () => {
         spotlightClicks={false}
         styles={{
           options: {
-            arrowColor: 'rgba(80, 0, 0, 0.9)',
+            arrowColor: 'rgb(215 56 13 / 90%)',
             overlayColor: 'rgba(79, 26, 0, 0.4)',
             primaryColor: '#000',
-            textColor: 'rgb(231, 212, 181)',
+            textColor: '#000',
             zIndex: 1000,
-            backgroundColor: "rgba(80, 0, 0, 0.9)",
+            backgroundColor: "rgb(215 56 13 / 90%)",
           },
         }}
       />}
@@ -162,7 +168,7 @@ const CreateGame = () => {
         <div className=" w-[90%] max-w-[450px] py-8 onboarding_prompt">
           <h3 className="pb-6 font-bold text-3xl">Lorem ipsom</h3>
           <p className="pb-6">Lorem Ipsum is simply dummy text of the printing and typesetting industry. </p>
-          <button className="border border-black px-6 py-2 rounded-full border-white text-black bg-white 
+          <button className=" px-6 py-2 rounded-full text-black bg-white 
            focus:bg-gray-300  hover:bg-gray-300 font-bold" onClick={startTour}>Start Tour</button>
         </div>
       </section>}
@@ -175,7 +181,7 @@ const CreateGame = () => {
           onClick={() => {
             user && token ? createGameAI() : handleSecond(`game/${1}`)
           }}
-          className="third-step relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+          className="first-step relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
           active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
           active:border-b-[0px] flex items-center justify-center
           transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
@@ -189,7 +195,7 @@ const CreateGame = () => {
 
           <button
             onClick={() => handleSecond("new-game")}
-            className="first-step relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+            className="second-step relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
     active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
     active:border-b-[0px] flex items-center justify-center
     transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
@@ -201,7 +207,7 @@ const CreateGame = () => {
           </button>
           <button
             onClick={() => handleSecond("join-game")}
-            className="second-step relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+            className="third-step relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
             active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
             active:border-b-[0px] flex items-center justify-center
             transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
@@ -233,7 +239,7 @@ const CreateGame = () => {
                 <button className=" w-20 ml-8 text-sm text-orange-color pointer-cursor border-b border-orange-color"
                   onClick={() => setShowLangMenu(prev => !prev)}>{LANG[lang]}</button>
 
-                {showLangMenu && <ul className="w-20 ml-8 text-sm text-orange-color  border-b border-orange-color border-b-0 mt-1">
+                {showLangMenu && <ul className="w-20 ml-8 text-sm text-orange-color  border-b border-orange-color mt-1">
                   {Object.keys(LANG).filter(tempL => tempL !== lang).map(tempL =>
                     (<li onClick={() => setLanguage(tempL)} className="border-b cursor-pointer">{LANG[tempL]}</li>))}
                 </ul>}

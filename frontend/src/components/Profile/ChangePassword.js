@@ -17,13 +17,13 @@ const ChangePassword = ({ changePasswordModal, setChangePasswordModal }) => {
   const [successMessage, setSuccessMessage] = useState(null)
 
   const changePasswordValidationSchema = Yup.object().shape({
-    currentPassword: Yup.string().required("current password is required"),
-    password: Yup.string().min(6).required("new password is required"),
+    currentPassword: Yup.string().required(Localization["current password is required"][lang]),
+    password: Yup.string().min(6).required(Localization["new password is required"][lang]),
     confirmPassword: Yup.string().when("password", {
       is: (val) => (val && val.length > 0 ? true : false),
       then: Yup.string().oneOf(
         [Yup.ref("password")],
-        "new password does not match"
+        Localization["new password does not match"][lang]
       ),
     }),
   });

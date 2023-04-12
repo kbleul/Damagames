@@ -17,7 +17,7 @@ const PubicGames = () => {
   const [tempPlayer, setTempPlayer] = useState(null);
 
   const [publicGames, setPublicGames] = useState([]);
-  const [myFriend, setMyFriend] = useState("Your Friend");
+  const [myFriend, setMyFriend] = useState(Localization["Your Friend"][lang]);
   const [code, setCode] = useState();
   const useLess = useRef(false);
   const [isVerified, setIsVerified] = useState(false);
@@ -72,7 +72,7 @@ const PubicGames = () => {
   }, 500);
   const handleJoin = () => {
     if (!name) {
-      toast("name is required.");
+      toast(Localization["name is required."][lang]);
 
       return;
     }
@@ -211,7 +211,7 @@ const PubicGames = () => {
               className="mt-4 mb-6 rounded-md ml-[2%] w-[96%] max-w-[600px] border "
             >
               <section className="flex justify-evenly px-4 text-xs text-white font-bold border-b border-gray-600">
-                <p className="w-1/2">{`Rank - ${game.rank}`}</p>
+                <p className="w-1/2">{`${Localization["Rank"][lang]} - ${game.rank}`}</p>
                 {/* <p className="">Coins - { game.coin ? game.coin : 0}</p> */}
                 <p className="text-xs w-full text-right text-gray-400 mr-2">
                   {game.time}
