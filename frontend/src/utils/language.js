@@ -654,7 +654,7 @@ export const Localization = {
         ENG: "Sharpen your skills with a challenging game against a skilled AI opponent. Practice your strategies and tactics to level up your game and become a dama master"
     },
     "Start your own exciting": {
-        AMH: "የራስዎን አስደሳች የዳማ፨የዳማ ጨዋታ ይጀምሩ እና ጓደኞችዎን ወይም በዓለም ዙሪያ ያሉ ሌሎች ተጫዋቾችን በመጋበዝ ይወዳደሩ፦ ጨዋታውን ብቻ ይፍጠሩ እና ማስፈንተሪያውን ወይም ኮዱን ለጓደኛዎ ይላኩ።",
+        AMH: "የራስዎን አስደሳች የዳ የዳማ ጨዋታ ይጀምሩ እና ጓደኞችዎን ወይም በዓለም ዙሪያ ያሉ ሌሎች ተጫዋቾችን በመጋበዝ ይወዳደ ጨዋታውን ብቻ ይፍጠሩ እና ማስፈንተሪያውን ወይም ኮዱን ለጓደኛዎ ይላኩ።",
         ENG: "Start your own exciting dama game and challenge your friends or other players around the world! Just create the game and send the link or code to your friend."
     },
     "Join a game your friend created": {
