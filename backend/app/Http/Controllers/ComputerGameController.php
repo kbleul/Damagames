@@ -38,11 +38,12 @@ class ComputerGameController extends Controller
             abort(400, "Incorrect game");
         }
 
-
-        $Winer = User::find($computerGame->player);
-        $Winer->update([
-            'current_point' => ($Winer->current_point + CoinSetting::first()->winnerCoins),
-        ]);
+        if ($request->is_user_wi == true) {
+            $Winer = User::find($computerGame->player);
+            $Winer->update([
+                'current_point' => ($Winer->current_point + CoinSetting::first()->winnerCoins),
+            ]);
+        }
 
         $computerGame->update([
             'status' => 1,
@@ -56,7 +57,7 @@ class ComputerGameController extends Controller
     public function store_na(Request $request)
     {
         return ComputerGameNa::create([
-            'player' => auth()->id(),
+            'status' => 0,
         ]);
     }
 
