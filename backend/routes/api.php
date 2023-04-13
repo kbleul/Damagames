@@ -64,7 +64,7 @@ Route::middleware('response')->group(function () {
     Route::post('game-exit/{game}', [PlayersController::class, 'game_status']);
 
     Route::post('play-with-computer-na', [ComputerGameController::class, 'store_na']);
-    Route::post('play-with-computer-na-done/{computerGame}', [ComputerGameController::class, 'update_na']);
+    Route::post('play-with-computer-na-done/{computerGameNa}', [ComputerGameController::class, 'update_na']);
 });
 
 Route::resource('security-questions', SecurityQuestionController::class);
