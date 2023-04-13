@@ -636,6 +636,19 @@ export const Localization = {
 
 
 
+
+    "Dama": {
+        AMH: "ዳማ",
+        ENG: "Dama"
+    },
+    "Start Tour": {
+        AMH: "ኣሳይ",
+        ENG: "Start Tour"
+    },
+    "Let’s begin by going": {
+        AMH: "የዳማን ኣጨዋወት በማየት ይጀምሩ",
+        ENG: "Let’s begin with a simple tour of Dama features."
+    },
     "Sharpen your skills with": {
         AMH: "ብቃት ካለው  ኮምፒዩተር ጋር በሚደረግ ፈታኝ ጨዋታ ችሎታዎን ያሳድጉ የዳማ አጨዋወትዎን አና ስልትዎን ወደተሻለ ደረጃ ከፍ ያድርጉ",
         ENG: "Sharpen your skills with a challenging game against a skilled computer opponent. Practice your strategies and tactics to level up your game and become a dama master"

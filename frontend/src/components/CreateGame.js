@@ -190,10 +190,10 @@ const CreateGame = () => {
 
       {showTourPrompt && <section className="absolute top-0 h-[100vh] flex items-center justify-center w-full z-10">
         <div className=" w-[90%] max-w-[450px] py-8 onboarding_prompt">
-          <h3 className="pb-6 font-bold text-3xl">Lorem ipsom</h3>
-          <p className="pb-6">Lorem Ipsum is simply dummy text of the printing and typesetting industry. </p>
+          <h3 className="pb-6 font-bold text-5xl">{Localization["Dama"][lang]}</h3>
+          <p className="pb-6">{Localization["Let’s begin by going"][lang]}</p>
           <button className="border border-black px-6 py-2 rounded-full border-white text-black bg-white 
-         focus:bg-gray-300  hover:bg-gray-300 font-bold" onClick={startTour}>Start Tour</button>
+         focus:bg-gray-300  hover:bg-gray-300 font-bold" onClick={startTour}>{Localization["Start Tour"][lang]}</button>
         </div>
       </section>}
 
