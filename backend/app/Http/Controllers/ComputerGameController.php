@@ -4,21 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\CoinSetting;
 use App\Models\ComputerGame;
+use App\Models\ComputerGameNa;
 use App\Models\User;
 use Illuminate\Http\Request;
 
 class ComputerGameController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -32,16 +23,7 @@ class ComputerGameController extends Controller
         ]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\ComputerGame  $computerGame
-     * @return \Illuminate\Http\Response
-     */
-    public function show(ComputerGame $computerGame)
-    {
-        //
-    }
+
 
     /**
      * Update the specified resource in storage.
@@ -70,14 +52,25 @@ class ComputerGameController extends Controller
         return $Winer;
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\ComputerGame  $computerGame
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(ComputerGame $computerGame)
+
+    public function store_na(Request $request)
     {
-        //
+        return ComputerGameNa::create([
+            'player' => auth()->id(),
+        ]);
+    }
+
+    public function update_na(Request $request, ComputerGameNa $computerGameNa)
+    {
+        if ($computerGameNa->status == 1) {
+            abort(400, "Incorrect game");
+        }
+
+        $computerGameNa->update([
+            'status' => 1,
+            'is_user_win' => $request->is_user_win ?? false,
+        ]);
+
+        return $computerGameNa;
     }
 }
