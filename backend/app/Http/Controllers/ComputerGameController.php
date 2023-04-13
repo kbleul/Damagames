@@ -38,8 +38,10 @@ class ComputerGameController extends Controller
             abort(400, "Incorrect game");
         }
 
-        if ($request->is_user_wi == true) {
-            $Winer = User::find($computerGame->player);
+
+        $Winer = User::find($computerGame->player);
+
+        if ($request->is_user_win == true) {
             $Winer->update([
                 'current_point' => ($Winer->current_point + CoinSetting::first()->winnerCoins),
             ]);
