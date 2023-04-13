@@ -48,9 +48,7 @@ const Game = () => {
   const { id } = useParams();
   const { user, token, lang } = useAuth();
   const playingCrowns = useRef({});
-  const [sample, setSample] = useState(null);
   const isPlayerOne = JSON.parse(localStorage.getItem("playerOne"));
-  const [isCrownChanged, setIsCrownChanged] = useState(false);
   // const { playerCrown, playerBoard } = useHome();
   useEffect(() => {
     document.documentElement.style.setProperty(
@@ -931,23 +929,20 @@ const Game = () => {
   useEffect(() => {
     //listen for king icon
 
-    {
-      !isCrownChanged &&
-        socket.on("getCrownType", (data) => {
+    if (!JSON.parse(localStorage.getItem("pawns"))) {
+      socket.on("getCrownType", (data) => {
+        if (!JSON.parse(localStorage.getItem("pawns"))){
           const tempObj = localStorage.getItem("playerOne")
             ? (playingCrowns.current = data.p2)
             : (playingCrowns.current = data.p1);
           !JSON.parse(localStorage.getItem("pawns")) &&
             localStorage.setItem("pawns", JSON.stringify(tempObj));
-          localStorage.getItem("playerOne")
-            ? setSample(data.p2)
-            : setSample(data.p1);
-          // playingCrowns.current = data
-          // ? { ...playingCrowns.current, p1: data.p1 }
-          // : { ...playingCrowns.current, p2: data.p2 };
+
           console.log(JSON.parse(localStorage.getItem("pawns")));
-        });
+        }
+      });
     }
+
     // let cPlayer = currentPlayer
     socket.on(
       "getGameMessage",
