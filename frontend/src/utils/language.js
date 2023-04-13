@@ -635,7 +635,7 @@ export const Localization = {
     },
 
 
-    
+
     "Sharpen your skills with": {
         AMH: "ብቃት ካለው  ኮምፒዩተር ጋር በሚደረግ ፈታኝ ጨዋታ ችሎታዎን ያሳድጉ የዳማ አጨዋወትዎን አና ስልትዎን ወደተሻለ ደረጃ ከፍ ያድርጉ",
         ENG: "Sharpen your skills with a challenging game against a skilled computer opponent. Practice your strategies and tactics to level up your game and become a dama master"
@@ -645,7 +645,7 @@ export const Localization = {
         ENG: "Start your own exciting dama/checkers game and challenge your friends or other players around the world! Just create the game and send the link or code to your friend."
     },
     "Join a game your friend created": {
-        AMH: "መግባት ተሳክቷል ።",
+        AMH: "ጓደኛዎ የፈጠረውን ጨዋታ ይቀላቀሉ እና የፉክክርን ስሜት ይለማመዱ። ችሎታዎን ከሌሎች የተካኑ ተጫዋቾች ጋር ፈትነው ራስዎን ከተወዳዳሪዎጭ  የደረጃ ሰለዳው ያስቀመቱ፦",
         ENG: "Join a game your friend created and experience the thrill of competition. Test your skills against other skilled players and see if you have what it takes to come out on top !"
     },
     "Dive into the action with": {
@@ -664,7 +664,7 @@ export const Localization = {
         AMH: "መለያ በመፍጠር ወይም በመለያ በመግባት ዳማን ይቀላቀሉ። ልዩ ልዩ ባህሪያትን ይክፈቱ፣ የርሶን መለያ ያበጁ እና አስደሳች የዳማ ጉዞ ይጀምሩ።",
         ENG: "Join the community of dama enthusiasts by creating an account or logging in. Unlock exclusive features, customize your profile, and embark on an exciting dama journey!"
     },
-    
+
 
 
 
