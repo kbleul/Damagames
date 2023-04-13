@@ -28,6 +28,12 @@
 }
 
 .onboarding_prompt {
-  background: rgba(60, 0, 0, 0.8);
-  color: rgb(231, 212, 181);
+  background: rgb(215 56 13 / 90%);
+  color: black;
+}
+
+@media screen and (max-width: 420px) {
+  .sidemenu-wrapper {
+    font-size: 0.6rem;
+  }
 }

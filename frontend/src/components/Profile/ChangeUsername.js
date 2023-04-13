@@ -26,7 +26,7 @@ const ChangeProfile = ({ changeUsernameModal, setChangeUsernameModal, username }
 
   const onSubmit = () => {
     setErrorMessage(null)
-    if (uname.length < 2) { setErrorMessage("Username is too short !") }
+    if (uname.length < 2) { setErrorMessage(Localization["Username is too short !"][lang]) }
     else if (uname === username) { setChangeUsernameModal(false) }
     else {
       setIsLoading(true)
@@ -58,15 +58,7 @@ const ChangeProfile = ({ changeUsernameModal, setChangeUsernameModal, username }
           onSuccess: (responseData) => {
             setIsLoading(false)
 
-            if (localStorage.getItem("lang")) {
-              if (localStorage.getItem("lang") === "Amh") {
-                setSuccessMessage(Localization["Username changed."]?.Amh)
-              } else {
-                setSuccessMessage("Username changed.")
-              }
-            } else {
-              setSuccessMessage("Username changed.")
-            }
+            setSuccessMessage(Localization["Username changed."][lang])
 
             setTimeout(() => {
               login(token, { ...user, username: responseData?.data?.data?.user?.username });

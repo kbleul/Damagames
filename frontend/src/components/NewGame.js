@@ -98,7 +98,7 @@ const NewGame = () => {
       }
     } else {
       if (!name) {
-        toast("name is required.");
+        toast(Localization["name is required."][lang]);
         return;
       }
       nameMutationSubmitHandler();
@@ -219,9 +219,9 @@ const NewGame = () => {
     setCoinAmount(e.target.value);
 
     if (e.target.value > playerCoins) {
-      setCoinError("Amount has to be less than you coins");
+      setCoinError(Localization["Amount has to be less than you coins"][lang]);
     } else if (e.target.value <= 0) {
-      setCoinError("Invalid Amount");
+      setCoinError(Localization["Invalid Amount"][lang]);
     } else {
       setCoinError(null);
     }

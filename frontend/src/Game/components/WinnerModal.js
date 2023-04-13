@@ -20,27 +20,113 @@ const WinnerModal = ({
   const navigate = useNavigate();
   const playerOneIp = localStorage.getItem("playerOneIp");
   const playerTwoIp = localStorage.getItem("playerTwoIp");
-  const handleResetGame = () => {
-    calcPts()
-    if (gameState.players > 1) {
-      resetGame();
-    } else {
-      setIsWinnerModalOpen(false);
-      setNewGameWithComputer();
-    }
-  };
 
-  const calcPts = () => {
-    token && setUser({ ...user, coin: user.coin + 50 })
-  }
-
-  const userCoin = token ? JSON.parse(localStorage.getItem("dama_user_data")).user.coin : null
 
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
     Authorization: `Bearer ${token}`,
   };
+
+  const header = {
+    "Content-Type": "application/json",
+    Accept: "application/json"
+  };
+
+  const createGameMutation = useMutation(
+
+    async (newData) =>
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}play-with-computer`, newData, {
+        headers,
+      }),
+    {
+      retry: false,
+    }
+  );
+
+  const createGameMutation_NoAuth = useMutation(
+
+    async (newData) =>
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}play-with-computer-na`, newData, {
+        headers,
+      }),
+    {
+      retry: false,
+    }
+  );
+
+  const createGameAI = async (values) => {
+
+    try {
+      user && token ? createGameMutation.mutate(
+        {},
+        {
+          onSuccess: (responseData) => {
+            localStorage.setItem("gameId", responseData?.data?.data?.id)
+          },
+          onError: (err) => {
+          },
+        }
+      ) :
+        createGameMutation_NoAuth.mutate(
+          {},
+          {
+            onSuccess: (responseData) => {
+              localStorage.setItem("gameId", responseData?.data?.data?.id)
+            },
+            onError: (err) => {
+            },
+          }
+        )
+    } catch (err) { }
+  };
+
+
+  const handleResetGame = () => {
+    checkWinner()
+    if (gameState.players > 1) {
+      resetGame();
+    } else {
+      setIsWinnerModalOpen(false);
+      console.log("sadjsa")
+      createGameAI()
+      setNewGameWithComputer();
+    }
+  };
+
+
+  const savePts = () => {
+    setUser({ ...user, coin: user.coin + 50 })
+
+    const tempObj = { ...user, coin: user.coin + 50 }
+
+    localStorage.setItem("dama_user_data",
+      JSON.stringify({
+        token, user: { ...tempObj },
+      }))
+  }
+
+  const checkWinner = () => {
+
+    if (user && token) {
+
+      if (gameState.players == 1 && (gameState.winner === "player1pieces" || gameState.winner === "player1moves")) {
+        savePts()
+      }
+      else if (gameState.players > 1 && (winnerPlayer === "player1pieces" ||
+        winnerPlayer === "player1moves") && playerOneIp != null) {
+        savePts()
+      }
+      else if (gameState.players > 1 && (winnerPlayer === "player2pieces" ||
+        winnerPlayer === "player2moves") && playerTwoIp != null) {
+        savePts()
+      }
+
+    }
+
+  }
+
+  const userCoin = token ? JSON.parse(localStorage.getItem("dama_user_data")).user.coin : null
 
 
   const finishGameMutation = useMutation(
@@ -67,12 +153,44 @@ const WinnerModal = ({
     } catch (err) { }
   };
 
-  useEffect(() => {
 
-    if (isWinnerModalOpen && gameState.players === 1) {
-      if (gameState.winner === "player1pieces" || gameState.winner === "player1moves") { finishGameAI(true) }
-      else { finishGameAI(false) }
+  const finishGameMutation_NoAuth = useMutation(
+    async (newData) =>
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}play-with-computer-na-done/${localStorage.getItem("gameId")}`, newData, {
+        headers: header,
+      }),
+    {
+      retry: false,
     }
+  );
+
+  const finishGameAI_NoAuth = async (values) => {
+    try {
+      finishGameMutation_NoAuth.mutate(
+        { is_user_win: values },
+        {
+          onSuccess: (responseData) => {
+            localStorage.removeItem("gameId")
+          },
+          onError: (err) => { },
+        }
+      );
+    } catch (err) { }
+  };
+
+  useEffect(() => {
+    if (isWinnerModalOpen && gameState.players === 1) {
+      if (user && token) {
+        if (gameState.winner === "player1pieces" || gameState.winner === "player1moves") { finishGameAI(true) }
+        else { finishGameAI(false) }
+      }
+
+      else {
+        if (gameState.winner === "player1pieces" || gameState.winner === "player1moves") { finishGameAI_NoAuth(true) }
+        else { finishGameAI_NoAuth(false) }
+      }
+    }
+
   }, [isWinnerModalOpen])
 
 
@@ -80,8 +198,8 @@ const WinnerModal = ({
     return ((token && userCoin)
       ? <div className="text-white flex flex-col items-center justify-center gap-3 text-sm">
         <h2 className="text-2xl">{Localization["Congratulations"][lang]}</h2>
-        <p>{Localization["Previous"][lang]} = {userCoin - 50} {Localization["coins"][lang]}</p>
-        <p>{Localization["Total"][lang]} = {userCoin} {Localization["coins"][lang]}</p>
+        <p>{Localization["Previous"][lang]} = {userCoin} {Localization["coins"][lang]}</p>
+        <p>{Localization["Total"][lang]} = {userCoin + 50} {Localization["coins"][lang]}</p>
       </div> : <div className="text-white">{Localization["Congratulations"][lang]}</div>)
   }
 
@@ -183,8 +301,8 @@ const WinnerModal = ({
                     border-b-[1px] border-gray-300/50 font-semibold text-white
                   "
                       onClick={() => {
-                        calcPts();
-                        rejectGameRequest();
+                        checkWinner();
+                        gameState.players > 1 && rejectGameRequest();
                         navigate("/create-game");
                       }}
                     >

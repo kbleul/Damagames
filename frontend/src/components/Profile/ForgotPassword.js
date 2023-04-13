@@ -6,8 +6,9 @@ import { useAuth } from "../../context/auth";
 import toast, { Toaster } from "react-hot-toast";
 import { FaTimes } from "react-icons/fa";
 import { BsFillPatchCheckFill } from "react-icons/bs";
+import { Localization } from "../../utils/language";
 const ForgotPassword = ({ forgotPasswordModal, setForgotPasswordModal }) => {
-  const { login, token } = useAuth();
+  const { login, token, lang } = useAuth();
   const [errorMessage, setErrorMessage] = useState("");
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const answerRef = useRef();
@@ -35,7 +36,7 @@ const ForgotPassword = ({ forgotPasswordModal, setForgotPasswordModal }) => {
   );
   const handleSecurityQuestion = () => {
     if (!answerRef.current.value) {
-      toast("please fill your answer");
+      toast(Localization["please fill your answer"][lang]);
       return;
     }
     forgotPasswordMutationSubmitHandler();
@@ -64,7 +65,7 @@ const ForgotPassword = ({ forgotPasswordModal, setForgotPasswordModal }) => {
         {
           onSuccess: (responseData) => {
 
-            toast("profile changed successfully");
+            toast(Localization["profile changed successfully"][lang]);
           },
           onError: (err) => {
             setErrorMessage(err?.response?.data?.data);

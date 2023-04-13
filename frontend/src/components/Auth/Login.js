@@ -24,9 +24,9 @@ const Login = () => {
 
   const singUpValidationSchema = Yup.object().shape({
     phone: Yup.string()
-      .matches(/^[0-9]{9}$/, "phone starts with 9 and 9 char in length")
-      .required("phone is required"),
-    password: Yup.string().min(4).required("password is required"),
+      .matches(/^[0-9]{9}$/, Localization["phone number starts with 9"][lang])
+      .required(Localization["phone is required"][lang]),
+    password: Yup.string().min(4).required(Localization["password is required"][lang]),
   });
   const headers = {
     "Content-Type": "application/json",
@@ -65,7 +65,7 @@ const Login = () => {
             );
             setMessageType({
               type: "SUCCESS",
-              message: "Login successful!",
+              message: Localization["Login successful!"][lang],
             });
             navigate('/')
           },

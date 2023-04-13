@@ -53,7 +53,7 @@ const ForgotPassword = () => {
   const forgotPasswordHandler = () => {
     if (!hasPhone) {
       if (!phone) {
-        toast("please enter PhoneNo");
+        toast(Localization["please enter PhoneNo"][lang])
         return;
       }
 
@@ -61,18 +61,18 @@ const ForgotPassword = () => {
     } else {
       if (!hasCode) {
         if ([...code].length !== 4) {
-          toast("Verification Code must 6 digits");
+          toast(Localization["Verification Code must 6 digits"][lang]);
           return;
         }
 
         otpForgotSubmitHandler();
       } else {
         if (!password || !confirmpassword) {
-          toast("please enter password");
+          toast(Localization["please enter password"][lang]);
           return;
         }
         if (password !== confirmpassword) {
-          toast("password does not match");
+          toast(Localization["password does not match"][lang])
           return;
         }
         changePasswordSubmitHandler();
@@ -101,7 +101,7 @@ const ForgotPassword = () => {
         {
           onSuccess: (responseData) => {
             sethasPhone(true);
-            toast.success("otp is sent to your phone");
+            toast.success(Localization["OTP is sent to your phone"][lang]);
           },
           onError: (err) => {
             toast.error(err?.response?.data?.data);
@@ -135,7 +135,7 @@ const ForgotPassword = () => {
           onSuccess: (responseData) => {
             setTemporaryToken(responseData?.data?.data?.token);
             sethasCode(true);
-            toast.success("success");
+            toast.success(Localization["success"][lang]);
           },
           onError: (err) => {
             toast.error(err?.response?.data?.message);
@@ -166,7 +166,7 @@ const ForgotPassword = () => {
         },
         {
           onSuccess: (responseData) => {
-            toast.success("password has been successfully changed");
+            toast.success(Localization["password has been successfully changed"][lang]);
             navigate("/login");
           },
           onError: (err) => {
@@ -210,7 +210,7 @@ const ForgotPassword = () => {
         { phone: "251".concat(phone) },
         {
           onSuccess: (responseData) => {
-            toast.success("otp is sent to your phone");
+            toast.success(Localization["OTP is sent to your phone"][lang]);
           },
           onError: (err) => {
             toast.error(err?.response?.data?.data);

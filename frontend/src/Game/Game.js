@@ -56,16 +56,16 @@ const Game = () => {
       !user && !token
         ? `url(${yellowCoin})`
         : user?.default_board
-        ? `url(${user?.default_board?.board_pawn2})`
-        : `url(${yellowCoin})`
+          ? `url(${user?.default_board?.board_pawn2})`
+          : `url(${yellowCoin})`
     );
     document.documentElement.style.setProperty(
       "--playerTwoPawnTurn",
       !user && !token
         ? `url(${yellowWhiteCoin})`
         : user?.default_board
-        ? `url(${user?.default_board?.board_pawn2_turn})`
-        : `url(${yellowWhiteCoin})`
+          ? `url(${user?.default_board?.board_pawn2_turn})`
+          : `url(${yellowWhiteCoin})`
     );
 
     document.documentElement.style.setProperty(
@@ -73,34 +73,23 @@ const Game = () => {
       !user && !token
         ? `url(${orangeCoin})`
         : user?.default_board
-        ? `url(${user?.default_board?.board_pawn1})`
-        : `url(${orangeCoin})`
+          ? `url(${user?.default_board?.board_pawn1})`
+          : `url(${orangeCoin})`
     );
     document.documentElement.style.setProperty(
       "--playerOnePawnTurn",
       !user && !token
         ? `url(${orangeWhiteCoin})`
         : user?.default_board
-        ? `url(${user?.default_board?.board_pawn1_turn})`
-        : `url(${orangeWhiteCoin})`
+          ? `url(${user?.default_board?.board_pawn1_turn})`
+          : `url(${orangeWhiteCoin})`
     );
     //king icon and king turn
     if (id) {
       //king icon
       document.documentElement.style.setProperty(
         "--playerTwoPawnKing",
-        !user && !token
-          ? `url(${yellowNegus})`
-          : user?.default_crown?.board_pawn_king2
-          ? `url(${user?.default_crown?.board_pawn_king2})`
-          : user?.default_board?.board_pawn_king2
-          ? `url(${user?.default_board?.board_pawn_king2})`
-          : `url(${yellowNegus})`
-      );
-      //king icon turn user?.default_board?.board_pawn_king1
-      document.documentElement.style.setProperty(
-        "--playerTwoPawnKingTurn",
-        !user && !token
+          !user && !token
           ? `url(${yellowNegusWhite})`
           : user?.default_crown?.board_pawn_king2_turn
           ? `url(${user?.default_crown?.board_pawn_king2_turn})`
@@ -234,16 +223,16 @@ const Game = () => {
       !user && !token
         ? `#181920`
         : user?.default_board
-        ? user?.default_board?.color?.color1
-        : `#181920`
+          ? user?.default_board?.color?.color1
+          : `#181920`
     );
     document.documentElement.style.setProperty(
       "--playerBoardColor",
       !user && !token
         ? `#2c2c37`
         : user?.default_board
-        ? user?.default_board?.color?.color2
-        : `#2c2c37`
+          ? user?.default_board?.color?.color2
+          : `#2c2c37`
     );
     // last move shower
     document.documentElement.style.setProperty(
@@ -251,8 +240,8 @@ const Game = () => {
       !user && !token
         ? `#858484`
         : user?.default_board
-        ? user?.default_board?.color?.lastMoveColor
-        : `#858484`
+          ? user?.default_board?.color?.lastMoveColor
+          : `#858484`
     );
   }, [id, user, token]);
 
@@ -554,9 +543,9 @@ const Game = () => {
       setTimeout(() => {
         const postMoveState = movesData[1]
           ? movePiece(columns, mergerObj.moves[0], {
-              ...mergerObj,
-              jumpKills: movesData[1],
-            })
+            ...mergerObj,
+            jumpKills: movesData[1],
+          })
           : movePiece(columns, mergerObj.moves[0], mergerObj);
         if (postMoveState === null) {
           return;
@@ -602,42 +591,42 @@ const Game = () => {
 
     id == 1
       ? setGameState((prevGameState) => {
-          return {
-            ...prevGameState,
+        return {
+          ...prevGameState,
 
-            history: gameState.history.concat([
-              {
-                boardState: postMoveState.boardState,
-                currentPlayer: postMoveState.currentPlayer,
-              },
-            ]),
-            activePiece: postMoveState.activePiece,
-            moves: postMoveState.moves,
-            jumpKills: postMoveState.jumpKills,
-            hasJumped: postMoveState.hasJumped,
-            stepNumber: gameState.history.length,
-            winner: postMoveState.winner,
-            tracker: track,
-          };
-        })
+          history: gameState.history.concat([
+            {
+              boardState: postMoveState.boardState,
+              currentPlayer: postMoveState.currentPlayer,
+            },
+          ]),
+          activePiece: postMoveState.activePiece,
+          moves: postMoveState.moves,
+          jumpKills: postMoveState.jumpKills,
+          hasJumped: postMoveState.hasJumped,
+          stepNumber: gameState.history.length,
+          winner: postMoveState.winner,
+          tracker: track,
+        };
+      })
       : setGameState((prevGameState) => {
-          return {
-            ...prevGameState,
+        return {
+          ...prevGameState,
 
-            history: gameState.history.concat([
-              {
-                boardState: postMoveState.boardState,
-                currentPlayer: postMoveState.currentPlayer,
-              },
-            ]),
-            activePiece: postMoveState.activePiece,
-            moves: postMoveState.moves,
-            jumpKills: postMoveState.jumpKills,
-            hasJumped: postMoveState.hasJumped,
-            stepNumber: gameState.history.length,
-            winner: postMoveState.winner,
-          };
-        });
+          history: gameState.history.concat([
+            {
+              boardState: postMoveState.boardState,
+              currentPlayer: postMoveState.currentPlayer,
+            },
+          ]),
+          activePiece: postMoveState.activePiece,
+          moves: postMoveState.moves,
+          jumpKills: postMoveState.jumpKills,
+          hasJumped: postMoveState.hasJumped,
+          stepNumber: gameState.history.length,
+          winner: postMoveState.winner,
+        };
+      });
 
     if (gameState.players == 1) {
       setMyTurn(postMoveState.currentPlayer ? "player1" : "player2");
@@ -657,35 +646,35 @@ const Game = () => {
     // user?.default_board?.board_pawn2
     const tempObj = localStorage.getItem("playerOne")
       ? {
-          p1: user
-            ? user.default_crown
+        p1: user
+          ? user.default_crown
+            ? {
+              normal: user?.default_crown?.board_pawn_king1,
+              active: user?.default_crown?.board_pawn_king1_turn,
+            }
+            : user?.default_board
               ? {
-                  normal: user?.default_crown?.board_pawn_king1,
-                  active: user?.default_crown?.board_pawn_king1_turn,
-                }
-              : user?.default_board
-              ? {
-                  normal: user?.default_crown?.board_pawn_king1,
-                  active: user?.default_board?.board_pawn_king1_turn,
-                }
+                normal: user?.default_crown?.board_pawn_king1,
+                active: user?.default_board?.board_pawn_king1_turn,
+              }
               : null
-            : null,
-        }
+          : null,
+      }
       : {
-          p2: user
-            ? user.default_crown
+        p2: user
+          ? user.default_crown
+            ? {
+              normal: user?.default_crown?.board_pawn_king2,
+              active: user?.default_crown?.board_pawn_king2_turn,
+            }
+            : user?.default_board
               ? {
-                  normal: user?.default_crown?.board_pawn_king2,
-                  active: user?.default_crown?.board_pawn_king2_turn,
-                }
-              : user?.default_board
-              ? {
-                  normal: user?.default_crown?.board_pawn_king2,
-                  active: user?.default_board?.board_pawn_king2_turn,
-                }
+                normal: user?.default_crown?.board_pawn_king2,
+                active: user?.default_board?.board_pawn_king2_turn,
+              }
               : null
-            : null,
-        };
+          : null,
+      };
     socket.emit("sendCrownType", tempObj);
   }
 
@@ -834,6 +823,8 @@ const Game = () => {
     });
     moveRef.current = [0, 0];
   };
+
+
   const setNewGameWithComputer = () => {
     setGameState({
       players: 1,
@@ -852,6 +843,7 @@ const Game = () => {
     });
     setMyTurn("player1");
     setPawns([0, 0]);
+
   };
 
   const drawGame = () => {
@@ -1233,11 +1225,11 @@ const Game = () => {
           game_id: gameId,
         },
         {
-          onSuccess: (responseData) => {},
-          onError: (err) => {},
+          onSuccess: (responseData) => { },
+          onError: (err) => { },
         }
       );
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const changeSound = () => {
@@ -1373,10 +1365,10 @@ const Game = () => {
                 ? user.username
                 : "You"
               : playerOneIp && user
-              ? user?.username
-              : playerOneIp
-              ? firstPlayer?.username
-              : p1Info}
+                ? user?.username
+                : playerOneIp
+                  ? firstPlayer?.username
+                  : p1Info}
           </h4>
         </div>
 
@@ -1406,14 +1398,14 @@ const Game = () => {
           <h4 className="text-white capitalize  font-semibold text-xs">
             {/* {secondPlayer?.name} */}
             {id == 1
-              ? "Computer"
+              ? Localization["Computer"][lang]
               : playerTwoIp && user
-              ? user?.username
-              : playerTwoIp
-              ? secondPlayer?.username
-              : p1Info
-              ? p1Info
-              : p2Info?.username}
+                ? user?.username
+                : playerTwoIp
+                  ? secondPlayer?.username
+                  : p1Info
+                    ? p1Info
+                    : p2Info?.username}
           </h4>
         </div>
       </section>
@@ -1514,29 +1506,28 @@ const Game = () => {
       </div>
       <div className={""}>
         <div
-          className={`box   ${
-            !id
-              ? currentPlayer === true
-                ? currentPlayer === true && !firstPlayer
-                  ? "pointer-events-none"
-                  : ""
-                : currentPlayer === false
+          className={`box   ${!id
+            ? currentPlayer === true
+              ? currentPlayer === true && !firstPlayer
+                ? "pointer-events-none"
+                : ""
+              : currentPlayer === false
                 ? currentPlayer === false && !secondPlayer
                   ? "pointer-events-none"
                   : ""
                 : ""
-              : ""
-          }`}
+            : ""
+            }`}
         >
           <Board
             boardState={
               id === "1"
                 ? dict_reverse(boardState)
                 : !id
-                ? localStorage.getItem("playerOne")
-                  ? dict_reverse(boardState)
+                  ? localStorage.getItem("playerOne")
+                    ? dict_reverse(boardState)
+                    : boardState
                   : boardState
-                : boardState
             }
             currentPlayer={currentPlayer}
             activePiece={gameState.activePiece}
@@ -1572,15 +1563,13 @@ const Game = () => {
           </div>
         )}
         {id != 1 && (
-          <div className="flex items-end justify-end flex-col">
+          <div className="flex items-center justify-center flex-col">
             <BsFillChatFill
               onClick={openChatFilled}
               size={30}
               className="text-orange-color"
             />
-            <p className="text-xs font-bold text-white">
-              {Localization["Draw"][lang]}
-            </p>
+            <p className="text-xs font-bold text-white">{Localization["Chat"][lang]}</p>
           </div>
         )}
       </div>

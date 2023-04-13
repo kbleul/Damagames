@@ -111,12 +111,12 @@ export default function ExitWarningModal({
 
                   {beforeGame ? <div className="mt-2">
                     <p className="text-sm text-gray-500 text-center ">
-                      {Localization["Are you sure_"][lang]}
+                      {Localization["Are you sure"][lang]}
                     </p>
                   </div> :
                     <div className="mt-2">
                       <p className="text-sm text-gray-500 text-center ">
-                        {Localization["Are you sure"][lang]}
+                        {Localization["Are you sure_"][lang]}
                       </p>
                     </div>
                   }
