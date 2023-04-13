@@ -23,10 +23,10 @@ const CreateGame = () => {
 	const { user, token } = useAuth();
 	const [showMenu, setShowMenu] = useState(false);
 	const handleNavigate = (url) => {
-		clearCookie.forEach((data) => {
-			localStorage.getItem(data) && localStorage.removeItem(data);
-			navigate(url);
-		});
+		// clearCookie.forEach((data) => {
+		// 	localStorage.getItem(data) && localStorage.removeItem(data);
+		// 	navigate(url);
+		// });
 	};
 
 	function handleSecond(url) {
