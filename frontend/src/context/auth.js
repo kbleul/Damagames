@@ -79,6 +79,7 @@ export function AuthProvider({ children }) {
         login,
         logout,
         setUser,
+        setToken,
         lang,
         setLanguage,
       }}

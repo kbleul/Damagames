@@ -1,11 +1,9 @@
-import React, { useState } from "react";
+
 import { useAuth } from "../context/auth";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
-import { BiMenu } from 'react-icons/bi';
-import { CiMenuKebab } from 'react-icons/ci';
 import Avatar from "../assets/Avatar.png"
 import { Localization } from "../utils/language";
 
@@ -61,10 +59,13 @@ const SideMenu = ({ showMenu, setShowMenu, isprofile }) => {
       refetchOnWindowFocus: false,
       retry: false,
       enabled: !!token,
+      onError: (res) => {
+        if (res?.response?.status === 401) {
+          logout();
+        }
+      }
     }
   );
-
-
 
   return (
     <>
