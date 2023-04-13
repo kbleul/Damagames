@@ -14,38 +14,7 @@ class GameController extends Controller
 {
     public function match_history()
     {
-
-
-        $played = Game::where('playerOne', auth()->id())
-            ->orWhere('playerTwo', auth()->id())
-            ->withCount('scores')
-            ->get()
-            ->sum('scores_count');
-
-        $wins = Game::where('playerOne', auth()->id())->orWhere('playerTwo', auth()->id())
-            ->withCount(['scores' => function ($query) {
-                $query->where('winner', auth()->id());
-            }])->get()
-            ->sum('scores_count');
-
-        $coin = User::find(auth()->id());
-
-        $draw = Game::where('playerOne', auth()->id())->orWhere('playerTwo', auth()->id())->withCount(['scores' => function ($query) {
-            $query->where('draw', true);
-        }])->get()->sum('scores_count');
-
-        return  response()->json(
-            [
-                'rank' => $this->getRanking(auth()->id()),
-                'played' => $played,
-                'playedWithComputer' => ComputerGame::where('player', auth()->id())->count(),
-                'wins' => $wins,
-                'draw' =>  $draw,
-                'losses' => $played - ($wins + $draw),
-                'coins' => $coin->current_point,
-            ],
-            200
-        );
+        return User::find(auth()->id())->match_history;
     }
 
     public function getRanking($id)

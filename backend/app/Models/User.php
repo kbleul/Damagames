@@ -25,7 +25,7 @@ class User extends Authenticatable
      */
     protected $guarded = [];
 
-    public $appends = ['rank', 'coin'];
+    public $appends = ['rank', 'coin', 'match_history'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -61,6 +61,56 @@ class User extends Authenticatable
         return $this->current_point;
     }
 
+    public function getMatchHistoryAttribute()
+    {
+
+        $completed = Game::where('playerOne', $this->id)
+            ->orWhere('playerTwo', $this->id)
+            ->whereHas('scores')
+            ->withCount('scores')
+            ->get()
+            ->sum('scores_count');
+
+        $incompleted = Game::where('playerOne', $this->id)
+            ->orWhere('playerTwo', $this->id)
+            ->whereDoesntHave('scores')
+            ->count();
+
+        $wins = Game::where('playerOne', $this->id)
+            ->orWhere('playerTwo', $this->id)
+            ->withCount(['scores' => function ($query) {
+                $query->where('winner', $this->id);
+            }])
+            ->get()
+            ->sum('scores_count');
+
+        $coin = User::find($this->id);
+
+        $draw = Game::where('playerOne', $this->id)
+            ->orWhere('playerTwo', $this->id)
+            ->withCount(['scores' => function ($query) {
+                $query->where('draw', true);
+            }])
+            ->get()
+            ->sum('scores_count');
+        $match_history =  [
+            'rank' => $this->getRanking(auth()->id()),
+            'played' => $completed + $incompleted,
+            'started' => $completed + $incompleted,
+            'completed' => $completed,
+            'incompleted' => $incompleted,
+            'playWithComputer' => ComputerGame::where('player', $this->id)->count(),
+            'playWithComputerWins' => ComputerGame::where('player', $this->id,)->where('is_user_win', true)->count(),
+            'playWithComputerLoses' => ComputerGame::where('player', $this->id)->where('is_user_win', false)->count(),
+            'wins' => $wins,
+            'draw' =>  $draw,
+            'losses' => $completed - ($wins + $draw),
+            'coins' => $coin->current_point,
+        ];
+
+        return  $match_history;
+    }
+
     /**
      * The attributes that should be cast.
      *
@@ -94,5 +144,19 @@ class User extends Authenticatable
     public function roles()
     {
         return $this->belongsToMany(Role::class, 'role_users');
+    }
+
+    public function getRanking($id)
+    {
+        $collection = collect(User::orderByDesc('current_point')
+            ->get());
+
+        $data = $collection->where('id', $id);
+
+        if ($data->count() > 0) {
+            return $data->keys()->first() + 1;
+        } else {
+            return 0;
+        }
     }
 }

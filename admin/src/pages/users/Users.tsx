@@ -100,6 +100,7 @@ const Users = () => {
                       <TableCell align="center">wins</TableCell>
                       <TableCell align="center">completed</TableCell>
                       <TableCell align="center">incomplete</TableCell>
+                      <TableCell align="center">play with computer</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -124,6 +125,9 @@ const Users = () => {
                       </TableCell>
                       <TableCell component="td" scope="row" align="center">
                         {row.match_history?.incompleted}
+                      </TableCell>
+                      <TableCell component="td" scope="row" align="center">
+                        {row.match_history?.playWithComputer}
                       </TableCell>
                     </TableRow>
                   </TableBody>

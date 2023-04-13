@@ -6,9 +6,12 @@ use App\Http\Requests\StoreItemRequest;
 use App\Http\Requests\StoreItemStatusRequest;
 use App\Http\Requests\StoreItemUpdateRequest;
 use App\Models\CoinSetting;
+use App\Models\ComputerGame;
 use App\Models\Game;
+use App\Models\Score;
 use App\Models\Store;
 use App\Models\User;
+use Carbon\Carbon;
 use GrahamCampbell\ResultType\Success;
 use Illuminate\Http\Request;
 
@@ -18,40 +21,21 @@ class AdminController extends Controller
     {
         return [
             'users' => User::count(),
-            'daily_playd' => 1000,
-            'weekly_playd' => 10200,
-            'monthly_playd' => 100999,
-            'yearly_played' => 1000999,
+            'users_subscribed' => User::where('phone_verified_at', '!=', null)->count(),
+            'total_games' => Score::count(),
+            'daily_played' => Score::whereDate('created_at', Carbon::today())->count(),
+            'weekly_played' => Score::whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count(),
+            'monthly_played' => Score::whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->count(),
+            'yearly_played' => Score::whereBetween('created_at', [Carbon::now()->startOfYear(), Carbon::now()->endOfYear()])->count(),
         ];
     }
 
     public function users()
     {
-        return [
-            'users' => User::all()->map(function ($que) {
-                $played = Game::where('playerOne', $que->id)->orWhere('playerTwo', $que->id)->withCount('scores')->get()->sum('scores_count');
-
-                $wins = Game::where('playerOne', $que->id)->orWhere('playerTwo', $que->id)->withCount(['scores' => function ($query) use ($que) {
-                    $query->where('winner', $que->id);
-                }])->get()->sum('scores_count');
-
-                $coin = User::find($que->id);
-
-                $draw = Game::where('playerOne', $que->id)->orWhere('playerTwo', $que->id)->withCount(['scores' => function ($query) {
-                    $query->where('draw', true);
-                }])->get()->sum('scores_count');
-                $que->match_history =  [
-                    'rank' => $this->getRanking(auth()->id()),
-                    'played' => $played,
-                    'wins' => $wins,
-                    'draw' =>  $draw,
-                    'losses' => $played - ($wins + $draw),
-                    'coins' => $coin->current_point,
-                ];
-
-                return $que;
-            }),
-        ];
+        return User::orderBy('current_point', 'desc')
+            ->orderBy('phone_verified_at', 'desc')
+            ->orderBy('created_at', 'asc')
+            ->paginate(10);
     }
 
     public function getRanking($id)
@@ -83,7 +67,7 @@ class AdminController extends Controller
             ],
         ]);
 
-        if ($request->type === "Board") {
+        if ($request->type === "Board" || $request->type === "Crown") {
             if ($request->hasFile('board_pawn1') && $request->file('board_pawn1')->isValid()) {
                 $item->addMediaFromRequest('board_pawn1')->toMediaCollection('board_pawn1');
             }
@@ -123,25 +107,35 @@ class AdminController extends Controller
 
     public function store_item_update(StoreItemUpdateRequest $request, Store $store)
     {
-        $store->update([
-            'name' => $request->name ?? $store->name,
-            'nickname' => $request->nickname ?? $store->nickname,
-            'price' => $request->price ?? $store->price,
-            'discount' => $request->discount ?? $store->discount,
-            'type' => $request->type ?? $store->type,
-            'color' => [
-                'color1' => $request->color1 ?? $store->color['color1'],
-                'color2' => $request->color2 ?? $store->color['color2'],
-                'lastMoveColor' => $request->lastMoveColor ?? $store->color['lastMoveColor'],
-            ],
-        ]);
+        if ($store->type === "Board") {
+            $store->update([
+                'name' => $request->name ?? $store->name,
+                'nickname' => $request->nickname ?? $store->nickname,
+                'price' => $request->price ?? $store->price,
+                'discount' => $request->discount ?? $store->discount,
+                'type' => $request->type ?? $store->type,
+                'color' => [
+                    'color1' => $request->color1 ?? $store->color['color1'],
+                    'color2' => $request->color2 ?? $store->color['color2'],
+                    'lastMoveColor' => $request->lastMoveColor ?? $store->color['lastMoveColor'],
+                ],
+            ]);
+        } else {
+            $store->update([
+                'name' => $request->name ?? $store->name,
+                'nickname' => $request->nickname ?? $store->nickname,
+                'price' => $request->price ?? $store->price,
+                'discount' => $request->discount ?? $store->discount,
+                'type' => $request->type ?? $store->type
+            ]);
+        }
 
         if ($request->hasFile('item') && $request->file('item')->isValid()) {
             $store->clearMediaCollection('item');
             $store->addMediaFromRequest('item')->toMediaCollection('item');
         }
 
-        if ($store->type === "Board") {
+        if ($store->type === "Board" || $store->type === "Crown") {
             if ($request->hasFile('board_pawn1') && $request->file('board_pawn1')->isValid()) {
                 $store->clearMediaCollection('board_pawn1');
                 $store->addMediaFromRequest('board_pawn1')->toMediaCollection('board_pawn1');
@@ -171,10 +165,12 @@ class AdminController extends Controller
                 $store->addMediaFromRequest('board_pawn_king2')->toMediaCollection('board_pawn_king2');
             }
 
+            // dd($request->file('board_pawn_king1_turn')->isValid());
             if ($request->hasFile('board_pawn_king1_turn') && $request->file('board_pawn_king1_turn')->isValid()) {
                 $store->clearMediaCollection('board_pawn_king1_turn');
                 $store->addMediaFromRequest('board_pawn_king1_turn')->toMediaCollection('board_pawn_king1_turn');
             }
+
 
             if ($request->hasFile('board_pawn_king2_turn') && $request->file('board_pawn_king2_turn')->isValid()) {
                 $store->clearMediaCollection('board_pawn_king2_turn');
@@ -193,14 +189,12 @@ class AdminController extends Controller
 
     public function store_item_status(StoreItemStatusRequest $request, Store $store)
     {
-        // dd($request->active);
         if ($request->active) {
             $store->update([
                 'status' => 0,
             ]);
             return  "Active";
         } else {
-
             $store->update([
                 'status' => 1,
             ]);
@@ -217,10 +211,32 @@ class AdminController extends Controller
 
     public function store_items()
     {
+        $avatars = Store::where('type', "Avatar")->orderBy('price', 'ASC')->get();
+        $avatars->makeHidden([
+            'color',
+            'board_pawn1',
+            'board_pawn2',
+            'board_pawn1_turn',
+            'board_pawn2_turn',
+            'board_pawn_king1',
+            'board_pawn_king2',
+            'board_pawn_king1_turn',
+            'board_pawn_king2_turn',
+        ]);
+        $boards = Store::where('type', "Board")->orderBy('price', 'ASC')->get();
+        $crowns = Store::where('type', "Crown")->orderBy('price', 'ASC')->get();
+        $crowns->makeHidden([
+            'color',
+            'board_pawn1',
+            'board_pawn2',
+            'board_pawn1_turn',
+            'board_pawn2_turn',
+        ]);
+
         return [
-            'avatars' =>  Store::where('type', "Avatar")->orderBy('price', 'ASC')->get(),
-            'boards' =>  Store::where('type', "Board")->orderBy('price', 'ASC')->get(),
-            'crowns' =>  Store::where('type', "Crown")->get(),
+            'avatars' =>  $avatars,
+            'boards' =>   $boards,
+            'crowns' =>  $crowns,
         ];
     }
 

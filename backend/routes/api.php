@@ -62,6 +62,9 @@ Route::middleware('response')->group(function () {
     Route::get('store-items', [StoreController::class, 'index']);
 
     Route::post('game-exit/{game}', [PlayersController::class, 'game_status']);
+
+    Route::post('play-with-computer-na', [ComputerGameController::class, 'store_na']);
+    Route::post('play-with-computer-na-done/{computerGameNa}', [ComputerGameController::class, 'update_na']);
 });
 
 Route::resource('security-questions', SecurityQuestionController::class);
@@ -76,6 +79,7 @@ Route::middleware('response', 'auth:sanctum')->group(function () {
     Route::post('change-password', [AuthController::class, 'change_password']);
     Route::get('match-history', [GameController::class, 'match_history']);
     Route::post('update-profile-image', [AuthController::class, 'update_profile_image']);
+    Route::post('update-language', [AuthController::class, 'update_language']);
     Route::post('auth-create-game', [AuthPlayerController::class, 'add_player']);
     Route::post('auth-join-game/{game}', [AuthPlayerController::class, 'join_game']);
     Route::post('auth-join-game-via-code', [AuthPlayerController::class, 'join_game_via_code']);
