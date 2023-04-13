@@ -176,12 +176,12 @@ const CreateGame = () => {
         spotlightClicks={false}
         styles={{
           options: {
-            arrowColor: 'rgb(213 39 5 / 90%)',
+            arrowColor: 'rgb(215 56 13 / 90%)',
             overlayColor: 'rgba(79, 26, 0, 0.4)',
             primaryColor: '#000',
             textColor: '#000',
             zIndex: 1000,
-            backgroundColor: "rgb(213 39 5 / 90%)",
+            backgroundColor: "rgb(215 56 13 / 90%)",
           },
         }}
       />}
