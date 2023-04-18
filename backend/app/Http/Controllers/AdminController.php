@@ -7,6 +7,7 @@ use App\Http\Requests\StoreItemStatusRequest;
 use App\Http\Requests\StoreItemUpdateRequest;
 use App\Models\CoinSetting;
 use App\Models\ComputerGame;
+use App\Models\ComputerGameNa;
 use App\Models\Game;
 use App\Models\Score;
 use App\Models\Store;
@@ -22,6 +23,8 @@ class AdminController extends Controller
         return [
             'users' => User::count(),
             'users_subscribed' => User::where('phone_verified_at', '!=', null)->count(),
+            'auth_players_pwc' => ComputerGame::count(),
+            'non_auth_players_pwc' => ComputerGameNa::count(),
             'total_games' => Score::count(),
             'daily_played' => Score::whereDate('created_at', Carbon::today())->count(),
             'weekly_played' => Score::whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count(),
@@ -30,9 +33,13 @@ class AdminController extends Controller
         ];
     }
 
-    public function users()
+    public function users(Request $request)
     {
-        return User::orderBy('current_point', 'desc')
+        return User::when($request->search, function ($query, $search) {
+            $query->where('name', 'like', "%{$search}%")
+                ->orWhere('phone', 'like', "%{$search}%");
+        })
+            ->orderBy('current_point', 'desc')
             ->orderBy('phone_verified_at', 'desc')
             ->orderBy('created_at', 'asc')
             ->paginate(10);
