@@ -109,6 +109,30 @@ const Dashboard = () => {
                 </h1>
               </div>
             </div>
+            {/* un verifiedplay with computer */}
+            <div className="flex items-center justify-between p-5 bg-white  rounded-md shadow-md">
+              <RiGamepadFill size={70} className="text-[#ffbc35]" />
+              <div className="flex flex-col items-center space-y-2">
+                <p className="font-bold text-dark-color dark:text-white text-2xl">
+                  {dashboardData?.data?.data?.data?.non_auth_players_pwc}
+                </p>
+                <h1 className=" font-normal px-3 capitalize text-white bg-[#ffbc35] p-[2px] rounded-md text-sm">
+                  non-verified PWC
+                </h1>
+              </div>
+            </div>
+            {/* verified play with computer */}
+            <div className="flex items-center justify-between p-5 bg-white  rounded-md shadow-md">
+              <RiGamepadFill size={70} className="text-[#ffbc35]" />
+              <div className="flex flex-col items-center space-y-2">
+                <p className="font-bold text-dark-color dark:text-white text-2xl">
+                  {dashboardData?.data?.data?.data?.auth_players_pwc}
+                </p>
+                <h1 className=" font-normal px-3 capitalize text-white bg-[#ffbc35] p-[2px] rounded-md text-sm">
+                  verified PWC
+                </h1>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="flex items-center justify-center">

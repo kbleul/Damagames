@@ -25,6 +25,7 @@ interface UserProps {
   coin: number;
 }
 const Users = () => {
+  const [query, setQuery] = useState<string | number>("");
   const { token, user } = useAuth();
   const [users, setUsers] = useState<Array<UserProps>>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -34,10 +35,12 @@ const Users = () => {
     Authorization: `Bearer ${token}`,
   };
   const usersData = useQuery(
-    ["usersDataApi",currentPage],
+    ["usersDataApi", currentPage, query],
     async () =>
       await axios.get(
-        `${process.env.REACT_APP_BACKEND_URL}admin/users?page=${currentPage}`,
+        query
+          ? `${process.env.REACT_APP_BACKEND_URL}admin/users?search=${query}&page=${currentPage}`
+          : `${process.env.REACT_APP_BACKEND_URL}admin/users?page=${currentPage}`,
         {
           headers,
         }
@@ -142,6 +145,16 @@ const Users = () => {
 
   return (
     <div>
+      <div className="pb-3 max-w-lg">
+        <input
+          type="text"
+          name=""
+          id=""
+          placeholder="search by names or phone number"
+          className="border border-gray-500  p-2 w-full"
+          onChange={(e) => setQuery(e.target.value)}
+        />
+      </div>
       {usersData.isFetched ? (
         <div>
           <TableContainer component={Paper}>
@@ -169,16 +182,18 @@ const Users = () => {
           </TableContainer>
           <div className="flex items-center space-x-2 justify-center py-10">
             {usersData?.data?.data?.data?.prev_page_url && (
-              <button 
-              onClick={()=>setCurrentPage((prev)=>prev - 1)}
-              className="bg-amber-500 p-2 px-5 text-white font-medium">
+              <button
+                onClick={() => setCurrentPage((prev) => prev - 1)}
+                className="bg-amber-500 p-2 px-5 text-white font-medium"
+              >
                 Previous
               </button>
             )}
             {usersData?.data?.data?.data?.next_page_url && (
-              <button 
-              onClick={()=>setCurrentPage((prev)=>prev + 1)}
-              className="bg-orange-500 p-2 px-5 text-white font-medium">
+              <button
+                onClick={() => setCurrentPage((prev) => prev + 1)}
+                className="bg-orange-500 p-2 px-5 text-white font-medium"
+              >
                 next
               </button>
             )}
