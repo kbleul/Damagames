@@ -36,7 +36,7 @@ class AdminController extends Controller
     public function users(Request $request)
     {
         return User::when($request->search, function ($query, $search) {
-            $query->where('name', 'like', "%{$search}%")
+            $query->where('username', 'like', "%{$search}%")
                 ->orWhere('phone', 'like', "%{$search}%");
         })
             ->orderBy('current_point', 'desc')
