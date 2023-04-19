@@ -6,11 +6,11 @@ import { useAuth } from "../../context/auth";
 import toast, { Toaster } from "react-hot-toast";
 import { FaTimes } from "react-icons/fa";
 import { AiFillCheckCircle } from "react-icons/ai";
+import { Localization } from "../../utils/language";
 
 
-const SHOWiTEM = { "AVATAR": "avatar", "BOARD": "board", "CROWN": "crown" }
 const ChangeProfile = ({ changeUsernameModal, setChangeUsernameModal, username }) => {
-  const { login, token, user, setUser } = useAuth();
+  const { login, token, user, lang } = useAuth();
 
   const [uname, setUname] = useState(username);
   const [errorMessage, setErrorMessage] = useState(null)
@@ -26,7 +26,7 @@ const ChangeProfile = ({ changeUsernameModal, setChangeUsernameModal, username }
 
   const onSubmit = () => {
     setErrorMessage(null)
-    if (uname.length < 2) { setErrorMessage("Username is too short !") }
+    if (uname.length < 2) { setErrorMessage(Localization["Username is too short !"][lang]) }
     else if (uname === username) { setChangeUsernameModal(false) }
     else {
       setIsLoading(true)
@@ -57,23 +57,8 @@ const ChangeProfile = ({ changeUsernameModal, setChangeUsernameModal, username }
         {
           onSuccess: (responseData) => {
             setIsLoading(false)
-            // console.log(responseData?.data?.data?.user)
 
-            // localStorage.setItem(
-            //   "dama_user_data",
-            //   JSON.stringify({
-            //     token,
-            //     user: {
-            //       ...user,
-            //       username: responseData?.data?.data?.user?.username
-            //     },
-            //   })
-            // );
-            // setUser({ ...user, username: responseData?.data?.data?.user?.username })
-            // toast(responseData?.data?.message);
-
-
-            setSuccessMessage("Username changed.")
+            setSuccessMessage(Localization["Username changed."][lang])
 
             setTimeout(() => {
               login(token, { ...user, username: responseData?.data?.data?.user?.username });
@@ -133,14 +118,19 @@ const ChangeProfile = ({ changeUsernameModal, setChangeUsernameModal, username }
                     />
                   </div>
                   <article className="flex flex-col items-center justify-center mt-8 text-white">
-                    <h2 className=" mb-4 w-[80%] text-left">Username</h2>
+                    <h2 className=" mb-4 w-[80%] text-left">
+                      {Localization["Username"][lang]}
+                    </h2>
                     <input className="w-[90%] bg-inherit border md:border-2 focus:border-red-500 focus:outline-none focus:ring-0 border-gray-500 text-white py-2 px-4 rounded-lg" value={uname} onChange={e => setUname(e.target.value)} />
                     {errorMessage && <p className="w-[90%] text-red-400 p-4 text-xs">{errorMessage}</p>}
                     {successMessage && <div className='text-white flex items-center justify-center pt-2'>
                       <p>{successMessage}</p>
                       <AiFillCheckCircle size={20} className="text-green-300" />
                     </div>}
-                    <button onClick={onSubmit} className="mt-8 w-[90%] border border-orange-color rounded-lg text-white bg-orange-color text-sm py-2">{isLoading ? "Loading..." : "Change Username"}</button>
+                    <button onClick={onSubmit} className="mt-8 w-[90%] border border-orange-color rounded-lg text-white bg-orange-color text-sm py-2">{isLoading ?
+                      <>{Localization["Loading"][lang]}</>
+                      : <>{Localization["Change Username"][lang]}</>
+                    }</button>
                   </article>
                 </Dialog.Panel>
               </Transition.Child>

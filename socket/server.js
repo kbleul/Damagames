@@ -7,7 +7,7 @@ import { Socket } from "dgram";
 const httpServer = createServer();
 const io = new Server(httpServer, {
   cors: {
-    origin:"*",
+    origin: "*",
     credentials: true,
   },
 });
@@ -90,7 +90,7 @@ io.on("connection", (socket) => {
 
   socket.on("join-room", async (room) => {
     const clients = await io.of("/").in(room).fetchSockets();
-
+    console.log("joined");
     // , { clients, room, id: socket.id }
     let tempSocketObj = roomSocketObj[room];
     if (tempSocketObj && tempSocketObj.includes(socket.id)) {
@@ -114,6 +114,11 @@ io.on("connection", (socket) => {
     socket.on("sendMessage", (data) => {
       io.to(room).emit("getMessage", data);
     });
+
+    socket.on("sendCrownType", (data) => {
+      socket.broadcast.to(room).emit("getCrownType", data);
+    });
+
     socket.on("sendGameMessage", (data) => {
       io.to(room).emit("getGameMessage", data);
       // socket.broadcast.to(room).emit("getGameMessage", data);
@@ -121,6 +126,10 @@ io.on("connection", (socket) => {
     socket.on("sendResetGameRequest", (data) => {
       // io.to(room).broadcast.emit("getResetGameRequest", data);
       socket.broadcast.to(room).emit("getResetGameRequest", data);
+    });
+    //send king icons
+    socket.on("sendGameKingIcon", (data) => {
+      socket.broadcast.to(room).emit("getGameKingIcon", data);
     });
     socket.on("sendResetGameMessage", (data) => {
       io.to(room).emit("getResetGameMessage", data);

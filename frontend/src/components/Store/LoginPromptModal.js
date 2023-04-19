@@ -5,10 +5,14 @@ import { useNavigate } from 'react-router-dom';
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { MdOutlineCancel } from "react-icons/md";
+import { Localization } from '../../utils/language';
+import { useAuth } from '../../context/auth';
 
 const LoginPromptModal = ({ isShowModalOpen, set_isShowModalOpen }) => {
 
     const navigate = useNavigate()
+    const { lang } = useAuth();
+
     return (
         <>
             <Transition appear show={isShowModalOpen} as={Fragment}>
@@ -45,7 +49,7 @@ const LoginPromptModal = ({ isShowModalOpen, set_isShowModalOpen }) => {
                                         as="h3"
                                         className="text-md font-medium leading-6 text-white text-center"
                                     >
-                                        You need to login to buy items.
+                                        {Localization["You need to login to buy items."][lang]}
                                     </Dialog.Title>
 
                                     <MdOutlineCancel onClick={() => set_isShowModalOpen(false)} className="absolute top-2 right-2 text-orange-color w-6 h-6" />
@@ -62,10 +66,12 @@ const LoginPromptModal = ({ isShowModalOpen, set_isShowModalOpen }) => {
                                             onClick={() => navigate("/login")}
                                         >
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-                                            Login
+                                            {Localization["Login"][lang]}
                                         </button>
 
-                                        <p className='text-sm text-white'>or</p>
+                                        <p className='text-sm text-white'>
+                                            {Localization["Or"][lang]}
+                                        </p>
 
                                         <button
                                             type="button"
@@ -78,8 +84,8 @@ const LoginPromptModal = ({ isShowModalOpen, set_isShowModalOpen }) => {
                                             onClick={() => navigate("/signup")}
                                         >
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
+                                            {Localization["Sign up"][lang]}
 
-                                            Signup
                                         </button>
 
                                     </div>

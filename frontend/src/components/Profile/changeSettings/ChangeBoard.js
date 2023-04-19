@@ -8,13 +8,14 @@ import { useAuth } from "../../../context/auth";
 import { FaTimes } from "react-icons/fa";
 import { useState } from "react";
 import { AiFillCheckCircle } from "react-icons/ai";
+import { Localization } from "../../../utils/language";
 
 const ChangeBoard = ({
   board,
   showChangeBoardModal,
   setShowChangeBoardModal,
 }) => {
-  const { login, token, user } = useAuth();
+  const { login, token, user, lang } = useAuth();
   const [successMessage, setSuccessMessage] = useState(null);
 
   const headers = {
@@ -44,18 +45,18 @@ const ChangeBoard = ({
         {},
         {
           onSuccess: (responseData) => {
-            setSuccessMessage("Board changed.");
+
+            setSuccessMessage(Localization["Board changed."][lang])
 
             setTimeout(() => {
               login(token, { ...user, default_board: board });
             }, 800);
           },
           onError: (err) => {
-            //  setErrorMessage(err?.response?.data?.data);
           },
         }
       );
-    } catch (err) {}
+    } catch (err) { }
   };
 
   return (
@@ -120,8 +121,8 @@ const ChangeBoard = ({
                   >
                     {" "}
                     {boardSelectMutation.isLoading
-                      ? "Loading..."
-                      : "Update default board"}
+                      ? <>{Localization["Loading"][lang]}</>
+                      : <>{Localization["Update default board"][lang]}</>}
                   </button>
                 </div>
               </Dialog.Panel>

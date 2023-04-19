@@ -5,6 +5,8 @@ import socket from "../../utils/socket.io";
 import { clearCookie } from "../../utils/data";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { Localization } from "../../utils/language";
+import { useAuth } from "../../context/auth";
 
 export default function ExitWarningModal({
   isExitModalOpen,
@@ -14,6 +16,7 @@ export default function ExitWarningModal({
 }) {
   const navigate = useNavigate();
   const gameId = localStorage.getItem("gameId");
+  const { lang } = useAuth();
 
   const headers = {
     "Content-Type": "application/json",
@@ -41,10 +44,10 @@ export default function ExitWarningModal({
         },
         {
           onSuccess: (responseData) => {
-            console.log(responseData?.data)
+            //console.log(responseData?.data)
           },
           onError: (err) => {
-            console.log(err)
+            // console.log(err)
 
           },
         }
@@ -102,18 +105,18 @@ export default function ExitWarningModal({
                     as="h3"
                     className="text-lg font-medium leading-6 text-white text-center"
                   >
-                    You are about to leave this game !
+                    {Localization["you are about to"][lang]}
                   </Dialog.Title>
 
 
                   {beforeGame ? <div className="mt-2">
                     <p className="text-sm text-gray-500 text-center ">
-                      Are you sure you want to leave ? Your friend won't be able to join this game if you leave now !
+                      {Localization["Are you sure"][lang]}
                     </p>
                   </div> :
                     <div className="mt-2">
                       <p className="text-sm text-gray-500 text-center ">
-                        Are you sure you want to leave ?
+                        {Localization["Are you sure_"][lang]}
                       </p>
                     </div>
                   }
@@ -129,7 +132,7 @@ export default function ExitWarningModal({
                      "
                       onClick={handleExit}
                     >
-                      Yes
+                      {Localization["Yes"][lang]}
                     </button>
                     <button
                       type="button"
@@ -140,9 +143,8 @@ export default function ExitWarningModal({
                       transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
                       border-b-[1px] border-gray-300/50 font-medium text-white
                     "
-
                     >
-                      No
+                      {Localization["No"][lang]}
                     </button>
                   </div>
                 </Dialog.Panel>

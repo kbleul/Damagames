@@ -41,97 +41,198 @@ import orangeCoin from "../assets/orange-coin.svg";
 import orangeWhiteCoin from "../assets/orange-coin-white.svg";
 import redNegusWhite from "../assets/redNegus-white.svg";
 import { useHome } from "../context/HomeContext.js";
+
+import { Localization } from "../utils/language";
+
 const Game = () => {
   const { id } = useParams();
-  const { user, token } = useAuth();
-
+  const { user, token, lang } = useAuth();
+  const playingCrowns = useRef({});
+  const isPlayerOne = JSON.parse(localStorage.getItem("playerOne"));
   // const { playerCrown, playerBoard } = useHome();
   useEffect(() => {
-    if (id) {
-      document.documentElement.style.setProperty(
-        "--playerTwoPawn",
-        !user && !token
-          ? `url(${yellowCoin})`
-          : user?.default_board
+    document.documentElement.style.setProperty(
+      "--playerTwoPawn",
+      !user && !token
+        ? `url(${yellowCoin})`
+        : user?.default_board
           ? `url(${user?.default_board?.board_pawn2})`
           : `url(${yellowCoin})`
-      );
-      document.documentElement.style.setProperty(
-        "--playerTwoPawnTurn",
-        !user && !token
-          ? `url(${yellowWhiteCoin})`
-          : user?.default_board
+    );
+    document.documentElement.style.setProperty(
+      "--playerTwoPawnTurn",
+      !user && !token
+        ? `url(${yellowWhiteCoin})`
+        : user?.default_board
           ? `url(${user?.default_board?.board_pawn2_turn})`
           : `url(${yellowWhiteCoin})`
-      );
-      //king icon
-      document.documentElement.style.setProperty(
-        "--playerTwoPawnKing",
-        !user && !token
-          ? `url(${yellowNegus})`
-          : user?.default_crown?.board_pawn_king2
-          ? `url(${user?.default_crown?.board_pawn_king2})`
-          : `url(${yellowNegus})`
-      );
-      //king icon turn
-      document.documentElement.style.setProperty(
-        "--playerTwoPawnKingTurn",
-        !user && !token
-          ? `url(${yellowNegusWhite})`
-          : user?.default_board
-          ? `url(${user?.default_board?.board_pawn_king2_turn})`
-          : `url(${yellowNegusWhite})`
-      );
-    }
+    );
+
     document.documentElement.style.setProperty(
       "--playerOnePawn",
       !user && !token
         ? `url(${orangeCoin})`
         : user?.default_board
-        ? `url(${user?.default_board?.board_pawn1})`
-        : `url(${orangeCoin})`
+          ? `url(${user?.default_board?.board_pawn1})`
+          : `url(${orangeCoin})`
     );
     document.documentElement.style.setProperty(
       "--playerOnePawnTurn",
       !user && !token
         ? `url(${orangeWhiteCoin})`
         : user?.default_board
-        ? `url(${user?.default_board?.board_pawn1_turn})`
-        : `url(${orangeWhiteCoin})`
+          ? `url(${user?.default_board?.board_pawn1_turn})`
+          : `url(${orangeWhiteCoin})`
     );
     //king icon and king turn
-    document.documentElement.style.setProperty(
-      "--playerOnePawnKing",
-      !user && !token
-        ? `url(${redNegus})`
-        : user?.default_crown?.board_pawn_king1
-        ? `url(${user?.default_crown?.board_pawn_king1})`
-        : `url(${redNegus})`
-    );
-    document.documentElement.style.setProperty(
-      "--playerOnePawnKingTurn",
-      !user && !token
-        ? `url(${redNegusWhite})`
-        : user?.default_crown?.board_pawn_king1_turn
-        ? `url(${user?.default_crown?.board_pawn_king1_turn})`
-        : `url(${redNegusWhite})`
-    );
+    if (id) {
+      //king icon
+      document.documentElement.style.setProperty(
+        "--playerTwoPawnKing",
+          !user && !token
+          ? `url(${yellowNegusWhite})`
+          : user?.default_crown?.board_pawn_king2_turn
+          ? `url(${user?.default_crown?.board_pawn_king2_turn})`
+          : user?.default_board?.board_pawn_king2_turn
+          ? `url(${user?.default_board?.board_pawn_king2_turn})`
+          : `url(${yellowNegusWhite})`
+        //
+      );
+      document.documentElement.style.setProperty(
+        "--playerOnePawnKing",
+        !user && !token
+          ? `url(${redNegus})`
+          : user?.default_crown?.board_pawn_king1
+          ? `url(${user?.default_crown?.board_pawn_king1})`
+          : user?.default_board?.board_pawn_king1
+          ? `url(${user?.default_board?.board_pawn_king1})`
+          : `url(${redNegus})`
+      );
+      document.documentElement.style.setProperty(
+        "--playerOnePawnKingTurn",
+        !user && !token
+          ? `url(${redNegusWhite})`
+          : user?.default_crown?.board_pawn_king1_turn
+          ? `url(${user?.default_crown?.board_pawn_king1_turn})`
+          : user?.default_board?.board_pawn_king1_turn
+          ? `url(${user?.default_board?.board_pawn_king1_turn})`
+          : `url(${redNegusWhite})`
+        //
+      );
+    } else {
+      console.log("playingCrowns", playingCrowns);
+      if (isPlayerOne) {
+        document.documentElement.style.setProperty(
+          "--playerTwoPawnKing",
+          !user && !token
+            ? `url(${yellowNegus})`
+            : JSON.parse(localStorage.getItem("pawns"))?.normal
+            ? `url(${JSON.parse(localStorage.getItem("pawns"))?.normal})`
+            : user?.default_crown?.board_pawn_king2
+            ? `url(${user?.default_crown?.board_pawn_king2})`
+            : user?.default_board?.board_pawn_king2
+            ? `url(${user?.default_board?.board_pawn_king2})`
+            : `url(${yellowNegus})`
+        );
+        //king icon turn
+        document.documentElement.style.setProperty(
+          "--playerTwoPawnKingTurn",
+          !user && !token
+            ? `url(${yellowNegusWhite})`
+            : JSON.parse(localStorage.getItem("pawns"))?.active
+            ? `url(${JSON.parse(localStorage.getItem("pawns"))?.active})`
+            : user?.default_crown?.board_pawn_king2_turn
+            ? `url(${user?.default_crown?.board_pawn_king2_turn})`
+            : user?.default_board?.board_pawn_king2_turn
+            ? `url(${user?.default_board?.board_pawn_king2_turn})`
+            : `url(${yellowNegusWhite})`
+        );
+        document.documentElement.style.setProperty(
+          "--playerOnePawnKing",
+          !user && !token
+            ? `url(${redNegus})`
+            : user?.default_crown?.board_pawn_king1
+            ? `url(${user?.default_crown?.board_pawn_king1})`
+            : user?.default_board?.board_pawn_king1
+            ? `url(${user?.default_board?.board_pawn_king1})`
+            : `url(${redNegus})`
+        );
+        document.documentElement.style.setProperty(
+          "--playerOnePawnKingTurn",
+          !user && !token
+            ? `url(${redNegusWhite})`
+            : user?.default_crown?.board_pawn_king1_turn
+            ? `url(${user?.default_crown?.board_pawn_king1_turn})`
+            : user?.default_board?.board_pawn_king1_turn
+            ? `url(${user?.default_board?.board_pawn_king1_turn})`
+            : `url(${redNegusWhite})`
+        );
+      } else {
+        //it is second player
+        document.documentElement.style.setProperty(
+          "--playerOnePawnKing",
+          !user && !token
+            ? `url(${redNegus})`
+            : JSON.parse(localStorage.getItem("pawns"))?.normal
+            ? `url(${JSON.parse(localStorage.getItem("pawns"))?.normal})`
+            : user?.default_crown?.board_pawn_king1
+            ? `url(${user?.default_crown?.board_pawn_king1})`
+            : user?.default_board?.board_pawn_king1
+            ? `url(${user?.default_board?.board_pawn_king1})`
+            : `url(${redNegus})`
+        );
+        //king icon turn
+        document.documentElement.style.setProperty(
+          "--playerOnePawnKingTurn",
+          !user && !token
+            ? `url(${redNegusWhite})`
+            : JSON.parse(localStorage.getItem("pawns"))?.active
+            ? `url(${JSON.parse(localStorage.getItem("pawns"))?.active})`
+            : user?.default_crown?.board_pawn_king1_turn
+            ? `url(${user?.default_crown?.board_pawn_king1_turn})`
+            : user?.default_board?.board_pawn_king1_turn
+            ? `url(${user?.default_board?.board_pawn_king1_turn})`
+            : `url(${redNegusWhite})`
+        );
+        document.documentElement.style.setProperty(
+          "--playerTwoPawnKing",
+          !user && !token
+            ? `url(${yellowNegus})`
+            : user?.default_crown?.board_pawn_king2
+            ? `url(${user?.default_crown?.board_pawn_king2})`
+            : user?.default_board?.board_pawn_king2
+            ? `url(${user?.default_board?.board_pawn_king2})`
+            : `url(${yellowNegus})`
+        );
+        document.documentElement.style.setProperty(
+          "--playerTwoPawnKingTurn",
+          !user && !token
+            ? `url(${yellowNegusWhite})`
+            : user?.default_crown?.board_pawn_king2_turn
+            ? `url(${user?.default_crown?.board_pawn_king2_turn})`
+            : user?.default_board?.board_pawn_king2_turn
+            ? `url(${user?.default_board?.board_pawn_king2_turn})`
+            : `url(${yellowNegusWhite})`
+        );
+      }
+    }
+
     //board and pawn
     document.documentElement.style.setProperty(
       "--playerSquareBoard",
       !user && !token
         ? `#181920`
         : user?.default_board
-        ? user?.default_board?.color?.color1
-        : `#181920`
+          ? user?.default_board?.color?.color1
+          : `#181920`
     );
     document.documentElement.style.setProperty(
       "--playerBoardColor",
       !user && !token
         ? `#2c2c37`
         : user?.default_board
-        ? user?.default_board?.color?.color2
-        : `#2c2c37`
+          ? user?.default_board?.color?.color2
+          : `#2c2c37`
     );
     // last move shower
     document.documentElement.style.setProperty(
@@ -139,8 +240,8 @@ const Game = () => {
       !user && !token
         ? `#858484`
         : user?.default_board
-        ? user?.default_board?.color?.lastMoveColor
-        : `#858484`
+          ? user?.default_board?.color?.lastMoveColor
+          : `#858484`
     );
   }, [id, user, token]);
 
@@ -182,6 +283,8 @@ const Game = () => {
   const [showResetWaiting, setShowResetWaiting] = useState(false);
   const [msgSender, setMsgSender] = useState(null);
 
+  //send king icon
+  const [isListened, setIsListened] = useState(false);
   useEffect(() => {
     if (!id && !localStorage.getItem("gameId")) {
       navigate("/create-game");
@@ -440,9 +543,9 @@ const Game = () => {
       setTimeout(() => {
         const postMoveState = movesData[1]
           ? movePiece(columns, mergerObj.moves[0], {
-              ...mergerObj,
-              jumpKills: movesData[1],
-            })
+            ...mergerObj,
+            jumpKills: movesData[1],
+          })
           : movePiece(columns, mergerObj.moves[0], mergerObj);
         if (postMoveState === null) {
           return;
@@ -488,42 +591,42 @@ const Game = () => {
 
     id == 1
       ? setGameState((prevGameState) => {
-          return {
-            ...prevGameState,
+        return {
+          ...prevGameState,
 
-            history: gameState.history.concat([
-              {
-                boardState: postMoveState.boardState,
-                currentPlayer: postMoveState.currentPlayer,
-              },
-            ]),
-            activePiece: postMoveState.activePiece,
-            moves: postMoveState.moves,
-            jumpKills: postMoveState.jumpKills,
-            hasJumped: postMoveState.hasJumped,
-            stepNumber: gameState.history.length,
-            winner: postMoveState.winner,
-            tracker: track,
-          };
-        })
+          history: gameState.history.concat([
+            {
+              boardState: postMoveState.boardState,
+              currentPlayer: postMoveState.currentPlayer,
+            },
+          ]),
+          activePiece: postMoveState.activePiece,
+          moves: postMoveState.moves,
+          jumpKills: postMoveState.jumpKills,
+          hasJumped: postMoveState.hasJumped,
+          stepNumber: gameState.history.length,
+          winner: postMoveState.winner,
+          tracker: track,
+        };
+      })
       : setGameState((prevGameState) => {
-          return {
-            ...prevGameState,
+        return {
+          ...prevGameState,
 
-            history: gameState.history.concat([
-              {
-                boardState: postMoveState.boardState,
-                currentPlayer: postMoveState.currentPlayer,
-              },
-            ]),
-            activePiece: postMoveState.activePiece,
-            moves: postMoveState.moves,
-            jumpKills: postMoveState.jumpKills,
-            hasJumped: postMoveState.hasJumped,
-            stepNumber: gameState.history.length,
-            winner: postMoveState.winner,
-          };
-        });
+          history: gameState.history.concat([
+            {
+              boardState: postMoveState.boardState,
+              currentPlayer: postMoveState.currentPlayer,
+            },
+          ]),
+          activePiece: postMoveState.activePiece,
+          moves: postMoveState.moves,
+          jumpKills: postMoveState.jumpKills,
+          hasJumped: postMoveState.hasJumped,
+          stepNumber: gameState.history.length,
+          winner: postMoveState.winner,
+        };
+      });
 
     if (gameState.players == 1) {
       setMyTurn(postMoveState.currentPlayer ? "player1" : "player2");
@@ -539,6 +642,40 @@ const Game = () => {
       });
 
     calcPawns(postMoveState.boardState);
+
+    // user?.default_board?.board_pawn2
+    const tempObj = localStorage.getItem("playerOne")
+      ? {
+        p1: user
+          ? user.default_crown
+            ? {
+              normal: user?.default_crown?.board_pawn_king1,
+              active: user?.default_crown?.board_pawn_king1_turn,
+            }
+            : user?.default_board
+              ? {
+                normal: user?.default_crown?.board_pawn_king1,
+                active: user?.default_board?.board_pawn_king1_turn,
+              }
+              : null
+          : null,
+      }
+      : {
+        p2: user
+          ? user.default_crown
+            ? {
+              normal: user?.default_crown?.board_pawn_king2,
+              active: user?.default_crown?.board_pawn_king2_turn,
+            }
+            : user?.default_board
+              ? {
+                normal: user?.default_crown?.board_pawn_king2,
+                active: user?.default_board?.board_pawn_king2_turn,
+              }
+              : null
+          : null,
+      };
+    socket.emit("sendCrownType", tempObj);
   }
 
   const stateHistory = gameState.history;
@@ -686,6 +823,8 @@ const Game = () => {
     });
     moveRef.current = [0, 0];
   };
+
+
   const setNewGameWithComputer = () => {
     setGameState({
       players: 1,
@@ -704,6 +843,7 @@ const Game = () => {
     });
     setMyTurn("player1");
     setPawns([0, 0]);
+
   };
 
   const drawGame = () => {
@@ -779,6 +919,22 @@ const Game = () => {
   let lastElement = array[array.length - 1];
 
   useEffect(() => {
+    //listen for king icon
+
+    if (!JSON.parse(localStorage.getItem("pawns"))) {
+      socket.on("getCrownType", (data) => {
+        if (!JSON.parse(localStorage.getItem("pawns"))){
+          const tempObj = localStorage.getItem("playerOne")
+            ? (playingCrowns.current = data.p2)
+            : (playingCrowns.current = data.p1);
+          !JSON.parse(localStorage.getItem("pawns")) &&
+            localStorage.setItem("pawns", JSON.stringify(tempObj));
+
+          console.log(JSON.parse(localStorage.getItem("pawns")));
+        }
+      });
+    }
+
     // let cPlayer = currentPlayer
     socket.on(
       "getGameMessage",
@@ -1069,11 +1225,11 @@ const Game = () => {
           game_id: gameId,
         },
         {
-          onSuccess: (responseData) => {},
-          onError: (err) => {},
+          onSuccess: (responseData) => { },
+          onError: (err) => { },
         }
       );
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const changeSound = () => {
@@ -1105,7 +1261,9 @@ const Game = () => {
                 fill="#FF4C01"
               />
             </svg>
-            <p className="text-white text-xs">SoundOn</p>
+            <p className="text-white text-xs">
+              {Localization["SoundOn"][lang]}
+            </p>
           </button>
         ) : (
           <button
@@ -1124,7 +1282,9 @@ const Game = () => {
                 fill="#FF4C01"
               />
             </svg>
-            <p className="text-white text-xs">SoundOff</p>
+            <p className="text-white text-xs">
+              {Localization["SoundOff"][lang]}
+            </p>
           </button>
         )}
         {/* currentPlayer && localStorage.getItem("playerOneIp") && 
@@ -1132,15 +1292,19 @@ const Game = () => {
         <section className="flex flex-col">
           <div>
             {currentPlayer && localStorage.getItem("playerOneIp") && (
-              <p className="text-white font-bold text-sm">Timer : {timerP1}</p>
+              <p className="text-white font-bold text-sm">
+                {Localization["Timer"][lang]} : {timerP1}
+              </p>
             )}
             {!currentPlayer && localStorage.getItem("playerTwoIp") && (
-              <p className="text-white font-bold text-sm">Timer : {timerP2}</p>
+              <p className="text-white font-bold text-sm">
+                {Localization["Timer"][lang]} : {timerP2}
+              </p>
             )}
           </div>
           {passedCounter === 3 && (
             <p className="text-yellow-400 font-bold text-xs">
-              You will lose if you don't move next
+              {Localization["You will lose"][lang]}
             </p>
           )}
         </section>
@@ -1170,7 +1334,7 @@ const Game = () => {
               strokeLinejoin="round"
             />
           </svg>
-          <p className="text-white text-xs">Exit</p>
+          <p className="text-white text-xs">{Localization["Exit"][lang]}</p>
         </button>
       </section>
       <section className="flex justify-evenly items-center w-full ">
@@ -1201,10 +1365,10 @@ const Game = () => {
                 ? user.username
                 : "You"
               : playerOneIp && user
-              ? user?.username
-              : playerOneIp
-              ? firstPlayer?.username
-              : p1Info}
+                ? user?.username
+                : playerOneIp
+                  ? firstPlayer?.username
+                  : p1Info}
           </h4>
         </div>
 
@@ -1234,14 +1398,14 @@ const Game = () => {
           <h4 className="text-white capitalize  font-semibold text-xs">
             {/* {secondPlayer?.name} */}
             {id == 1
-              ? "Computer"
+              ? Localization["Computer"][lang]
               : playerTwoIp && user
-              ? user?.username
-              : playerTwoIp
-              ? secondPlayer?.username
-              : p1Info
-              ? p1Info
-              : p2Info?.username}
+                ? user?.username
+                : playerTwoIp
+                  ? secondPlayer?.username
+                  : p1Info
+                    ? p1Info
+                    : p2Info?.username}
           </h4>
         </div>
       </section>
@@ -1250,13 +1414,13 @@ const Game = () => {
         <div className="border-r-[3px] border-gray-400 text-white w-1/2 ">
           <div className="flex justify-center items-center text-[.7rem] gap-x-2 font-bold mb-2">
             <p className="bg-gray-300 text-black pr-[.2rem] w-12 rounded">
-              Moves
+              {Localization["Moves"][lang]}
             </p>
             <p>{moveRef.current[0]}</p>
           </div>
           <div className="flex justify-center items-center text-[.7rem] gap-x-2 font-bold mb-2">
             <p className="bg-gray-300 text-black pr-[.2rem] w-12 rounded">
-              Pawns
+              {Localization["Pawns"][lang]}
             </p>
             <p>{pawns[0]}</p>
           </div>
@@ -1266,13 +1430,13 @@ const Game = () => {
           <div className="flex justify-center items-center text-[.7rem] gap-x-2 font-bold mb-2">
             <p>{moveRef.current[1]}</p>
             <p className="bg-gray-300 text-black pr-[.2rem] w-12 rounded">
-              Moves
+              {Localization["Moves"][lang]}
             </p>
           </div>
           <div className="flex justify-center items-center text-[.7rem] gap-x-2 font-bold mb-2">
             <p>{pawns[1]}</p>
             <p className="bg-gray-300 text-black pr-[.2rem] w-12 rounded">
-              Pawns
+              {Localization["Pawns"][lang]}
             </p>
           </div>
         </div>
@@ -1294,7 +1458,9 @@ const Game = () => {
             visible={true}
           />
         ) : (
-          <h1 className="text-white font-normal">Your turn</h1>
+          <h1 className="text-white font-normal">
+            {Localization["Your turn"][lang]}
+          </h1>
         )}
       </div>
 
@@ -1316,7 +1482,9 @@ const Game = () => {
               visible={true}
             />
           ) : (
-            <h1 className="text-white font-normal">Your turn</h1>
+            <h1 className="text-white font-normal">
+              {Localization["Your turn"][lang]}
+            </h1>
           ))}
         {playerTwoIp &&
           (currentPlayer ? (
@@ -1331,34 +1499,35 @@ const Game = () => {
               visible={true}
             />
           ) : (
-            <h1 className="text-white font-normal">Your turn</h1>
+            <h1 className="text-white font-normal">
+              {Localization["Your turn"][lang]}
+            </h1>
           ))}
       </div>
       <div className={""}>
         <div
-          className={`box   ${
-            !id
-              ? currentPlayer === true
-                ? currentPlayer === true && !firstPlayer
-                  ? "pointer-events-none"
-                  : ""
-                : currentPlayer === false
+          className={`box   ${!id
+            ? currentPlayer === true
+              ? currentPlayer === true && !firstPlayer
+                ? "pointer-events-none"
+                : ""
+              : currentPlayer === false
                 ? currentPlayer === false && !secondPlayer
                   ? "pointer-events-none"
                   : ""
                 : ""
-              : ""
-          }`}
+            : ""
+            }`}
         >
           <Board
             boardState={
               id === "1"
                 ? dict_reverse(boardState)
                 : !id
-                ? localStorage.getItem("playerOne")
-                  ? dict_reverse(boardState)
+                  ? localStorage.getItem("playerOne")
+                    ? dict_reverse(boardState)
+                    : boardState
                   : boardState
-                : boardState
             }
             currentPlayer={currentPlayer}
             activePiece={gameState.activePiece}
@@ -1388,17 +1557,19 @@ const Game = () => {
                 />
               </svg>
             </div>
-            <p className="text-xs font-bold text-white">Draw</p>
+            <p className="text-xs font-bold text-white">
+              {Localization["Draw"][lang]}
+            </p>
           </div>
         )}
         {id != 1 && (
-          <div className="flex items-end justify-end flex-col">
+          <div className="flex items-center justify-center flex-col">
             <BsFillChatFill
               onClick={openChatFilled}
               size={30}
               className="text-orange-color"
             />
-            <p className="text-xs font-bold text-white">Chat</p>
+            <p className="text-xs font-bold text-white">{Localization["Chat"][lang]}</p>
           </div>
         )}
       </div>
@@ -1408,9 +1579,6 @@ const Game = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ type: "tween", duration: 1, ease: "easeInOut" }}
-          //     className={`absolute top-36  bg-white max-w-sm  p-1 w-44 ${playerOneIp ? "left-3" : "right-3"
-          //       }
-          //  border border-orange-color rounded-lg m-3`}
           className={
             msgSender === "playerOne"
               ? "absolute top-36  bg-white max-w-sm  p-1 w-44 left-3  border border-orange-color rounded-lg m-3"
@@ -1449,7 +1617,7 @@ const Game = () => {
               ref={messageInputRef}
               autoFocus
               onKeyDown={handleSubmit}
-              placeholder="write your message..."
+              placeholder={Localization["write your message..."][lang]}
               type="text"
               className="bg-transparent  p-2 flex-grow w-full
                text-white focus:outline-none focus:ring-0  font-medium "
@@ -1464,7 +1632,9 @@ const Game = () => {
       )}
       <div>
         {btCoin && (
-          <p className="text-xs font-bold text-white">Bet : {btCoin} coins</p>
+          <p className="text-xs font-bold text-white">
+            {Localization["Bet"][lang]} {btCoin} {Localization["coins"][lang]}
+          </p>
         )}
       </div>
       <ExitWarningModal
@@ -1509,34 +1679,3 @@ const Game = () => {
 };
 
 export default Game;
-
-/*
-
-
-{!winnerPlayer && currentPlayer === true
-          ? currentPlayer === true && !firstPlayer
-            ? "flex flex-col items-center space-y-2 p-1 rounded-full border border-yellow-400"
-            : "flex flex-col items-center space-y-2 p-1 rounded-full border-4 border-yellow-400"
-          : currentPlayer === false
-          ? currentPlayer === false && !secondPlayer
-            ? "flex flex-col items-center space-y-2 p-1 rounded-full border-4 border-yellow-color"
-            : "flex flex-col items-center space-y-2 p-1 rounded-full border-4 border-yellow-400"
-          : "flex flex-col items-center space-y-2 p-1 rounded-full border border-orange-color"}
-
-            // <div className="p-3">
-      //   {/* {gameStatus} }
-      //   <div className={`py-1 px-3 rounded-lg ${currentPlayer === true ? "bg-red-500" : "bg-amber-500"}`}>
-      //     <h1 className={`font-medium text-white `}>
-      //       {!winnerPlayer && currentPlayer === true
-      //         ? currentPlayer === true && !firstPlayer
-      //           ? "Your Friend"
-      //           : "You"
-      //         : currentPlayer === false
-      //         ? currentPlayer === false && !secondPlayer
-      //           ? "Your Friend"
-      //           : "You"
-      //         : ""}
-      //     </h1>
-      //   </div>
-      // </div>
-  */

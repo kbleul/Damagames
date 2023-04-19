@@ -6,13 +6,13 @@ import { useMutation } from "@tanstack/react-query";
 import toast, { Toaster } from "react-hot-toast";
 import socket from "../utils/socket.io";
 import { useAuth } from "../context/auth";
-import { useHome } from "../context/HomeContext";
 
 import { clearCookie } from "../utils/data";
 import { Footer } from "./Footer";
+import { Localization } from "../utils/language";
 
 const JoinGame = () => {
-  const { user, token } = useAuth();
+  const { user, token, lang } = useAuth();
   const [isMessageSent, setIsMessageSent] = useState(false);
   const [isMessageListened, setIsMessageListened] = useState(false);
   const [socketLoading, setsocketLoading] = useState(false);
@@ -22,10 +22,8 @@ const JoinGame = () => {
   const { id } = useParams();
   const gameId = localStorage.getItem("gameId");
   const [code, setCode] = useState("");
-  const [success, setSuccess] = useState(false);
   //store player one name
   const [myFriend, setMyFriend] = useState("");
-  // const { setIsBet, setBetCoin } = useHome();
 
   // to check if  creater and the joining player are the same
   const sameUser = useRef(false);
@@ -53,18 +51,6 @@ const JoinGame = () => {
     });
   }, [isMessageListened]);
 
-  const playerIp = localStorage.getItem("");
-  // useEffect(() => {
-  //   if(isMessageSent && !isMessageListened){
-  //     if (ipRef.current !== playerIp) {
-  //       socket.emit("sendMessage", {
-  //         status: "started",
-  //         player2: JSON.stringify(tempPlayer),
-  //       });
-  //     }
-  //   }
-  // }, [isMessageListened])
-
   setInterval(() => {
     if (!useLess.current) {
       if (isMessageSent && !isMessageListened) {
@@ -72,14 +58,7 @@ const JoinGame = () => {
           status: "started",
           player2: JSON.stringify(tempPlayer),
         });
-        // console.log(
-        //   "isMessageSent:",
-        //   isMessageSent,
-        //   "isMessageListened:",
-        //   isMessageListened,
-        //   "use",
-        //   useLess.current
-        // );
+
       }
     }
   }, 500);
@@ -179,7 +158,7 @@ const JoinGame = () => {
 
   const handleJoin = () => {
     if (!name) {
-      toast("name is required.");
+      toast(Localization["name is required."][lang]);
 
       return;
     }
@@ -295,7 +274,7 @@ const JoinGame = () => {
 
   const handleSubmitCode = () => {
     if (!code || [...code].length !== 6) {
-      toast("code character should be 6");
+      toast(Localization["code character should be 6"][lang]);
       return;
     }
     joinViaCodeMutationSubmitHandler();
@@ -339,12 +318,6 @@ const JoinGame = () => {
                 responseData?.data?.data?.bet_coin
               );
 
-              // if (responseData?.data.data.bet_coin === 0) {
-              //   setIsBet(false)
-              // } else {
-              //   setIsBet(true);
-              //   setBetCoin(responseData?.data.data.bet_coin)
-              // }
               socket.emit("leave", gameId);
               socket.emit("leave", id);
               setIsVerified(true);
@@ -429,7 +402,9 @@ const JoinGame = () => {
             className="flex flex-col items-center justify-center 
       min-h-screen  p-5 "
           >
-            <h2 className="text-white font-semibold">Loading</h2>
+            <h2 className="text-white font-semibold">
+              {Localization["Loading"][lang]}
+            </h2>
           </div>
         ) : (
           <div
@@ -441,19 +416,24 @@ const JoinGame = () => {
          border-orange-color p-3 rounded-sm w-full max-w-xs mx-auto"
             >
               <h2 className="font-medium text-white text-lg pt-4">
-                {!user && !token && " Tell Us Your Name"}
+                {!user && !token &&
+                  <>{Localization["Tell us your name"][lang]}</>
+                }
               </h2>
               <p className="text-gray-400 pb-2">
-                Your Friend{" "}
-                <span className={"text-orange-color"}>{myFriend}</span> is
-                waiting for you. <br />
-                Join Now !!
+                <>{Localization["Your Friend"][lang]}</>
+                {" "}
+                <span className={"text-orange-color"}>{myFriend}</span>
+                <>{Localization["waiting for you."][lang]}</>
+                <br />
+                <>{Localization["Join Now !!"][lang]}</>
               </p>
 
               <input
                 disabled={user && token}
                 type="text"
-                placeholder="Tell us Your name"
+                placeholder={Localization["Tell us your name"][lang]}
+
                 onChange={(e) => setName(e.target.value)}
                 value={name}
                 className="bg-transparent  border border-orange-color w-full
@@ -470,7 +450,10 @@ const JoinGame = () => {
               "
               >
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-                {nameMutation.isLoading ? "Loading.." : "Join"}
+                {nameMutation.isLoading ?
+                  <>{Localization["Loading"][lang]}</>
+                  : <>{Localization["Join"][lang]}</>
+                }
               </button>
             </div>
           </div>
@@ -485,19 +468,23 @@ const JoinGame = () => {
              border-orange-color p-3 rounded-sm w-full max-w-xs mx-auto"
           >
             <h2 className="font-medium text-white text-lg pt-4">
-              Tell Us Your Name
+              {Localization["Tell us your name"][lang]}
             </h2>
             <p className="text-gray-400 pb-2">
-              Your Friend{" "}
-              <span className={"text-orange-color"}>{myFriend}</span> is waiting
-              for you. <br />
-              Join Now !
+
+              {Localization["Your Friend"][lang]}
+              {" "}
+              <span className={"text-orange-color"}>{myFriend}</span>
+              <>{Localization["waiting for you."][lang]}</>
+              <br />
+              <>{Localization["Join Now !!"][lang]}</>
             </p>
 
             <input
               disabled={user && token}
               type="text"
-              placeholder="Tell us Your name"
+              placeholder={Localization["Tell us your name"][lang]}
+
               onChange={(e) => setName(e.target.value)}
               value={name}
               className="bg-transparent  border border-orange-color w-full
@@ -514,7 +501,10 @@ const JoinGame = () => {
             "
             >
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-              {nameMutation.isLoading || socketLoading ? "Loading.." : "Join"}
+              {nameMutation.isLoading || socketLoading ?
+                <>{Localization["Loading"][lang]}</>
+                : <>{Localization["Join"][lang]}</>
+              }
             </button>
           </div>
         </div>
@@ -528,12 +518,12 @@ const JoinGame = () => {
              p-3 rounded-sm w-full bg-dark-bg max-w-[600px] "
           >
             <h2 className="font-medium text-white text-lg capitalize">
-              enter code
+              {Localization["enter code"][lang]}
             </h2>
 
             <input
               type="text"
-              placeholder="Enter code"
+              placeholder={Localization["enter code"][lang]}
               value={code}
               onChange={(e) => setCode(e.target.value)}
               className="bg-transparent  border border-orange-color w-full
@@ -554,8 +544,8 @@ const JoinGame = () => {
             >
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
               {joinViaCodeMutation.isLoading || joinBetViaCodeMutation.isLoading
-                ? "Loading..."
-                : "Submit"}
+                ? <>{Localization["Loading"][lang]}</>
+                : <>{Localization["Submit"][lang]}</>}
             </button>
           </div>
         </div>

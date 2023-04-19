@@ -103,16 +103,35 @@ class StoreSeeder extends Seeder
             'nickname' => "",
             'price' => 1000.00,
             'type' => "Board",
+            'color' => [
+                'color1' => "#181920",
+                'color2' => "#f7f1dd",
+                'lastMoveColor' => "#ffffff",
+            ],
         ]);
         $board1->addMediaFromUrl(asset('store/boards/royal.png'))->toMediaCollection('item');
+        $board1->addMediaFromUrl(asset('store/boards/pawns/bpc1.svg'))->toMediaCollection('board_pawn1');
+        $board1->addMediaFromUrl(asset('store/boards/pawns/tpc1.svg'))->toMediaCollection('board_pawn2');
+        $board1->addMediaFromUrl(asset('store/boards/pawns/bpc1_white.svg'))->toMediaCollection('board_pawn1_turn');
+        $board1->addMediaFromUrl(asset('store/boards/pawns/tpc1white.svg'))->toMediaCollection('board_pawn2_turn');
+
 
         $board2 = Store::create([
             'name' => "Brass",
             'nickname' => "",
             'price' => 1300.00,
             'type' => "Board",
+            'color' => [
+                'color1' => "#f7f1dd",
+                'color2' => "#181920",
+                'lastMoveColor' => "#ffffff",
+            ],
         ]);
         $board2->addMediaFromUrl(asset('store/boards/brass.png'))->toMediaCollection('item');
+        $board2->addMediaFromUrl(asset('store/boards/pawns/dpc3.svg'))->toMediaCollection('board_pawn1');
+        $board2->addMediaFromUrl(asset('store/boards/pawns/gpc4.svg'))->toMediaCollection('board_pawn2');
+        $board2->addMediaFromUrl(asset('store/boards/pawns/dpc3white.svg'))->toMediaCollection('board_pawn1_turn');
+        $board2->addMediaFromUrl(asset('store/boards/pawns/gpc4white.svg'))->toMediaCollection('board_pawn2_turn');
 
         $crown1 = Store::create([
             'name' => "Crown",

@@ -9,8 +9,12 @@ import { ThreeDots } from "react-loader-spinner";
 import axios from "axios";
 import { useAuth } from "../../context/auth";
 import { Footer } from "../Footer";
+
+import { Localization } from "../../utils/language"
+
+
 const Signup = () => {
-  const { login } = useAuth();
+  const { login, lang } = useAuth();
   const [phone, setPhone, PhoneError] = useValidPhone();
   const [hasPhone, sethasPhone] = useState(false);
   const [hasCode, sethasCode] = useState(false);
@@ -52,7 +56,8 @@ const Signup = () => {
   const forgotPasswordHandler = () => {
     if (!hasPhone) {
       if (!phone) {
-        toast("please enter PhoneNo");
+        toast(Localization["please enter PhoneNo"][lang]);
+
         return;
       }
 
@@ -60,22 +65,22 @@ const Signup = () => {
     } else {
       if (!hasCode) {
         if ([...code].length !== 4) {
-          toast("Verification Code must 4 digits");
+          toast(Localization["Verification Code must 4 digits"][lang]);
           return;
         }
 
         verifyOtpSubmitHandler();
       } else {
         if (!username) {
-          toast("please enter username");
+          toast(Localization["please enter username"][lang]);
           return;
         }
         if (!password || !confirmpassword) {
-          toast("please enter password");
+          toast(Localization["please enter password"][lang]);
           return;
         }
         if (password !== confirmpassword) {
-          toast("password does not match");
+          toast(Localization["password does not match"][lang]);
           return;
         }
         finishRegisterSubmitHandler();
@@ -246,14 +251,14 @@ const Signup = () => {
         <div className="max-w-sm mx-auto w-full flex flex-col items-center space-y-2   p-3 rounded-md">
           <div className="flex flex-col items-center space-y-1 w-full">
             {!hasPhone ? (
-              <h1 className="font-medium text-[#fff] text-center">Sign up</h1>
+              <h1 className="font-medium text-[#fff] text-center">{Localization["Sign up"][lang]}</h1>
             ) : hasCode ? (
               <h1 className="font-medium text-[#fff] text-center">
-                Enter Your username and password
+                {Localization["Enter Your username and password"][lang]}
               </h1>
             ) : (
               <h1 className="font-medium text-[#fff] text-center">
-                Your Otp Code:
+                {Localization["Your OTP Code:"][lang]}
               </h1>
             )}
           </div>
@@ -261,7 +266,9 @@ const Signup = () => {
           {!hasPhone ? (
             <div className="flex flex-col items-start space-y-2  w-full">
               <div className="w-full flex flex-col items-start space-y-1">
-                <p className="text-[13px] text-gray-300">Phone no</p>
+                <p className="text-[13px] text-gray-300">
+                  {Localization["Phone no"][lang]}
+                </p>
                 <div
                   className="flex items-center   h-[42px]  border-2 rounded-md
                  border-orange-color w-full"
@@ -308,20 +315,17 @@ const Signup = () => {
                     visible={true}
                   />
                 ) : (
-                  "Send"
+                  Localization["Send"][lang]
                 )}
               </button>
 
-              {/* <p
-                onClick={() => navigate("/login")}
-                className="font-medium text-[#fff] text-center w-full  cursor-pointer  "
-              >
-                Back to login
-              </p> */}
               <p
-                className=" text-xs text-gray-400 text-right text-center w-full  cursor-pointer  "
+                className=" text-xs text-gray-400 text-right w-full  cursor-pointer  "
               >
-                Already have account ?<span onClick={() => navigate("/login")} className="text-orange-color underline ml-2 font-bold">Login</span>
+                {Localization["Already have account ?"][lang]}
+                <span onClick={() => navigate("/login")} className="text-orange-color underline ml-2 font-bold">
+                  {Localization["Login"][lang]}
+                </span>
               </p>
             </div>
           ) : !hasCode ? (
@@ -356,14 +360,14 @@ const Signup = () => {
                     visible={true}
                   />
                 ) : (
-                  "Send"
+                  Localization["Send"][lang]
                 )}
               </button>
               <p
                 onClick={() => navigate("/login")}
                 className="font-medium text-[#fff] text-center w-full  cursor-pointer hover:opacity-70 "
               >
-                Re-Send
+                {Localization["Re-Send"][lang]}
               </p>
             </div>
           ) : (
@@ -372,7 +376,7 @@ const Signup = () => {
                 value={username}
                 onChange={(event) => setUserName(event.target.value)}
                 type="text"
-                placeholder="username"
+                placeholder={Localization["Username"][lang]}
                 className="w-full flex-grow h-[42px]  text-white pl-3 bg-transparent border-2 rounded-md
                   border-orange-color focus:ring-0   focus:outline-none"
               />
@@ -381,7 +385,7 @@ const Signup = () => {
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
                   type={showPassword ? "text" : "password"}
-                  placeholder="password"
+                  placeholder={Localization["password"][lang]}
                   className="w-full flex-grow  text-white h-[42px] pl-3 bg-transparent border-none 
                   focus:border-none focus:ring-0  
          focus:outline-none"
@@ -403,7 +407,7 @@ const Signup = () => {
                   value={confirmpassword}
                   onChange={(event) => setConfirmPassword(event.target.value)}
                   type={showConfirmPassword ? "text" : "password"}
-                  placeholder="password"
+                  placeholder={Localization["password"][lang]}
                   name="phoneNo"
                   className="w-full h-[42px]  text-white flex-grow pl-3 bg-transparent border-none focus:border-none focus:ring-0  
          focus:outline-none"
@@ -442,14 +446,14 @@ const Signup = () => {
                     visible={true}
                   />
                 ) : (
-                  "Sign up"
+                  Localization["Sign up"][lang]
                 )}
               </button>
               <p
                 onClick={() => navigate("/login")}
                 className="font-medium text-[#fff] text-center w-full  cursor-pointer  "
               >
-                Already have account ? Login
+                {Localization["Already have account ?"][lang]} {Localization["Login"][lang]}
               </p>
             </div>
           )}

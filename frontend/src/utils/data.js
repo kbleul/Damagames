@@ -12,7 +12,8 @@ export const clearCookie = [
   "players",
   "bt_coin_amount",
   "dama-sound",
-  "p2Info"
+  "p2Info",
+  "pawns" //to show king icons in friends board
 ];
 
 

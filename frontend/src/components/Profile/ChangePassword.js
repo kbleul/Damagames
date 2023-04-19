@@ -8,21 +8,22 @@ import { useAuth } from "../../context/auth";
 import toast, { Toaster } from "react-hot-toast";
 import { FaTimes } from "react-icons/fa";
 import { AiFillCheckCircle } from "react-icons/ai";
+import { Localization } from "../../utils/language";
 
 const ChangePassword = ({ changePasswordModal, setChangePasswordModal }) => {
-  const { token } = useAuth();
+  const { token, lang } = useAuth();
 
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState(null)
 
   const changePasswordValidationSchema = Yup.object().shape({
-    currentPassword: Yup.string().required("current password is required"),
-    password: Yup.string().min(6).required("new password is required"),
+    currentPassword: Yup.string().required(Localization["current password is required"][lang]),
+    password: Yup.string().min(6).required(Localization["new password is required"][lang]),
     confirmPassword: Yup.string().when("password", {
       is: (val) => (val && val.length > 0 ? true : false),
       then: Yup.string().oneOf(
         [Yup.ref("password")],
-        "new password does not match"
+        Localization["new password does not match"][lang]
       ),
     }),
   });
@@ -58,7 +59,8 @@ const ChangePassword = ({ changePasswordModal, setChangePasswordModal }) => {
         },
         {
           onSuccess: (responseData) => {
-            setSuccessMessage("Password changed.")
+
+            setSuccessMessage(Localization["Password changed."][lang])
 
             setTimeout(() => {
               setChangePasswordModal(false)
@@ -162,7 +164,7 @@ const ChangePassword = ({ changePasswordModal, setChangePasswordModal }) => {
                             <Field
                               as="input"
                               type="text"
-                              placeholder="Current Password"
+                              placeholder={Localization["Current Password"][lang]}
                               name="currentPassword"
                               className={`rounded-[4px] pl-3 w-full h-[42px] bg-transparent font-medium  focus:outline-none focus:ring-0   text-gray-200 
                   ${errors.currentPassword && touched.currentPassword
@@ -180,7 +182,7 @@ const ChangePassword = ({ changePasswordModal, setChangePasswordModal }) => {
                             <Field
                               as="input"
                               type="text"
-                              placeholder="Password"
+                              placeholder={Localization["New Password"][lang]}
                               name="password"
                               className={`rounded-[4px] pl-3 w-full h-[42px] bg-transparent font-medium  focus:outline-none focus:ring-0   text-gray-200 
                   ${errors.password && touched.password
@@ -197,7 +199,7 @@ const ChangePassword = ({ changePasswordModal, setChangePasswordModal }) => {
                             <Field
                               as="input"
                               type="text"
-                              placeholder="Confirm Password"
+                              placeholder={Localization["Confirm Password"][lang]}
                               name="confirmPassword"
                               className={`rounded-[4px] pl-3 w-full h-[42px] bg-transparent font-medium  focus:outline-none focus:ring-0   text-gray-200 
                   ${errors.confirmPassword && touched.confirmPassword
@@ -225,8 +227,8 @@ const ChangePassword = ({ changePasswordModal, setChangePasswordModal }) => {
                     hover:opacity-80"
                           >
                             {registerMutation.isLoading
-                              ? "Loading"
-                              : " Change Password"}
+                              ? <>{Localization["Loading"][lang]}</>
+                              : <>{Localization["Change Password"][lang]}</>}
                           </button>
                         </Form>
                       )}

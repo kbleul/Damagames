@@ -12,9 +12,10 @@ import { BsFillPatchCheckFill } from "react-icons/bs";
 import { AiFillStar } from "react-icons/ai";
 
 import { useHome } from "../../context/HomeContext";
+import { Localization } from "../../utils/language";
 
 const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
-  const { login, token, user } = useAuth();
+  const { login, token, user, lang } = useAuth();
   const { setMessageType } = useHome();
   const [selected, setSelected] = useState(null);
 
@@ -60,7 +61,7 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
             setChangeProfileModal(false);
             setMessageType({
               type: "SUCCESS",
-              message: "Avatar updated sucessfully!",
+              message: Localization["profile changed successfully"][lang],
             });
           },
           onError: (err) => {
@@ -96,7 +97,7 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
 
             login(token, { ...user, profile_image: selectedItem.img });
             setChangeProfileModal(false);
-            toast("profile changed successfully");
+            toast(Localization["profile changed successfully"][lang]);
           },
           onError: (err) => {
             setErrorMessage(err?.response?.data?.data);
@@ -222,18 +223,12 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 20 20"
                           >
-                            <title>Close</title>
+                            <title>{Localization["Close"][lang]}</title>
                             <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
                           </svg>
                         </span>
                       </div>
                     )}
-                    {/* profiles */}
-
-                    {/* <section className="w-full border-b border-gray-600 flex items-center justify-center gap-8 text-sm font-bold pb-1 ">
-                      <button className="border-b-2 border-orange-600 text-orange-600 hover:text-white cursor-pointer"
-                      >Avatars</button>
-                    </section> */}
 
                     <div className="flex flex-col items-center space-y-2 w-full">
                       <div className="grid grid-cols-3 gap-y-2 items-center space-x-3 just-fy-center">
@@ -280,13 +275,11 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
                               <AiFillStar className="absolute bottom-2 right-2 text-orange-color" />
                             }
 
-
                             <img
                               src={avatar.item}
                               alt=""
                               className={avatar.price ? "h-20 w-20 object-cover opacity-4 0" : "h-20 w-20 object-cover"}
                             />
-
 
                           </div>
                         ))}
@@ -299,7 +292,9 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
                           onClick={selected < 3 ? profileMutationSubmitHandler : profileSelectSubmitHandler}
                           className="rounded-md bg-orange-bg text-white font-medium w-[70%] p-2"
                         >
-                          {profileSelectMutation.isLoading ? "Loading..." : "Update"}
+                          {profileSelectMutation.isLoading ?
+                            Localization["Loading"][lang]
+                            : Localization["Update"][lang]}
                         </button>
                       )}
                     </div>
