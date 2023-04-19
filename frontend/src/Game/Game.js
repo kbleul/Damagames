@@ -69,8 +69,8 @@ const Game = () => {
         "--playerTwoPawnKing",
         !user && !token
           ? `url(${yellowNegus})`
-          : user?.default_board
-          ? user?.default_board?.board_pawn1
+          : user?.default_crown?.board_pawn_king2
+          ? `url(${user?.default_crown?.board_pawn_king2})`
           : `url(${yellowNegus})`
       );
       //king icon turn
@@ -79,7 +79,7 @@ const Game = () => {
         !user && !token
           ? `url(${yellowNegusWhite})`
           : user?.default_board
-          ? user?.default_board?.board_pawn1
+          ? `url(${user?.default_board?.board_pawn_king2_turn})`
           : `url(${yellowNegusWhite})`
       );
     }
@@ -104,16 +104,16 @@ const Game = () => {
       "--playerOnePawnKing",
       !user && !token
         ? `url(${redNegus})`
-        : user?.default_board
-        ? user?.default_board?.board_pawn1
+        : user?.default_crown?.board_pawn_king1
+        ? `url(${user?.default_crown?.board_pawn_king1})`
         : `url(${redNegus})`
     );
     document.documentElement.style.setProperty(
       "--playerOnePawnKingTurn",
       !user && !token
         ? `url(${redNegusWhite})`
-        : user?.default_board
-        ? `url(${redNegusWhite})`
+        : user?.default_crown?.board_pawn_king1_turn
+        ? `url(${user?.default_crown?.board_pawn_king1_turn})`
         : `url(${redNegusWhite})`
     );
     //board and pawn
@@ -139,10 +139,10 @@ const Game = () => {
       !user && !token
         ? `#858484`
         : user?.default_board
-        ? user?.default_board?.color?.astMoveColor
+        ? user?.default_board?.color?.lastMoveColor
         : `#858484`
     );
-  }, [id,  user, token]);
+  }, [id, user, token]);
 
   const navigate = useNavigate();
   const [playMove] = useSound(moveSound);
@@ -217,30 +217,30 @@ const Game = () => {
     const player1 = [
       "a8",
       "c8",
-      // "e8",
-      // "g8",
-      // "b7",
-      // "d7",
-      // "f7",
-      // "h7",
-      // "a6",
-      // "c6",
-      // "e6",
-      // "g6",
+      "e8",
+      "g8",
+      "b7",
+      "d7",
+      "f7",
+      "h7",
+      "a6",
+      "c6",
+      "e6",
+      "g6",
     ];
     const player2 = [
       "b3",
       "d3",
-      // "f3",
-      // "h3",
-      // "a2",
-      // "c2",
-      // "e2",
-      // "g2",
-      // "b1",
-      // "d1",
-      // "f1",
-      // "h1",
+      "f3",
+      "h3",
+      "a2",
+      "c2",
+      "e2",
+      "g2",
+      "b1",
+      "d1",
+      "f1",
+      "h1",
     ];
 
     player1.forEach(function (i) {
