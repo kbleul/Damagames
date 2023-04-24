@@ -12,10 +12,11 @@ import "./style.css";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Footer } from "./Footer";
+import { BsFillCaretDownFill, BsFillCaretUpFill } from "react-icons/bs";
 
 const LANG = {
-  "AMH": "Amh",
-  "ENG": "Eng"
+  "AMH": "አማርኛ",
+  "ENG": "English",
 }
 
 const CreateGame = () => {
@@ -188,6 +189,43 @@ const CreateGame = () => {
 
       <SideMenu showMenu={showMenu} setShowMenu={setShowMenu} />
 
+      <article className="w-full flex justify-center absolute top-4">
+        {!user && !token && (
+          <section className=" w-[90%] flex items-center">
+            {!user && <div className="flex flex-col w-1/2 text-white ">
+              <button className="border rounded-md border-orange-color text-orange-color py-1 flex gap-2 items-center justify-center w-24"
+                onClick={() => setShowLangMenu(prev => !prev)}>
+                {LANG[lang]}
+                {showLangMenu ? <BsFillCaretUpFill /> : <BsFillCaretDownFill />}
+              </button>
+
+              {showLangMenu && <ul className="w-24 text-orange-color  border-b border-orange-color border-b-0 mt-1">
+                {Object.keys(LANG).filter(tempL => tempL !== lang).map(tempL =>
+                  (<li onClick={() => setLanguage(tempL)} className="rounded-md border-b border-orange-color cursor-pointer hover:border-b-orange-400 py-1">{LANG[tempL]}</li>))}
+              </ul>}
+
+            </div>}
+            <div className=" w-1/2 flex justify-end self-start">
+
+              <button
+                onClick={() => {
+                  handleSecond("login");
+                }}
+                className="fifth-step relative w-22 p-2 bg-orange-bg rounded-md cursor-pointer select-none px-5
+  active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
+  active:border-b-[0px] flex items-center justify-center
+  transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+  border-b-[1px] border-gray-400/50 font-semibold text-white
+">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
+                {Localization["Login"][lang]}
+              </button>
+            </div>
+          </section>
+
+        )}
+      </article>
+
       {showTourPrompt && <section className="absolute top-0 h-[100vh] flex items-center justify-center w-full z-10">
         <div className=" w-[90%] max-w-[450px] py-8 onboarding_prompt">
           <h3 className="pb-6 font-bold text-5xl">{Localization["Dama"][lang]}</h3>
@@ -197,7 +235,7 @@ const CreateGame = () => {
         </div>
       </section>}
 
-      <div onClick={() => setShowMenu(false)} className="max-w-xs p-3 mx-auto flex flex-col items-center justify-center gap-y-2 min-h-screen space-y-2">
+      <div onClick={() => { setShowMenu(false); setShowLangMenu(false); }} className="max-w-xs p-3 mx-auto flex flex-col items-center justify-center gap-y-2 min-h-screen space-y-2">
         <div className="h-[180px] w-[200px] bg-inherit mt-18 mb-8 ">
           <img src={avatar} className="" alt="avatar" />
         </div>
@@ -256,39 +294,7 @@ const CreateGame = () => {
           {Localization["Public Game"][lang]}
         </button>
 
-        <>
-          {!user && !token && (
-            <section className=" w-[90%]  absolute top-4 flex items-center">
-              {!user && <div className="flex flex-col w-1/2 text-white ">
-                <button className=" w-20 ml-8 text-sm text-orange-color pointer-cursor border-b border-orange-color"
-                  onClick={() => setShowLangMenu(prev => !prev)}>{LANG[lang]}</button>
 
-                {showLangMenu && <ul className="w-20 ml-8 text-sm text-orange-color  border-b border-orange-color border-b-0 mt-1">
-                  {Object.keys(LANG).filter(tempL => tempL !== lang).map(tempL =>
-                    (<li onClick={() => setLanguage(tempL)} className="border-b cursor-pointer">{LANG[tempL]}</li>))}
-                </ul>}
-
-              </div>}
-              <div className=" w-1/2 flex justify-end self-start">
-
-                <button
-                  onClick={() => {
-                    handleSecond("login");
-                  }}
-                  className="fifth-step relative w-22 p-2 bg-orange-bg rounded-md cursor-pointer select-none px-5
-  active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
-  active:border-b-[0px] flex items-center justify-center
-  transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
-  border-b-[1px] border-gray-400/50 font-semibold text-white
-">
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-                  {Localization["Login"][lang]}
-                </button>
-              </div>
-            </section>
-
-          )}
-        </>
 
         <section className="w-4/5 max-w-[30rem] flex items-center justify-evenly mt-[12vh]">
           <Link

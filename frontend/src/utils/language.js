@@ -646,46 +646,37 @@ export const Localization = {
         ENG: "Start Tour"
     },
     "Let’s begin by going": {
-        AMH: "የዳማን ኣጨዋወት በማየት ይጀምሩ",
+        AMH: "የዳማን ኣጨዋወት በማየት ይጀምሩ።",
         ENG: "Let’s begin with a simple tour of Dama."
     },
     "Sharpen your skills with": {
-        AMH: "ብቃት ካለው  ኮምፒዩተር ጋር በሚደረግ ፈታኝ ጨዋታ ችሎታዎን ያሳድጉ የዳማ አጨዋወትዎን አና ስልትዎን ወደተሻለ ደረጃ ከፍ ያድርጉ",
-        ENG: "Sharpen your skills with a challenging game against a skilled AI opponent. Practice your strategies and tactics to level up your game and become a dama master"
+        AMH: "ብቃት ካለው  ኮምፒዩተር ጋር በሚደረግ ፈታኝ ጨዋታ ችሎታዎን ያሳድጉ ፤ የዳማ አጨዋወት ስልትዎን ወደተሻለ ደረጃ ያሳድጉ።",
+        ENG: "Sharpen your skills with a challenging game against a skilled AI opponent."
     },
     "Start your own exciting": {
-        AMH: "የራስዎን አስደሳች የዳ የዳማ ጨዋታ ይጀምሩ እና ጓደኞችዎን ወይም በዓለም ዙሪያ ያሉ ሌሎች ተጫዋቾችን በመጋበዝ ይወዳደ ጨዋታውን ብቻ ይፍጠሩ እና ማስፈንተሪያውን ወይም ኮዱን ለጓደኛዎ ይላኩ።",
+        AMH: "ጨዋታውን በመፍጠር ማስፈንጠሪያውን ወይም ኮዱን ለጓደኛዎ ይላኩ። የራስዎን አስደሳች የዳማ ጨዋታ ይጀምሩ እና ጓደኛዎን በመጋበዝ ይወዳደሩ።",
         ENG: "Start your own exciting dama game and challenge your friends or other players around the world! Just create the game and send the link or code to your friend."
     },
     "Join a game your friend created": {
-        AMH: "ጓደኛዎ የፈጠረውን ጨዋታ ይቀላቀሉ እና የፉክክርን ስሜት ይለማመዱ። ችሎታዎን ከሌሎች የተካኑ ተጫዋቾች ጋር ፈትነው ራስዎን ከተወዳዳሪዎጭ  የደረጃ ሰለዳው ያስቀመቱ፦",
-        ENG: "Join a game your friend created and experience the thrill of competition. Test your skills against other skilled players and see if you have what it takes to come out on top !"
+        AMH: "ጓደኛዎ የፈጠረውን ጨዋታ ይቀላቀሉ እና የፉክክርን ስሜት ይለማመዱ። ችሎታዎን ከሌሎች የተካኑ ተጫዋቾች ጋር ፈትነው የራስዎን ደረጃ ያሻሽሉ።",
+        ENG: "Join a game your friend created and experience the thrill of competition."
     },
     "Dive into the action with": {
-        AMH: "ወደ ጋራ ጨዋታ ይቀላቀሉ፥፥ በዓለም ዙሪያ ከሚገግኑ ተጫዋጮች ጋር በመጫወት ክህሎትዎን ያዳብሩ",
-        ENG: "Dive into the action with a public dama game! Play against random opponents from diverse backgrounds and showcase your skills in an engaging and dynamic environment!"
+        AMH: "ወደ ጋራ ጨዋታ በመግባት በዓለም ዙሪያ ከሚገኙ ተጫዋቾች ጋር በመጫወት አስደሳች ጊዜን  ያሳልፉ።",
+        ENG: "Dive into the action with a public dama game ! Play against random opponents from diverse backgrounds.",
     },
     "Keep track of your": {
-        AMH: "ችሎታዎን በውጤት ሰሌዳው ላይ ከሌሎች ተጫዋቾች ጋር ያወዳድሩ። ደረጃዎቹን ይውጡ፣ ስኬቶችን ያግኙ እና የዳማ ክህሎትዎን ለአለም ያሳዩ",
-        ENG: "Keep track of your progress and compare your skills with other players on the scoreboard. Climb the ranks, earn achievements, and show off your dama expertise to the world!"
+        AMH: "የደረጃ ሰንጠረዥ ዉስጥ በመግባት የእርስዎን ደረጃ ከሌሎች ጋር ያስተያዩ።",
+        ENG: "Keep track of your progress and compare your skills with other players on the scoreboard."
     },
     "Customize your game with": {
-        AMH: "ቆርኪዎችን፣ ሰለዳዎጭ አና ዘውዶጭን ከገበያ በመግዛት የግል መልያዎትን ያዘምኑ",
-        ENG: "Customize your game with unique pawns, boards, and crowns from the store. Personalize your checkers experience and make your game truly your own!"
+        AMH: "መጫወቻዎችን ፣ ሰሌዳዎችን አና ዘውዶችን ከገበያ በመግዛት የግል መለያዎትን ያሳምሩ።",
+        ENG: "Customize your game with unique pawns, boards, and crowns from the store."
     },
     "Join the community of dama": {
         AMH: "መለያ በመፍጠር ወይም በመለያ በመግባት ዳማን ይቀላቀሉ። ልዩ ልዩ ባህሪያትን ይክፈቱ፣ የርሶን መለያ ያበጁ እና አስደሳች የዳማ ጉዞ ይጀምሩ።",
-        ENG: "Join the community of dama enthusiasts by creating an account or logging in. Unlock exclusive features, customize your profile, and embark on an exciting dama journey!"
+        ENG: "Join the community of dama enthusiasts by creating an account or logging in. Unlock exclusive features, customize your profile"
     },
-
-
-
-
-
-    // backend -----------------------------------------
-
-
-
 
 
 }

@@ -6,7 +6,7 @@ import { AiFillCamera } from "react-icons/ai";
 import ChangeBoard from "./changeSettings/ChangeBoard";
 import ChangeCrown from "./changeSettings/ChangeCrown";
 import { AiFillCheckCircle } from "react-icons/ai";
-import { BsFillCaretDownFill } from "react-icons/bs";
+import { BsFillCaretDownFill, BsFillCaretUpFill } from "react-icons/bs";
 
 
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -14,14 +14,14 @@ import axios from "axios";
 import { useAuth } from "../../context/auth";
 import ChangeProfile from "./ChangeProfile";
 import ForgotPassword from "./ForgotPassword";
-import { Navigate, useNavigate } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import { Localization } from "../../utils/language";
 
 
 const LANG = {
   "AMH": "አማርኛ",
-  "ENG": "English"
+  "ENG": "English",
 }
 
 const Profile = () => {
@@ -253,12 +253,12 @@ const Profile = () => {
 
           <button className="py-2 border rounded-md border-orange-color text-orange-color text-sm flex gap-2 items-center justify-center "
             onClick={() => setShowLangMenu(prev => !prev)}>{LANG[lang]}
-            <BsFillCaretDownFill />
+            {showLangMenu ? <BsFillCaretUpFill /> : <BsFillCaretDownFill />}
           </button>
 
           {showLangMenu && <ul className="w-full text-sm text-orange-color border-b border-orange-color border-b-0 mt-1">
             {Object.keys(LANG).filter(tempL => tempL !== lang).map(tempL =>
-              (<li onClick={() => saveLang(tempL)} className="py-2 border-b rounded-md border-orange-color text-orange-color text-sm flex gap-2 items-center justify-center ">{LANG[tempL]}</li>))}
+              (<li onClick={() => saveLang(tempL)} className="cursor-pointer hover:border-b-orange-400 py-2 border-b rounded-md border-orange-color text-orange-color text-sm flex gap-2 items-center justify-center ">{LANG[tempL]}</li>))}
           </ul>}
 
 

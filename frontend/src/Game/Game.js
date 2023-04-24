@@ -50,200 +50,200 @@ const Game = () => {
   const playingCrowns = useRef({});
   const isPlayerOne = JSON.parse(localStorage.getItem("playerOne"));
   // const { playerCrown, playerBoard } = useHome();
-  useEffect(() => {
-    document.documentElement.style.setProperty(
-      "--playerTwoPawn",
-      !user && !token
-        ? `url(${yellowCoin})`
-        : user?.default_board
-          ? `url(${user?.default_board?.board_pawn2})`
-          : `url(${yellowCoin})`
-    );
-    document.documentElement.style.setProperty(
-      "--playerTwoPawnTurn",
-      !user && !token
-        ? `url(${yellowWhiteCoin})`
-        : user?.default_board
-          ? `url(${user?.default_board?.board_pawn2_turn})`
-          : `url(${yellowWhiteCoin})`
-    );
+  // useEffect(() => {
+  //   document.documentElement.style.setProperty(
+  //     "--playerTwoPawn",
+  //     !user && !token
+  //       ? `url(${yellowCoin})`
+  //       : user?.default_board
+  //         ? `url(${user?.default_board?.board_pawn2})`
+  //         : `url(${yellowCoin})`
+  //   );
+  //   document.documentElement.style.setProperty(
+  //     "--playerTwoPawnTurn",
+  //     !user && !token
+  //       ? `url(${yellowWhiteCoin})`
+  //       : user?.default_board
+  //         ? `url(${user?.default_board?.board_pawn2_turn})`
+  //         : `url(${yellowWhiteCoin})`
+  //   );
 
-    document.documentElement.style.setProperty(
-      "--playerOnePawn",
-      !user && !token
-        ? `url(${orangeCoin})`
-        : user?.default_board
-          ? `url(${user?.default_board?.board_pawn1})`
-          : `url(${orangeCoin})`
-    );
-    document.documentElement.style.setProperty(
-      "--playerOnePawnTurn",
-      !user && !token
-        ? `url(${orangeWhiteCoin})`
-        : user?.default_board
-          ? `url(${user?.default_board?.board_pawn1_turn})`
-          : `url(${orangeWhiteCoin})`
-    );
-    //king icon and king turn
-    if (id) {
-      //king icon
-      document.documentElement.style.setProperty(
-        "--playerTwoPawnKing",
-          !user && !token
-          ? `url(${yellowNegusWhite})`
-          : user?.default_crown?.board_pawn_king2_turn
-          ? `url(${user?.default_crown?.board_pawn_king2_turn})`
-          : user?.default_board?.board_pawn_king2_turn
-          ? `url(${user?.default_board?.board_pawn_king2_turn})`
-          : `url(${yellowNegusWhite})`
-        //
-      );
-      document.documentElement.style.setProperty(
-        "--playerOnePawnKing",
-        !user && !token
-          ? `url(${redNegus})`
-          : user?.default_crown?.board_pawn_king1
-          ? `url(${user?.default_crown?.board_pawn_king1})`
-          : user?.default_board?.board_pawn_king1
-          ? `url(${user?.default_board?.board_pawn_king1})`
-          : `url(${redNegus})`
-      );
-      document.documentElement.style.setProperty(
-        "--playerOnePawnKingTurn",
-        !user && !token
-          ? `url(${redNegusWhite})`
-          : user?.default_crown?.board_pawn_king1_turn
-          ? `url(${user?.default_crown?.board_pawn_king1_turn})`
-          : user?.default_board?.board_pawn_king1_turn
-          ? `url(${user?.default_board?.board_pawn_king1_turn})`
-          : `url(${redNegusWhite})`
-        //
-      );
-    } else {
-      console.log("playingCrowns", playingCrowns);
-      if (isPlayerOne) {
-        document.documentElement.style.setProperty(
-          "--playerTwoPawnKing",
-          !user && !token
-            ? `url(${yellowNegus})`
-            : JSON.parse(localStorage.getItem("pawns"))?.normal
-            ? `url(${JSON.parse(localStorage.getItem("pawns"))?.normal})`
-            : user?.default_crown?.board_pawn_king2
-            ? `url(${user?.default_crown?.board_pawn_king2})`
-            : user?.default_board?.board_pawn_king2
-            ? `url(${user?.default_board?.board_pawn_king2})`
-            : `url(${yellowNegus})`
-        );
-        //king icon turn
-        document.documentElement.style.setProperty(
-          "--playerTwoPawnKingTurn",
-          !user && !token
-            ? `url(${yellowNegusWhite})`
-            : JSON.parse(localStorage.getItem("pawns"))?.active
-            ? `url(${JSON.parse(localStorage.getItem("pawns"))?.active})`
-            : user?.default_crown?.board_pawn_king2_turn
-            ? `url(${user?.default_crown?.board_pawn_king2_turn})`
-            : user?.default_board?.board_pawn_king2_turn
-            ? `url(${user?.default_board?.board_pawn_king2_turn})`
-            : `url(${yellowNegusWhite})`
-        );
-        document.documentElement.style.setProperty(
-          "--playerOnePawnKing",
-          !user && !token
-            ? `url(${redNegus})`
-            : user?.default_crown?.board_pawn_king1
-            ? `url(${user?.default_crown?.board_pawn_king1})`
-            : user?.default_board?.board_pawn_king1
-            ? `url(${user?.default_board?.board_pawn_king1})`
-            : `url(${redNegus})`
-        );
-        document.documentElement.style.setProperty(
-          "--playerOnePawnKingTurn",
-          !user && !token
-            ? `url(${redNegusWhite})`
-            : user?.default_crown?.board_pawn_king1_turn
-            ? `url(${user?.default_crown?.board_pawn_king1_turn})`
-            : user?.default_board?.board_pawn_king1_turn
-            ? `url(${user?.default_board?.board_pawn_king1_turn})`
-            : `url(${redNegusWhite})`
-        );
-      } else {
-        //it is second player
-        document.documentElement.style.setProperty(
-          "--playerOnePawnKing",
-          !user && !token
-            ? `url(${redNegus})`
-            : JSON.parse(localStorage.getItem("pawns"))?.normal
-            ? `url(${JSON.parse(localStorage.getItem("pawns"))?.normal})`
-            : user?.default_crown?.board_pawn_king1
-            ? `url(${user?.default_crown?.board_pawn_king1})`
-            : user?.default_board?.board_pawn_king1
-            ? `url(${user?.default_board?.board_pawn_king1})`
-            : `url(${redNegus})`
-        );
-        //king icon turn
-        document.documentElement.style.setProperty(
-          "--playerOnePawnKingTurn",
-          !user && !token
-            ? `url(${redNegusWhite})`
-            : JSON.parse(localStorage.getItem("pawns"))?.active
-            ? `url(${JSON.parse(localStorage.getItem("pawns"))?.active})`
-            : user?.default_crown?.board_pawn_king1_turn
-            ? `url(${user?.default_crown?.board_pawn_king1_turn})`
-            : user?.default_board?.board_pawn_king1_turn
-            ? `url(${user?.default_board?.board_pawn_king1_turn})`
-            : `url(${redNegusWhite})`
-        );
-        document.documentElement.style.setProperty(
-          "--playerTwoPawnKing",
-          !user && !token
-            ? `url(${yellowNegus})`
-            : user?.default_crown?.board_pawn_king2
-            ? `url(${user?.default_crown?.board_pawn_king2})`
-            : user?.default_board?.board_pawn_king2
-            ? `url(${user?.default_board?.board_pawn_king2})`
-            : `url(${yellowNegus})`
-        );
-        document.documentElement.style.setProperty(
-          "--playerTwoPawnKingTurn",
-          !user && !token
-            ? `url(${yellowNegusWhite})`
-            : user?.default_crown?.board_pawn_king2_turn
-            ? `url(${user?.default_crown?.board_pawn_king2_turn})`
-            : user?.default_board?.board_pawn_king2_turn
-            ? `url(${user?.default_board?.board_pawn_king2_turn})`
-            : `url(${yellowNegusWhite})`
-        );
-      }
-    }
+  //   document.documentElement.style.setProperty(
+  //     "--playerOnePawn",
+  //     !user && !token
+  //       ? `url(${orangeCoin})`
+  //       : user?.default_board
+  //         ? `url(${user?.default_board?.board_pawn1})`
+  //         : `url(${orangeCoin})`
+  //   );
+  //   document.documentElement.style.setProperty(
+  //     "--playerOnePawnTurn",
+  //     !user && !token
+  //       ? `url(${orangeWhiteCoin})`
+  //       : user?.default_board
+  //         ? `url(${user?.default_board?.board_pawn1_turn})`
+  //         : `url(${orangeWhiteCoin})`
+  //   );
+  //   //king icon and king turn
+  //   if (id) {
+  //     //king icon
+  //     document.documentElement.style.setProperty(
+  //       "--playerTwoPawnKing",
+  //         !user && !token
+  //         ? `url(${yellowNegusWhite})`
+  //         : user?.default_crown?.board_pawn_king2_turn
+  //         ? `url(${user?.default_crown?.board_pawn_king2_turn})`
+  //         : user?.default_board?.board_pawn_king2_turn
+  //         ? `url(${user?.default_board?.board_pawn_king2_turn})`
+  //         : `url(${yellowNegusWhite})`
+  //       //
+  //     );
+  //     document.documentElement.style.setProperty(
+  //       "--playerOnePawnKing",
+  //       !user && !token
+  //         ? `url(${redNegus})`
+  //         : user?.default_crown?.board_pawn_king1
+  //         ? `url(${user?.default_crown?.board_pawn_king1})`
+  //         : user?.default_board?.board_pawn_king1
+  //         ? `url(${user?.default_board?.board_pawn_king1})`
+  //         : `url(${redNegus})`
+  //     );
+  //     document.documentElement.style.setProperty(
+  //       "--playerOnePawnKingTurn",
+  //       !user && !token
+  //         ? `url(${redNegusWhite})`
+  //         : user?.default_crown?.board_pawn_king1_turn
+  //         ? `url(${user?.default_crown?.board_pawn_king1_turn})`
+  //         : user?.default_board?.board_pawn_king1_turn
+  //         ? `url(${user?.default_board?.board_pawn_king1_turn})`
+  //         : `url(${redNegusWhite})`
+  //       //
+  //     );
+  //   } else {
+  //     console.log("playingCrowns", playingCrowns);
+  //     if (isPlayerOne) {
+  //       document.documentElement.style.setProperty(
+  //         "--playerTwoPawnKing",
+  //         !user && !token
+  //           ? `url(${yellowNegus})`
+  //           : JSON.parse(localStorage.getItem("pawns"))?.normal
+  //           ? `url(${JSON.parse(localStorage.getItem("pawns"))?.normal})`
+  //           : user?.default_crown?.board_pawn_king2
+  //           ? `url(${user?.default_crown?.board_pawn_king2})`
+  //           : user?.default_board?.board_pawn_king2
+  //           ? `url(${user?.default_board?.board_pawn_king2})`
+  //           : `url(${yellowNegus})`
+  //       );
+  //       //king icon turn
+  //       document.documentElement.style.setProperty(
+  //         "--playerTwoPawnKingTurn",
+  //         !user && !token
+  //           ? `url(${yellowNegusWhite})`
+  //           : JSON.parse(localStorage.getItem("pawns"))?.active
+  //           ? `url(${JSON.parse(localStorage.getItem("pawns"))?.active})`
+  //           : user?.default_crown?.board_pawn_king2_turn
+  //           ? `url(${user?.default_crown?.board_pawn_king2_turn})`
+  //           : user?.default_board?.board_pawn_king2_turn
+  //           ? `url(${user?.default_board?.board_pawn_king2_turn})`
+  //           : `url(${yellowNegusWhite})`
+  //       );
+  //       document.documentElement.style.setProperty(
+  //         "--playerOnePawnKing",
+  //         !user && !token
+  //           ? `url(${redNegus})`
+  //           : user?.default_crown?.board_pawn_king1
+  //           ? `url(${user?.default_crown?.board_pawn_king1})`
+  //           : user?.default_board?.board_pawn_king1
+  //           ? `url(${user?.default_board?.board_pawn_king1})`
+  //           : `url(${redNegus})`
+  //       );
+  //       document.documentElement.style.setProperty(
+  //         "--playerOnePawnKingTurn",
+  //         !user && !token
+  //           ? `url(${redNegusWhite})`
+  //           : user?.default_crown?.board_pawn_king1_turn
+  //           ? `url(${user?.default_crown?.board_pawn_king1_turn})`
+  //           : user?.default_board?.board_pawn_king1_turn
+  //           ? `url(${user?.default_board?.board_pawn_king1_turn})`
+  //           : `url(${redNegusWhite})`
+  //       );
+  //     } else {
+  //       //it is second player
+  //       document.documentElement.style.setProperty(
+  //         "--playerOnePawnKing",
+  //         !user && !token
+  //           ? `url(${redNegus})`
+  //           : JSON.parse(localStorage.getItem("pawns"))?.normal
+  //           ? `url(${JSON.parse(localStorage.getItem("pawns"))?.normal})`
+  //           : user?.default_crown?.board_pawn_king1
+  //           ? `url(${user?.default_crown?.board_pawn_king1})`
+  //           : user?.default_board?.board_pawn_king1
+  //           ? `url(${user?.default_board?.board_pawn_king1})`
+  //           : `url(${redNegus})`
+  //       );
+  //       //king icon turn
+  //       document.documentElement.style.setProperty(
+  //         "--playerOnePawnKingTurn",
+  //         !user && !token
+  //           ? `url(${redNegusWhite})`
+  //           : JSON.parse(localStorage.getItem("pawns"))?.active
+  //           ? `url(${JSON.parse(localStorage.getItem("pawns"))?.active})`
+  //           : user?.default_crown?.board_pawn_king1_turn
+  //           ? `url(${user?.default_crown?.board_pawn_king1_turn})`
+  //           : user?.default_board?.board_pawn_king1_turn
+  //           ? `url(${user?.default_board?.board_pawn_king1_turn})`
+  //           : `url(${redNegusWhite})`
+  //       );
+  //       document.documentElement.style.setProperty(
+  //         "--playerTwoPawnKing",
+  //         !user && !token
+  //           ? `url(${yellowNegus})`
+  //           : user?.default_crown?.board_pawn_king2
+  //           ? `url(${user?.default_crown?.board_pawn_king2})`
+  //           : user?.default_board?.board_pawn_king2
+  //           ? `url(${user?.default_board?.board_pawn_king2})`
+  //           : `url(${yellowNegus})`
+  //       );
+  //       document.documentElement.style.setProperty(
+  //         "--playerTwoPawnKingTurn",
+  //         !user && !token
+  //           ? `url(${yellowNegusWhite})`
+  //           : user?.default_crown?.board_pawn_king2_turn
+  //           ? `url(${user?.default_crown?.board_pawn_king2_turn})`
+  //           : user?.default_board?.board_pawn_king2_turn
+  //           ? `url(${user?.default_board?.board_pawn_king2_turn})`
+  //           : `url(${yellowNegusWhite})`
+  //       );
+  //     }
+  //   }
 
-    //board and pawn
-    document.documentElement.style.setProperty(
-      "--playerSquareBoard",
-      !user && !token
-        ? `#181920`
-        : user?.default_board
-          ? user?.default_board?.color?.color1
-          : `#181920`
-    );
-    document.documentElement.style.setProperty(
-      "--playerBoardColor",
-      !user && !token
-        ? `#2c2c37`
-        : user?.default_board
-          ? user?.default_board?.color?.color2
-          : `#2c2c37`
-    );
-    // last move shower
-    document.documentElement.style.setProperty(
-      "--lastMoveColor",
-      !user && !token
-        ? `#858484`
-        : user?.default_board
-          ? user?.default_board?.color?.lastMoveColor
-          : `#858484`
-    );
-  }, [id, user, token]);
+  //   //board and pawn
+  //   document.documentElement.style.setProperty(
+  //     "--playerSquareBoard",
+  //     !user && !token
+  //       ? `#181920`
+  //       : user?.default_board
+  //         ? user?.default_board?.color?.color1
+  //         : `#181920`
+  //   );
+  //   document.documentElement.style.setProperty(
+  //     "--playerBoardColor",
+  //     !user && !token
+  //       ? `#2c2c37`
+  //       : user?.default_board
+  //         ? user?.default_board?.color?.color2
+  //         : `#2c2c37`
+  //   );
+  //   // last move shower
+  //   document.documentElement.style.setProperty(
+  //     "--lastMoveColor",
+  //     !user && !token
+  //       ? `#858484`
+  //       : user?.default_board
+  //         ? user?.default_board?.color?.lastMoveColor
+  //         : `#858484`
+  //   );
+  // }, [id, user, token]);
 
   const navigate = useNavigate();
   const [playMove] = useSound(moveSound);
@@ -923,7 +923,7 @@ const Game = () => {
 
     if (!JSON.parse(localStorage.getItem("pawns"))) {
       socket.on("getCrownType", (data) => {
-        if (!JSON.parse(localStorage.getItem("pawns"))){
+        if (!JSON.parse(localStorage.getItem("pawns"))) {
           const tempObj = localStorage.getItem("playerOne")
             ? (playingCrowns.current = data.p2)
             : (playingCrowns.current = data.p1);
