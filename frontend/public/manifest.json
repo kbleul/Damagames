@@ -47,9 +47,5 @@
       "type": "image/png"
     }
   ],
-  "description": "Join the fun at Dama! Challenge your friends or try your hand at playing against our smart AI. Experience endless hours of fun as you strategize to capture all your opponent's pieces and win the game.",
-  "android": {
-    "theme_color": "#ff4c01",
-    "package_name": "com.jaktech.dama"
-  }
+  "description": "Join the fun at Dama! Challenge your friends or try your hand at playing against our smart AI. Experience endless hours of fun as you strategize to capture all your opponent's pieces and win the game."
 }

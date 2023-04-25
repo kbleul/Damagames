@@ -290,7 +290,7 @@ const WinnerModal = ({
                   "
                       onClick={handleResetGame}
                     >
-                      Rematch
+                      {Localization["Rematch"][lang]}
                     </button>
                     <button
                       type="button"
@@ -305,8 +305,8 @@ const WinnerModal = ({
                         gameState.players > 1 && rejectGameRequest();
                         navigate("/create-game");
                       }}
-                    >
-                      New Game
+                    >{Localization["New Game"][lang]}
+
                     </button>
                   </div>
                 </Dialog.Panel>
