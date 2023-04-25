@@ -679,4 +679,15 @@ export const Localization = {
     },
 
 
+    "Select language preference": {
+        AMH: "የቋንቋ ምርጫዎን ይምረጡ።",
+        ENG: "Select your language preference"
+    },
+
+    "Select": {
+        AMH: "ምረጥ",
+        ENG: "Select"
+    },
+
+
 }

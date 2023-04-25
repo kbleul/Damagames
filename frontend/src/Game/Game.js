@@ -32,15 +32,15 @@ import NewGameRequestModal from "./components/NewGameRequestModal.js";
 
 //crowns
 //crowns
-import yellowCoin from "../assets/yellow-coin.svg";
-import yellowWhiteCoin from "../assets/yellow-coin-white.svg";
-import redNegus from "../assets/redNegus.svg";
-import yellowNegus from "../assets/YellowNegus.svg";
-import yellowNegusWhite from "../assets/YellowNegus-white.svg";
-import orangeCoin from "../assets/orange-coin.svg";
-import orangeWhiteCoin from "../assets/orange-coin-white.svg";
-import redNegusWhite from "../assets/redNegus-white.svg";
-import { useHome } from "../context/HomeContext.js";
+// import yellowCoin from "../assets/yellow-coin.svg";
+// import yellowWhiteCoin from "../assets/yellow-coin-white.svg";
+// import redNegus from "../assets/redNegus.svg";
+// import yellowNegus from "../assets/YellowNegus.svg";
+// import yellowNegusWhite from "../assets/YellowNegus-white.svg";
+// import orangeCoin from "../assets/orange-coin.svg";
+// import orangeWhiteCoin from "../assets/orange-coin-white.svg";
+// import redNegusWhite from "../assets/redNegus-white.svg";
+// import { useHome } from "../context/HomeContext.js";
 
 import { Localization } from "../utils/language";
 
@@ -48,7 +48,8 @@ const Game = () => {
   const { id } = useParams();
   const { user, token, lang } = useAuth();
   const playingCrowns = useRef({});
-  const isPlayerOne = JSON.parse(localStorage.getItem("playerOne"));
+  const [tourItems, setTourItems] = useState(null);
+
   // const { playerCrown, playerBoard } = useHome();
   // useEffect(() => {
   //   document.documentElement.style.setProperty(

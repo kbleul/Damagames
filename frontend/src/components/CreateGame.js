@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Joyride from 'react-joyride';
 import SideMenu from "./SideMenu";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +14,13 @@ import axios from "axios";
 import { Footer } from "./Footer";
 import { BsFillCaretDownFill, BsFillCaretUpFill } from "react-icons/bs";
 
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControl from '@mui/material/FormControl';
+
+
+
 const LANG = {
   "AMH": "አማርኛ",
   "ENG": "English",
@@ -24,13 +31,20 @@ const CreateGame = () => {
   const { user, token, lang, setLanguage } = useAuth();
   const [showMenu, setShowMenu] = useState(false);
   const [showTourPrompt, setShowTourPrompt] = useState(false);
+  const [showLangPrompt, setShowLangPrompt] = useState(false);
+
   const [showLangMenu, setShowLangMenu] = useState(false);
+
+  const [LangValue, setLangValue] = useState("ENG");
+
+  const [tourItems, setTourItems] = useState(null);
+
+
   function handleSecond(url) {
     setTimeout(() => {
       navigate(`/${url}`);
     }, 300);
   }
-  const [tourItems, setTourItems] = useState(null);
   const startTour = () => {
     setShowTourPrompt(false)
     setTourItems({
@@ -136,11 +150,7 @@ const CreateGame = () => {
 
 
   useEffect(() => {
-    !localStorage.getItem("onBoardig") &&
-      setTimeout(() => setShowTourPrompt(true), 1000)
-
     localStorage.getItem("gameId") && localStorage.removeItem("gameId")
-
   }, [])
 
 
@@ -150,6 +160,21 @@ const CreateGame = () => {
       localStorage.setItem("onBoardig", true)
     }
   };
+
+  useEffect(() => {
+    if (!localStorage.getItem("onBoardig")) {
+      if (localStorage.getItem("promptChecked")) {
+        setShowLangPrompt(false)
+        !tourItems && setTimeout(() => setShowTourPrompt(true), 600)
+      } else {
+        setShowTourPrompt(false)
+        setShowLangPrompt(true)
+      }
+
+    }
+  })
+
+
 
   return (
     <div
@@ -192,7 +217,7 @@ const CreateGame = () => {
       <article className="w-full flex justify-center absolute top-4">
         {!user && !token && (
           <section className=" w-[90%] flex items-center">
-            {!user && <div className="flex flex-col w-1/2 text-white ">
+            {!user && !showLangPrompt && <div className="flex flex-col w-1/2 text-white ">
               <button className="border rounded-md border-orange-color text-orange-color py-1 flex gap-2 items-center justify-center w-24"
                 onClick={() => setShowLangMenu(prev => !prev)}>
                 {LANG[lang]}
@@ -205,7 +230,7 @@ const CreateGame = () => {
               </ul>}
 
             </div>}
-            <div className=" w-1/2 flex justify-end self-start">
+            <div className={showLangPrompt ? " w-1/2 flex" : " w-1/2 flex justify-end"}>
 
               <button
                 onClick={() => {
@@ -226,14 +251,53 @@ const CreateGame = () => {
         )}
       </article>
 
-      {showTourPrompt && <section className="absolute top-0 h-[100vh] flex items-center justify-center w-full z-10">
-        <div className=" w-[90%] max-w-[450px] py-8 onboarding_prompt">
-          <h3 className="pb-6 font-bold text-5xl">{Localization["Dama"][lang]}</h3>
-          <p className="pb-6">{Localization["Let’s begin by going"][lang]}</p>
-          <button className="border border-black px-6 py-2 rounded-full border-white text-black bg-white 
-         focus:bg-gray-300  hover:bg-gray-300 font-bold" onClick={startTour}>{Localization["Start Tour"][lang]}</button>
+      {showLangPrompt && <section className="absolute top-0 h-[100vh] flex items-center justify-center w-full z-10">
+        <div className=" w-[90%] max-w-[450px] py-8 onboarding_prompt rounded-lg">
+          <p className="pt-4 pb-6 font-bold text-black">{Localization["Select language preference"][lang]}</p>
+
+          <FormControl>
+            <RadioGroup
+              aria-labelledby="demo-controlled-radio-buttons-group"
+              name="controlled-radio-buttons-group"
+              value={LangValue}
+            >
+              <div className="border border-black w-60 rounded-lg">
+                <FormControlLabel value="ENG" control={<Radio color="default" />} label={LANG.ENG}
+                  onClick={e => setLangValue(e.target.value)} />
+              </div>
+
+              <div className="border border-black w-60 rounded-lg mt-8">
+                <FormControlLabel value="AMH" control={<Radio color="default" />} label={LANG.AMH}
+                  onClick={e => setLangValue(e.target.value)} />
+              </div>
+
+            </RadioGroup>
+
+          </FormControl>
+
+          <br></br>
+          <button className="border border-black px-16 py-2 rounded-full border-white text-black bg-white 
+         focus:bg-gray-300  hover:bg-gray-300 font-bold mt-8"
+            onClick={() => {
+              LangValue !== lang && setLanguage(LangValue);
+              localStorage.setItem("promptChecked", true)
+              setShowLangPrompt(false)
+            }}>{Localization["Select"][lang]}</button>
         </div>
       </section>}
+
+
+      {
+        showTourPrompt && <section className="absolute top-0 h-[100vh] flex items-center justify-center w-full z-10">
+          <div className=" w-[90%] max-w-[450px] py-8 onboarding_prompt">
+            <h3 className="pb-6 font-bold text-5xl">{Localization["Dama"][lang]}</h3>
+            <p className="pb-6">{Localization["Let’s begin by going"][lang]}</p>
+            <button className="border border-black px-16 py-2 rounded-full border-white text-black bg-white 
+         focus:bg-gray-300  hover:bg-gray-300 font-bold" onClick={startTour}>{Localization["Start Tour"][lang]}</button>
+          </div>
+        </section>
+      }
+
 
       <div onClick={() => { setShowMenu(false); setShowLangMenu(false); }} className="max-w-xs p-3 mx-auto flex flex-col items-center justify-center gap-y-2 min-h-screen space-y-2">
         <div className="h-[180px] w-[200px] bg-inherit mt-18 mb-8 ">
@@ -346,7 +410,7 @@ const CreateGame = () => {
         <Footer />
       </div>
 
-    </div>
+    </div >
   );
 };
 
