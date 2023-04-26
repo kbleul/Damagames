@@ -679,17 +679,6 @@ export const Localization = {
     },
 
 
-
-    "Click the box": {
-        AMH: "ኣሳይ",
-        ENG: "Click the box to view hints on where you can make possible moves"
-    },
-    "Then click the box": {
-        AMH: "ኣሳይ",
-        ENG: "Then click the box you want to move to make the move"
-    },
-
-
     "Select language preference": {
         AMH: "የቋንቋ ምርጫዎን ይምረጡ።",
         ENG: "Select your language preference"
@@ -699,6 +688,15 @@ export const Localization = {
         AMH: "ምረጥ",
         ENG: "Select"
     },
+
+    "tour0": {
+        AMH: "በቅድሚያ ለማንቀሳቀስ እና ሊኖሩ ስለሚችሉ እንቅስቃሴዎች ፍንጮችን ለማየት የእርስዎን መጫወቻ ይንኩ።",
+        ENG: "click your pawn to make a move and view hints on possible moves."
+    },
+    "tour1": {
+        AMH: "ከዚያ ለመንቀሳቀስ የመረጡትን መጫወቻ ሳጥን በመንካት መጫወቻዎን ያንቀሳቅሱ።",
+        ENG: "Then click the box you want to move to inorder to make a move."
+    }
 
 
 }

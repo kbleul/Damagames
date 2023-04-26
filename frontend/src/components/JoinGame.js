@@ -553,7 +553,7 @@ const JoinGame = () => {
 
 
       <Toaster />
-    </div>   <Footer />
+    </div>
   </>
   );
 };

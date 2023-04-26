@@ -190,7 +190,7 @@ const NewGamePublic = () => {
     });
   }, []);
 
-  return (
+  return (<>
     <main
       style={{
         backgroundImage: `url(${background})`,
@@ -359,7 +359,6 @@ const NewGamePublic = () => {
         </div>
       )}
 
-      <Footer />
 
       <Toaster />
 
@@ -369,6 +368,9 @@ const NewGamePublic = () => {
         beforeGame={true}
       />
     </main>
+
+
+  </>
   );
 };
 

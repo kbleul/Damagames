@@ -151,6 +151,8 @@ const CreateGame = () => {
 
   useEffect(() => {
     localStorage.getItem("gameId") && localStorage.removeItem("gameId")
+
+
   }, [])
 
 
@@ -254,7 +256,8 @@ const CreateGame = () => {
 
       {showLangPrompt && <section className="absolute top-0 h-[100vh] flex items-center justify-center w-full z-10">
         <div className=" w-[90%] max-w-[450px] py-8 onboarding_prompt rounded-lg">
-          <p className="pt-4 pb-6 font-bold text-black">{Localization["Select language preference"][lang]}</p>
+          <p className="pt-4 font-bold text-black">Select your language preference</p>
+          <p className="pt-4 pb-6 font-bold text-black">የቋንቋ ምርጫዎን ይምረጡ።</p>
 
           <FormControl>
             <RadioGroup
@@ -262,12 +265,12 @@ const CreateGame = () => {
               name="controlled-radio-buttons-group"
               value={LangValue}
             >
-              <div className="border border-black w-60 rounded-lg">
+              <div className="border text-white border-white w-60 rounded-lg">
                 <FormControlLabel value="ENG" control={<Radio color="default" />} label={LANG.ENG}
                   onClick={e => setLangValue(e.target.value)} />
               </div>
 
-              <div className="border border-black w-60 rounded-lg mt-8">
+              <div className="border text-white border-white w-60 rounded-lg mt-8">
                 <FormControlLabel value="AMH" control={<Radio color="default" />} label={LANG.AMH}
                   onClick={e => setLangValue(e.target.value)} />
               </div>
@@ -277,13 +280,13 @@ const CreateGame = () => {
           </FormControl>
 
           <br></br>
-          <button className="border border-black px-16 py-2 rounded-full border-white text-black bg-white 
+          <button className="border px-16 py-2 rounded-full border-white text-black bg-white 
          focus:bg-gray-300  hover:bg-gray-300 font-bold mt-8"
             onClick={() => {
               LangValue !== lang && setLanguage(LangValue);
               localStorage.setItem("promptChecked", true)
               setShowLangPrompt(false)
-            }}>{Localization["Select"][lang]}</button>
+            }}>Select / ምረጥ</button>
         </div>
       </section>}
 
@@ -291,9 +294,9 @@ const CreateGame = () => {
       {
         showTourPrompt && <section className="absolute top-0 h-[100vh] flex items-center justify-center w-full z-10">
           <div className=" w-[90%] max-w-[450px] py-8 onboarding_prompt">
-            <h3 className="pb-6 font-bold text-5xl">{Localization["Dama"][lang]}</h3>
+            <h3 className="pb-6  font-bold text-5xl">{Localization["Dama"][lang]}</h3>
             <p className="pb-6">{Localization["Let’s begin by going"][lang]}</p>
-            <button className="border border-black px-16 py-2 rounded-full border-white text-black bg-white 
+            <button className="border px-10 py-2 rounded-full border-white text-black bg-white 
          focus:bg-gray-300  hover:bg-gray-300 font-bold" onClick={startTour}>{Localization["Start Tour"][lang]}</button>
           </div>
         </section>

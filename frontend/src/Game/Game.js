@@ -50,6 +50,8 @@ const Game = () => {
   const playingCrowns = useRef({});
   const [tourItems, setTourItems] = useState(null);
   const [showTourPrompt, setShowTourPrompt] = useState(true);
+  const [tourCounter, setTourCounter] = useState(10);
+
 
   // const { playerCrown, playerBoard } = useHome();
   // useEffect(() => {
@@ -1263,21 +1265,67 @@ const Game = () => {
     })
   }
 
+
   useEffect(() => {
     localStorage.setItem("dama-sound", true);
 
-    localStorage.getItem("showOnBoardig") &&
-      !localStorage.getItem("gameOnBoardig") && setTimeout(startTour, 1500)
+    if (id == 1) {
+      localStorage.getItem("showOnBoardig") &&
+        !localStorage.getItem("gameOnBoardig") && setTimeout(() => {
+          document.getElementsByClassName("sub-box")[61].classList.add("first-steps")
+          document.getElementsByClassName("sub-box")[52].classList.add("second-steps")
+
+          setTourCounter(0)
+
+          setTimeout(() => {
+            document.getElementsByClassName("sub-box")[61].querySelectorAll("div > button.square")[0].style.backgroundColor = "#b56464"
+            setTimeout(() => {
+              document.getElementsByClassName("sub-box")[61].querySelectorAll("div > button.square")[0].click()
+            }, 1000)
+          }, 800)
+
+        }, 1000)
+    }
+
   }, []);
 
 
-  const handleJoyrideCallback = data => {
-    const { action, status } = data;
-    if (status === "finished" || status === "skipped" || action === "close") {
-      localStorage.setItem("gameOnBoardig", true)
-      localStorage.removeItem("showOnBoardig")
+
+  const showNextTour = () => {
+    setTourCounter(function (latest) { return ++latest })
+    if (tourCounter === 0) {
+      document.getElementsByClassName("sub-box")[52].style.backgroundColor = "red"
+
+      setTimeout(() => {
+        document.getElementsByClassName("sub-box")[52].querySelectorAll("div > button.square")[0].click()
+      }, 1500)
     }
-  };
+
+    if (tourCounter !== 0) {
+      localStorage.removeItem("showOnBoardig")
+      setPawns([0, 0]);
+      moveRef.current = [0, 0];
+
+      setGameState(
+        {
+          players: 2,
+          history: [
+            {
+              boardState: createBoard(),
+              currentPlayer: true,
+            },
+          ],
+          activePiece: null,
+          moves: [],
+          jumpKills: null,
+          hasJumped: null,
+          stepNumber: 0,
+          winner: null,
+        }
+      )
+
+    }
+  }
 
   return (
     <div
@@ -1286,28 +1334,13 @@ const Game = () => {
     relative  flex flex-col min-h-screen items-center justify-evenly `}
     >
 
-      {tourItems && <Joyride
-        callback={handleJoyrideCallback}
-        steps={tourItems.steps}
-        continuous
-        hideCloseButton
-        run={tourItems.run}
-        scrollToFirstStep
-        showProgress
-        showSkipButton
-        spotlightClicks={false}
-        styles={{
-          options: {
-            arrowColor: 'rgb(215 56 13 / 90%)',
-            overlayColor: 'rgba(79, 26, 0, 0.4)',
-            primaryColor: '#000',
-            textColor: '#000',
-            zIndex: 1000,
-            backgroundColor: "rgb(215 56 13 / 90%)",
-          },
-        }}
-      />}
 
+      {tourCounter < 2 && <section className="absolute top-[5%] right-0  h-[100vh] flex items-center justify-center w-3/4 max-w-[450px]  z-10">
+        <div className=" w-[90%] max-w-[450px] py-2 rounded-lg onboarding_prompt">
+          <p className="pb-6 px-1 text-white">{Localization[`tour${tourCounter}`][lang]}</p>
+          <button className="bg-white px-4 py-2 font-bold text-sm rounded" onClick={showNextTour}>{tourCounter === 0 ? "Next" : "Done"}</button>
+        </div>
+      </section>}
 
 
 
