@@ -358,7 +358,7 @@ const JoinGame = () => {
       }
     } catch (err) { }
   };
-  return (
+  return (<>
     <div
       style={{
         backgroundImage: `url(${background})`,
@@ -550,10 +550,11 @@ const JoinGame = () => {
           </div>
         </div>
       )}
-      <Footer />
+
 
       <Toaster />
-    </div>
+    </div>   <Footer />
+  </>
   );
 };
 
