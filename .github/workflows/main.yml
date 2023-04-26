@@ -18,16 +18,16 @@ jobs:
     uses: ./.github/workflows/build_arc_docs.yml
     needs: "cleanup"
 
-  # release:
-  #   uses: ./.github/workflows/release.yml
-  #   needs: ["build_arc_docs"]
-    # needs: ["build_arc_docs", "e2e-test"]
+  release:
+    uses: ./.github/workflows/release.yml
+    # needs: ["build_arc_docs"]
+    needs: ["build_arc_docs"]
 
 
-  # deploy_staging:
-  #   uses: ./.github/workflows/docker_stage.yml
-  #   secrets: inherit
-  #   needs: "cleanup"
+  deploy_staging:
+    uses: ./.github/workflows/docker_stage.yml
+    secrets: inherit
+    needs: "cleanup"
 
   deploy_production:
     if: ${{ !contains(github.ref, '-rc') }}
