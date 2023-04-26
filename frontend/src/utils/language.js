@@ -679,6 +679,17 @@ export const Localization = {
     },
 
 
+
+    "Click the box": {
+        AMH: "ኣሳይ",
+        ENG: "Click the box to view hints on where you can make possible moves"
+    },
+    "Then click the box": {
+        AMH: "ኣሳይ",
+        ENG: "Then click the box you want to move to make the move"
+    },
+
+
     "Select language preference": {
         AMH: "የቋንቋ ምርጫዎን ይምረጡ።",
         ENG: "Select your language preference"

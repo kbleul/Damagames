@@ -35,7 +35,7 @@ const CreateGame = () => {
 
   const [showLangMenu, setShowLangMenu] = useState(false);
 
-  const [LangValue, setLangValue] = useState("ENG");
+  const [LangValue, setLangValue] = useState(lang);
 
   const [tourItems, setTourItems] = useState(null);
 
@@ -158,6 +158,7 @@ const CreateGame = () => {
     const { action, status } = data;
     if (status === "finished" || status === "skipped" || action === "close") {
       localStorage.setItem("onBoardig", true)
+      localStorage.setItem("showOnBoardig", true)
     }
   };
 

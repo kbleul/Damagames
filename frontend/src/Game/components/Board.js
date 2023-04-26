@@ -53,7 +53,7 @@ const Board = (props) => {
 
   function renderSquare(coordinates, squareClasses) {
     return (
-      <div>
+      <div className="sub-box">
         <Square
           key={coordinates}
           squareClasses={squareClasses}

@@ -29,7 +29,7 @@ import { clearCookie } from "../utils/data.js";
 import { useAuth } from "../context/auth.js";
 import { IoMdLogIn } from "react-icons/io";
 import NewGameRequestModal from "./components/NewGameRequestModal.js";
-
+import Joyride from 'react-joyride';
 //crowns
 //crowns
 // import yellowCoin from "../assets/yellow-coin.svg";
@@ -49,6 +49,7 @@ const Game = () => {
   const { user, token, lang } = useAuth();
   const playingCrowns = useRef({});
   const [tourItems, setTourItems] = useState(null);
+  const [showTourPrompt, setShowTourPrompt] = useState(true);
 
   // const { playerCrown, playerBoard } = useHome();
   // useEffect(() => {
@@ -1203,9 +1204,7 @@ const Game = () => {
     }
   }, [winnerPlayer]);
 
-  useEffect(() => {
-    localStorage.setItem("dama-sound", true);
-  }, []);
+
 
   //send winner
   const gameId = localStorage.getItem("gameId");
@@ -1233,9 +1232,51 @@ const Game = () => {
     } catch (err) { }
   };
 
+
+
   const changeSound = () => {
     localStorage.setItem("dama-sound", !soundOn);
     setSoundOn((prev) => !prev);
+  };
+
+
+
+
+  const startTour = () => {
+    document.getElementsByClassName("sub-box")[61].classList.add("first-steps")
+    document.getElementsByClassName("sub-box")[52].classList.add("second-steps")
+
+    console.log(document.getElementsByClassName("square")[52])
+    setTourItems({
+      run: true,
+      steps: [
+        {
+          target: '.first-steps',
+          content: Localization["Click the box"][lang],
+          disableBeacon: true
+        },
+        {
+          target: '.second-steps',
+          content: Localization["Then click the box"][lang],
+        }
+      ]
+    })
+  }
+
+  useEffect(() => {
+    localStorage.setItem("dama-sound", true);
+
+    localStorage.getItem("showOnBoardig") &&
+      !localStorage.getItem("gameOnBoardig") && setTimeout(startTour, 1500)
+  }, []);
+
+
+  const handleJoyrideCallback = data => {
+    const { action, status } = data;
+    if (status === "finished" || status === "skipped" || action === "close") {
+      localStorage.setItem("gameOnBoardig", true)
+      localStorage.removeItem("showOnBoardig")
+    }
   };
 
   return (
@@ -1244,6 +1285,32 @@ const Game = () => {
   
     relative  flex flex-col min-h-screen items-center justify-evenly `}
     >
+
+      {tourItems && <Joyride
+        callback={handleJoyrideCallback}
+        steps={tourItems.steps}
+        continuous
+        hideCloseButton
+        run={tourItems.run}
+        scrollToFirstStep
+        showProgress
+        showSkipButton
+        spotlightClicks={false}
+        styles={{
+          options: {
+            arrowColor: 'rgb(215 56 13 / 90%)',
+            overlayColor: 'rgba(79, 26, 0, 0.4)',
+            primaryColor: '#000',
+            textColor: '#000',
+            zIndex: 1000,
+            backgroundColor: "rgb(215 56 13 / 90%)",
+          },
+        }}
+      />}
+
+
+
+
       <section className="w-full flex items-center justify-between">
         {soundOn ? (
           <button
