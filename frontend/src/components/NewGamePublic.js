@@ -370,6 +370,7 @@ const NewGamePublic = () => {
     </main>
 
 
+
   </>
   );
 };

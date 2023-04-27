@@ -67,10 +67,6 @@ registerRoute(
 
 self.addEventListener('install', (event) => {
 
-  event.waitUntil(
-    caches.keys().then(keys => { console.log(keys) })
-  );
-
   //Remove all caches
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -86,13 +82,7 @@ self.addEventListener('install', (event) => {
   self.registration.unregister()
 });
 
-// self.addEventListener('activate', (event) => {
 
-//   event.waitUntil(
-//     caches.keys().then(keys => { console.log(keys) })
-//   );
-
-// });
 
 
 // Any other custom service worker logic can go here.

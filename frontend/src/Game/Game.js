@@ -933,8 +933,6 @@ const Game = () => {
             : (playingCrowns.current = data.p1);
           !JSON.parse(localStorage.getItem("pawns")) &&
             localStorage.setItem("pawns", JSON.stringify(tempObj));
-
-          console.log(JSON.parse(localStorage.getItem("pawns")));
         }
       });
     }
@@ -1281,7 +1279,7 @@ const Game = () => {
             document.getElementsByClassName("sub-box")[61].querySelectorAll("div > button.square")[0].style.backgroundColor = "#b56464"
             setTimeout(() => {
               document.getElementsByClassName("sub-box")[61].querySelectorAll("div > button.square")[0].click()
-            }, 1000)
+            }, 1400)
           }, 800)
 
         }, 1000)
@@ -1298,7 +1296,7 @@ const Game = () => {
 
       setTimeout(() => {
         document.getElementsByClassName("sub-box")[52].querySelectorAll("div > button.square")[0].click()
-      }, 1500)
+      }, 1200)
     }
 
     if (tourCounter !== 0) {
