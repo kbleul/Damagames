@@ -3,11 +3,12 @@
   "short_name": "dama",
   "theme_color": "#ff4c01",
   "background_color": "#2C2C37",
-  "display": "standalone",
   "permissions": ["fullscreen"],
   "orientation": "portrait",
   "scope": "/",
-  "start_url": "/?fullscreen=true",
+  "start_url": "/?source=pwa",
+  "display_override": ["window-control-overlay", "minimal-ui"],
+  "display": "standalone",
   "icons": [
     {
       "src": "192.png",
@@ -45,6 +46,44 @@
       "src": "logo512.png",
       "sizes": "512x512",
       "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "View our store",
+      "short_name": "Store",
+      "description": "View our store to buy d/t game items",
+      "url": "/store?source=pwa",
+      "icons": [{ "src": "logo192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Score board",
+      "short_name": "Score board",
+      "description": "View the top player in dama",
+      "url": "/score-board?source=pwa",
+      "icons": [{ "src": "logo192.png", "sizes": "192x192" }]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "form_factor": "narrow"
+    }
+  ],
+  "categories": [
+    "games",
+    "entertainment"
+  ],
+  "dir": "rtl",
+  "lang": ["en", "am"],
+  "prefer_related_applications": false,
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.damagames.twa",
+      "id": "com.damagames.twa"
     }
   ],
   "description": "Join the fun at Dama! Challenge your friends or try your hand at playing against our smart AI. Experience endless hours of fun as you strategize to capture all your opponent's pieces and win the game."
