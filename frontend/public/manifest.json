@@ -6,7 +6,7 @@
   "permissions": ["fullscreen"],
   "orientation": "portrait",
   "scope": "/",
-  "start_url": "/?source=pwa",
+  "start_url": "/",
   "display_override": ["window-control-overlay", "minimal-ui"],
   "display": "standalone",
   "icons": [
@@ -72,10 +72,7 @@
       "form_factor": "narrow"
     }
   ],
-  "categories": [
-    "games",
-    "entertainment"
-  ],
+  "categories": ["games", "entertainment"],
   "dir": "rtl",
   "description": "Join the fun at Dama! Challenge your friends or try your hand at playing against our smart AI. Experience endless hours of fun as you strategize to capture all your opponent's pieces and win the game."
 }
