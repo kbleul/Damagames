@@ -77,13 +77,5 @@
     "entertainment"
   ],
   "dir": "rtl",
-  "prefer_related_applications": false,
-  "related_applications": [
-    {
-      "platform": "play",
-      "url": "https://play.google.com/store/apps/details?id=com.damagames.twa",
-      "id": "com.damagames.twa"
-    }
-  ],
   "description": "Join the fun at Dama! Challenge your friends or try your hand at playing against our smart AI. Experience endless hours of fun as you strategize to capture all your opponent's pieces and win the game."
 }
