@@ -3,7 +3,7 @@
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
-      "package_name": "com.damagames.test.twa",
+      "package_name": "com.damagames.twa",
       "sha256_cert_fingerprints": [
         "CB:0A:A8:25:63:09:DF:4F:92:EF:24:B8:22:0D:A0:62:1F:6B:50:76:C2:4B:E2:D6:50:E4:A6:11:15:AB:2B:33"
       ]
