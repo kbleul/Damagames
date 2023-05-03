@@ -66,7 +66,7 @@ const App = () => {
           <Route path="/new-game" element={<NewGame />} />
           <Route path="/join-game" element={<JoinGame />} />
           <Route path="/join-game/:id" element={<JoinGame />} />
-          <Route path="/game" element={localStorage.getItem("gameId") ? <Game /> : <Navigate to="/create-game" />} />
+          <Route path="/game" element={<Game />} />
           <Route path="/game/:id" element={localStorage.getItem("gameId") ? <Game /> : <Navigate to="/create-game" />} />
           <Route path="/already-joined" element={<AlreadyJoined />} />
           <Route path="/score-board" element={<ScoreBoard />} />
@@ -95,7 +95,7 @@ const App = () => {
           <Route path="/new-game" element={<NewGame />} />
           <Route path="/join-game" element={<JoinGame />} />
           <Route path="/join-game/:id" element={<JoinGame />} />
-          <Route path="/game" element={localStorage.getItem("gameId") ? <Game /> : <Navigate to="/create-game" />} />
+          <Route path="/game" element={<Game />} />
           <Route path="/game/:id" element={localStorage.getItem("gameId") ? <Game /> : <Navigate to="/create-game" />} />
           <Route path="/already-joined" element={<AlreadyJoined />} />
           <Route path="/score-board" element={<ScoreBoard />} />

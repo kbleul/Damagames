@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import dateFormat, { masks } from "dateformat";
 
 import { useAuth } from "../context/auth";
 import { useNavigate } from "react-router-dom";
@@ -7,15 +6,13 @@ import { useMutation } from "@tanstack/react-query";
 import socket from "../utils/socket.io";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
-import { CopyToClipboard } from "react-copy-to-clipboard";
-import { IoIosCopy } from "react-icons/io";
-import { IoIosShareAlt } from "react-icons/io";
 import { clearCookie } from "../utils/data";
 import background from "../assets/backdrop.jpg";
-import { Footer } from "./Footer";
 import ExitWarningModal from "../Game/components/ExitWarningModal";
 import { Localization } from "../utils/language";
+import { Circles } from "react-loader-spinner";
 
+import wellDone from "../assets/Done.png"
 
 const ACTION = {
   MENU: "menu",
@@ -285,78 +282,21 @@ const NewGamePublic = () => {
         </div>
       )}
 
-      {action === ACTION.CREATED && (
-        <div
-          className="absolute  w-full flex flex-col items-center justify-center 
-        min-h-screen space-y-2 p-5"
-        >
-          <div
-            className="flex flex-col items-center justify-center max-w-xl mx-auto w-full 
-           border-2 border-orange-color p-3 rounded-md"
-          >
-            <h2 className="font-medium text-white text-lg ">{Localization["Great work"][lang]}</h2>
-            <p className="text-gray-200 pb-2 capitalize ">
-              {Localization["Now send this"][lang]}
-            </p>
-            <div className="z-40 flex items-center border border-gray-400 p-2 rounded-sm w-full">
-              <input
-                type="text"
-                value={value}
-                disabled
-                className=" bg-transparent text-white focus:outline-none focus:ring-0  w-full"
-              />
-              <CopyToClipboard text={value} onCopy={() => setIsCopied(true)}>
-                {isCopied ? (
-                  <p className="text-xs text-green-500">{Localization["Copied"][lang]}</p>
-                ) : (
-                  <IoIosCopy
-                    className={`${isCopied ? "text-green-500" : "text-gray-300"
-                      }`}
-                  />
-                )}
-              </CopyToClipboard>
-            </div>
-            {/* via code */}
-            <div className="flex items-center space-x-2 justify-center">
-              <div className="bg-orange-bg w-20 h-[1px]" />
-              <p className="text-center text-orange-color py-2">{Localization["Or"][lang]}</p>
-              <div className="bg-orange-bg w-20 h-[1px]" />
-            </div>
-            {/* code */}
-            <div className="flex items-center  border border-gray-400 p-2 rounded-sm  w-full">
-              <input
-                type="text"
-                value={code}
-                disabled
-                className="bg-transparent flex flex-grow text-white focus:outline-none focus:ring-0"
-              />
-              <CopyToClipboard text={code} onCopy={() => setCodeCopied(true)}>
-                {codeCopied ? (
-                  <p className="text-xs text-green-500">{Localization["Copied"][lang]}</p>
-                ) : (
-                  <IoIosCopy
-                    className={`${codeCopied ? "text-green-500" : "text-gray-400"
-                      }`}
-                  />
-                )}
-              </CopyToClipboard>
-            </div>
-
-            <div
-              onClick={shareLink}
-              className="relative w-4/5 mt-10 p-2 bg-orange-bg rounded-md cursor-pointer select-none
-              active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
-              active:border-b-[0px] flex items-center justify-center
-              transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
-              border-b-[1px] border-gray-400/50 font-semibold text-white
-            "
-            >
-              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-              <IoIosShareAlt className="w-6 h-6" />
-              <p>{Localization["Share"][lang]}</p>
-            </div>
+      {action === ACTION.CREATED && (<article className="flex items-center justify-center relative w-full h-[100vh] ">
+        <section className="text-white border-2 border-orange-color w-4/5 max-w-[400px] flex flex-col items-center justify-evenly 
+         space-y-2 py-8 rounded-[2rem]">
+          <div className="flex flex-col justify-center items-center w-4/5">
+            <img className="w-12 h-12" src={wellDone} alt="" />
+            <h2 className="font-bold text-2xl pt-4 ">{Localization["Great Work"][lang]}</h2>
+            <p className=" pb-2 text-sm">{Localization["Game created successfully!"][lang]}</p>
           </div>
-        </div>
+
+          <div className="flex flex-col justify-center items-center pt-4 ">
+            <Circles color="#FF4C01" height="40" width="40" />
+            <p className="px-6 py-8 ">{Localization["Waiting for someone to"][lang]}</p>
+          </div>
+        </section>
+      </article>
       )}
 
 
@@ -376,3 +316,5 @@ const NewGamePublic = () => {
 };
 
 export default NewGamePublic;
+
+

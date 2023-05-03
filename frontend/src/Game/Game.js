@@ -290,7 +290,8 @@ const Game = () => {
   useEffect(() => {
     if (!id && !localStorage.getItem("gameId")) {
       navigate("/create-game");
-    } else if (id && id != 1 && !localStorage.getItem("gameId")) {
+    }
+    else if (id && !localStorage.getItem("game")) {
       navigate("/create-game");
     }
   }, []);
@@ -1302,7 +1303,7 @@ const Game = () => {
     }
   }
 
-  return (
+  return (localStorage.getItem("gameId") && <>
     <div
       className={`
   
@@ -1753,6 +1754,7 @@ const Game = () => {
       />
       <Toaster />
     </div>
+  </>
   );
 };
 

@@ -633,6 +633,15 @@ export const Localization = {
         AMH: "የይለፍ ቃል በተሳካ ሁኔታ ተቀይሯል ።",
         ENG: "password has been successfully changed"
     },
+    "Game created successfully!": {
+        AMH: "ጨዋታው በተሳካ ሁኔታ ተፈጥሯል።",
+        ENG: "Game created successfully!"
+    },
+    "Waiting for someone to": {
+        AMH: "ተጋጣሚዎ አስኪቀላቀል በመጠበቅ ላይ ",
+        ENG: "Waiting for someone to join your game."
+    },
+
 
 
 
