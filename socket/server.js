@@ -90,7 +90,7 @@ io.on("connection", (socket) => {
 
   socket.on("join-room", async (room) => {
     const clients = await io.of("/").in(room).fetchSockets();
-    console.log("joined")
+    // console.log("joined")
     // , { clients, room, id: socket.id }
     let tempSocketObj = roomSocketObj[room];
     if (tempSocketObj && tempSocketObj.includes(socket.id)) {
@@ -112,6 +112,7 @@ io.on("connection", (socket) => {
     //send and get messages
 
     socket.on("sendMessage", (data) => {
+      console.log(data)
       io.to(room).emit("getMessage", data);
     });
 
@@ -174,7 +175,7 @@ io.on("connection", (socket) => {
   // });
   socket.on("leave", (room) => {
     socket.leave(room);
-    console.log(`user leave a room ${room}`);
+    // console.log(`user leave a room ${room}`);
     if (rooms[room]) {
       rooms[room].delete(socket.id);
       if (rooms[room].size === 0) {

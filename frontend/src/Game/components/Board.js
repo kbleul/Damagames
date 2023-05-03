@@ -10,30 +10,83 @@ const Board = (props) => {
 
   const [MyTurn, setMyTurn] = useContext(TurnContext);
 
+  let isFirstMove = props["isFirstMove"]
+  let propsMain = props
+
+
+
+
   function Square(props) {
-    // const squareClasses = props["squareClasses"];
+
     const onClick = props["onClick"];
 
     let squareClasses;
-    if (
-      props.numberOfPlayers > 1
-        ? JSON.parse(localStorage.getItem("playerOne")) &&
-        MyTurn === "player1" &&
-        props["squareClasses"].includes("player1")
-        : MyTurn === "player1" && props["squareClasses"].includes("player1")
-    ) {
-      squareClasses = props["squareClasses"] + " myturn";
-    } else if (
-      props.numberOfPlayers > 1
-        ? JSON.parse(localStorage.getItem("playerTwo")) &&
-        MyTurn === "player2" &&
-        props["squareClasses"].includes("player2")
-        : MyTurn === "player2" && props["squareClasses"].includes("player2")
-    ) {
-      squareClasses = props["squareClasses"] + " myturn";
-    } else {
-      squareClasses = props["squareClasses"];
+
+
+    if (propsMain.numberOfPlayers !== 1) {
+      if (isFirstMove && props.numberOfPlayers !== 1) {
+        console.log(isFirstMove)
+
+        if (props["squareClasses"].includes("player2")) {
+          squareClasses = props["squareClasses"] + " myturn";
+        }
+        else {
+          squareClasses = props["squareClasses"]
+        }
+
+        if (props["squareClasses"].includes("player1")) {
+          squareClasses = props["squareClasses"] + " myturn";
+        }
+        else {
+          squareClasses = props["squareClasses"]
+        }
+      }
+      else {
+        console.log(isFirstMove)
+
+        if (
+          props.numberOfPlayers > 1
+            ? JSON.parse(localStorage.getItem("playerOne")) &&
+            MyTurn === "player1" &&
+            props["squareClasses"].includes("player1")
+            : MyTurn === "player1" && props["squareClasses"].includes("player1")
+        ) {
+          squareClasses = props["squareClasses"] + " myturn";
+        } else if (
+          props.numberOfPlayers > 1
+            ? JSON.parse(localStorage.getItem("playerTwo")) &&
+            MyTurn === "player2" &&
+            props["squareClasses"].includes("player2")
+            : MyTurn === "player2" && props["squareClasses"].includes("player2")
+        ) {
+          squareClasses = props["squareClasses"] + " myturn";
+        } else {
+          squareClasses = props["squareClasses"];
+        }
+      }
+
     }
+
+    else {
+      if (propsMain.numberOfPlayers == 1) {
+        //console.log({ a: propsMain["currentPlayer"], b: props["squareClasses"].includes("player1") })
+        if (propsMain["currentPlayer"] && props["squareClasses"].includes("player1")) {
+          squareClasses = props["squareClasses"] + " myturn";
+        }
+
+        else if (!propsMain["currentPlayer"] && props["squareClasses"].includes("player2")) {
+          squareClasses = props["squareClasses"] + " myturn";
+        }
+
+        else {
+          squareClasses = props["squareClasses"]
+        }
+
+
+      }
+    }
+
+
 
     return (
       <div>

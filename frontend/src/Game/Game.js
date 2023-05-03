@@ -48,10 +48,47 @@ const Game = () => {
   const { id } = useParams();
   const { user, token, lang } = useAuth();
   const playingCrowns = useRef({});
-  const [tourItems, setTourItems] = useState(null);
-  const [showTourPrompt, setShowTourPrompt] = useState(true);
   const [tourCounter, setTourCounter] = useState(10);
+  const navigate = useNavigate();
+  const [playMove] = useSound(moveSound);
+  const [playStrike] = useSound(strikeSound);
+  const [playWin] = useSound(winSound);
+  const [playLose] = useSound(loseSound);
 
+  const [soundOn, setSoundOn] = useState(
+    localStorage.getItem("dama-sound")
+      ? localStorage.getItem("dama-sound")
+      : true
+  );
+
+  const [MyTurn, setMyTurn] = useContext(TurnContext);
+  const [isWinnerModalOpen, setIsWinnerModalOpen] = useState(false);
+  const [isExitModalOpen, setIsExitModalOpen] = useState(false);
+  const [isNewGameModalOpen, setIsNewGameModalOpen] = useState(false);
+  const [timerP1, setTimerP1] = useState(15);
+  const [timerP2, setTimerP2] = useState(15);
+
+  const [passedCounter, setPassedCounter] = useState(0);
+  const intervalRef = useRef(null);
+
+  const [isRematchModalOpen, setIsRematchModalOpen] = useState(false);
+  const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
+
+  const [isDrawModalOpen, setIsDrawModalOpen] = useState(false);
+  const [winnerPlayer, setWinnerPlayer] = useState(null);
+
+  const [pawns, setPawns] = useState([0, 0]);
+
+  const moveRef = useRef([0, 0]);
+
+  const messageInputRef = useRef();
+  const [messageInputOpen, setMessageInputOpen] = useState(false);
+  const [latestMessage, setLatestMessage] = useState(null);
+  const [showResetWaiting, setShowResetWaiting] = useState(false);
+  const [msgSender, setMsgSender] = useState(null);
+
+  //send king icon
+  const [firstMove, setFirstMove] = useState(true);
 
   // const { playerCrown, playerBoard } = useHome();
   // useEffect(() => {
@@ -249,46 +286,7 @@ const Game = () => {
   //   );
   // }, [id, user, token]);
 
-  const navigate = useNavigate();
-  const [playMove] = useSound(moveSound);
-  const [playStrike] = useSound(strikeSound);
-  const [playWin] = useSound(winSound);
-  const [playLose] = useSound(loseSound);
 
-  const [soundOn, setSoundOn] = useState(
-    localStorage.getItem("dama-sound")
-      ? localStorage.getItem("dama-sound")
-      : true
-  );
-
-  const [MyTurn, setMyTurn] = useContext(TurnContext);
-  const [isWinnerModalOpen, setIsWinnerModalOpen] = useState(false);
-  const [isExitModalOpen, setIsExitModalOpen] = useState(false);
-  const [isNewGameModalOpen, setIsNewGameModalOpen] = useState(false);
-  const [timerP1, setTimerP1] = useState(15);
-  const [timerP2, setTimerP2] = useState(15);
-
-  const [passedCounter, setPassedCounter] = useState(0);
-  const intervalRef = useRef(null);
-
-  const [isRematchModalOpen, setIsRematchModalOpen] = useState(false);
-  const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
-
-  const [isDrawModalOpen, setIsDrawModalOpen] = useState(false);
-  const [winnerPlayer, setWinnerPlayer] = useState(null);
-
-  const [pawns, setPawns] = useState([0, 0]);
-
-  const moveRef = useRef([0, 0]);
-
-  const messageInputRef = useRef();
-  const [messageInputOpen, setMessageInputOpen] = useState(false);
-  const [latestMessage, setLatestMessage] = useState(null);
-  const [showResetWaiting, setShowResetWaiting] = useState(false);
-  const [msgSender, setMsgSender] = useState(null);
-
-  //send king icon
-  const [isListened, setIsListened] = useState(false);
   useEffect(() => {
     if (!id && !localStorage.getItem("gameId")) {
       navigate("/create-game");
@@ -489,6 +487,7 @@ const Game = () => {
 
   //computer turn
   function computerTurn(newMoveState, piece = null) {
+    console.log({ currentPlayer })
     setTimeout(() => {
       // const currentState = getCurrentState();
       const boardState = newMoveState.boardState;
@@ -942,7 +941,7 @@ const Game = () => {
       "getGameMessage",
       ({ winnerPlayer, boardState, currentPlayer, turnPlayer, tracker }) => {
         stopInterval();
-
+        firstMove && setFirstMove(false)
         setMyTurn(turnPlayer);
         setWinnerPlayer(winnerPlayer);
 
@@ -1044,9 +1043,9 @@ const Game = () => {
       setLatestMessage(data.message);
     });
     //if the first player not in the game
-    socket.emit("sendMessage", {
-      status: "started",
-    });
+    //   socket.emit("sendMessage", {
+    //     status: "started",
+    //   });
   }, []);
 
   useEffect(() => {
@@ -1240,31 +1239,9 @@ const Game = () => {
   };
 
 
-
-
-  const startTour = () => {
-    document.getElementsByClassName("sub-box")[61].classList.add("first-steps")
-    document.getElementsByClassName("sub-box")[52].classList.add("second-steps")
-
-    console.log(document.getElementsByClassName("square")[52])
-    setTourItems({
-      run: true,
-      steps: [
-        {
-          target: '.first-steps',
-          content: Localization["Click the box"][lang],
-          disableBeacon: true
-        },
-        {
-          target: '.second-steps',
-          content: Localization["Then click the box"][lang],
-        }
-      ]
-    })
-  }
-
-
   useEffect(() => {
+
+
     localStorage.setItem("dama-sound", true);
 
     if (id == 1) {
@@ -1436,7 +1413,7 @@ const Game = () => {
           <p className="text-white text-xs">{Localization["Exit"][lang]}</p>
         </button>
       </section>
-      <section className="flex justify-evenly items-center w-full ">
+      <section className="flex justify-evenly items-center w-full md:hidden">
         <div className="">
           <div
             onClick={() => this.openModal(true)}
@@ -1509,7 +1486,7 @@ const Game = () => {
         </div>
       </section>
 
-      <section className="flex justify-evenly items-center text-sm w-full">
+      <section className="flex justify-evenly items-center text-sm w-full md:hidden">
         <div className="border-r-[3px] border-gray-400 text-white w-1/2 ">
           <div className="flex justify-center items-center text-[.7rem] gap-x-2 font-bold mb-2">
             <p className="bg-gray-300 text-black pr-[.2rem] w-12 rounded">
@@ -1605,7 +1582,7 @@ const Game = () => {
       </div>
       <div className={""}>
         <div
-          className={`box   ${!id
+          className={`box ${!id
             ? currentPlayer === true
               ? currentPlayer === true && !firstPlayer
                 ? "pointer-events-none"
@@ -1635,6 +1612,8 @@ const Game = () => {
             onClick={(coordinates) => handleClick(coordinates)}
             numberOfPlayers={gameState.players}
             tracker={gameState.tracker ? gameState.tracker : null}
+            isFirstMove={firstMove}
+            setIsFirstMove={setFirstMove}
           />
         </div>
       </div>

@@ -48,11 +48,11 @@ const PubicGames = () => {
       setIsMessageSent(false);
       setIsMessageListened(true);
       useLess.current = true;
-
-      localStorage.setItem("p12", data.data.player2.username);
-      localStorage.setItem("playerTwo", data.player2);
-      localStorage.setItem("gameId", data.gameId);
-      localStorage.setItem("playerTwoIp", data.playerTwoIp);
+      console.log(data)
+      // localStorage.setItem("p12", data.data.player2.username);
+      // localStorage.setItem("playerTwo", data.player2);
+      // localStorage.setItem("gameId", data.gameId);
+      // localStorage.setItem("playerTwoIp", data.playerTwoIp);
 
       navigate("/game");
     });
@@ -60,16 +60,17 @@ const PubicGames = () => {
 
   }, [isMessageListened]);
 
-  setInterval(() => {
-    if (!useLess.current) {
-      if (isMessageSent && !isMessageListened) {
-        socket.emit("sendMessage", {
-          status: "started",
-          player2: JSON.stringify(tempPlayer),
-        });
-      }
-    }
-  }, 500);
+  // setInterval(() => {
+  //   if (!useLess.current) {
+  //     if (isMessageSent && !isMessageListened) {
+  //       socket.emit("sendMessage", {
+  //         status: "started",
+  //         player2: JSON.stringify(tempPlayer),
+  //       });
+  //     }
+  //   }
+  // }, 500);
+
   const handleJoin = () => {
     if (!name) {
       toast(Localization["name is required."][lang]);
@@ -107,6 +108,7 @@ const PubicGames = () => {
           socket.emit("join-room", responseData?.data?.data?.game);
 
           socket.emit("sendMessage", {
+            ok: "ok",
             status: "started",
             player2: JSON.stringify(responseData?.data?.data?.playerTwo),
             pl: responseData?.data?.data?.playerOne?.username,
@@ -114,6 +116,11 @@ const PubicGames = () => {
             playerTwoIp: responseData?.data?.data?.ip,
             gameId: responseData?.data?.data?.game
           });
+
+          localStorage.setItem(
+            "playerTwo",
+            JSON.stringify(responseData?.data?.data?.playerTwo)
+          );
 
           setTempPlayer(JSON.stringify(responseData?.data?.data?.playerTwo));
           setIsMessageSent(true);
@@ -222,15 +229,15 @@ const PubicGames = () => {
                   <img className="w-6 h-6" src={Avatar} alt="avatar" />
                   <p className="text-white ml-4 font-bold">{game.createdBy}</p>
                 </div>
-                <a
+                <button
                   onClick={() => {
                     setCode(game.code);
                     handleSubmitCode(game.code);
                   }}
-                  className="w-[20%] mr-4 bg-orange-color hover:bg-orange-600 text-black font-bold px-12 flex items-center justify-center"
+                  className="w-[20%] mr-4 bg-orange-color hover:bg-orange-600 text-black font-bold px-12 flex items-center justify-center cursor-pointer"
                 >
                   {Localization["Play"][lang]}
-                </a>
+                </button>
               </section>
               <section className="flex justify-between mt-2"></section>
             </article>

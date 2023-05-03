@@ -286,8 +286,7 @@ const WinnerModal = ({
                     active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
                     active:border-b-[0px]
                     transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
-                    border-b-[1px] border-gray-300/50 font-semibold text-white
-                  "
+                    border-b-[1px] border-gray-300/50 font-semibold text-white"
                       onClick={handleResetGame}
                     >
                       {Localization["Rematch"][lang]}
@@ -310,6 +309,7 @@ const WinnerModal = ({
                     </button>
                   </div>
                 </Dialog.Panel>
+                
               </Transition.Child>
             </div>
           </div>
