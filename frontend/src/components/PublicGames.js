@@ -116,8 +116,6 @@ const PubicGames = () => {
             gameId: responseData?.data?.data?.game
           });
 
-
-
           localStorage.setItem(
             "playerTwo",
             JSON.stringify(responseData?.data?.data?.playerTwo)
@@ -217,7 +215,7 @@ const PubicGames = () => {
             </svg>
           </button>
           <div>
-            <img src={PublicGameImg} />
+            <img src={PublicGameImg} alt="" />
           </div>
           {publicGames?.length === 0 && (
             <p className="my-4 mt-[30vh] ml-[2%] w-[96%] max-w-[600px] text-orange-color font-bold">
