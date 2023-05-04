@@ -25,7 +25,6 @@ const Board = (props) => {
 
     if (propsMain.numberOfPlayers !== 1) {
       if (isFirstMove && props.numberOfPlayers !== 1) {
-        console.log(isFirstMove)
 
         if (props["squareClasses"].includes("player2")) {
           squareClasses = props["squareClasses"] + " myturn";
@@ -42,7 +41,6 @@ const Board = (props) => {
         }
       }
       else {
-        console.log(isFirstMove)
 
         if (
           props.numberOfPlayers > 1
@@ -69,7 +67,7 @@ const Board = (props) => {
 
     else {
       if (propsMain.numberOfPlayers == 1) {
-        //console.log({ a: propsMain["currentPlayer"], b: props["squareClasses"].includes("player1") })
+
         if (propsMain["currentPlayer"] && props["squareClasses"].includes("player1")) {
           squareClasses = props["squareClasses"] + " myturn";
         }

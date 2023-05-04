@@ -41,6 +41,7 @@ const JoinGame = () => {
         setIsMessageListened(true);
         useLess.current = true;
         navigate("/game");
+        localStorage.setItem("isNotPublic", true);
       }
     });
 

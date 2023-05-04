@@ -488,7 +488,6 @@ const Game = () => {
 
   //computer turn
   function computerTurn(newMoveState, piece = null) {
-    console.log({ currentPlayer })
     setTimeout(() => {
       // const currentState = getCurrentState();
       const boardState = newMoveState.boardState;
@@ -921,6 +920,7 @@ const Game = () => {
 
   let array = gameState.history;
   let lastElement = array[array.length - 1];
+  const checkTurn = useRef(true) //check if player get getMessage 
 
   useEffect(() => {
     //listen for king icon
@@ -937,7 +937,7 @@ const Game = () => {
       });
     }
 
-    // let cPlayer = currentPlayer
+
     socket.on(
       "getGameMessage",
       ({ winnerPlayer, boardState, currentPlayer, turnPlayer, tracker }) => {
@@ -945,6 +945,22 @@ const Game = () => {
         firstMove && setFirstMove(false)
         setMyTurn(turnPlayer);
         setWinnerPlayer(winnerPlayer);
+
+        checkTurn.current = turnPlayer === "player2" ? !checkTurn.current : checkTurn.current
+
+        turnPlayer === "player2"
+          ? function () {
+            if (localStorage.getItem("isNotPublic")) {
+              checkTurn.current && (moveRef.current = [1 + moveRef.current[0], moveRef.current[1]])
+            }
+            else {
+              moveRef.current = [1 + moveRef.current[0], moveRef.current[1]]
+            }
+          }()
+          : (moveRef.current = [moveRef.current[0], 1 + moveRef.current[1]]);
+
+        calcPawns(boardState);
+        compareObjects(lastElement?.boardState, boardState);
 
         setGameState((prevGameState) => {
           return {
@@ -959,15 +975,9 @@ const Game = () => {
             tracker,
           };
         });
-
-        turnPlayer === "player2"
-          ? (moveRef.current = [1 + moveRef.current[0], moveRef.current[1]])
-          : (moveRef.current = [moveRef.current[0], 1 + moveRef.current[1]]);
-
-        calcPawns(boardState);
-        compareObjects(lastElement?.boardState, boardState);
       }
     );
+
 
     socket.on(
       "getResetGameMessage",

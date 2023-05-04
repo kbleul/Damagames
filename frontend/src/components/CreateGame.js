@@ -149,9 +149,9 @@ const CreateGame = () => {
 
 
 
-  // useEffect(() => {
-  //   localStorage.getItem("gameId") && localStorage.removeItem("gameId")
-  // }, [])
+  useEffect(() => {
+    localStorage.removeItem("isNotPublic");
+  }, [])
 
 
   const handleJoyrideCallback = data => {
