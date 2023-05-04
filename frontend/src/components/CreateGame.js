@@ -149,11 +149,9 @@ const CreateGame = () => {
 
 
 
-  useEffect(() => {
-    localStorage.getItem("gameId") && localStorage.removeItem("gameId")
-
-
-  }, [])
+  // useEffect(() => {
+  //   localStorage.getItem("gameId") && localStorage.removeItem("gameId")
+  // }, [])
 
 
   const handleJoyrideCallback = data => {

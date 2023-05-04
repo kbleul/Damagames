@@ -108,7 +108,6 @@ const PubicGames = () => {
           socket.emit("join-room", responseData?.data?.data?.game);
 
           socket.emit("sendMessage", {
-            ok: "ok",
             status: "started",
             player2: JSON.stringify(responseData?.data?.data?.playerTwo),
             pl: responseData?.data?.data?.playerOne?.username,
@@ -116,6 +115,8 @@ const PubicGames = () => {
             playerTwoIp: responseData?.data?.data?.ip,
             gameId: responseData?.data?.data?.game
           });
+
+
 
           localStorage.setItem(
             "playerTwo",
@@ -125,6 +126,20 @@ const PubicGames = () => {
           setTempPlayer(JSON.stringify(responseData?.data?.data?.playerTwo));
           setIsMessageSent(true);
           setsocketLoading(true);
+
+
+          setTimeout(() => {
+            console.log({ isMessageListened })
+
+            !isMessageListened && socket.emit("sendMessage", {
+              status: "started",
+              player2: JSON.stringify(responseData?.data?.data?.playerTwo),
+              pl: responseData?.data?.data?.playerOne?.username,
+              p2: responseData?.data?.data?.playerTwo?.username,
+              playerTwoIp: responseData?.data?.data?.ip,
+              gameId: responseData?.data?.data?.game
+            });
+          }, 3000)
 
         },
         onError: (err) => {

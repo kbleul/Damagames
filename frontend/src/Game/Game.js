@@ -290,11 +290,11 @@ const Game = () => {
   useEffect(() => {
     if (!id && !localStorage.getItem("gameId")) {
       navigate("/create-game");
-    }
-    else if (id && !localStorage.getItem("game")) {
+    } else if (id && id != 1 && !localStorage.getItem("gameId")) {
       navigate("/create-game");
     }
   }, []);
+
 
   const headers = {
     "Content-Type": "application/json",

@@ -16,7 +16,6 @@ import { IoIosShareAlt } from "react-icons/io";
 import { Slider } from "@mui/material";
 
 import { useAuth } from "../context/auth";
-import { Footer } from "./Footer";
 import { clearCookie } from "../utils/data";
 import ExitWarningModal from "../Game/components/ExitWarningModal";
 import { Localization } from "../utils/language";
@@ -533,7 +532,6 @@ const NewGame = () => {
           </div>
         </div>
       )}
-      <Footer />
       <BottomSheet
         open={open}
         onDismiss={() => setOpen(false)}
