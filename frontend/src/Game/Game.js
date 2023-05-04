@@ -925,17 +925,17 @@ const Game = () => {
   useEffect(() => {
     //listen for king icon
 
-    if (!JSON.parse(localStorage.getItem("pawns"))) {
-      socket.on("getCrownType", (data) => {
-        if (!JSON.parse(localStorage.getItem("pawns"))) {
-          const tempObj = localStorage.getItem("playerOne")
-            ? (playingCrowns.current = data.p2)
-            : (playingCrowns.current = data.p1);
-          !JSON.parse(localStorage.getItem("pawns")) &&
-            localStorage.setItem("pawns", JSON.stringify(tempObj));
-        }
-      });
-    }
+    // if (!JSON.parse(localStorage.getItem("pawns"))) {
+    //   socket.on("getCrownType", (data) => {
+    //     if (!JSON.parse(localStorage.getItem("pawns"))) {
+    //       const tempObj = localStorage.getItem("playerOne")
+    //         ? (playingCrowns.current = data.p2)
+    //         : (playingCrowns.current = data.p1);
+    //       !JSON.parse(localStorage.getItem("pawns")) &&
+    //         localStorage.setItem("pawns", JSON.stringify(tempObj));
+    //     }
+    //   });
+    // }
 
 
     socket.on(
