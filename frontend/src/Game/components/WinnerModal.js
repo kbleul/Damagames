@@ -88,7 +88,6 @@ const WinnerModal = ({
       resetGame();
     } else {
       setIsWinnerModalOpen(false);
-      console.log("sadjsa")
       createGameAI()
       setNewGameWithComputer();
     }

@@ -95,7 +95,6 @@ const Profile = () => {
   );
   const langMutationSubmitHandler = async (values) => {
     try {
-      console.log(values)
       langMutation.mutate(
         { language: values },
         {

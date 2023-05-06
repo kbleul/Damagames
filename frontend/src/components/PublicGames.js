@@ -48,11 +48,6 @@ const PubicGames = () => {
       setIsMessageSent(false);
       setIsMessageListened(true);
       useLess.current = true;
-      console.log(data)
-      // localStorage.setItem("p12", data.data.player2.username);
-      // localStorage.setItem("playerTwo", data.player2);
-      // localStorage.setItem("gameId", data.gameId);
-      // localStorage.setItem("playerTwoIp", data.playerTwoIp);
 
       navigate("/game");
     });

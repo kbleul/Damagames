@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext, useRef } from "react";
 import Board from "./components/Board.js";
 import { returnPlayerName } from "./components/utils.js";
 import "./game.css";
-import { motion, useAnimation } from "framer-motion";
+import { motion } from "framer-motion";
 import { getMoves, movePiece } from "./components/ReactCheckers";
 import WinnerModal from "./components/WinnerModal";
 import ExitWarningModal from "./components/ExitWarningModal";
@@ -27,9 +27,7 @@ import { ThreeDots } from "react-loader-spinner";
 import UserLeavesModal from "./components/UserLeavesModal.js";
 import { clearCookie } from "../utils/data.js";
 import { useAuth } from "../context/auth.js";
-import { IoMdLogIn } from "react-icons/io";
 import NewGameRequestModal from "./components/NewGameRequestModal.js";
-import Joyride from 'react-joyride';
 //crowns
 //crowns
 // import yellowCoin from "../assets/yellow-coin.svg";
@@ -47,7 +45,6 @@ import { Localization } from "../utils/language";
 const Game = () => {
   const { id } = useParams();
   const { user, token, lang } = useAuth();
-  const playingCrowns = useRef({});
   const [tourCounter, setTourCounter] = useState(10);
   const navigate = useNavigate();
   const [playMove] = useSound(moveSound);
