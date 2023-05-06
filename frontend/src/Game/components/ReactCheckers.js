@@ -60,13 +60,13 @@ export function getMoves(columns, boardState, coordinates, isKing = false, hasJu
     if (!isKing && cornerCoordinates.indexOf(advanceRow) < 0) {
       continue;
     }
-
     if (boardState[cornerCoordinates] === null) {
       moves.push(cornerCoordinates);
     } else {
       let neighborPiece = boardState[cornerCoordinates];
 
-      if (neighborPiece.player === player) {
+      console.log(neighborPiece)
+      if (neighborPiece.player !== undefined && neighborPiece.player === player) {
         continue;
       }
 

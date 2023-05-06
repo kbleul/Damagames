@@ -468,7 +468,6 @@ const Game = () => {
       if (postMoveState === null) {
         return;
       }
-
       updateStatePostMove(postMoveState);
       soundOn && playMove();
       if (
@@ -485,6 +484,7 @@ const Game = () => {
 
   //computer turn
   function computerTurn(newMoveState, piece = null) {
+    console.log(newMoveState);
     setTimeout(() => {
       // const currentState = getCurrentState();
       const boardState = newMoveState.boardState;
@@ -527,6 +527,7 @@ const Game = () => {
           newMoveState.boardState.isKing,
           true
         );
+
         coordinates = piece;
         moveTo = movesData[0][Math.floor(Math.random() * movesData[0].length)];
       }
@@ -1249,7 +1250,6 @@ const Game = () => {
 
   useEffect(() => {
 
-
     localStorage.setItem("dama-sound", true);
 
     if (id == 1) {
@@ -1272,7 +1272,45 @@ const Game = () => {
 
   }, []);
 
+  const undo = () => {
 
+    if (gameState.history.length > 1 && gameState.history[gameState.history.length - 1].currentPlayer) {
+
+      // console.log(gameState)
+
+      gameState.history.pop()
+
+      // console.log(gameState.history)
+
+      const newHistory = gameState.history
+
+      setGameState((prevState) => {
+        return { ...prevState, stepNumber: gameState.stepNumber - 1, history: newHistory }
+      })
+
+      computerTurn({
+        activePiece: newHistory[newHistory.length - 1].activePiece,
+        boardState: newHistory[newHistory.length - 1].boardState,
+        currentPlayer: newHistory[newHistory.length - 1].currentPlayer,
+        hasJumped: newHistory[newHistory.length - 1].hasJumped,
+        jumpKills: newHistory[newHistory.length - 1].jumpKills,
+        moves: newHistory[newHistory.length - 1].moves,
+        winner: newHistory[newHistory.length - 1].winner,
+      })
+
+      console.log({
+        activePiece: gameState.history[gameState.history.length - 1].activePiece,
+        boardState: gameState.history[gameState.history.length - 1].boardState,
+        currentPlayer: gameState.history[gameState.history.length - 1].currentPlayer,
+        hasJumped: gameState.history[gameState.history.length - 1].hasJumped,
+        jumpKills: gameState.history[gameState.history.length - 1].jumpKills,
+        moves: gameState.history[gameState.history.length - 1].moves,
+        winner: gameState.history[gameState.history.length - 1].winner,
+      })
+
+
+    } else { console.log("no") }
+  }
 
   const showNextTour = () => {
     setTourCounter(function (latest) { return ++latest })
@@ -1648,6 +1686,28 @@ const Game = () => {
             </p>
           </div>
         )}
+
+        <div onClick={undo} className="flex flex-col">
+          <div className="p-2 bg-orange-color rounded-full flex flex-col items-center justify-center">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 18 18"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M14 13V11H4V13H14ZM16 0C16.5304 0 17.0391 0.210714 17.4142 0.585786C17.7893 0.960859 18 1.46957 18 2V16C18 16.5304 17.7893 17.0391 17.4142 17.4142C17.0391 17.7893 16.5304 18 16 18H2C1.46957 18 0.960859 17.7893 0.585786 17.4142C0.210714 17.0391 0 16.5304 0 16V2C0 0.89 0.89 0 2 0H16ZM14 7V5H4V7H14Z"
+                fill="#181920"
+              />
+            </svg>
+          </div>
+          <p className="text-xs font-bold text-white">
+            undo
+          </p>
+        </div>
+
+
         {id != 1 && (
           <div className="flex items-center justify-center flex-col">
             <BsFillChatFill
