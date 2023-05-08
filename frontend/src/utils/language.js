@@ -641,6 +641,21 @@ export const Localization = {
         AMH: "ተጋጣሚዎ አስኪቀላቀል በመጠበቅ ላይ ",
         ENG: "Waiting for someone to join your game."
     },
+    "Undo": {
+        AMH: "መመለስ",
+        ENG: "Undo"
+    },
+    "Redo": {
+        AMH: "መመለስ",
+        ENG: "Redo"
+    },
+    "Undo limit reached.": {
+        AMH: "መመለስ ገደብ ላይ ደርሷል። ተጨማሪ እንቅስቃሴዎችን መመለስ አይችሉም፦",
+        ENG: "Undo limit reached. You cannot undo any more moves!"
+    },
+
+
+
 
 
 

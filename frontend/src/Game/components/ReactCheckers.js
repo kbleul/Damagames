@@ -65,7 +65,7 @@ export function getMoves(columns, boardState, coordinates, isKing = false, hasJu
     } else {
       let neighborPiece = boardState[cornerCoordinates];
 
-      console.log(neighborPiece)
+
       if (neighborPiece.player !== undefined && neighborPiece.player === player) {
         continue;
       }
