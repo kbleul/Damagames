@@ -89,8 +89,12 @@ const Game = () => {
 
   //trach previous game states for undo
   const [matchHistory, setMatchHistory] = useState([])
+  const [redoHistory, setRedoHistory] = useState([])
+
   const [undoCount, setUndoCount] = useState(0)
   const [showUndoWarning, setShowUndoWarning] = useState(false)
+  const [showRedoPrompt, setShowRedoPrompt] = useState(false)
+
 
 
   const undoAllowedAmount = 3
@@ -415,6 +419,9 @@ const Game = () => {
 
 
   function handleClick(coordinates) {
+
+    redoHistory.length > 0 && setRedoHistory([])
+
     if (gameState.winner !== null) {
       return;
     }
@@ -497,8 +504,8 @@ const Game = () => {
   }
 
   useEffect(() => {
-    console.log({ matchHistory })
-  }, [matchHistory])
+    console.log({ redoHistory })
+  }, [redoHistory])
   //computer turn
   function computerTurn(newMoveState, piece = null) {
     //  console.log(newMoveState);
@@ -569,7 +576,6 @@ const Game = () => {
           return;
         }
 
-        // setMatchHistory(prev => [postMoveState, ...prev])
         updateStatePostMove(postMoveState, {
           tracker: { moved: coordinates, to: mergerObj.moves[0] },
         });
@@ -589,8 +595,6 @@ const Game = () => {
       }, 600);
     }, 1300);
   }
-
-  // const [matchHistory, setMatchHistory] = useState([])
 
   //update the game state after move
   function updateStatePostMove(postMoveState, gametrackes) {
@@ -1300,11 +1304,21 @@ const Game = () => {
 
     if (undoAllowedAmount <= undoCount) {
       //input other code here
-      // console.log("amount exceeded", undoAllowedAmount, undoCount);
       setShowUndoWarning(true)
-      setTimeout(() => setShowUndoWarning(false), 6000)
+      setTimeout(() => setShowUndoWarning(false), 3500)
       return
     }
+
+    setRedoHistory(prev => [{
+      boardState: gameState.history[gameState.history.length - 1].boardState,
+      currentPlayer: gameState.history[gameState.history.length - 1].currentPlayer,
+      activePiece: gameState.activePiece,
+      moves: gameState.moves,
+      jumpKills: gameState.jumpKills,
+      hasJumped: gameState.hasJumped,
+      stepNumber: gameState.history.length,
+      winner: gameState.winner,
+    }, ...prev])
 
     if (matchHistory.length > 1) {
       let temparr = [...matchHistory]
@@ -1335,6 +1349,34 @@ const Game = () => {
 
     setUndoCount(function (latest) { return ++latest })
 
+  }
+
+  const redo = () => {
+    if (redoHistory.length > 0) {
+      updateStatePostMove({ ...redoHistory[0], currentPlayer: !redoHistory[0].currentPlayer })
+      let temparr = [...redoHistory]
+      temparr.shift()
+
+      setRedoHistory(temparr)
+      setShowRedoPrompt(true)
+    }
+  }
+
+  const resumeComputerTurn = () => {
+    redoHistory.length > 0 && setRedoHistory([])
+
+    computerTurn({
+      boardState: gameState.history[gameState.history.length - 1].boardState,
+      currentPlayer: gameState.history[gameState.history.length - 1].currentPlayer,
+      activePiece: gameState.activePiece,
+      moves: gameState.moves,
+      jumpKills: gameState.jumpKills,
+      hasJumped: gameState.hasJumped,
+      stepNumber: gameState.history.length,
+      winner: gameState.winner,
+    })
+
+    setShowRedoPrompt(false)
   }
 
   const showNextTour = () => {
@@ -1712,7 +1754,7 @@ const Game = () => {
           </div>
         )}
 
-        <div onClick={undo} className={showUndoWarning || undoCount >= undoAllowedAmount ? "flex flex-col opacity-75" : "flex flex-col"}>
+        <div onClick={undo} className={showUndoWarning || undoCount >= undoAllowedAmount ? "flex flex-col opacity-80" : "flex flex-col cursor-pointer"}>
           <div className="rounded-full flex flex-col items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 512 512"><path fill="#ff4c01" d="M256 48C141.13 48 48 141.13 48 256s93.13 208 208 208s208-93.13 208-208S370.87 48 256 48Zm97.67 281.1c-24.07-25.21-51.51-38.68-108.58-38.68v37.32a8.32 8.32 0 0 1-14.05 6L146.58 254a8.2 8.2 0 0 1 0-11.94L231 
             162.29a8.32 8.32 0 0 1 14.05 6v37.32c88.73 0 117.42 55.64 122.87 117.09c.73 7.72-8.85 12.05-14.25 6.4Z" /></svg>
@@ -1722,7 +1764,7 @@ const Game = () => {
           </p>
         </div>
 
-        <div onClick={undo} className={showUndoWarning || undoCount >= undoAllowedAmount ? "flex flex-col opacity-75" : "flex flex-col"}>
+        <div onClick={redo} className={redoHistory.length === 0 ? "flex flex-col opacity-80" : "flex flex-col cursor-pointer"}>
           <div className="rounded-full flex flex-col items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 512 512"><path fill="#ff4c01" d="M48 256c0 114.87 93.13 208 208 208s208-93.13 208-208S370.87 48 256 48S48 141.13 48 256Zm96 66.67c5.45-61.45 34.14-117.09 122.87-117.09v-37.32a8.32 8.32 0 0 1 14-6L365.42 242a8.2 8.2 0 0 1 0 11.94L281 
           333.71a8.32 8.32 0 0 1-14-6v-37.29c-57.07 0-84.51 13.47-108.58 38.68c-5.49 5.65-15.07 1.32-14.42-6.43Z"/></svg>
@@ -1731,8 +1773,6 @@ const Game = () => {
             {Localization['Redo'][lang]}
           </p>
         </div>
-
-        {showUndoWarning && <p className="text-orange-color text-sm w-[70%]">{Localization["Undo limit reached."][lang]}</p>}
 
 
         {id != 1 && (
@@ -1746,6 +1786,11 @@ const Game = () => {
           </div>
         )}
       </div>
+
+      {showUndoWarning && <p className="text-orange-color text-sm w-[70%]">{Localization["Undo limit reached."][lang]}</p>}
+
+      {showRedoPrompt && <p className="text-white">{Localization["resume computer turn ?"][lang]}
+        <span onClick={resumeComputerTurn} className="text-orange-color font-bold cursor-pointer border-b border-orange-color ml-2 pr-1">{Localization["Resume"][lang]}</span></p>}
       {/* message */}
       {latestMessage && (
         <motion.div

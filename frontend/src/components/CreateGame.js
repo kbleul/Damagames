@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Joyride from 'react-joyride';
+import { useQuery } from "@tanstack/react-query";
 import SideMenu from "./SideMenu";
 import { useNavigate } from "react-router-dom";
 import background from "../assets/backdrop.jpg";
@@ -19,6 +20,8 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControl from '@mui/material/FormControl';
 
+import Avatar from "../assets/Avatar.png";
+import { Circles } from "react-loader-spinner";
 
 
 const LANG = {
@@ -38,6 +41,9 @@ const CreateGame = () => {
   const [LangValue, setLangValue] = useState(lang);
 
   const [tourItems, setTourItems] = useState(null);
+  const [topFour, setTopFour] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
 
 
   function handleSecond(url) {
@@ -148,12 +154,6 @@ const CreateGame = () => {
   }
 
 
-
-  useEffect(() => {
-    localStorage.removeItem("isNotPublic");
-  }, [])
-
-
   const handleJoyrideCallback = data => {
     const { action, status } = data;
     if (status === "finished" || status === "skipped" || action === "close") {
@@ -161,6 +161,36 @@ const CreateGame = () => {
       localStorage.setItem("showOnBoardig", true)
     }
   };
+
+  const scoreBoardData = useQuery(
+    ["soreBoardDataApi"],
+    async () =>
+      await axios.get(`${process.env.REACT_APP_BACKEND_URL}scores`, {
+        headers,
+      }),
+    {
+      keepPreviousData: true,
+      refetchOnWindowFocus: false,
+      retry: false,
+      //   enabled: !!token,
+      onSuccess: (res) => {
+        let tempArr = []
+
+        for (let i = 0; i < 4; i++) {
+          tempArr.push(res.data.data[i])
+        }
+
+        setTopFour(tempArr)
+        tempArr = []
+        setIsLoading(false)
+      },
+      enabled: token ? true : false
+    }
+  );
+
+  useEffect(() => {
+    localStorage.removeItem("isNotPublic");
+  }, [])
 
   useEffect(() => {
     if (!localStorage.getItem("onBoardig")) {
@@ -175,6 +205,9 @@ const CreateGame = () => {
     }
   })
 
+  useEffect(() => {
+    console.log(topFour, topFour.length)
+  }, [topFour])
 
 
   return (
@@ -225,7 +258,7 @@ const CreateGame = () => {
                 {showLangMenu ? <BsFillCaretUpFill /> : <BsFillCaretDownFill />}
               </button>
 
-              {showLangMenu && <ul className="w-24 text-orange-color  border-b border-orange-color border-b-0 mt-1">
+              {showLangMenu && <ul className="w-24 text-orange-color border-b border-orange-color mt-1">
                 {Object.keys(LANG).filter(tempL => tempL !== lang).map(tempL =>
                   (<li onClick={() => setLanguage(tempL)} className="rounded-md border-b border-orange-color cursor-pointer hover:border-b-orange-400 py-1">{LANG[tempL]}</li>))}
               </ul>}
@@ -300,11 +333,49 @@ const CreateGame = () => {
         </section>
       }
 
+      {user && token && <article className="mt-10 w-4/5 ml-[10%]  ">
+        <section className="text-white text-left font-bold">
+          <div className="flex">
+            <p className="">Top</p>
+            <p className="rounded-full bg-orange-color w-5 h-5 text-center ml-1 mt-[.1rem] text-sm pr-[0.1rem]">4</p>
+          </div>
+          <h3 className="text-3xl">Leaders</h3>
+        </section>
 
-      <div onClick={() => { setShowMenu(false); setShowLangMenu(false); }} className="max-w-xs p-3 mx-auto flex flex-col items-center justify-center gap-y-2 min-h-screen space-y-2">
-        <div className="h-[180px] w-[200px] bg-inherit mt-18 mb-8 ">
+        {!isLoading &&
+          <section className="mt-2 flex justify-center items-center score-box h-[15vh] border">
+            {topFour.map(item => (
+              <div className="mx-1 mt-4 mb-2">
+                <div className="w-16 h-14 border border-orange-color rounded-md flex items-center justify-center overflow-hidden">
+                  <img src={item.profile_image ? item.profile_image : Avatar} alt="" />
+                </div>
+                <p className="text-white text-xs text-left  pl-1 font-bold">{item.username}</p>
+                <p className="text-orange-color text-[.6rem] text-left pl-1">{item.match_history.wins} wins</p>
+              </div>
+            ))}
+          </section>}
+
+        {isLoading && <section className="mt-2 flex justify-center items-center score-box h-[15vh] border">
+          <Circles
+            height="30"
+            width="50"
+            radius="9"
+            color="#FF4C01"
+            ariaLabel="three-dots-loading"
+            wrapperStyle={{}}
+            wrapperClassName=""
+            visible={true}
+          />
+        </section>}
+
+        <div className="score-box-bottom"></div>
+
+      </article>}
+
+      <div onClick={() => { setShowMenu(false); setShowLangMenu(false); }} className="max-w-xs p-3 mx-auto flex flex-col items-center justify-center gap-y-2 min-h-[55vh] space-y-2">
+        {!user && !token && <div className="h-[180px] w-[200px] bg-inherit mt-18 mb-8 ">
           <img src={avatar} className="" alt="avatar" />
-        </div>
+        </div>}
         <button
           onClick={() => {
             user && token ? createGameAI() : createGameAI_NoAuth()
@@ -365,7 +436,7 @@ const CreateGame = () => {
         <section className="w-4/5 max-w-[30rem] flex items-center justify-evenly mt-[12vh]">
           <Link
             to="/score-board"
-            className="sixth-step flex flex-col justify-evenly items-center "
+            className="sixth-step flex flex-col justify-evenly items-center mt-4"
           >
             <div className="h-6 w-8 bg-orange-color px-2 flex justify-center items-center rounded-sm">
               <svg
@@ -387,7 +458,7 @@ const CreateGame = () => {
           </Link>
           <Link
             to="/store"
-            className="seventh-step flex flex-col justify-evenly items-center"
+            className="seventh-step flex flex-col justify-evenly items-center mt-4"
           >
             <div className="h-6 w-8 bg-orange-color px-2 fle
           x justify-center items-center pt-1">

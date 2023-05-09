@@ -650,8 +650,16 @@ export const Localization = {
         ENG: "Redo"
     },
     "Undo limit reached.": {
-        AMH: "መመለስ ገደብ ላይ ደርሷል። ተጨማሪ እንቅስቃሴዎችን መመለስ አይችሉም፦",
+        AMH: "መመለስ ገደብ ላይ ደርሷል። ተጨማሪ እንቅስቃሴዎችን መመለስ አይችሉም።",
         ENG: "Undo limit reached. You cannot undo any more moves!"
+    },
+    "resume computer turn ?": {
+        AMH: "የኮምፒተር ዙር ይቀጥል።",
+        ENG: "resume computer turn ?"
+    },
+    "Resume": {
+        AMH: "  ይቀጥል",
+        ENG: "  Resume"
     },
 
 
