@@ -343,7 +343,7 @@ const CreateGame = () => {
         </section>
 
         {!isLoading &&
-          <section className="mt-2 flex justify-center items-center score-box h-[15vh] border">
+          <section className="mt-2 flex justify-center items-center score-box h-[15vh] min-h-[7rem] border">
             {topFour.map(item => (
               <div className="mx-1 mt-4 mb-2">
                 <div className="w-16 h-14 border border-orange-color rounded-md flex items-center justify-center overflow-hidden">
