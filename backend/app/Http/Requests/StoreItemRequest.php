@@ -25,6 +25,9 @@ class StoreItemRequest extends FormRequest
     {
         return [
             'name' => 'required|unique:stores,name',
+            'nameAm' => 'required',
+            'historyAmharic' => 'required_if:type,Avatar',
+            'historyEnglish' => 'required_if:type,Avatar',
             'price' => 'required|integer',
             'type' => 'required|in:Avatar,Crown,Board',
             'item' => 'required|mimes:png,jpeg,jpg,svg|max:5000',

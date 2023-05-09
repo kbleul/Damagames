@@ -63,6 +63,11 @@ class AdminController extends Controller
     {
         $item = Store::create([
             'name' => $request->name,
+            'nameAm' => $request->nameAm,
+            'history' => [
+                'amharic' => $request->historyAmharic,
+                'english' => $request->historyEnglish
+            ],
             'nickname' => $request->nickname,
             'price' => $request->price,
             'discount' => $request->discount,
@@ -130,6 +135,11 @@ class AdminController extends Controller
         } else {
             $store->update([
                 'name' => $request->name ?? $store->name,
+                'nameAm' => $request->nameAm ?? $store->nameAm,
+                'history' => [
+                    'amharic' => $request->historyAmharic ?? $store->history['amharic'],
+                    'english' => $request->historyEnglish  ?? $store->history['english'],
+                ],
                 'nickname' => $request->nickname ?? $store->nickname,
                 'price' => $request->price ?? $store->price,
                 'discount' => $request->discount ?? $store->discount,
@@ -219,27 +229,8 @@ class AdminController extends Controller
     public function store_items()
     {
         $avatars = Store::where('type', "Avatar")->orderBy('price', 'ASC')->get();
-        $avatars->makeHidden([
-            'color',
-            'board_pawn1',
-            'board_pawn2',
-            'board_pawn1_turn',
-            'board_pawn2_turn',
-            'board_pawn_king1',
-            'board_pawn_king2',
-            'board_pawn_king1_turn',
-            'board_pawn_king2_turn',
-        ]);
         $boards = Store::where('type', "Board")->orderBy('price', 'ASC')->get();
         $crowns = Store::where('type', "Crown")->orderBy('price', 'ASC')->get();
-        $crowns->makeHidden([
-            'color',
-            'board_pawn1',
-            'board_pawn2',
-            'board_pawn1_turn',
-            'board_pawn2_turn',
-        ]);
-
         return [
             'avatars' =>  $avatars,
             'boards' =>   $boards,

@@ -60,6 +60,7 @@ Route::middleware('response')->group(function () {
     Route::post('finish-regster', [AuthController::class, 'finish_regster'])->middleware('auth:sanctum', 'response');
     Route::post('update-username', [AuthController::class, 'update_username'])->middleware('auth:sanctum');
     Route::get('store-items', [StoreController::class, 'index']);
+    Route::get('store-item-detail/{store}', [StoreController::class, 'store_item_show']);
 
     Route::post('game-exit/{game}', [PlayersController::class, 'game_status']);
 

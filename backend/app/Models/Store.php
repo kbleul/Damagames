@@ -16,20 +16,54 @@ class Store extends Model  implements HasMedia
 
     protected $hidden = [
         'media',
+        'nameAm',
         'updated_at',
         'deleted_at'
     ];
+
 
 
     protected $casts = [
         'status' => 'integer',
         'price' => "integer",
         'color' => "json",
+        'history' => "json",
         'discount' => "integer",
         'created_at' => "datetime:Y-m-d",
         'updated_at' => "datetime:Y-m-d",
         'deleted_at' => "datetime:Y-m-d",
     ];
+
+    public function toArray()
+    {
+        $attributes = parent::toArray();
+
+        if ($this->type === "Avatar") {
+            $hiddenAttributes = [
+                'color',
+                'board_pawn1',
+                'board_pawn2',
+                'board_pawn1_turn',
+                'board_pawn2_turn',
+                'board_pawn_king1',
+                'board_pawn_king2',
+                'board_pawn_king1_turn',
+                'board_pawn_king2_turn',
+            ];
+        } elseif ($this->type === "Crown") {
+            $hiddenAttributes = [
+                'color',
+                'board_pawn1',
+                'board_pawn2',
+                'board_pawn1_turn',
+                'board_pawn2_turn',
+            ];
+        } else {
+            return $attributes;
+        }
+
+        return array_diff_key($attributes, array_flip($hiddenAttributes));
+    }
 
     public function getStatusAttribute($status)
     {
@@ -41,6 +75,7 @@ class Store extends Model  implements HasMedia
     }
 
     public $appends = [
+        'item_name',
         'item',
         'board_pawn1',
         'board_pawn2',
@@ -52,6 +87,14 @@ class Store extends Model  implements HasMedia
         'board_pawn_king2_turn'
 
     ];
+
+    public function getItemNameAttribute()
+    {
+        return [
+            'english' => $this->name,
+            'amharic' => $this->nameAm,
+        ];
+    }
 
     public function getItemAttribute()
     {
