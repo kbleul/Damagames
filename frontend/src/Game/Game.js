@@ -824,7 +824,6 @@ const Game = () => {
       let coordinates = document.getElementsByClassName("player1")[i].classList[1]
       //let isking = document.getElementsByClassName("player1")[i].classList.includes("king")
 
-      console.log(document.getElementsByClassName("player1")[i].classList.includes("king"))
       let movesData = getMoves(
         columns,
         gameState.history[gameState.history.length - 1].boardState,
