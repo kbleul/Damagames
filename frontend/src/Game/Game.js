@@ -465,6 +465,13 @@ const Game = () => {
         clickedSquare.isKing,
         false
       );
+
+      console.log(movesData, {
+        columns,
+        boardState,
+        coordinates,
+        isKings: clickedSquare.isKings
+      })
       setGameState({
         ...gameState,
         activePiece: coordinates,
@@ -809,17 +816,52 @@ const Game = () => {
       }
     }
   }, [gameState, gameStatus, winnerPlayer]);
+
+  const showAllHint = () => {
+    let myCoordinates = []
+    for (let i = 0; i < document.getElementsByClassName("player1").length; i++) {
+      // console.log(document.getElementsByClassName("player1")[i].classList[1])
+      let coordinates = document.getElementsByClassName("player1")[i].classList[1]
+      //let isking = document.getElementsByClassName("player1")[i].classList.includes("king")
+
+      console.log(document.getElementsByClassName("player1")[i].classList.includes("king"))
+      let movesData = getMoves(
+        columns,
+        gameState.history[gameState.history.length - 1].boardState,
+        coordinates,
+        false,
+        false
+      );
+
+      if (movesData[0].length > 0) {
+        myCoordinates.push(coordinates)
+      }
+    }
+
+    myCoordinates.forEach(item => {
+      document.getElementsByClassName(item)[0].classList.add("movable")
+      document.getElementsByClassName(item)[0].classList.add("player1-all")
+
+      // .push("movable")
+      // document.getElementsByClassName(item)[0].classList.push("player1-move")
+    })
+
+
+  }
+
   const resetGame = () => {
     moveRef.current = [0, 0];
 
     socket.emit("sendResetGameRequest", { status: "Pending" });
   };
+
   const rejectGameRequest = () => {
     socket.emit("sendRejectGameMessage", { status: "Reject" });
     socket.emit("leave", gameId);
     setShowResetWaiting(false);
     setIsDrawModalOpen(false);
   };
+
   const rejectDrawGameRequest = () => {
     socket.emit("sendRejectDrawGameMessage", { status: "Reject" });
     // socket.emit('leave',gameId)
@@ -1219,6 +1261,7 @@ const Game = () => {
 
   useEffect(() => {
     timeChecker();
+    id == 1 && currentPlayer && showAllHint()
   }, [currentPlayer]);
 
   useEffect(() => {
@@ -1765,6 +1808,16 @@ const Game = () => {
         </div>
 
         <div onClick={redo} className={redoHistory.length === 0 ? "flex flex-col opacity-80" : "flex flex-col cursor-pointer"}>
+          <div className="rounded-full flex flex-col items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 512 512"><path fill="#ff4c01" d="M48 256c0 114.87 93.13 208 208 208s208-93.13 208-208S370.87 48 256 48S48 141.13 48 256Zm96 66.67c5.45-61.45 34.14-117.09 122.87-117.09v-37.32a8.32 8.32 0 0 1 14-6L365.42 242a8.2 8.2 0 0 1 0 11.94L281 
+          333.71a8.32 8.32 0 0 1-14-6v-37.29c-57.07 0-84.51 13.47-108.58 38.68c-5.49 5.65-15.07 1.32-14.42-6.43Z"/></svg>
+          </div>
+          <p className="text-xs font-bold text-white">
+            {Localization['Redo'][lang]}
+          </p>
+        </div>
+
+        <div onClick={showAllHint} className={redoHistory.length === 0 ? "flex flex-col opacity-80" : "flex flex-col cursor-pointer"}>
           <div className="rounded-full flex flex-col items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 512 512"><path fill="#ff4c01" d="M48 256c0 114.87 93.13 208 208 208s208-93.13 208-208S370.87 48 256 48S48 141.13 48 256Zm96 66.67c5.45-61.45 34.14-117.09 122.87-117.09v-37.32a8.32 8.32 0 0 1 14-6L365.42 242a8.2 8.2 0 0 1 0 11.94L281 
           333.71a8.32 8.32 0 0 1-14-6v-37.29c-57.07 0-84.51 13.47-108.58 38.68c-5.49 5.65-15.07 1.32-14.42-6.43Z"/></svg>

@@ -661,6 +661,14 @@ export const Localization = {
         AMH: "  ይቀጥል",
         ENG: "  Resume"
     },
+    "top": {
+        AMH: "ከፍተኛ",
+        ENG: "top"
+    },
+    "leaders": {
+        AMH: "መሪዎች",
+        ENG: "leaders"
+    },
 
 
 
