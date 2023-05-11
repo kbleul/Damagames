@@ -646,7 +646,7 @@ export const Localization = {
         ENG: "Undo"
     },
     "Redo": {
-        AMH: "መመለስ",
+        AMH: "ወደፊት",
         ENG: "Redo"
     },
     "Undo limit reached.": {
@@ -654,7 +654,7 @@ export const Localization = {
         ENG: "Undo limit reached. You cannot undo any more moves!"
     },
     "resume computer turn ?": {
-        AMH: "የኮምፒተር ዙር ይቀጥል።",
+        AMH: "የኮምፒተር ዙር",
         ENG: "resume computer turn ?"
     },
     "Resume": {
@@ -663,11 +663,11 @@ export const Localization = {
     },
     "top": {
         AMH: "ከፍተኛ",
-        ENG: "top"
+        ENG: "Top"
     },
     "leaders": {
         AMH: "መሪዎች",
-        ENG: "leaders"
+        ENG: "Leaders"
     },
 
 

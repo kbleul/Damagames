@@ -333,48 +333,6 @@ const CreateGame = () => {
         </section>
       }
 
-      {/* <article className="w-full flex items-center justify-center mt-10">
-        {user && token && <article className="w-4/5  max-w-[500px]">
-          <section className="text-white text-left font-bold">
-            <div className="flex">
-              <p className="">Top</p>
-              <p className="rounded-full bg-orange-color w-5 h-5 text-center ml-1 mt-[.1rem] text-sm pr-[0.1rem]">4</p>
-            </div>
-            <h3 className="text-3xl">Leaders</h3>
-          </section>
-
-          {!isLoading &&
-            <section className="mt-2 flex justify-center items-center score-box h-[15vh] min-h-[7rem] md:min-h-[10rem] border">
-              {topFour.map(item => (
-                <div className="mx-1 mt-4 mb-2 flex-grow w-1/4 ">
-                  <div className="h-16 md:h-24 border border-orange-color rounded-md flex items-center justify-center overflow-hidden">
-                    <img src={item.profile_image ? item.profile_image : Avatar} alt="" />
-                  </div>
-                  <p className="text-white text-xs md:text-base text-left  pl-1 font-bold">{item.username}</p>
-                  <p className="text-orange-color text-[.6rem]  md:text-sm text-left pl-1">{item.match_history.wins} wins</p>
-                </div>
-              ))}
-            </section>}
-
-          {isLoading && <section className="mt-2 flex justify-center items-center score-box h-[15vh] border">
-            <Circles
-              height="30"
-              width="50"
-              radius="9"
-              color="#FF4C01"
-              ariaLabel="three-dots-loading"
-              wrapperStyle={{}}
-              wrapperClassName=""
-              visible={true}
-            />
-          </section>}
-
-          <div className="score-box-bottom"></div>
-
-        </article>}
-      </article> */}
-
-
       <div onClick={() => { setShowMenu(false); setShowLangMenu(false); }}
         className={user ? "max-w-xs p-3 mx-auto flex flex-col items-center justify-center gap-y-2 min-h-[48vh] space-y-2" : "max-w-xs p-3 mx-auto flex flex-col items-center justify-center gap-y-2 min-h-screen space-y-2"}>
         {!user && !token && <div className="h-[180px] w-[200px] bg-inherit mt-18 mb-8 ">
@@ -503,9 +461,9 @@ const CreateGame = () => {
           </section>
 
           {!isLoading &&
-            <section className="mt-2 flex justify-center items-center score-box h-[15vh] min-h-[7rem] md:min-h-[10rem] border">
+            <section onClick={() => navigate("/score-board")} className="mt-2 flex justify-center items-center score-box h-[15vh] min-h-[7rem] md:min-h-[10rem] border">
               {topFour.map(item => (
-                <div className="mx-1 mt-4 mb-2 flex-grow w-1/4 ">
+                <div className="mx-1 mt-4 mb-2 flex-grow w-1/4 cursor-pointer">
                   <div className="h-16 md:h-24 border border-orange-color rounded-md flex items-center justify-center overflow-hidden">
                     <img src={item.profile_image ? item.profile_image : Avatar} alt="" />
                   </div>

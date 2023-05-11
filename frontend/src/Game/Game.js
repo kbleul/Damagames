@@ -466,12 +466,8 @@ const Game = () => {
         false
       );
 
-      console.log(movesData, {
-        columns,
-        boardState,
-        coordinates,
-        isKings: clickedSquare.isKings
-      })
+      console.log(clickedSquare.isKing)
+
       setGameState({
         ...gameState,
         activePiece: coordinates,
@@ -820,18 +816,16 @@ const Game = () => {
   const showAllHint = () => {
     let myCoordinates = []
     for (let i = 0; i < document.getElementsByClassName("player1").length; i++) {
-      // console.log(document.getElementsByClassName("player1")[i].classList[1])
       let coordinates = document.getElementsByClassName("player1")[i].classList[1]
-      //let isking = document.getElementsByClassName("player1")[i].classList.includes("king")
 
       let movesData = getMoves(
         columns,
         gameState.history[gameState.history.length - 1].boardState,
         coordinates,
-        false,
+        document.getElementsByClassName("player1")[i].classList.contains("king"),
         false
       );
-
+      console.log(document.getElementsByClassName("player1")[i].classList.contains("s"))
       if (movesData[0].length > 0) {
         myCoordinates.push(coordinates)
       }
@@ -840,11 +834,7 @@ const Game = () => {
     myCoordinates.forEach(item => {
       document.getElementsByClassName(item)[0].classList.add("movable")
       document.getElementsByClassName(item)[0].classList.add("player1-all")
-
-      // .push("movable")
-      // document.getElementsByClassName(item)[0].classList.push("player1-move")
     })
-
 
   }
 
@@ -1518,8 +1508,7 @@ const Game = () => {
             </p>
           </button>
         )}
-        {/* currentPlayer && localStorage.getItem("playerOneIp") && 
-      {!currentPlayer && localStorage.getItem("playerTwoIp") && */}
+
         <section className="flex flex-col">
           <div>
             {currentPlayer && localStorage.getItem("playerOneIp") && (
@@ -1796,7 +1785,7 @@ const Game = () => {
           </div>
         )}
 
-        <div onClick={undo} className={showUndoWarning || undoCount >= undoAllowedAmount ? "flex flex-col opacity-80" : "flex flex-col cursor-pointer"}>
+        {id == "1" && <><div onClick={undo} className={showUndoWarning || undoCount >= undoAllowedAmount ? "flex flex-col opacity-80" : "flex flex-col cursor-pointer"}>
           <div className="rounded-full flex flex-col items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 512 512"><path fill="#ff4c01" d="M256 48C141.13 48 48 141.13 48 256s93.13 208 208 208s208-93.13 208-208S370.87 48 256 48Zm97.67 281.1c-24.07-25.21-51.51-38.68-108.58-38.68v37.32a8.32 8.32 0 0 1-14.05 6L146.58 254a8.2 8.2 0 0 1 0-11.94L231 
             162.29a8.32 8.32 0 0 1 14.05 6v37.32c88.73 0 117.42 55.64 122.87 117.09c.73 7.72-8.85 12.05-14.25 6.4Z" /></svg>
@@ -1806,19 +1795,20 @@ const Game = () => {
           </p>
         </div>
 
-        <div onClick={redo} className={redoHistory.length === 0 ? "flex flex-col opacity-80" : "flex flex-col cursor-pointer"}>
-          <div className="rounded-full flex flex-col items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 512 512"><path fill="#ff4c01" d="M48 256c0 114.87 93.13 208 208 208s208-93.13 208-208S370.87 48 256 48S48 141.13 48 256Zm96 66.67c5.45-61.45 34.14-117.09 122.87-117.09v-37.32a8.32 8.32 0 0 1 14-6L365.42 242a8.2 8.2 0 0 1 0 11.94L281 
+          <div onClick={redo} className={redoHistory.length === 0 ? "flex flex-col opacity-80" : "flex flex-col cursor-pointer"}>
+            <div className="rounded-full flex flex-col items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 512 512"><path fill="#ff4c01" d="M48 256c0 114.87 93.13 208 208 208s208-93.13 208-208S370.87 48 256 48S48 141.13 48 256Zm96 66.67c5.45-61.45 34.14-117.09 122.87-117.09v-37.32a8.32 8.32 0 0 1 14-6L365.42 242a8.2 8.2 0 0 1 0 11.94L281 
           333.71a8.32 8.32 0 0 1-14-6v-37.29c-57.07 0-84.51 13.47-108.58 38.68c-5.49 5.65-15.07 1.32-14.42-6.43Z"/></svg>
-          </div>
-          <p className="text-xs font-bold text-white">
-            {Localization['Redo'][lang]}
-          </p>
-        </div>
+            </div>
+            <p className="text-xs font-bold text-white">
+              {Localization['Redo'][lang]}
+            </p>
+          </div></>}
 
         <div onClick={showAllHint} className={redoHistory.length === 0 ? "flex flex-col opacity-80" : "flex flex-col cursor-pointer"}>
           <div className="rounded-full flex flex-col items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 512 512"><path fill="#ff4c01" d="M48 256c0 114.87 93.13 208 208 208s208-93.13 208-208S370.87 48 256 48S48 141.13 48 256Zm96 66.67c5.45-61.45 34.14-117.09 122.87-117.09v-37.32a8.32 8.32 0 0 1 14-6L365.42 242a8.2 8.2 0 0 1 0 11.94L281 
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 512 512"><path fill="#ff4c01" d="M48 256c0 114.87
+             93.13 208 208 208s208-93.13 208-208S370.87 48 256 48S48 141.13 48 256Zm96 66.67c5.45-61.45 34.14-117.09 122.87-117.09v-37.32a8.32 8.32 0 0 1 14-6L365.42 242a8.2 8.2 0 0 1 0 11.94L281 
           333.71a8.32 8.32 0 0 1-14-6v-37.29c-57.07 0-84.51 13.47-108.58 38.68c-5.49 5.65-15.07 1.32-14.42-6.43Z"/></svg>
           </div>
           <p className="text-xs font-bold text-white">

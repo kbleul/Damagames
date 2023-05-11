@@ -3,8 +3,22 @@ import * as utils from "./utils.js";
 import { TurnContext } from "../../context/TurnContext";
 import { useAuth } from "../../context/auth.js";
 
+import { getMoves, movePiece } from "./ReactCheckers.js";
+
+const columns = {
+  a: 0,
+  b: 1,
+  c: 2,
+  d: 3,
+  e: 4,
+  f: 5,
+  g: 6,
+  h: 7,
+};
+
 const Board = (props) => {
-  const { login, token, user } = useAuth();
+  const { user } = useAuth();
+  let hintCoordinate = []
 
   let tracker = props.tracker;
 
@@ -14,14 +28,11 @@ const Board = (props) => {
   let propsMain = props
 
 
-
-
   function Square(props) {
 
     const onClick = props["onClick"];
 
     let squareClasses;
-
 
     if (propsMain.numberOfPlayers !== 1) {
       if (isFirstMove && props.numberOfPlayers !== 1) {
@@ -84,7 +95,43 @@ const Board = (props) => {
       }
     }
 
+    let movesData = [[]]
 
+
+    if (propsMain.numberOfPlayers != 1) {
+      if (propsMain.currentPlayer && localStorage.getItem("playerOne") && squareClasses.includes("player1")) {
+        let coordinate = squareClasses.split(" ")[0]
+
+        movesData = getMoves(
+          columns,
+          propsMain.boardState,
+          coordinate,
+          squareClasses.includes("king"),
+          false
+        );
+        movesData[0] && movesData[0].length > 0 && hintCoordinate.push(coordinate);
+
+        if (movesData[0] && movesData[0].length > 0) {
+          squareClasses = squareClasses + " " + "movable" + " " + "player1-all"
+        }
+      }
+
+      else if (!propsMain.currentPlayer && localStorage.getItem("playerTwo") && squareClasses.includes("player2")) {
+        let coordinate = squareClasses.split(" ")[0]
+        movesData = getMoves(
+          columns,
+          propsMain.boardState,
+          coordinate,
+          squareClasses.includes("king"),
+          false
+        );
+        movesData[0] && movesData[0].length > 0 && hintCoordinate.push(coordinate);
+
+        if (movesData[0] && movesData[0].length > 0) {
+          squareClasses = squareClasses + " " + "movable" + " " + "player1-all"
+        }
+      }
+    }
 
     return (
       <div>
@@ -137,9 +184,6 @@ const Board = (props) => {
         : "Default secondary"
       : "Default secondary";
 
-    // const evenColor = "Default primary"
-    // const oddColor = "Default secondary"
-
     const colorClass =
       (utils.isOdd(col) && utils.isOdd(row)) ||
         (!utils.isOdd(col) && !utils.isOdd(row))
@@ -178,17 +222,6 @@ const Board = (props) => {
         : "Default";
     }
 
-
-    // const pawnType = "Default"
-    // let crownType = "Royals"
-
-
-
-    // props.playingCrown
-    // ? props.boardState[coordinates].player === "player1"
-    //   ? squareClasses.push("king " + props.playingCrown.p1)
-    //   : squareClasses.push("king " + props.playingCrown.p2)
-    // :
 
     if (props.boardState[coordinates] !== null) {
       squareClasses.push(
