@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -13,6 +14,7 @@ class Store extends Model  implements HasMedia
     use HasFactory, InteractsWithMedia, Uuids;
 
     protected $guarded = [];
+    protected $with = ['history'];
 
     protected $hidden = [
         'media',
@@ -41,6 +43,7 @@ class Store extends Model  implements HasMedia
         if ($this->type === "Avatar") {
             $hiddenAttributes = [
                 'color',
+                'history',
                 'board_pawn1',
                 'board_pawn2',
                 'board_pawn1_turn',
@@ -53,6 +56,7 @@ class Store extends Model  implements HasMedia
         } elseif ($this->type === "Crown") {
             $hiddenAttributes = [
                 'color',
+                'history',
                 'board_pawn1',
                 'board_pawn2',
                 'board_pawn1_turn',
@@ -184,5 +188,15 @@ class Store extends Model  implements HasMedia
             return $image->getUrl();
         }
         return "";
+    }
+
+    /**
+     * Get all of the history for the Store
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function history(): HasMany
+    {
+        return $this->hasMany(AvatarHistory::class, 'store_id');
     }
 }

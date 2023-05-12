@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreItemRequest;
 use App\Http\Requests\StoreItemStatusRequest;
 use App\Http\Requests\StoreItemUpdateRequest;
+use App\Models\AvatarHistory;
 use App\Models\CoinSetting;
 use App\Models\ComputerGame;
 use App\Models\ComputerGameNa;
@@ -15,6 +16,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use GrahamCampbell\ResultType\Success;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -61,13 +63,11 @@ class AdminController extends Controller
 
     public function create_store_items(StoreItemRequest $request)
     {
+        DB::beginTransaction();
+
         $item = Store::create([
             'name' => $request->name,
             'nameAm' => $request->nameAm,
-            'history' => [
-                'amharic' => $request->historyAmharic,
-                'english' => $request->historyEnglish
-            ],
             'nickname' => $request->nickname,
             'price' => $request->price,
             'discount' => $request->discount,
@@ -78,6 +78,22 @@ class AdminController extends Controller
                 'lastMoveColor' => $request->lastMoveColor,
             ],
         ]);
+
+        if ($request->type === "Avatar") {
+            foreach ($request->history as $key => $value) {
+                $avatarHistory = AvatarHistory::create([
+                    'store_id' => $item->id,
+                    'history' => [
+                        'english' => $value['historyEnglish'],
+                        'amharic' => $value['historyAmharic']
+                    ],
+                ]);
+
+                if (!empty($value['image']) && $value['image']->isValid()) {
+                    $avatarHistory->addMedia($value['image'])->toMediaCollection('image');
+                }
+            }
+        }
 
         if ($request->type === "Board" || $request->type === "Crown") {
             if ($request->hasFile('board_pawn1') && $request->file('board_pawn1')->isValid()) {
@@ -113,7 +129,7 @@ class AdminController extends Controller
         }
 
         $item->addMediaFromRequest('item')->toMediaCollection('item');
-
+        DB::commit();
         return "Success";
     }
 

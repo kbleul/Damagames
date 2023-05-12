@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::table('stores', function (Blueprint $table) {
             $table->string('nameAm')->nullable();
-            $table->json('history')->nullable();
         });
     }
 
@@ -28,7 +27,6 @@ return new class extends Migration
     {
         Schema::table('stores', function (Blueprint $table) {
             $table->dropColumn('nameAm');
-            $table->dropColumn('history');
         });
     }
 };
