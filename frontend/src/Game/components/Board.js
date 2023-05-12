@@ -98,7 +98,7 @@ const Board = (props) => {
     let movesData = [[]]
 
 
-    if (propsMain.numberOfPlayers != 1) {
+    if (propsMain.numberOfPlayers != 1 && propsMain.showAllMoves) {
       if (propsMain.currentPlayer && localStorage.getItem("playerOne") && squareClasses.includes("player1")) {
         let coordinate = squareClasses.split(" ")[0]
 

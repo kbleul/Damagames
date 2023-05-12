@@ -94,6 +94,8 @@ const Game = () => {
   const [undoCount, setUndoCount] = useState(0)
   const [showUndoWarning, setShowUndoWarning] = useState(false)
   const [showRedoPrompt, setShowRedoPrompt] = useState(false)
+  const [showAllMoves, setShowAllMoves] = useState(true)
+
 
 
 
@@ -825,7 +827,6 @@ const Game = () => {
         document.getElementsByClassName("player1")[i].classList.contains("king"),
         false
       );
-      console.log(document.getElementsByClassName("player1")[i].classList.contains("s"))
       if (movesData[0].length > 0) {
         myCoordinates.push(coordinates)
       }
@@ -1250,7 +1251,7 @@ const Game = () => {
 
   useEffect(() => {
     timeChecker();
-    id == 1 && currentPlayer && showAllHint()
+    showAllMoves && id == 1 && currentPlayer && showAllHint()
   }, [currentPlayer]);
 
   useEffect(() => {
@@ -1758,6 +1759,7 @@ const Game = () => {
             tracker={gameState.tracker ? gameState.tracker : null}
             isFirstMove={firstMove}
             setIsFirstMove={setFirstMove}
+            showAllMoves={showAllMoves}
           />
         </div>
       </div>
@@ -1805,17 +1807,16 @@ const Game = () => {
             </p>
           </div></>}
 
-        <div onClick={showAllHint} className={redoHistory.length === 0 ? "flex flex-col opacity-80" : "flex flex-col cursor-pointer"}>
+        <div onClick={() => setShowAllMoves(prev => !prev)} className={redoHistory.length === 0 ? "flex flex-col opacity-80" : "flex flex-col cursor-pointer"}>
           <div className="rounded-full flex flex-col items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 512 512"><path fill="#ff4c01" d="M48 256c0 114.87
-             93.13 208 208 208s208-93.13 208-208S370.87 48 256 48S48 141.13 48 256Zm96 66.67c5.45-61.45 34.14-117.09 122.87-117.09v-37.32a8.32 8.32 0 0 1 14-6L365.42 242a8.2 8.2 0 0 1 0 11.94L281 
-          333.71a8.32 8.32 0 0 1-14-6v-37.29c-57.07 0-84.51 13.47-108.58 38.68c-5.49 5.65-15.07 1.32-14.42-6.43Z"/></svg>
+            {showAllMoves ? <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 24 24"><path fill="#ff4c01" d="M7 18q-2.5 0-4.25-1.75T1 12q0-2.5 1.75-4.25T7 6h10q2.5 0 4.25 1.75T23 12q0 2.5-1.75 4.25T17 18H7Zm10-3q1.25 0 2.125-.875T20 12q0-1.25-.875-2.125T17 9q-1.25 0-2.125.875T14 12q0 1.25.875 2.125T17 15Z" /></svg>
+              : <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 24 24"><path fill="#ff4c01" d="M17 7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h10c2.76 0 5-2.24 5-5s-2.24-5-5-5zM7 15c-1.66 0-3-1.34-3-3s1.34-3 3-3s3 1.34 3 3s-1.34 3-3 3z" /></svg>
+            }
           </div>
           <p className="text-xs font-bold text-white">
-            {Localization['Redo'][lang]}
+            Show Moves
           </p>
         </div>
-
 
         {id != 1 && (
           <div className="flex items-center justify-center flex-col">

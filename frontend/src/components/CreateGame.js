@@ -22,12 +22,10 @@ import FormControl from '@mui/material/FormControl';
 
 import Avatar from "../assets/Avatar.png";
 import { Circles } from "react-loader-spinner";
+import { SORTBY, LANG } from "../utils/data"
+import { sortScoreBoard } from "../utils/utilFunc"
 
 
-const LANG = {
-  "AMH": "አማርኛ",
-  "ENG": "English",
-}
 
 const CreateGame = () => {
   const navigate = useNavigate();
@@ -174,10 +172,11 @@ const CreateGame = () => {
       retry: false,
       //   enabled: !!token,
       onSuccess: (res) => {
+        let sortedArr = sortScoreBoard(SORTBY.PERSON, res.data.data)
         let tempArr = []
 
         for (let i = 0; i < 4; i++) {
-          tempArr.push(res.data.data[i])
+          tempArr.push(sortedArr[i])
         }
 
         setTopFour(tempArr)
@@ -187,6 +186,7 @@ const CreateGame = () => {
       enabled: token ? true : false
     }
   );
+
 
   useEffect(() => {
     localStorage.removeItem("isNotPublic");
@@ -205,9 +205,8 @@ const CreateGame = () => {
     }
   })
 
-  useEffect(() => {
-    console.log(topFour, topFour.length)
-  }, [topFour])
+  // by = computer person coin
+
 
 
   return (
