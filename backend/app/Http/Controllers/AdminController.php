@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use GrahamCampbell\ResultType\Success;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\UploadedFile;
 
 class AdminController extends Controller
 {
@@ -79,8 +80,9 @@ class AdminController extends Controller
             ],
         ]);
 
+
         if ($request->type === "Avatar") {
-            foreach ($request->history as $key => $value) {
+            foreach ($request->history as $value) {
                 $avatarHistory = AvatarHistory::create([
                     'store_id' => $item->id,
                     'history' => [
@@ -89,8 +91,13 @@ class AdminController extends Controller
                     ],
                 ]);
 
-                if (!empty($value['image']) && $value['image']->isValid()) {
-                    $avatarHistory->addMedia($value['image'])->toMediaCollection('image');
+                $image = $value['image'];
+
+                if (isset($image) && $image->isValid()) {
+                    $avatarHistory
+                        ->addMedia($image)
+                        ->preservingOriginal()
+                        ->toMediaCollection('image');
                 }
             }
         }

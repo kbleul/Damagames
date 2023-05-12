@@ -16,6 +16,7 @@ class AvatarHistory extends Model implements HasMedia
     protected $appends = ['image'];
     protected $hidden = [
         'created_at',
+        'media',
         'updated_at',
         'deleted_at',
     ];

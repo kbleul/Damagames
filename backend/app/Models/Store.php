@@ -43,7 +43,6 @@ class Store extends Model  implements HasMedia
         if ($this->type === "Avatar") {
             $hiddenAttributes = [
                 'color',
-                'history',
                 'board_pawn1',
                 'board_pawn2',
                 'board_pawn1_turn',
@@ -62,6 +61,11 @@ class Store extends Model  implements HasMedia
                 'board_pawn1_turn',
                 'board_pawn2_turn',
             ];
+        } elseif ($this->type === "Board") {
+            $hiddenAttributes = [
+                'history',
+            ];
+            return $attributes;
         } else {
             return $attributes;
         }
