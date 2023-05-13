@@ -159,15 +159,32 @@ class AdminController extends Controller
             $store->update([
                 'name' => $request->name ?? $store->name,
                 'nameAm' => $request->nameAm ?? $store->nameAm,
-                'history' => [
-                    'amharic' => $request->historyAmharic ?? $store->history['amharic'],
-                    'english' => $request->historyEnglish  ?? $store->history['english'],
-                ],
                 'nickname' => $request->nickname ?? $store->nickname,
                 'price' => $request->price ?? $store->price,
                 'discount' => $request->discount ?? $store->discount,
                 'type' => $request->type ?? $store->type
             ]);
+
+            if ($store->type === "Avatar") {
+                foreach ($request->history as $value) {
+                    $avatarHistory = AvatarHistory::create([
+                        'store_id' => $store->id,
+                        'history' => [
+                            'english' => $value['historyEnglish'],
+                            'amharic' => $value['historyAmharic']
+                        ],
+                    ]);
+
+                    $image = $value['image'];
+
+                    if (isset($image) && $image->isValid()) {
+                        $avatarHistory
+                            ->addMedia($image)
+                            ->preservingOriginal()
+                            ->toMediaCollection('image');
+                    }
+                }
+            }
         }
 
         if ($request->hasFile('item') && $request->file('item')->isValid()) {
