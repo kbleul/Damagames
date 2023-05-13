@@ -43,6 +43,7 @@ Route::middleware('response')->group(function () {
     Route::post('add-player/{game}', [PlayersController::class, 'start_game']);
 
     Route::resource('scores', ScoreController::class)->middleware('response');
+    Route::get('top-four', [ScoreController::class, 'top_four'])->middleware('response');
     Route::post('draw/{game}', [ScoreController::class, 'draw']);
 
     Route::post('register', [AuthController::class, 'register_new']);

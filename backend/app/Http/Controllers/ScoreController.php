@@ -27,6 +27,15 @@ class ScoreController extends GameController
             });
     }
 
+    public function top_four()
+    {
+        return User::orderByDesc('current_point')->take(4)
+            ->get()->map(function ($query) {
+                $query->rank = $this->getRanking($query->id);
+                return $query;
+            });
+    }
+
     /**
      * Show the form for creating a new resource.
      *
