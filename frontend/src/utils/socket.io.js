@@ -12,8 +12,9 @@ import io from "socket.io-client";
 //   });
 
 const socket = io(
-  `http://localhost:7744`,
+  `http://31.220.18.115:7750`,{port:7750},
   {
+    
     reconnection: true,
     reconnectionAttempts: Infinity,
     reconnectionDelay: 1000,

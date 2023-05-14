@@ -7,6 +7,8 @@ import { Dashboard, Users, Avatars, CoinSetting } from "../pages";
 import Boards from "../pages/store/Boards";
 import CreateBoard from "../pages/store/CreateBoard";
 import CreatePawn from "../pages/store/CreatePawn";
+import CreateAvater from "../pages/store/CreateAvater";
+
 interface Props {}
 const AuthRoutes: React.FC<Props> = () => {
   const [isSideBarOpen, setIsSideBarOpen] = useState<boolean>(true);
@@ -72,7 +74,7 @@ const AuthRoutes: React.FC<Props> = () => {
             <Route path="/users" element={<Users />} />
             <Route path="/avatars" element={<Avatars />} />
             <Route path="/coins" element={<CoinSetting />} />
-            {/* <Route path="/boards" element={<Boards />} /> */}
+            <Route path="/avater/create" element={<CreateAvater />} />
             <Route path="/board/create" element={<CreateBoard />} />
             <Route path="/board/create/:id" element={<CreateBoard />} />
             <Route path="/pawn/create" element={<CreatePawn />} />
