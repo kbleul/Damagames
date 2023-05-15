@@ -17,12 +17,8 @@ import ForgotPassword from "./ForgotPassword";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { Localization } from "../../utils/language";
+import { LANG } from "../../utils/data"
 
-
-const LANG = {
-  "AMH": "አማርኛ",
-  "ENG": "English",
-}
 
 const Profile = () => {
   const [changePasswordModal, setChangePasswordModal] = useState(false);

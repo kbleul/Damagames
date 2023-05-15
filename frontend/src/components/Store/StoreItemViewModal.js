@@ -236,6 +236,19 @@ const StoreItemView = ({
 																<div className='absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md' />
 																{Localization["Buy Coins"][lang]}
 															</button>
+															<button
+																onClick={() => {
+																	navigate(`/avatar-history/${item.id}`)
+																}}
+																className='relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+                                active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
+                                active:border-b-[0px] flex items-center justify-center
+                                transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+                                border-b-[1px] border-gray-400/50 font-semibold text-white
+                                '>
+																<div className='absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md' />
+																{Localization["View History"][lang]}
+															</button>
 														</div>
 													</div>
 												)}

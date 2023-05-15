@@ -669,7 +669,10 @@ export const Localization = {
         AMH: "መሪዎች",
         ENG: "Leaders"
     },
-
+    "View History": {
+        AMH: "ታሪኩን ይመልከቱ",
+        ENG: "View History"
+    },
 
 
 

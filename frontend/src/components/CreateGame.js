@@ -163,7 +163,7 @@ const CreateGame = () => {
   const scoreBoardData = useQuery(
     ["soreBoardDataApi"],
     async () =>
-      await axios.get(`${process.env.REACT_APP_BACKEND_URL}scores`, {
+      await axios.get(`${process.env.REACT_APP_BACKEND_URL}top-four`, {
         headers,
       }),
     {
@@ -172,18 +172,16 @@ const CreateGame = () => {
       retry: false,
       //   enabled: !!token,
       onSuccess: (res) => {
+        console.log(res.data.data)
         let sortedArr = sortScoreBoard(SORTBY.PERSON, res.data.data)
-        let tempArr = []
 
-        for (let i = 0; i < 4; i++) {
-          tempArr.push(sortedArr[i])
-        }
 
-        setTopFour(tempArr)
-        tempArr = []
+        setTopFour(sortedArr)
+
+        sortedArr = []
         setIsLoading(false)
       },
-      enabled: token ? true : false
+      enabled: true
     }
   );
 
@@ -208,6 +206,9 @@ const CreateGame = () => {
   // by = computer person coin
 
 
+  useEffect(() => {
+    console.log(topFour)
+  }, [topFour])
 
   return (
     <div
@@ -333,7 +334,7 @@ const CreateGame = () => {
       }
 
       <div onClick={() => { setShowMenu(false); setShowLangMenu(false); }}
-        className={user ? "max-w-xs p-3 mx-auto flex flex-col items-center justify-center gap-y-2 min-h-[48vh] space-y-2" : "max-w-xs p-3 mx-auto flex flex-col items-center justify-center gap-y-2 min-h-screen space-y-2"}>
+        className={user ? "max-w-xs p-3 mx-auto flex flex-col items-center justify-center gap-y-2 min-h-[48vh] space-y-2" : "max-w-xs p-3 mx-auto flex flex-col items-center justify-center gap-y-2 min-h-[70vh] space-y-2 mt-16"}>
         {!user && !token && <div className="h-[180px] w-[200px] bg-inherit mt-18 mb-8 ">
           <img src={avatar} className="" alt="avatar" />
         </div>}
@@ -444,13 +445,9 @@ const CreateGame = () => {
 
         </section>
 
-
-
-
-        <Footer />
       </div>
-      <article className="w-full flex items-center justify-center">
-        {user && token && <article className="w-4/5  max-w-[500px]">
+      <article className="w-full flex items-center justify-center mt-6">
+        <article className="w-4/5  max-w-[500px]">
           <section className="text-white text-left font-bold">
             <div className="flex">
               <p className="">{Localization["top"][lang]}</p>
@@ -463,7 +460,7 @@ const CreateGame = () => {
             <section onClick={() => navigate("/score-board")} className="mt-2 flex justify-center items-center score-box h-[15vh] min-h-[7rem] md:min-h-[10rem] border">
               {topFour.map(item => (
                 <div className="mx-1 mt-4 mb-2 flex-grow w-1/4 cursor-pointer">
-                  <div className="h-16 md:h-24 border border-orange-color rounded-md flex items-center justify-center overflow-hidden">
+                  <div className="h-16 md:h-24 w-1/4 border border-orange-color rounded-md flex items-center justify-center overflow-hidden">
                     <img src={item.profile_image ? item.profile_image : Avatar} alt="" />
                   </div>
                   <p className="text-white text-xs md:text-base text-left  pl-1 font-bold">{item.username}</p>
@@ -487,8 +484,11 @@ const CreateGame = () => {
 
           <div className="score-box-bottom"></div>
 
-        </article>}
+        </article>
       </article>
+
+      <Footer />
+
     </div >
   );
 };

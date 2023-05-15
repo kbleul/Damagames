@@ -101,9 +101,6 @@ const Game = () => {
 
   const undoAllowedAmount = 3
 
-
-
-
   // const { playerCrown, playerBoard } = useHome();
   // useEffect(() => {
   //   document.documentElement.style.setProperty(
@@ -281,14 +278,14 @@ const Game = () => {
   //         ? user?.default_board?.color?.color1
   //         : `#181920`
   //   );
-  //   document.documentElement.style.setProperty(
-  //     "--playerBoardColor",
-  //     !user && !token
-  //       ? `#2c2c37`
-  //       : user?.default_board
-  //         ? user?.default_board?.color?.color2
-  //         : `#2c2c37`
-  //   );
+  // document.documentElement.style.setProperty(
+  //   "--playerBoardColor",
+  //   !user && !token
+  //     ? `#2c2c37`
+  //     : user?.default_board
+  //       ? user?.default_board?.color?.color2
+  //       : `#2c2c37`
+  // );
   //   // last move shower
   //   document.documentElement.style.setProperty(
   //     "--lastMoveColor",
