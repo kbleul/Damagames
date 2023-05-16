@@ -156,8 +156,14 @@ class AdminController extends Controller
                 ],
             ]);
         } else {
+
+            if ($request->name === $store->name) {
+                $name = $store->name;
+            } else {
+                $name = $request->name;
+            }
             $store->update([
-                'name' => $request->name ?? $store->name,
+                'name' => $name ?? $store->name,
                 'nameAm' => $request->nameAm ?? $store->nameAm,
                 'nickname' => $request->nickname ?? $store->nickname,
                 'price' => $request->price ?? $store->price,
@@ -174,14 +180,15 @@ class AdminController extends Controller
                             'amharic' => $value['historyAmharic']
                         ],
                     ]);
+                    if (isset($value['image'])) {
+                        $image = $value['image'];
 
-                    $image = $value['image'];
-
-                    if (isset($image) && $image->isValid()) {
-                        $avatarHistory
-                            ->addMedia($image)
-                            ->preservingOriginal()
-                            ->toMediaCollection('image');
+                        if ($image->isValid()) {
+                            $avatarHistory
+                                ->addMedia($image)
+                                ->preservingOriginal()
+                                ->toMediaCollection('image');
+                        }
                     }
                 }
             }
