@@ -157,7 +157,7 @@ class AdminController extends Controller
             ]);
         } else {
 
-            if ($request->name === $store->name) {
+            if ($request->name == $store->name) {
                 $name = $store->name;
             } else {
                 $name = $request->name;
