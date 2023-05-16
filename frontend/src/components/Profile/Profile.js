@@ -177,7 +177,6 @@ const Profile = () => {
 
       <article className="text-white mt-16 flex flex-col gap-y-4 items-center justify-center">
         <section className="w-[70%] md:max-w-[600px] ">
-          {/* <p className="text-left text-sm mb-1">Username</p> */}
 
           <div
             onClick={() => setChangeUsernameModal(true)}
@@ -203,7 +202,6 @@ const Profile = () => {
           </div>
         </section>
         <section className="w-[70%] md:max-w-[600px] ">
-          {/* <p className="text-left text-sm mb-1">Password</p> */}
           <div
             onClick={() => setChangePasswordModal(true)}
             className="py-2 border rounded-md border-orange-color text-orange-color text-sm flex gap-2 items-center justify-center "
@@ -234,16 +232,6 @@ const Profile = () => {
           </div>
         </section>
 
-        {/* <section className="w-[70%] md:max-w-[600px] "> */}
-
-        {/* <select onChange={e => handleLangChange(e)} name="pets" id="pet-select" className="text-black py-2 border w-full bg-inherit text-center rounded-md border-orange-color text-orange-color text-sm flex gap-2 items-center justify-center">
-            <option value="">
-              {Localization["Language"][lang]}
-            </option>
-            <option value="Eng">English</option>
-            <option value="Amh">አማርኛ</option>
-          </select>
-        </section> */}
         <div className="flex flex-col w-1/2 text-white w-[70%] md:max-w-[600px]">
 
           <button className="py-2 border rounded-md border-orange-color text-orange-color text-sm flex gap-2 items-center justify-center "

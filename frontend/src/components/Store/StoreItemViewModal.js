@@ -194,15 +194,35 @@ const StoreItemView = ({
 												</section>
 											</section>
 
-											<div className='mt-4 flex w-full items-center justify-center space-x-5  text-white'>
-												{parseInt(user.coin) >= item.price ? (
+											<div className='mt-4 flex flex-col w-full items-center justify-center gap-4  text-white'>
+												{parseInt(user.coin) >= item.price ? (<>
 													<button
 														type='button'
-														className='rounded-md bg-orange-600 px-6  p-2
-                           text-sm font-medium text-white hover:bg-orange-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
+														className='relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+                                active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
+                                active:border-b-[0px] flex items-center justify-center
+                                transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+                                border-b-[1px] border-gray-400/50 font-semibold text-white'
 														onClick={purchaseMutationSubmitHandler}>
+														<div className='absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md' />
+
 														{Localization["Buy Now"][lang]}
 													</button>
+
+													{item.type === "Avatar" && <button
+														onClick={() => {
+															navigate(`/avatar-history/${item.id}`)
+														}}
+														className='relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
+                                active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
+                                active:border-b-[0px] flex items-center justify-center
+                                transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
+                                border-b-[1px] border-gray-400/50 font-semibold text-white
+                                '>
+														<div className='absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md' />
+														{Localization["View History"][lang]}
+													</button>}
+												</>
 												) : (
 													<div>
 														<p className='text-center capitalize'>
@@ -236,7 +256,7 @@ const StoreItemView = ({
 																<div className='absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md' />
 																{Localization["Buy Coins"][lang]}
 															</button>
-															<button
+															{item.type === "Avatar" && <button
 																onClick={() => {
 																	navigate(`/avatar-history/${item.id}`)
 																}}
@@ -248,7 +268,7 @@ const StoreItemView = ({
                                 '>
 																<div className='absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md' />
 																{Localization["View History"][lang]}
-															</button>
+															</button>}
 														</div>
 													</div>
 												)}

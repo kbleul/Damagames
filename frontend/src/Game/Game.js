@@ -96,9 +96,6 @@ const Game = () => {
   const [showRedoPrompt, setShowRedoPrompt] = useState(false)
   const [showAllMoves, setShowAllMoves] = useState(true)
 
-
-
-
   const undoAllowedAmount = 3
 
   // const { playerCrown, playerBoard } = useHome();
@@ -334,30 +331,30 @@ const Game = () => {
     const player1 = [
       "a8",
       "c8",
-      "e8",
-      "g8",
-      "b7",
-      "d7",
-      "f7",
-      "h7",
-      "a6",
-      "c6",
-      "e6",
-      "g6",
+      // "e8",
+      // "g8",
+      // "b7",
+      // "d7",
+      // "f7",
+      // "h7",
+      // "a6",
+      // "c6",
+      // "e6",
+      // "g6",
     ];
     const player2 = [
       "b3",
       "d3",
-      "f3",
-      "h3",
-      "a2",
-      "c2",
-      "e2",
-      "g2",
-      "b1",
-      "d1",
-      "f1",
-      "h1",
+      // "f3",
+      // "h3",
+      // "a2",
+      // "c2",
+      // "e2",
+      // "g2",
+      // "b1",
+      // "d1",
+      // "f1",
+      // "h1",
     ];
 
     player1.forEach(function (i) {
@@ -900,6 +897,13 @@ const Game = () => {
     setMyTurn("player1");
     setPawns([0, 0]);
 
+    setFirstMove(true)
+    setMatchHistory([])
+    setRedoHistory([])
+    setUndoCount(0)
+    setShowUndoWarning(false)
+    setShowRedoPrompt(false)
+
   };
 
   const drawGame = () => {
@@ -1047,6 +1051,12 @@ const Game = () => {
         setPassedCounter(0);
         setShowResetWaiting(false);
         moveRef.current = [0, 0];
+        setFirstMove(true)
+        setMatchHistory([])
+        setRedoHistory([])
+        setUndoCount(0)
+        setShowUndoWarning(false)
+        setShowRedoPrompt(false)
       }
     );
     socket.on("getResetGameRequest", ({ status }) => {

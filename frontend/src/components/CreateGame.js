@@ -460,10 +460,10 @@ const CreateGame = () => {
             <section onClick={() => navigate("/score-board")} className="mt-2 flex justify-center items-center score-box h-[15vh] min-h-[7rem] md:min-h-[10rem] border">
               {topFour.map(item => (
                 <div className="mx-1 mt-4 mb-2 flex-grow w-1/4 cursor-pointer">
-                  <div className="h-16 md:h-24 w-1/4 border border-orange-color rounded-md flex items-center justify-center overflow-hidden">
-                    <img src={item.profile_image ? item.profile_image : Avatar} alt="" />
+                  <div className="h-16 md:h-24 border border-orange-color rounded-md flex items-center justify-center overflow-hidden">
+                    <img className="w-full" src={item.profile_image ? item.profile_image : Avatar} alt="" />
                   </div>
-                  <p className="text-white text-xs md:text-base text-left  pl-1 font-bold">{item.username}</p>
+                  <p className="text-white text-xs md:text-base text-left  pl-1 font-bold">{item.username ? item.username : " - "}</p>
                   <p className="text-orange-color text-[.6rem]  md:text-sm text-left pl-1">{item.match_history.wins} wins</p>
                 </div>
               ))}
