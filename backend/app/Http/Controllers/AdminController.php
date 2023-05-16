@@ -158,7 +158,9 @@ class AdminController extends Controller
             ]);
         } else {
 
-            dd($request->name == $store->name);
+            $isfound = Store::where('name', $request->name)->first();
+
+            dd(empty($isfound));
             if ($request->name == $store->name) {
                 $name = $store->name;
             } else {
