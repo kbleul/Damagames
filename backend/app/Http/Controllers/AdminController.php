@@ -142,6 +142,7 @@ class AdminController extends Controller
 
     public function store_item_update(StoreItemUpdateRequest $request, Store $store)
     {
+        DB::beginTransaction();
         if ($store->type === "Board") {
             $store->update([
                 'name' => $request->name ?? $store->name,
@@ -157,6 +158,7 @@ class AdminController extends Controller
             ]);
         } else {
 
+            dd($request->name == $store->name);
             if ($request->name == $store->name) {
                 $name = $store->name;
             } else {
@@ -241,6 +243,8 @@ class AdminController extends Controller
                 $store->addMediaFromRequest('board_pawn_king2_turn')->toMediaCollection('board_pawn_king2_turn');
             }
         }
+
+        DB::commit();
 
         return "Updated";
     }
