@@ -159,9 +159,7 @@ class AdminController extends Controller
         } else {
 
             $isfound = Store::where('name', $request->name)->first();
-
-            dd(empty($isfound));
-            if ($request->name == $store->name) {
+            if (!empty($isfound)) {
                 $name = $store->name;
             } else {
                 $name = $request->name;
