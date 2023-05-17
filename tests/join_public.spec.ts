@@ -45,15 +45,15 @@ test("alice and bob playing public game", async ({ browser }, workerInfo) => {
   await bobPage.waitForSelector("text=Join Game");
   await bobPage.click("text=Join Game");
   await alicePage.waitForLoadState("networkidle", { timeout: 15000 });
-  await bobPage.waitForSelector(`section:has-text("${projectIdentifier}")`);
-  const section = await bobPage.$(`section:has-text("${projectIdentifier}")`);
+  await bobPage.waitForSelector(`section:has-text("alice-${projectIdentifier}")`);
+  const section = await bobPage.$(`section:has-text("alice-${projectIdentifier}")`);
   const joinButton = await section.waitForSelector('a:has-text("Play")');
   // click join button twice because of bug
   await joinButton.click();
-  await joinButton.click();
+
   await bobPage.waitForLoadState("networkidle", { timeout: 15000 });
-  await bobPage.waitForSelector('input[placeholder="Tell us Your name"]');
-  await bobPage.fill('input[placeholder="Tell us Your name"]', "bob");
+  await bobPage.waitForSelector('input[placeholder="Tell us your name"]');
+  await bobPage.fill('input[placeholder="Tell us your name"]', "bob");
   await bobPage.waitForSelector('button:has-text("Join")');
   await bobPage.click('button:has-text("Join")');
   await bobPage.waitForSelector('button:has-text("Exit")');

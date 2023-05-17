@@ -464,7 +464,7 @@ const CreateGame = () => {
                     <img className="w-full" src={item.profile_image ? item.profile_image : Avatar} alt="" />
                   </div>
                   <p className="text-white text-xs md:text-base text-left  pl-1 font-bold">{item.username ? item.username : " - "}</p>
-                  <p className="text-orange-color text-[.6rem]  md:text-sm text-left pl-1">{item.match_history.wins} wins</p>
+                  <p className="text-orange-color text-[.6rem]  md:text-sm text-left pl-1">{item.match_history.wins} {Localization["Wins"][lang]}</p>
                 </div>
               ))}
             </section>}

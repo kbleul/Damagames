@@ -10,6 +10,8 @@ import { Circles } from "react-loader-spinner";
 
 import parse from 'html-react-parser';
 import { useAuth } from '../../context/auth';
+import background from "../../assets/backdrop.jpg";
+
 
 const AvatarHistory = () => {
 
@@ -22,45 +24,9 @@ const AvatarHistory = () => {
 
     const [avatarHistory, setAvatarHistory] = useState([])
     const [avatar, setAvatar] = useState(null)
-    const [date, setDate] = useState(null)
-
 
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
-    console.log(LANG[lang])
-
-    // [
-    //     {
-    //         "id": "58b9c284-d6cc-4c3a-ba23-d7a626c6dfa6",
-    //         "store_id": "d1664343-356e-49c7-90d5-b5e7d41986af",
-    //         "history": {
-    //             "english": "<h2>Who Was Etege Menen ??</h2><p>Adding an extra layer of excitement for you as youlook forward to exploring the new features.Adding an exte layer of excitement for you as youlook forward forward to exploring the new features.</p><p>Adding an extra layer of excitement for you as youlook forward to exploring the new features.Adding an exte layer of excitement for you as youlook forward forward to exploring the new features.</p>",
-    //             "amharic": "<p>this is history amharic</p>"
-    //         },
-    //         "status": "0",
-    //         "image": "https://dama.teret.net/app/public/24/happy.png"
-    //     },
-    //     {
-    //         "id": "58b9c284-d6cc-4c3a-ba23-d7a626c6dfa6",
-    //         "store_id": "d1664343-356e-49c7-90d5-b5e7d41986af",
-    //         "history": {
-    //             "english": "<h2>When did her Majesty brcome queen</h2><p>this is history amharic</p><p>Adding an extra layer of excitement for you as youlook forward to exploring the new features.Adding an exte layer of excitement for you as youlook forward forward to exploring the new features.</p><p>Adding an extra layer of excitement for you as youlook forward to exploring the new features.Adding an exte layer of excitement for you as youlook forward forward to exploring the new features.</p>",
-    //             "amharic": "<p>this is history amharic</p>"
-    //         },
-    //         "status": "0",
-    //         "image": "https://dama.teret.net/app/public/24/happy.png"
-    //     },
-    //     {
-    //         "id": "58b9c284-d6cc-4c3a-ba23-d7a626c6dfa6",
-    //         "store_id": "d1664343-356e-49c7-90d5-b5e7d41986af",
-    //         "history": {
-    //             "english": "<h2>When did her Majesty brcome queen</h2><p>Adding an extra layer of excitement for you as you look forward to exploring the new features.Adding an exte layer of excitement for you as youlook forward forward to exploring the new features.</p><p>Adding an extra layer of excitement for you as youlook forward to exploring the new features.Adding an exte layer of excitement</p>",
-    //             "amharic": "<p>this is history amharic</p>"
-    //         },
-    //         "status": "0",
-    //         "image": null
-    //     }
-    // ]
 
     const headers = {
         "Content-Type": "application/json",
@@ -79,14 +45,10 @@ const AvatarHistory = () => {
             retry: false,
             //   enabled: !!token,
             onSuccess: (res) => {
-                let temparr = res.data.data.history
                 console.log({ ...res.data.data, img: res.data.data.item })
-                setDate(temparr[temparr.length - 1].history.english)
-                temparr.pop()
-                setAvatarHistory([...temparr])
+                setAvatarHistory([...res.data.data.history])
                 setAvatar({ ...res.data.data.item_name, img: res.data.data.item })
                 setIsLoading(false)
-                temparr = []
             },
             onError: (err) => {
                 setIsLoading(false)
@@ -97,7 +59,15 @@ const AvatarHistory = () => {
     )
 
     return (
-        <main className='text-white min-h-screen'>
+        <main className='text-white' style={{
+            backgroundImage: `url(${background})`,
+            backgroundPosition: "center",
+            minWidth: "100vw",
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+            width: "100%",
+        }}>
+
             <button
                 className="z-10 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 fixed left-2 md:right-4"
                 onClick={() => navigate("/store")}
@@ -118,7 +88,7 @@ const AvatarHistory = () => {
                 </svg>
             </button>
 
-            {!isLoading && <>
+            {!isLoading && <article className='h-[98vh] overflow-y-scroll'>
                 <article className='mt-12'>
                     <section className='uppercase avarage'>
                         <p className='text-gray-500 text-sm'>Ethiopian</p>
@@ -131,17 +101,17 @@ const AvatarHistory = () => {
                     </section>
                     <section className='pt-2'>
                         <h3 className='text-5xl tracking-widest'>{avatar[LANG[lang]]}</h3>
-                        <p className='mt-8 w-[70%] ml-[15%] text-orange-600 text-left'>{date}</p>
+                        <p className='mt-8 w-[70%] ml-[15%] text-orange-600 text-left'>1990 - 1752</p>
                     </section>
                 </article>
 
                 <article className=" relative">
                     {avatarHistory.map(history => (
-                        <section key={history.id} className='relative w-[94%] ml-[3%]'>
+                        <section key={history.id} className='relative w-[94%] ml-[3%] flex items-center justify-center'>
                             <div className='absolute top-0 left-0 point z-4 bg-[#222222]'>
                                 <img className='w-10' src={rect} alt="" />
                             </div>
-                            <div className='border-l history-sec text-left mb-24 mb-8 ml-5 px-6 flex flex-col items-center'>
+                            <div className='max-w-[700px] border-l history-sec text-left mb-8 ml-5 px-6 flex flex-col items-center'>
                                 {parse(history.history[LANG[lang]])}
                                 {history.image &&
                                     <img className="border-4 rounded-xl border-orange-700 w-full max-w-[350px]" src={history.image} alt="" />}
@@ -150,7 +120,7 @@ const AvatarHistory = () => {
 
                     ))}
                 </article>
-            </>}
+            </article>}
 
             {isLoading && <article className='h-[100vh] flex items-center justify-center'>
                 <Circles

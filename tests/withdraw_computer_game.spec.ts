@@ -4,7 +4,9 @@ test("withdraw_computer_game", async ({ page }) => {
   await page.goto("/");
 
   //await page.getByRole('button', { name: 'Play With computer' }).click();
-  await page.click("text=Play With computer");
+  await page.click("text=Play with Computer");
+
+  await page.waitForTimeout(10000);
 
   await page
     .locator("div:nth-child(6) > div:nth-child(6) > div > .square")

@@ -18,10 +18,9 @@ jobs:
     uses: ./.github/workflows/build_arc_docs.yml
 
 
-  # release:
-  #   uses: ./.github/workflows/release.yml
-  #   # needs: ["build_arc_docs"]
-  #   needs: ["build_arc_docs"]
+  release:
+    uses: ./.github/workflows/release.yml
+    needs: ["build_arc_docs"]
 
 
   deploy_staging:
@@ -33,9 +32,9 @@ jobs:
     if: ${{ !contains(github.ref, '-rc') }}
     uses: ./.github/workflows/docker_deploy.yml
     secrets: inherit
-    needs: "deploy_staging"
+    needs: "e2e-test"
 
-  # e2e-test:
-  #   uses: ./.github/workflows/playwright.yml
-  #   secrets: inherit
-  #   needs: "deploy_staging"
+  e2e-test:
+    uses: ./.github/workflows/playwright.yml
+    secrets: inherit
+    needs: "deploy_staging"

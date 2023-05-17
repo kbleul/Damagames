@@ -329,7 +329,6 @@ const PubicGames = () => {
           </div>
         </main>
       )}
-      <Footer />
     </>
   );
 };

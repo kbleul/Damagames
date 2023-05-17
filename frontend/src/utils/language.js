@@ -125,6 +125,14 @@ export const Localization = {
         AMH: "አጋራ",
         ENG: "Share"
     },
+    "You": {
+        AMH: "እርሶ",
+        ENG: "You"
+    },
+    "Show Hint": {
+        AMH: "ፍንጭ አሳይ",
+        ENG: "Show Hint"
+    },
     "you are about to": {
         AMH: "ይህን ጨዋታ ለቀዉ ሊሄዱ ነው ።",
         ENG: "You are about to leave this game !"
@@ -452,6 +460,14 @@ export const Localization = {
     "Exit": {
         AMH: "ውጣ",
         ENG: "Exit"
+    },
+    "Next": {
+        AMH: "ቀጣይ",
+        ENG: "Next"
+    },
+    "Done": {
+        AMH: "አጠናቅ",
+        ENG: "Done"
     },
     "Leave": {
         AMH: "ውጣ",

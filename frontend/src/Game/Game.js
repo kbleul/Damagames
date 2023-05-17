@@ -1466,7 +1466,7 @@ const Game = () => {
       {tourCounter < 2 && <section className="absolute top-[5%] right-0  h-[100vh] flex items-center justify-center w-3/4 max-w-[450px]  z-10">
         <div className=" w-[90%] max-w-[450px] py-2 rounded-lg onboarding_prompt">
           <p className="pb-6 px-1 text-white">{Localization[`tour${tourCounter}`][lang]}</p>
-          <button className="bg-white px-4 py-2 font-bold text-sm rounded" onClick={showNextTour}>{tourCounter === 0 ? "Next" : "Done"}</button>
+          <button className="bg-white px-4 py-2 font-bold text-sm rounded" onClick={showNextTour}>{tourCounter === 0 ? Localization["Next"][lang] : Localization["Done"][lang]}</button>
         </div>
       </section>}
 
@@ -1591,7 +1591,7 @@ const Game = () => {
             {id == 1
               ? user
                 ? user.username
-                : "You"
+                : Localization["You"][lang]
               : playerOneIp && user
                 ? user?.username
                 : playerOneIp
@@ -1821,7 +1821,7 @@ const Game = () => {
             }
           </div>
           <p className="text-xs font-bold text-white">
-            Show Moves
+            {Localization["Show Hint"][lang]}
           </p>
         </div>
 
@@ -1841,7 +1841,7 @@ const Game = () => {
 
       {showRedoPrompt && <p className="text-white">{Localization["resume computer turn ?"][lang]}
         <span onClick={resumeComputerTurn} className="text-orange-color font-bold cursor-pointer border-b border-orange-color ml-2 pr-1">{Localization["Resume"][lang]}</span></p>}
-      {/* message */}
+
       {latestMessage && (
         <motion.div
           initial={{ opacity: 0 }}
