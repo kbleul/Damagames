@@ -14,6 +14,7 @@ import { Switch } from "@headlessui/react";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useAuth } from "../../../context/Auth";
+import { useNavigate } from "react-router-dom";
 interface Props {
   avatars: Array<object>;
   setIsUpdated: React.Dispatch<React.SetStateAction<boolean>>;
@@ -21,6 +22,7 @@ interface Props {
   setEditId: React.Dispatch<React.SetStateAction<string | null>>;
 }
 const AvatarTable = ({ avatars, setIsUpdated,setIsModalOpen ,setEditId}: Props) => {
+  const navigate =useNavigate()
   const [selected, setSelected] = useState<string | null>(null);
   const { token } = useAuth();
   const headers = {
@@ -94,7 +96,7 @@ const AvatarTable = ({ avatars, setIsUpdated,setIsModalOpen ,setEditId}: Props) 
               Delete
             </button>
             <button
-            onClick={()=>{setIsModalOpen(true);setEditId(params.row.id)}}
+            onClick={()=>{navigate(`/avater/edit/${params.row.id}`)}}
               className="bg-main-bg rounded-sm hover:opacity-80
                 text-center px-5 p-1 font-medium text-sm text-white"
             >
