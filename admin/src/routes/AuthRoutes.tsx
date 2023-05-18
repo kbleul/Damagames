@@ -8,6 +8,7 @@ import Boards from "../pages/store/Boards";
 import CreateBoard from "../pages/store/CreateBoard";
 import CreatePawn from "../pages/store/CreatePawn";
 import CreateAvater from "../pages/store/CreateAvater";
+import EditAvater from "../pages/store/EditAvater";
 
 interface Props {}
 const AuthRoutes: React.FC<Props> = () => {
@@ -75,6 +76,7 @@ const AuthRoutes: React.FC<Props> = () => {
             <Route path="/avatars" element={<Avatars />} />
             <Route path="/coins" element={<CoinSetting />} />
             <Route path="/avater/create" element={<CreateAvater />} />
+            <Route path="/avater/edit/:id" element={<EditAvater />} />
             <Route path="/board/create" element={<CreateBoard />} />
             <Route path="/board/create/:id" element={<CreateBoard />} />
             <Route path="/pawn/create" element={<CreatePawn />} />

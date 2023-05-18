@@ -17,13 +17,14 @@ const CreateAvater = () => {
   const navigate = useNavigate();
   const headers = {
     "Content-Type": "multipart/form-data",
-    Accept: "application/json",
+    Accept: "multipart/form-data",
     Authorization: `Bearer ${token}`,
   };
   const validationSchema = Yup.object().shape({
     name: Yup.string().required("name is required"),
     nameAm: Yup.string().required("name is required"),
     price: Yup.string().required("name is required"),
+    item: Yup.mixed().required("item image is required"),
     nickname: Yup.string(),
     history: Yup.array().of(
       Yup.object().shape({
@@ -37,6 +38,7 @@ const CreateAvater = () => {
   const initialValues = {
     name: "",
     nameAm: "",
+    item: undefined,
     price: "",
     nickname: "",
     history: [
@@ -52,7 +54,8 @@ const CreateAvater = () => {
   const createAvaterHistoryMutation = useMutation(
     async (newData: any) =>
       await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}admin/create-store-items`,{newData},
+        `${process.env.REACT_APP_BACKEND_URL}admin/create-store-items`,
+        newData,
         {
           headers,
         }
@@ -69,8 +72,9 @@ const CreateAvater = () => {
           name: values.name,
           nameAm: values.nameAm,
           price: values.price,
+          type: "Avatar",
+          item: values.item,
           nickname: values.nickname,
-          type:"Avatar",
           history: values.history,
         },
         {
@@ -93,7 +97,14 @@ const CreateAvater = () => {
         // validationSchema={validationSchema}
         onSubmit={createProductSubmitHandler}
       >
-        {({ values, errors, touched, handleChange, setFieldTouched }) => (
+        {({
+          values,
+          errors,
+          touched,
+          handleChange,
+          setFieldTouched,
+          setFieldValue,
+        }) => (
           <Form className="flex flex-col items-start justify-center space-y-4">
             {/*  */}
             <div className="w-full flex flex-col items-start space-y-1">
@@ -121,6 +132,24 @@ const CreateAvater = () => {
               {errors.nameAm && touched.nameAm ? (
                 <p className="text-[13px] text-red-500">{errors.nameAm}</p>
               ) : null}
+            </div>
+            {/* image */}
+            <div className="flex flex-col items-start w-full">
+              <span className="font-medium text-xs text-gray-color capitalize ">
+                Image
+              </span>
+              <input
+                type={"file"}
+                name={`item`}
+                onChange={(e) =>
+                  setFieldValue("item", e.target.files && e.target.files[0])
+                }
+                className="w-full p-[6px]  focus:ring-2 ring-blue-500 rounded-sm border border-gray-300 focus:outline-none ring-0"
+              />
+              <ErrorMessage
+                name={`item`}
+                className="text-[13px] font-medium capitalize text-red-500"
+              />
             </div>
             <div className="w-full flex flex-col items-start space-y-1">
               <span className="font-medium text-xs text-gray-color capitalize ">
@@ -191,10 +220,15 @@ const CreateAvater = () => {
                           <span className="font-medium text-xs text-gray-color capitalize ">
                             history Image
                           </span>
-                          <Field
-                            as={"input"}
+                          <input
                             type={"file"}
-                            name={`choices.${index}.image`}
+                            name={`history.${index}.image`}
+                            onChange={(e: any) =>
+                              setFieldValue(
+                                `history.${index}.image`,
+                                e.target.files && e.target.files[0]
+                              )
+                            }
                             className="w-full p-[6px]  focus:ring-2 ring-blue-500 rounded-sm border border-gray-300 focus:outline-none ring-0"
                           />
                           <ErrorMessage
