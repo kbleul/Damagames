@@ -25,7 +25,7 @@ class AdminController extends Controller
     {
         return [
             'users' => User::count(),
-            'users_subscribed' => User::where('phone_verified_at', '!=', null)->count(),
+            'users_subscribed' => User::where('phone_verified_at', '!==', null)->count(),
             'auth_players_pwc' => ComputerGame::count(),
             'non_auth_players_pwc' => ComputerGameNa::count(),
             'total_games' => Score::count(),

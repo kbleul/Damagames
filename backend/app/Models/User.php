@@ -25,7 +25,7 @@ class User extends Authenticatable
      */
     protected $guarded = [];
 
-    public $appends = ['rank', 'rank_by_point', 'coin', 'game_point', 'match_history'];
+    public $appends = ['badge', 'rank', 'rank_by_point', 'coin', 'game_point', 'match_history'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -78,6 +78,11 @@ class User extends Authenticatable
         } else {
             return 0;
         }
+    }
+
+    public function getBadgeAttribute()
+    {
+        return Badge::orderByDesc('point')->first();
     }
 
     public function getCoinAttribute()

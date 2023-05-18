@@ -16,6 +16,7 @@ class Badge extends Model implements HasMedia
         'media',
         'nameAm',
         'status',
+        'point',
         'updated_at',
         'deleted_at'
     ];

@@ -15,7 +15,7 @@ class BadgeController extends Controller
      */
     public function index()
     {
-        return Badge::paginate(10);
+        return Badge::orderByDesc('point')->get();
     }
 
     /**
