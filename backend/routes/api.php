@@ -4,6 +4,7 @@ use App\Events\TestEvent;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AuthPlayerController;
+use App\Http\Controllers\BadgeController;
 use App\Http\Controllers\ComputerGameController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\PlayersController;
@@ -114,4 +115,7 @@ Route::middleware(['response', 'auth:sanctum', 'admin'])->prefix('admin')->group
     Route::get('store-item-show/{store}', [AdminController::class, 'store_item_show']);
     Route::get('coin-settings', [AdminController::class, 'coin_settings']);
     Route::patch('coin-setting-update/{coinSetting}', [AdminController::class, 'coin_setting']);
+
+
+    Route::resource('badges', BadgeController::class);
 });
