@@ -36,7 +36,7 @@ export default defineConfig({
     actionTimeout: 40000,
     /* Base URL to use in actions like `await page.goto('/')`. */
     // baseURL: "http://localhost:3000",
-    baseURL: "https://test.damagames.com",
+    baseURL: "http://localhost:3000/create-game",
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     //trace: "on-first-retry",
