@@ -45,6 +45,7 @@ Route::middleware('response')->group(function () {
 
     Route::resource('scores', ScoreController::class)->middleware('response');
     Route::get('top-four', [ScoreController::class, 'top_four'])->middleware('response');
+    Route::get('scores-by-point', [ScoreController::class, 'scores_by_point'])->middleware('response');
     Route::post('draw/{game}', [ScoreController::class, 'draw']);
 
     Route::post('register', [AuthController::class, 'register_new']);
