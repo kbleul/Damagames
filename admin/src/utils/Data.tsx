@@ -5,6 +5,8 @@ import { AiFillFilePdf, AiFillSetting } from "react-icons/ai";
 import { GiDwarfFace } from "react-icons/gi";
 import { BiCategory } from "react-icons/bi";
 import { FaChessBoard } from "react-icons/fa";
+import { SlBadge } from "react-icons/sl";
+
 export const sideBarLinks = [
   {
     title: "Dashboard",
@@ -33,6 +35,11 @@ export const sideBarLinks = [
         name: "Coin setting",
         link: "coins",
         icon: <FaChessBoard size={16} className=" text-[#bdcadf]" />,
+      },
+      {
+        name: "Badges",
+        link: "badges",
+        icon: <SlBadge size={16} className=" text-[#bdcadf]" />,
       },
       {
         name: "users",

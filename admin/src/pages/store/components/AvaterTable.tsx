@@ -21,8 +21,13 @@ interface Props {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setEditId: React.Dispatch<React.SetStateAction<string | null>>;
 }
-const AvatarTable = ({ avatars, setIsUpdated,setIsModalOpen ,setEditId}: Props) => {
-  const navigate =useNavigate()
+const AvatarTable = ({
+  avatars,
+  setIsUpdated,
+  setIsModalOpen,
+  setEditId,
+}: Props) => {
+  const navigate = useNavigate();
   const [selected, setSelected] = useState<string | null>(null);
   const { token } = useAuth();
   const headers = {
@@ -96,7 +101,9 @@ const AvatarTable = ({ avatars, setIsUpdated,setIsModalOpen ,setEditId}: Props) 
               Delete
             </button>
             <button
-            onClick={()=>{navigate(`/avater/edit/${params.row.id}`)}}
+              onClick={() => {
+                navigate(`/avater/edit/${params.row.id}`);
+              }}
               className="bg-main-bg rounded-sm hover:opacity-80
                 text-center px-5 p-1 font-medium text-sm text-white"
             >
@@ -216,7 +223,7 @@ const AvatarTable = ({ avatars, setIsUpdated,setIsModalOpen ,setEditId}: Props) 
     }
   };
   return (
-    <div style={{ height: 530,width:'100%' }}>
+    <div style={{ height: 530, width: "100%" }}>
       <DataGrid
         rows={avatars}
         columns={columns}
