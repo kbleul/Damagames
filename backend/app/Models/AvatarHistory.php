@@ -19,6 +19,7 @@ class AvatarHistory extends Model implements HasMedia
         'media',
         'updated_at',
         'deleted_at',
+        'status',
     ];
 
     protected $casts = [
