@@ -82,13 +82,14 @@ class AdminController extends Controller
 
 
         if ($request->type === "Avatar") {
-            foreach ($request->history as $value) {
+            foreach ($request->history as $key => $value) {
                 $avatarHistory = AvatarHistory::create([
                     'store_id' => $item->id,
                     'history' => [
                         'english' => $value['historyEnglish'],
                         'amharic' => $value['historyAmharic']
                     ],
+                    'order' => $key + 1,
                 ]);
 
                 $image = $value['image'];
@@ -174,13 +175,14 @@ class AdminController extends Controller
             ]);
 
             if ($store->type === "Avatar") {
-                foreach ($request->history as $value) {
+                foreach ($request->history as $key =>  $value) {
                     $avatarHistory = AvatarHistory::create([
                         'store_id' => $store->id,
                         'history' => [
                             'english' => $value['historyEnglish'],
                             'amharic' => $value['historyAmharic']
                         ],
+                        'order' => $key + 1,
                     ]);
                     if (isset($value['image'])) {
                         $image = $value['image'];
