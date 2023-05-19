@@ -201,6 +201,6 @@ class Store extends Model  implements HasMedia
      */
     public function history(): HasMany
     {
-        return $this->hasMany(AvatarHistory::class, 'store_id');
+        return $this->hasMany(AvatarHistory::class, 'store_id')->orderBy('order');
     }
 }
