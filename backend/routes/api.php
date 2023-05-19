@@ -69,6 +69,8 @@ Route::middleware('response')->group(function () {
 
     Route::post('play-with-computer-na', [ComputerGameController::class, 'store_na']);
     Route::post('play-with-computer-na-done/{computerGameNa}', [ComputerGameController::class, 'update_na']);
+
+    Route::get('get-badges', [BadgeController::class, 'index']);
 });
 
 Route::resource('security-questions', SecurityQuestionController::class);
