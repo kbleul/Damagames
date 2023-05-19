@@ -92,13 +92,15 @@ class AdminController extends Controller
                     'order' => $key + 1,
                 ]);
 
-                $image = $value['image'];
+                if (isset($value['image'])) {
+                    $image = $value['image'];
 
-                if (isset($image) && $image->isValid()) {
-                    $avatarHistory
-                        ->addMedia($image)
-                        ->preservingOriginal()
-                        ->toMediaCollection('image');
+                    if ($image->isValid()) {
+                        $avatarHistory
+                            ->addMedia($image)
+                            ->preservingOriginal()
+                            ->toMediaCollection('image');
+                    }
                 }
             }
         }
