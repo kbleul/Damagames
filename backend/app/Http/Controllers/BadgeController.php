@@ -91,6 +91,10 @@ class BadgeController extends Controller
                 'english' =>  $request->nameEnglish ?? $badge->name['english'],
                 'amharic' =>  $request->nameAmharic ?? $badge->name['amharic']
             ],
+            'description' => [
+                'english' =>  $request->descriptionEnglish ?? $badge->description['english'],
+                'amharic' =>  $request->descriptionAmharic ?? $badge->description['english']
+            ],
             'point' => $request->point ?? $badge->point
         ]);
 
