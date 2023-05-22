@@ -30,7 +30,7 @@ const Badges = () => {
   };
 
   const badgesData = useQuery(
-    ["badgesDataApi", isUpdated],
+    ["badgesDataApi", true],
     async () =>
       await axios.get(`${process.env.REACT_APP_BACKEND_URL}admin/badges`, {
         headers,

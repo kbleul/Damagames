@@ -24,6 +24,8 @@ const AvatarHistory = () => {
 
     const [avatarHistory, setAvatarHistory] = useState([])
     const [avatar, setAvatar] = useState(null)
+    const [date, setDate] = useState(null)
+
 
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
@@ -46,9 +48,13 @@ const AvatarHistory = () => {
             //   enabled: !!token,
             onSuccess: (res) => {
                 console.log({ ...res.data.data, img: res.data.data.item })
-                setAvatarHistory([...res.data.data.history])
+                setDate(res?.data?.data?.history[0]?.history)
+                let tempArr = res.data.data.history
+                tempArr.shift()
+                setAvatarHistory([...tempArr])
                 setAvatar({ ...res.data.data.item_name, img: res.data.data.item })
                 setIsLoading(false)
+                tempArr = []
             },
             onError: (err) => {
                 setIsLoading(false)
@@ -101,7 +107,7 @@ const AvatarHistory = () => {
                     </section>
                     <section className='pt-2'>
                         <h3 className='text-5xl tracking-widest'>{avatar[LANG[lang]]}</h3>
-                        <p className='mt-8 w-[70%] ml-[15%] text-orange-600 text-left'>1990 - 1752</p>
+                        {date && <p className='mt-8 w-[70%] ml-[15%] text-orange-600 text-left'>{date[LANG[lang]]}</p>}
                     </section>
                 </article>
 

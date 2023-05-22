@@ -23,7 +23,6 @@ const EditBadge = () => {
     nameEng: Yup.string().required("English name is required"),
     nameAmh: Yup.string().required("Amharic name is required"),
     point: Yup.string().required("Point is required"),
-    badge_image: Yup.mixed().required("Item image is required"),
     descEng: Yup.mixed().required("English description is required"),
     descAmh: Yup.mixed().required("Amharic description is required"),
   });
@@ -45,11 +44,12 @@ const EditBadge = () => {
       onSuccess: (res) => {},
     }
   );
+
   const initialValues = {
     nameEng: badgeData?.data?.data?.data?.name?.english as string,
     nameAmh: badgeData?.data?.data?.data?.name?.amharic as string,
     descAmh: badgeData?.data?.data?.data?.description?.amharic as string,
-    descEng: badgeData?.data?.data?.data?.description?.amharic as string,
+    descEng: badgeData?.data?.data?.data?.description?.english as string,
     badge_image: undefined,
     point: badgeData?.data?.data?.data?.point as string,
   };
@@ -57,7 +57,7 @@ const EditBadge = () => {
   //POST CREATE IN HOUSE PRODUCT
   const updateBadgeHistoryMutation = useMutation(
     (newData: any) =>
-      axios.patch(
+      axios.post(
         `${process.env.REACT_APP_BACKEND_URL}admin/badges/${id}`,
         newData,
         {
@@ -80,6 +80,7 @@ const EditBadge = () => {
           descriptionEnglish: values.descEng,
           badge_image: values.badge_image && values.badge_image,
           point: values.point,
+          _method: "PATCH",
         },
         {
           onSuccess: (responseData: any) => {
@@ -188,7 +189,7 @@ const EditBadge = () => {
                 </span>
                 <div className="w-full flex justify-center items-center gap-8">
                   <img
-                    className="ml-16"
+                    className="ml-16 w-16 h-16"
                     src={badgeData?.data?.data?.data?.badge_image}
                     alt=""
                   />

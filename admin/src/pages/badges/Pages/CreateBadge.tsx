@@ -18,14 +18,14 @@ const CreateAvater = () => {
   const navigate = useNavigate();
   const headers = {
     "Content-Type": "multipart/form-data",
-    Accept: "multipart/form-data",
+    Accept: "application/json",
     Authorization: `Bearer ${token}`,
   };
   const validationSchema = Yup.object().shape({
     nameEng: Yup.string().required("English name is required"),
     nameAmh: Yup.string().required("Amharic name is required"),
-    point: Yup.string().required("Point is required"),
-    image: Yup.mixed().required("Item image is required"),
+    point: Yup.number().required("Point is required"),
+    badge_image: Yup.mixed().required("Badge image is required"),
     discEng: Yup.mixed().required("English description is required"),
     descAmh: Yup.mixed().required("Amharic description is required"),
   });
@@ -33,8 +33,8 @@ const CreateAvater = () => {
   const initialValues = {
     nameEng: "",
     nameAmh: "",
-    image: undefined,
-    point: "",
+    badge_image: undefined,
+    point: null,
     discEng: "",
     descAmh: "",
   };
@@ -58,16 +58,16 @@ const CreateAvater = () => {
           nameAmharic: values.nameAmh,
           descriptionEnglish: values.discEng,
           descriptionAmharic: values.descAmh,
-          //   badge_image: values.image,
+          badge_image: values.badge_image && values.badge_image,
           point: values.point,
         },
         {
           onSuccess: (responseData: any) => {
-            //navigate(-1);
-            console.log(responseData.data);
+            navigate(-1);
           },
           onError: (err: any) => {
-            console.log(err.message);
+            console.log(err);
+            alert(err?.response?.data?.data);
           },
         }
       );
@@ -118,23 +118,6 @@ const CreateAvater = () => {
                 <p className="text-[13px] text-red-500">{errors.nameAmh}</p>
               ) : null}
             </div>
-            {/* image */}
-            <div className="flex flex-col items-start w-full">
-              <span className="font-medium text-xs text-gray-color capitalize ">
-                Image
-              </span>
-              <input
-                type={"file"}
-                name="image"
-                onChange={(e) =>
-                  setFieldValue("image", e.target.files && e.target.files[0])
-                }
-                className="w-full p-[6px]  focus:ring-2 ring-blue-500 rounded-sm border border-gray-300 focus:outline-none ring-0"
-              />
-              {errors.image && touched.image ? (
-                <p className="text-[13px] text-red-500">{errors.image}</p>
-              ) : null}
-            </div>
 
             <div className="w-full flex flex-col items-start space-y-1">
               <span className="font-medium text-xs text-gray-color capitalize ">
@@ -177,6 +160,27 @@ const CreateAvater = () => {
                 <p className="text-[13px] text-red-500">{errors.point}</p>
               ) : null}
             </div>
+
+            <div className="flex flex-col items-start w-full">
+              <span className="font-medium text-xs text-gray-color capitalize ">
+                Image
+              </span>
+              <input
+                type={"file"}
+                name={`badge_image`}
+                onChange={(e: any) =>
+                  setFieldValue(
+                    `badge_image`,
+                    e.target.files && e.target.files[0]
+                  )
+                }
+                className="w-full p-[6px]  focus:ring-2 ring-blue-500 rounded-sm border border-gray-300 focus:outline-none ring-0"
+              />
+              {errors.badge_image && touched.badge_image ? (
+                <p className="text-[13px] text-red-500">{errors.badge_image}</p>
+              ) : null}
+            </div>
+
             <div className="flex items-end justify-end self-end">
               <button
                 type="submit"

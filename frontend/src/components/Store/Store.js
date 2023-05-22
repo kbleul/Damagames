@@ -100,11 +100,6 @@ const Store = () => {
     }
   );
 
-  useEffect(() => {
-    console.log(selectedItem)
-  }, [selectedItem])
-
-
   return (
 
     <div

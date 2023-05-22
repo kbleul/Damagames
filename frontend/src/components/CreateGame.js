@@ -20,10 +20,10 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControl from '@mui/material/FormControl';
 
-import Avatar from "../assets/Avatar.png";
 import { Circles } from "react-loader-spinner";
 import { SORTBY, LANG } from "../utils/data"
-import { sortScoreBoard } from "../utils/utilFunc"
+import TopFour from "./TopFour";
+import { sortScoreBoard } from "../utils/utilFunc";
 
 
 
@@ -41,6 +41,9 @@ const CreateGame = () => {
   const [tourItems, setTourItems] = useState(null);
   const [topFour, setTopFour] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const [allBadges, setAllBadges] = useState(null);
+
 
 
 
@@ -172,9 +175,7 @@ const CreateGame = () => {
       retry: false,
       //   enabled: !!token,
       onSuccess: (res) => {
-        console.log(res.data.data)
         let sortedArr = sortScoreBoard(SORTBY.PERSON, res.data.data)
-
 
         setTopFour(sortedArr)
 
@@ -182,6 +183,27 @@ const CreateGame = () => {
         setIsLoading(false)
       },
       enabled: true
+    }
+  );
+
+  const getAllBadges = useQuery(
+    ["getAllBadgesApi"],
+    async () =>
+      await axios.get(`${process.env.REACT_APP_BACKEND_URL}get-badges`, {
+        headers,
+      }),
+    {
+      keepPreviousData: true,
+      refetchOnWindowFocus: false,
+      retry: false,
+      onSuccess: (res) => {
+        let tempArr = res.data.data.reverse()
+        console.log(tempArr)
+        setAllBadges(tempArr)
+
+        tempArr = []
+      },
+      enabled: !isLoading
     }
   );
 
@@ -203,12 +225,7 @@ const CreateGame = () => {
     }
   })
 
-  // by = computer person coin
 
-
-  useEffect(() => {
-    console.log(topFour)
-  }, [topFour])
 
   return (
     <div
@@ -456,16 +473,10 @@ const CreateGame = () => {
             <h3 className="text-3xl">{Localization["leaders"][lang]}</h3>
           </section>
 
-          {!isLoading &&
+          {!isLoading && allBadges &&
             <section onClick={() => navigate("/score-board")} className="mt-2 flex justify-center items-center score-box h-[15vh] min-h-[7rem] md:min-h-[10rem] border">
               {topFour.map(item => (
-                <div className="mx-1 mt-4 mb-2 flex-grow w-1/4 cursor-pointer">
-                  <div className="h-16 md:h-24 border border-orange-color rounded-md flex items-center justify-center overflow-hidden">
-                    <img className="w-full" src={item.profile_image ? item.profile_image : Avatar} alt="" />
-                  </div>
-                  <p className="text-white text-xs md:text-base text-left  pl-1 font-bold">{item.username ? item.username : " - "}</p>
-                  <p className="text-orange-color text-[.6rem]  md:text-sm text-left pl-1">{item.match_history.wins} {Localization["Wins"][lang]}</p>
-                </div>
+                <TopFour item={item} user={user} badges={allBadges} />
               ))}
             </section>}
 

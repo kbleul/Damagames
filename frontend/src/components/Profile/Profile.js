@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ChangePassword from "./ChangePassword";
 import ChangeUsername from "./ChangeUsername";
 
@@ -18,6 +18,8 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { Localization } from "../../utils/language";
 import { LANG } from "../../utils/data"
+import { assignBadgeToUser } from "../../utils/utilFunc";
+import BadgeHistory from "../../Scoreboard/BadgeHistory";
 
 
 const Profile = () => {
@@ -35,8 +37,17 @@ const Profile = () => {
   const [showChangeCrownModal, setShowChangeCrownModal] = useState(false);
   const [showLangMenu, setShowLangMenu] = useState(false);
 
+  const [badge, setBadge] = useState(null);
+
+  const [isBadgeHistoryOpen, setIsBadgeHistoryOpen] = useState(false);
+
+
+
   const { user, token, lang, setLanguage } = useAuth();
   const navigate = useNavigate();
+
+
+  const LANGs = { "AMH": "amharic", "ENG": "english" }
 
   const headers = {
     "Content-Type": "application/json",
@@ -71,6 +82,32 @@ const Profile = () => {
     }
   );
 
+  const getAllBadges = useQuery(
+    ["getAllBadgesApi"],
+    async () =>
+      await axios.get(`${process.env.REACT_APP_BACKEND_URL}get-badges`, {
+        headers,
+      }),
+    {
+      keepPreviousData: true,
+      refetchOnWindowFocus: false,
+      retry: false,
+      onSuccess: (res) => {
+        let tempArr = res.data.data.reverse()
+
+        let url = assignBadgeToUser(user.game_point, tempArr)
+
+        let { name, description } = res.data.data.find(item => item.badge_image === url)
+
+        setBadge({ url, name, desc: description })
+
+        tempArr = url = []
+        name = description = null
+      },
+      enabled: !myItemsFetch.isLoading
+    }
+  );
+
   const handleLangChange = (e) => {
     if (e.target.value !== "") { localStorage.setItem("lang", e.target.value) }
   }
@@ -89,6 +126,7 @@ const Profile = () => {
       retry: false,
     }
   );
+
   const langMutationSubmitHandler = async (values) => {
     try {
       langMutation.mutate(
@@ -107,9 +145,9 @@ const Profile = () => {
 
   const saveLang = (pref) => {
     setLanguage(pref);
-
     langMutationSubmitHandler(pref)
   }
+
 
   return (
     <article className="relative">
@@ -152,9 +190,17 @@ const Profile = () => {
               >
                 <AiFillCamera size={20} />
               </button>
+
             </div>
           </div>
         </div>
+
+        {/* badge */}
+        {badge && <div className="w-full flex flex-col items-center justify-center mt-10"
+          onClick={() => setIsBadgeHistoryOpen(true)}>
+          <img className=" w-12 h-12" src={badge?.url} alt="" />
+          <p className="text-white tracking-wider font-mono text-xl font-bold">{badge.name[LANGs[lang]]}</p>
+        </div>}
 
         <ChangePassword
           changePasswordModal={changePasswordModal}
@@ -175,7 +221,7 @@ const Profile = () => {
         />
       </div>
 
-      <article className="text-white mt-16 flex flex-col gap-y-4 items-center justify-center">
+      <article className="text-white mt-4 flex flex-col gap-y-4 items-center justify-center">
         <section className="w-[70%] md:max-w-[600px] ">
 
           <div
@@ -368,6 +414,9 @@ const Profile = () => {
         showChangeCrownModal={showChangeCrownModal}
         setShowChangeCrownModal={setShowChangeCrownModal}
       />
+
+      {badge && <BadgeHistory isBadgeHistoryOpen={isBadgeHistoryOpen} setIsBadgeHistoryOpen={setIsBadgeHistoryOpen} badge={badge} />}
+
     </article >
   );
 };

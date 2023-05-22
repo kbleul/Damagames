@@ -6,7 +6,7 @@ import { Circles } from "react-loader-spinner";
 import { useState } from "react";
 
 import { SORTBY } from "../utils/data"
-import { sortScoreBoard } from "../utils/utilFunc"
+import { assignBadgeToUser, sortScoreBoard } from "../utils/utilFunc"
 
 
 const ScoreBoard = () => {
@@ -14,6 +14,8 @@ const ScoreBoard = () => {
   const navigate = useNavigate();
   const [sortedScore, setSortedScore] = useState([])
   const [sortBy, setSortBy] = useState(SORTBY.COIN)
+
+  const [badges, setBadges] = useState(null);
 
 
   const headers = {
@@ -34,6 +36,27 @@ const ScoreBoard = () => {
       onSuccess: (res) => {
         setSortedScore(sortScoreBoard(sortBy, res.data.data))
       },
+    }
+  );
+
+  const getAllBadges = useQuery(
+    ["getAllBadgesApi"],
+    async () =>
+      await axios.get(`${process.env.REACT_APP_BACKEND_URL}get-badges`, {
+        headers,
+      }),
+    {
+      keepPreviousData: true,
+      refetchOnWindowFocus: false,
+      retry: false,
+      onSuccess: (res) => {
+        let tempArr = res.data.data.reverse()
+
+        setBadges(tempArr)
+
+        tempArr = []
+      },
+      enabled: !scoreBoardData.isLoading
     }
   );
 
@@ -83,9 +106,7 @@ const ScoreBoard = () => {
           <Score
             key={score?.created_at + "" + score?.id}
             score={score}
-            hasBadge={
-              sortedScore.indexOf(score) < 3 ? true : false
-            }
+            badges={badges}
             index={sortedScore.indexOf(score)}
             sortBy={sortBy}
           />
