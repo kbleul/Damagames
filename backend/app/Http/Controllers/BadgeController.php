@@ -45,7 +45,8 @@ class BadgeController extends Controller
                 'english' =>  $request->descriptionEnglish,
                 'amharic' =>  $request->descriptionAmharic
             ],
-            'point' => $request->point
+            'point' => $request->point,
+            'color' => $request->color,
         ]);
 
         if ($request->hasFile('badge_image') && $request->file('badge_image')->isValid()) {
@@ -95,7 +96,8 @@ class BadgeController extends Controller
                 'english' =>  $request->descriptionEnglish ?? $badge->description['english'],
                 'amharic' =>  $request->descriptionAmharic ?? $badge->description['english']
             ],
-            'point' => $request->point ?? $badge->point
+            'point' => $request->point ?? $badge->point,
+            'color' => $request->color ?? $badge->color
         ]);
 
         if ($request->hasFile('badge_image') && $request->file('badge_image')->isValid()) {
