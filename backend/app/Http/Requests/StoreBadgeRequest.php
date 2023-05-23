@@ -27,7 +27,7 @@ class StoreBadgeRequest extends FormRequest
             'nameEnglish' => 'required',
             'nameAmharic' => 'required',
             'point' => 'required|numeric',
-            'badge_image' => 'required|mimes:png,jpeg,jpg,svg,gif,bmp,bmp,tiff,webp|max:5000',
+            'badge_image' => 'nullable|mimes:png,jpeg,jpg,svg,gif,bmp,bmp,tiff,webp|max:5000',
         ];
     }
 }

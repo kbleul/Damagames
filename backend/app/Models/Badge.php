@@ -22,6 +22,7 @@ class Badge extends Model implements HasMedia
 
     protected $casts = [
         'name' => "json",
+        'color' => "json",
         'description' => "json",
         'point' => "integer",
         'created_at' => "datetime:Y-m-d",
