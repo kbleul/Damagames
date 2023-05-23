@@ -50,11 +50,9 @@ const EditAvater = () => {
       retry: false,
       enabled: !!token,
       onSuccess: (res) => {
-        console.log(res?.data?.data);
       },
     }
   );
-  console.log(storeData?.data?.data?.data);
   const initialValues = {
     name: storeData?.data?.data?.data?.item_name?.english as string,
     nameAm: storeData?.data?.data?.data?.item_name?.amharic as string,
@@ -87,7 +85,6 @@ const EditAvater = () => {
     }
   );
   const createProductSubmitHandler = async (values: any) => {
-    console.log(values);
     try {
       createAvaterHistoryMutation.mutate(
         {

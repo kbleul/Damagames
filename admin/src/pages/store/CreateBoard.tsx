@@ -119,7 +119,6 @@ const CreateBoard = () => {
       onSuccess: (res) => {},
     }
   );
-  console.log(storeData?.data?.data?.data);
   const initialValues: BoardFormProps = {
     name: id ? storeData?.data?.data?.data?.name : "",
     nickName: id ? storeData?.data?.data?.data?.nickname : "",

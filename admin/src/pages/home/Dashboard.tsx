@@ -31,7 +31,6 @@ const Dashboard = () => {
       onSuccess: (res) => {},
     }
   );
-  console.log(dashboardData?.data?.data?.data);
 
   return (
     <>

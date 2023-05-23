@@ -70,7 +70,6 @@ const EditBadge = () => {
   );
 
   const updateBadgeSubmitHandler = async (values: any) => {
-    console.log(values);
     try {
       updateBadgeHistoryMutation.mutate(
         {
@@ -84,7 +83,6 @@ const EditBadge = () => {
         },
         {
           onSuccess: (responseData: any) => {
-            console.log(responseData);
             navigate(-1);
           },
           onError: (err: any) => {

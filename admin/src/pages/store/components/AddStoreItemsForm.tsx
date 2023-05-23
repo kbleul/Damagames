@@ -139,7 +139,6 @@ const AddStoreItemsForm = ({
         
       }}
       );
-      console.log(storeData?.data?.data?.data);
 
   return (
     <div className="w-full flex flex-col items-center justify-center">

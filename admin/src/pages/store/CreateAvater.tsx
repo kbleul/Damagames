@@ -65,7 +65,6 @@ const CreateAvater = () => {
     }
   );
   const createProductSubmitHandler = async (values: any) => {
-    console.log(values);
     try {
       createAvaterHistoryMutation.mutate(
         {

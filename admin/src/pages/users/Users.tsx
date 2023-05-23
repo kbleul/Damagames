@@ -60,12 +60,10 @@ const Users = () => {
       },
     }
   );
-  console.log(usersData?.data?.data?.data);
 
   function Row(props: { row: ReturnType<any> }) {
     const { row } = props;
     const [open, setOpen] = React.useState(false);
-    console.log({ row });
     return (
       <React.Fragment>
         <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>

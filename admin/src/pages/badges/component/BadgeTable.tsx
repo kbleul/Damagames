@@ -48,7 +48,6 @@ const BadgeTable = ({ badges, setIsUpdated }: Props) => {
       deleteBadgeMutation.mutate(id, {
         onSuccess: (responseData: any) => {
           setIsUpdated((prev) => !prev);
-          console.log(responseData.data);
         },
         onError: (err: any) => {
           console.log(err);
@@ -117,7 +116,6 @@ const BadgeTable = ({ badges, setIsUpdated }: Props) => {
       filterable: false,
       headerClassName: "super-app-theme--header",
       renderCell: (params: GridCellParams) => {
-        // console.log(params.row);
         return <p>{params.row.point}</p>;
       },
     },

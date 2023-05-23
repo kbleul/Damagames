@@ -50,7 +50,6 @@ const CreateAvater = () => {
     }
   );
   const createBadgeSubmitHandler = async (values: any) => {
-    console.log(values);
     try {
       createBadgeMutation.mutate(
         {

@@ -60,7 +60,6 @@ export default function AuthProvider({
     const adminData:any = JSON.parse(storedData)
    
     if (adminData) {
-      console.log(adminData.token)
       if (adminData?.token) {
         loginData = login(adminData?.token, adminData?.user);
         setChecked(true);

@@ -43,7 +43,6 @@ const Avatars = () => {
       retry: false,
       enabled: !!token,
       onSuccess: (res) => {
-        console.log(res?.data?.data);
         setAvatars(
           res?.data?.data?.avatars?.map((data: any, index: number) => ({
             ...data,
@@ -65,7 +64,6 @@ const Avatars = () => {
       },
     }
   );
-  console.log(storeData?.data);
   function classNames(...classes: any) {
     return classes.filter(Boolean).join(" ");
   }
