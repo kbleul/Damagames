@@ -3,12 +3,35 @@ import { test, expect } from "@playwright/test";
 test("withdraw_computer_game", async ({ page }) => {
   await page.goto("/");
 
+  await page.getByRole("button", { name: "Select / ምረጥ" }).click();
+  await page.getByRole("button", { name: "Start Tour" }).click();
+  await page.getByRole("button", { name: "Skip" }).click();
+
+  await page.waitForTimeout(1000);
+
+  try {
+    await page.getByRole("button", { name: "Start Tour" }).click();
+  } catch {
+    console.log("Start Tour btn not found");
+  }
   //await page.getByRole('button', { name: 'Play With computer' }).click();
-  await page.click("text=Play With computer");
+  await page.click("text=Play with Computer");
+
+  await page.waitForTimeout(10000);
+
+  await expect(page.url()).toMatch(/game\/1$/);
+
+  await page.click("text=Next");
+  await page.click("text=Done");
+
+  await page.waitForTimeout(3000);
 
   await page
     .locator("div:nth-child(6) > div:nth-child(6) > div > .square")
     .click();
+
+  await page.waitForTimeout(2000);
+
   await page
     .locator("div:nth-child(5) > div:nth-child(5) > div > .square")
     .click();

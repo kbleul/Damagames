@@ -7,6 +7,12 @@ import { Dashboard, Users, Avatars, CoinSetting } from "../pages";
 import Boards from "../pages/store/Boards";
 import CreateBoard from "../pages/store/CreateBoard";
 import CreatePawn from "../pages/store/CreatePawn";
+import CreateAvater from "../pages/store/CreateAvater";
+import EditAvater from "../pages/store/EditAvater";
+import Badges from "../pages/badges/Pages/Badges";
+import CreateBadge from "../pages/badges/Pages/CreateBadge";
+import EditBadge from "../pages/badges/Pages/EditBadge";
+
 interface Props {}
 const AuthRoutes: React.FC<Props> = () => {
   const [isSideBarOpen, setIsSideBarOpen] = useState<boolean>(true);
@@ -27,11 +33,13 @@ const AuthRoutes: React.FC<Props> = () => {
         setIsOpen(false);
       }
     };
+
     window.addEventListener("resize", hideMenu);
     return () => {
       window.removeEventListener("resize", hideMenu);
     };
   });
+
   return (
     <div className="flex relative min-h-screen">
       <div
@@ -70,14 +78,17 @@ const AuthRoutes: React.FC<Props> = () => {
             <Route path="*" element={<Navigate to="/dashboard" />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/users" element={<Users />} />
+            <Route path="/badges" element={<Badges />} />
             <Route path="/avatars" element={<Avatars />} />
             <Route path="/coins" element={<CoinSetting />} />
-            {/* <Route path="/boards" element={<Boards />} /> */}
+            <Route path="/badge/create" element={<CreateBadge />} />
+            <Route path="/badge/edit/:id" element={<EditBadge />} />
+            <Route path="/avater/create" element={<CreateAvater />} />
+            <Route path="/avater/edit/:id" element={<EditAvater />} />
             <Route path="/board/create" element={<CreateBoard />} />
             <Route path="/board/create/:id" element={<CreateBoard />} />
             <Route path="/pawn/create" element={<CreatePawn />} />
             <Route path="/pawn/create/:id" element={<CreatePawn />} />
-            
           </Routes>
         </div>
       </div>

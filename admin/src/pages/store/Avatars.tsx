@@ -43,7 +43,6 @@ const Avatars = () => {
       retry: false,
       enabled: !!token,
       onSuccess: (res) => {
-        console.log(res?.data?.data);
         setAvatars(
           res?.data?.data?.avatars?.map((data: any, index: number) => ({
             ...data,
@@ -65,7 +64,6 @@ const Avatars = () => {
       },
     }
   );
-  console.log(storeData?.data);
   function classNames(...classes: any) {
     return classes.filter(Boolean).join(" ");
   }
@@ -96,7 +94,7 @@ const Avatars = () => {
               <div className="flex items-center justify-between pb-3 w-full">
                 <h3 className="font-semibold text-lg">Avatars</h3>
                 <button
-                  onClick={() => setIsModalOpen(true)}
+                  onClick={() => navigate('/avater/create')}
                   className="bg-main-bg p-2 rounded-sm font-medium hover:opacity-80 text-white"
                 >
                   Add Item

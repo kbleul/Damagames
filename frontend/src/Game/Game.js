@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext, useRef } from "react";
 import Board from "./components/Board.js";
 import { returnPlayerName } from "./components/utils.js";
 import "./game.css";
-import { motion, useAnimation } from "framer-motion";
+import { motion } from "framer-motion";
 import { getMoves, movePiece } from "./components/ReactCheckers";
 import WinnerModal from "./components/WinnerModal";
 import ExitWarningModal from "./components/ExitWarningModal";
@@ -27,9 +27,7 @@ import { ThreeDots } from "react-loader-spinner";
 import UserLeavesModal from "./components/UserLeavesModal.js";
 import { clearCookie } from "../utils/data.js";
 import { useAuth } from "../context/auth.js";
-import { IoMdLogIn } from "react-icons/io";
 import NewGameRequestModal from "./components/NewGameRequestModal.js";
-import Joyride from 'react-joyride';
 //crowns
 //crowns
 // import yellowCoin from "../assets/yellow-coin.svg";
@@ -47,7 +45,6 @@ import { Localization } from "../utils/language";
 const Game = () => {
   const { id } = useParams();
   const { user, token, lang } = useAuth();
-  const playingCrowns = useRef({});
   const [tourCounter, setTourCounter] = useState(10);
   const navigate = useNavigate();
   const [playMove] = useSound(moveSound);
@@ -89,6 +86,17 @@ const Game = () => {
 
   //send king icon
   const [firstMove, setFirstMove] = useState(true);
+
+  //trach previous game states for undo
+  const [matchHistory, setMatchHistory] = useState([])
+  const [redoHistory, setRedoHistory] = useState([])
+
+  const [undoCount, setUndoCount] = useState(0)
+  const [showUndoWarning, setShowUndoWarning] = useState(false)
+  const [showRedoPrompt, setShowRedoPrompt] = useState(false)
+  const [showAllMoves, setShowAllMoves] = useState(true)
+
+  const undoAllowedAmount = 3
 
   // const { playerCrown, playerBoard } = useHome();
   // useEffect(() => {
@@ -267,14 +275,14 @@ const Game = () => {
   //         ? user?.default_board?.color?.color1
   //         : `#181920`
   //   );
-  //   document.documentElement.style.setProperty(
-  //     "--playerBoardColor",
-  //     !user && !token
-  //       ? `#2c2c37`
-  //       : user?.default_board
-  //         ? user?.default_board?.color?.color2
-  //         : `#2c2c37`
-  //   );
+  // document.documentElement.style.setProperty(
+  //   "--playerBoardColor",
+  //   !user && !token
+  //     ? `#2c2c37`
+  //     : user?.default_board
+  //       ? user?.default_board?.color?.color2
+  //       : `#2c2c37`
+  // );
   //   // last move shower
   //   document.documentElement.style.setProperty(
   //     "--lastMoveColor",
@@ -323,30 +331,30 @@ const Game = () => {
     const player1 = [
       "a8",
       "c8",
-      "e8",
-      "g8",
-      "b7",
-      "d7",
-      "f7",
-      "h7",
-      "a6",
-      "c6",
-      "e6",
-      "g6",
+      // "e8",
+      // "g8",
+      // "b7",
+      // "d7",
+      // "f7",
+      // "h7",
+      // "a6",
+      // "c6",
+      // "e6",
+      // "g6",
     ];
     const player2 = [
       "b3",
       "d3",
-      "f3",
-      "h3",
-      "a2",
-      "c2",
-      "e2",
-      "g2",
-      "b1",
-      "d1",
-      "f1",
-      "h1",
+      // "f3",
+      // "h3",
+      // "a2",
+      // "c2",
+      // "e2",
+      // "g2",
+      // "b1",
+      // "d1",
+      // "f1",
+      // "h1",
     ];
 
     player1.forEach(function (i) {
@@ -405,7 +413,11 @@ const Game = () => {
     return history[history.length - 1];
   }
 
+
   function handleClick(coordinates) {
+
+    redoHistory.length > 0 && setRedoHistory([])
+
     if (gameState.winner !== null) {
       return;
     }
@@ -449,6 +461,9 @@ const Game = () => {
         clickedSquare.isKing,
         false
       );
+
+      console.log(clickedSquare.isKing)
+
       setGameState({
         ...gameState,
         activePiece: coordinates,
@@ -472,6 +487,7 @@ const Game = () => {
         return;
       }
 
+      setMatchHistory(prev => [postMoveState, ...prev])
       updateStatePostMove(postMoveState);
       soundOn && playMove();
       if (
@@ -486,8 +502,12 @@ const Game = () => {
     }
   }
 
+  useEffect(() => {
+    console.log({ redoHistory })
+  }, [redoHistory])
   //computer turn
   function computerTurn(newMoveState, piece = null) {
+    //  console.log(newMoveState);
     setTimeout(() => {
       // const currentState = getCurrentState();
       const boardState = newMoveState.boardState;
@@ -530,6 +550,7 @@ const Game = () => {
           newMoveState.boardState.isKing,
           true
         );
+
         coordinates = piece;
         moveTo = movesData[0][Math.floor(Math.random() * movesData[0].length)];
       }
@@ -591,6 +612,8 @@ const Game = () => {
     } else if (id == 1 && gametrackes) {
       track = gametrackes.tracker;
     }
+
+
 
     id == 1
       ? setGameState((prevGameState) => {
@@ -785,17 +808,44 @@ const Game = () => {
       }
     }
   }, [gameState, gameStatus, winnerPlayer]);
+
+  const showAllHint = () => {
+    let myCoordinates = []
+    for (let i = 0; i < document.getElementsByClassName("player1").length; i++) {
+      let coordinates = document.getElementsByClassName("player1")[i].classList[1]
+
+      let movesData = getMoves(
+        columns,
+        gameState.history[gameState.history.length - 1].boardState,
+        coordinates,
+        document.getElementsByClassName("player1")[i].classList.contains("king"),
+        false
+      );
+      if (movesData[0].length > 0) {
+        myCoordinates.push(coordinates)
+      }
+    }
+
+    myCoordinates.forEach(item => {
+      document.getElementsByClassName(item)[0].classList.add("movable")
+      document.getElementsByClassName(item)[0].classList.add("player1-all")
+    })
+
+  }
+
   const resetGame = () => {
     moveRef.current = [0, 0];
 
     socket.emit("sendResetGameRequest", { status: "Pending" });
   };
+
   const rejectGameRequest = () => {
     socket.emit("sendRejectGameMessage", { status: "Reject" });
     socket.emit("leave", gameId);
     setShowResetWaiting(false);
     setIsDrawModalOpen(false);
   };
+
   const rejectDrawGameRequest = () => {
     socket.emit("sendRejectDrawGameMessage", { status: "Reject" });
     // socket.emit('leave',gameId)
@@ -846,6 +896,13 @@ const Game = () => {
     });
     setMyTurn("player1");
     setPawns([0, 0]);
+
+    setFirstMove(true)
+    setMatchHistory([])
+    setRedoHistory([])
+    setUndoCount(0)
+    setShowUndoWarning(false)
+    setShowRedoPrompt(false)
 
   };
 
@@ -994,6 +1051,12 @@ const Game = () => {
         setPassedCounter(0);
         setShowResetWaiting(false);
         moveRef.current = [0, 0];
+        setFirstMove(true)
+        setMatchHistory([])
+        setRedoHistory([])
+        setUndoCount(0)
+        setShowUndoWarning(false)
+        setShowRedoPrompt(false)
       }
     );
     socket.on("getResetGameRequest", ({ status }) => {
@@ -1053,7 +1116,7 @@ const Game = () => {
       setMsgSender(data.sender);
       setLatestMessage(data.message);
     });
-    //if the first player not in the game
+    //if the matchHistory player not in the game
     //   socket.emit("sendMessage", {
     //     status: "started",
     //   });
@@ -1195,6 +1258,7 @@ const Game = () => {
 
   useEffect(() => {
     timeChecker();
+    showAllMoves && id == 1 && currentPlayer && showAllHint()
   }, [currentPlayer]);
 
   useEffect(() => {
@@ -1252,7 +1316,6 @@ const Game = () => {
 
   useEffect(() => {
 
-
     localStorage.setItem("dama-sound", true);
 
     if (id == 1) {
@@ -1275,7 +1338,86 @@ const Game = () => {
 
   }, []);
 
+  const undo = () => {
 
+    if (gameState.stepNumber === 0) { return }
+
+    if (undoAllowedAmount <= undoCount) {
+      //input other code here
+      setShowUndoWarning(true)
+      setTimeout(() => setShowUndoWarning(false), 3500)
+      return
+    }
+
+    setRedoHistory(prev => [{
+      boardState: gameState.history[gameState.history.length - 1].boardState,
+      currentPlayer: gameState.history[gameState.history.length - 1].currentPlayer,
+      activePiece: gameState.activePiece,
+      moves: gameState.moves,
+      jumpKills: gameState.jumpKills,
+      hasJumped: gameState.hasJumped,
+      stepNumber: gameState.history.length,
+      winner: gameState.winner,
+    }, ...prev])
+
+    if (matchHistory.length > 1) {
+      let temparr = [...matchHistory]
+      temparr.shift()
+      updateStatePostMove({ ...matchHistory[1], currentPlayer: !matchHistory[1].currentPlayer })
+      setMatchHistory(temparr)
+
+    } else {
+      setGameState(
+        {
+          players: 1,
+          history: [
+            {
+              boardState: createBoard(),
+              currentPlayer: true,
+            },
+          ],
+          activePiece: null,
+          moves: [],
+          jumpKills: null,
+          hasJumped: null,
+          stepNumber: 0,
+          winner: null,
+        }
+      )
+      setMatchHistory([])
+    }
+
+    setUndoCount(function (latest) { return ++latest })
+
+  }
+
+  const redo = () => {
+    if (redoHistory.length > 0) {
+      updateStatePostMove({ ...redoHistory[0], currentPlayer: !redoHistory[0].currentPlayer })
+      let temparr = [...redoHistory]
+      temparr.shift()
+
+      setRedoHistory(temparr)
+      setShowRedoPrompt(true)
+    }
+  }
+
+  const resumeComputerTurn = () => {
+    redoHistory.length > 0 && setRedoHistory([])
+
+    computerTurn({
+      boardState: gameState.history[gameState.history.length - 1].boardState,
+      currentPlayer: gameState.history[gameState.history.length - 1].currentPlayer,
+      activePiece: gameState.activePiece,
+      moves: gameState.moves,
+      jumpKills: gameState.jumpKills,
+      hasJumped: gameState.hasJumped,
+      stepNumber: gameState.history.length,
+      winner: gameState.winner,
+    })
+
+    setShowRedoPrompt(false)
+  }
 
   const showNextTour = () => {
     setTourCounter(function (latest) { return ++latest })
@@ -1324,7 +1466,7 @@ const Game = () => {
       {tourCounter < 2 && <section className="absolute top-[5%] right-0  h-[100vh] flex items-center justify-center w-3/4 max-w-[450px]  z-10">
         <div className=" w-[90%] max-w-[450px] py-2 rounded-lg onboarding_prompt">
           <p className="pb-6 px-1 text-white">{Localization[`tour${tourCounter}`][lang]}</p>
-          <button className="bg-white px-4 py-2 font-bold text-sm rounded" onClick={showNextTour}>{tourCounter === 0 ? "Next" : "Done"}</button>
+          <button className="bg-white px-4 py-2 font-bold text-sm rounded" onClick={showNextTour}>{tourCounter === 0 ? Localization["Next"][lang] : Localization["Done"][lang]}</button>
         </div>
       </section>}
 
@@ -1374,8 +1516,7 @@ const Game = () => {
             </p>
           </button>
         )}
-        {/* currentPlayer && localStorage.getItem("playerOneIp") && 
-      {!currentPlayer && localStorage.getItem("playerTwoIp") && */}
+
         <section className="flex flex-col">
           <div>
             {currentPlayer && localStorage.getItem("playerOneIp") && (
@@ -1450,7 +1591,7 @@ const Game = () => {
             {id == 1
               ? user
                 ? user.username
-                : "You"
+                : Localization["You"][lang]
               : playerOneIp && user
                 ? user?.username
                 : playerOneIp
@@ -1625,6 +1766,7 @@ const Game = () => {
             tracker={gameState.tracker ? gameState.tracker : null}
             isFirstMove={firstMove}
             setIsFirstMove={setFirstMove}
+            showAllMoves={showAllMoves}
           />
         </div>
       </div>
@@ -1651,6 +1793,38 @@ const Game = () => {
             </p>
           </div>
         )}
+
+        {id == "1" && <><div onClick={undo} className={showUndoWarning || undoCount >= undoAllowedAmount ? "flex flex-col opacity-80" : "flex flex-col cursor-pointer"}>
+          <div className="rounded-full flex flex-col items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 512 512"><path fill="#ff4c01" d="M256 48C141.13 48 48 141.13 48 256s93.13 208 208 208s208-93.13 208-208S370.87 48 256 48Zm97.67 281.1c-24.07-25.21-51.51-38.68-108.58-38.68v37.32a8.32 8.32 0 0 1-14.05 6L146.58 254a8.2 8.2 0 0 1 0-11.94L231 
+            162.29a8.32 8.32 0 0 1 14.05 6v37.32c88.73 0 117.42 55.64 122.87 117.09c.73 7.72-8.85 12.05-14.25 6.4Z" /></svg>
+          </div>
+          <p className="text-xs font-bold text-white">
+            {Localization['Undo'][lang]}
+          </p>
+        </div>
+
+          <div onClick={redo} className={redoHistory.length === 0 ? "flex flex-col opacity-80" : "flex flex-col cursor-pointer"}>
+            <div className="rounded-full flex flex-col items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 512 512"><path fill="#ff4c01" d="M48 256c0 114.87 93.13 208 208 208s208-93.13 208-208S370.87 48 256 48S48 141.13 48 256Zm96 66.67c5.45-61.45 34.14-117.09 122.87-117.09v-37.32a8.32 8.32 0 0 1 14-6L365.42 242a8.2 8.2 0 0 1 0 11.94L281 
+          333.71a8.32 8.32 0 0 1-14-6v-37.29c-57.07 0-84.51 13.47-108.58 38.68c-5.49 5.65-15.07 1.32-14.42-6.43Z"/></svg>
+            </div>
+            <p className="text-xs font-bold text-white">
+              {Localization['Redo'][lang]}
+            </p>
+          </div></>}
+
+        <div onClick={() => setShowAllMoves(prev => !prev)} className={redoHistory.length === 0 ? "flex flex-col opacity-80" : "flex flex-col cursor-pointer"}>
+          <div className="rounded-full flex flex-col items-center justify-center">
+            {showAllMoves ? <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 24 24"><path fill="#ff4c01" d="M7 18q-2.5 0-4.25-1.75T1 12q0-2.5 1.75-4.25T7 6h10q2.5 0 4.25 1.75T23 12q0 2.5-1.75 4.25T17 18H7Zm10-3q1.25 0 2.125-.875T20 12q0-1.25-.875-2.125T17 9q-1.25 0-2.125.875T14 12q0 1.25.875 2.125T17 15Z" /></svg>
+              : <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 24 24"><path fill="#ff4c01" d="M17 7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h10c2.76 0 5-2.24 5-5s-2.24-5-5-5zM7 15c-1.66 0-3-1.34-3-3s1.34-3 3-3s3 1.34 3 3s-1.34 3-3 3z" /></svg>
+            }
+          </div>
+          <p className="text-xs font-bold text-white">
+            {Localization["Show Hint"][lang]}
+          </p>
+        </div>
+
         {id != 1 && (
           <div className="flex items-center justify-center flex-col">
             <BsFillChatFill
@@ -1662,7 +1836,12 @@ const Game = () => {
           </div>
         )}
       </div>
-      {/* message */}
+
+      {showUndoWarning && <p className="text-orange-color text-sm w-[70%]">{Localization["Undo limit reached."][lang]}</p>}
+
+      {showRedoPrompt && <p className="text-white">{Localization["resume computer turn ?"][lang]}
+        <span onClick={resumeComputerTurn} className="text-orange-color font-bold cursor-pointer border-b border-orange-color ml-2 pr-1">{Localization["Resume"][lang]}</span></p>}
+
       {latestMessage && (
         <motion.div
           initial={{ opacity: 0 }}

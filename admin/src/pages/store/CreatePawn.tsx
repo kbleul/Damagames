@@ -67,7 +67,6 @@ const CreatePawn = () => {
         onSuccess: (responseData: any) => {
           //   setIsUpdated((prev) => !prev);
           navigate("/avatars");
-          console.log(responseData);
         },
         onError: (err: any) => {
           console.log(err);
@@ -97,7 +96,6 @@ const CreatePawn = () => {
       onSuccess: (res) => {},
     }
   );
-  console.log(storeData?.data?.data?.data);
   const initialValues: PawnFormProps = {
     name: id ? storeData?.data?.data?.data?.name : "",
     nickName: id ? storeData?.data?.data?.data?.nickname : "",

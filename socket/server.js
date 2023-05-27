@@ -51,7 +51,6 @@ console.log(`⚡: Server is live! PORT = ` + 7744);
 
 io.on("connection", (socket) => {
   //user connection
-  console.log("a user connected.");
 
   socket.on("postPublicGame", (data) => {
     publicGames.push({
@@ -90,8 +89,6 @@ io.on("connection", (socket) => {
 
   socket.on("join-room", async (room) => {
     const clients = await io.of("/").in(room).fetchSockets();
-    // console.log("joined")
-    // , { clients, room, id: socket.id }
     let tempSocketObj = roomSocketObj[room];
     if (tempSocketObj && tempSocketObj.includes(socket.id)) {
       io.to(room).emit("samePerson", "You can't join a game you created");
@@ -112,7 +109,6 @@ io.on("connection", (socket) => {
     //send and get messages
 
     socket.on("sendMessage", (data) => {
-      console.log(data)
       io.to(room).emit("getMessage", data);
     });
 
@@ -165,22 +161,12 @@ io.on("connection", (socket) => {
     });
   });
 
-  //leave room
-  // socket.on("leave", (room) => {
-  //   socket.leave(room);
-  //   console.log(`user leave a room ${room}`)
-  //   if (rooms[room]) {
-  //     rooms[room].delete(socket.id);
-  //   }
-  // });
   socket.on("leave", (room) => {
     socket.leave(room);
-    // console.log(`user leave a room ${room}`);
     if (rooms[room]) {
       rooms[room].delete(socket.id);
       if (rooms[room].size === 0) {
         delete rooms[room];
-        console.log(`Room ${room} has been deleted`);
       }
     }
   });

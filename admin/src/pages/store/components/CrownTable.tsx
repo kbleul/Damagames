@@ -232,7 +232,6 @@ const CrownTable = ({
   );
 
   const statusUpdateMutationSubmitHandler = async (value: any) => {
-    console.log(value);
     try {
       const id = value.id;
       const data = { status: value.status };

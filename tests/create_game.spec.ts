@@ -7,29 +7,31 @@ test("has title", async ({ page }) => {
   await expect(page).toHaveTitle(/Dama/);
 });
 
-test("Create Game", async ({ page }) => {
+test("onboarding", async ({ page }) => {
   await page.goto("/");
 
-  // TODO: fix UI
-  // somehow without a hard timeout the UI becomes flaky and the game is not created
+  await page.getByRole("button", { name: "Select / ምረጥ" }).click();
+  await page.getByRole("button", { name: "Start Tour" }).click();
+  await page.getByRole("button", { name: "Skip" }).click();
+});
+
+test("Create Game", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Select / ምረጥ" }).click();
+  await page.getByRole("button", { name: "Start Tour" }).click();
+  await page.getByRole("button", { name: "Skip" }).click();
+
   await page.waitForTimeout(5000);
 
-  // Wait for the "Create Game" button to appear and click it
-  const createGameButton = await page.waitForSelector("button", {
-    text: "Create Game",
-  });
-  await createGameButton.click();
-  // Wait for the page to navigate to the new URL
-  await page.waitForLoadState("networkidle", { timeout: 15000 });
+  try {
+    await page.getByRole("button", { name: "Start Tour" }).click();
+  } catch {
+    console.log("Start Tour btn not found");
+  }
 
-  // Wait for the text input to appear and fill it
-  //   const nameInput = await page.waitForSelector('input[type="text"]');
-  //   await nameInput.fill("testrunner");
+  await page.getByRole("button", { name: "Play with Computer" }).click();
 
-  //   // Wait for the "Create" button to appear and click it
-  //   const createButton = await page.waitForSelector("button", { text: "Create" });
-  //   await createButton.click();
-  //   // Wait for the heading to appear and assert its text
-  //   //await page.waitForLoadState('networkidle', { timeout: 15000 });
-  //   await expect(page.getByRole("heading")).toHaveText("Great Work!");
+  await page.waitForTimeout(5000);
+
+  await expect(page.url()).toMatch(/game\/1$/);
 });

@@ -46,7 +46,6 @@ const CoinSetting = () => {
       retry: false,
       enabled: !!token,
       onSuccess: (res) => {
-        console.log(res?.data?.data);
         setCoins(
           [res?.data?.data]?.map((data: any, index: number) => ({
             ...data,
@@ -57,7 +56,6 @@ const CoinSetting = () => {
     }
   );
 
-  console.log(coins);
 
   const columns: GridColDef[] = [
     { field: "index", headerName: "ID", width: 110 },

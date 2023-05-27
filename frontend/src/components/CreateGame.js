@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Joyride from 'react-joyride';
+import { useQuery } from "@tanstack/react-query";
 import SideMenu from "./SideMenu";
 import { useNavigate } from "react-router-dom";
 import background from "../assets/backdrop.jpg";
@@ -19,12 +20,12 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControl from '@mui/material/FormControl';
 
+import { Circles } from "react-loader-spinner";
+import { SORTBY, LANG } from "../utils/data"
+import TopFour from "./TopFour";
+import { sortScoreBoard } from "../utils/utilFunc";
 
 
-const LANG = {
-  "AMH": "አማርኛ",
-  "ENG": "English",
-}
 
 const CreateGame = () => {
   const navigate = useNavigate();
@@ -38,6 +39,12 @@ const CreateGame = () => {
   const [LangValue, setLangValue] = useState(lang);
 
   const [tourItems, setTourItems] = useState(null);
+  const [topFour, setTopFour] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [allBadges, setAllBadges] = useState(null);
+
+
 
 
   function handleSecond(url) {
@@ -148,12 +155,6 @@ const CreateGame = () => {
   }
 
 
-
-  useEffect(() => {
-    localStorage.removeItem("isNotPublic");
-  }, [])
-
-
   const handleJoyrideCallback = data => {
     const { action, status } = data;
     if (status === "finished" || status === "skipped" || action === "close") {
@@ -161,6 +162,55 @@ const CreateGame = () => {
       localStorage.setItem("showOnBoardig", true)
     }
   };
+
+  const scoreBoardData = useQuery(
+    ["soreBoardDataApi"],
+    async () =>
+      await axios.get(`${process.env.REACT_APP_BACKEND_URL}top-four`, {
+        headers,
+      }),
+    {
+      keepPreviousData: true,
+      refetchOnWindowFocus: false,
+      retry: false,
+      //   enabled: !!token,
+      onSuccess: (res) => {
+        let sortedArr = sortScoreBoard(SORTBY.PERSON, res.data.data)
+
+        setTopFour(sortedArr)
+
+        sortedArr = []
+        setIsLoading(false)
+      },
+      enabled: true
+    }
+  );
+
+  const getAllBadges = useQuery(
+    ["getAllBadgesApi"],
+    async () =>
+      await axios.get(`${process.env.REACT_APP_BACKEND_URL}get-badges`, {
+        headers,
+      }),
+    {
+      keepPreviousData: true,
+      refetchOnWindowFocus: false,
+      retry: false,
+      onSuccess: (res) => {
+        let tempArr = res.data.data.reverse()
+        console.log(tempArr)
+        setAllBadges(tempArr)
+
+        tempArr = []
+      },
+      enabled: !isLoading
+    }
+  );
+
+
+  useEffect(() => {
+    localStorage.removeItem("isNotPublic");
+  }, [])
 
   useEffect(() => {
     if (!localStorage.getItem("onBoardig")) {
@@ -225,7 +275,7 @@ const CreateGame = () => {
                 {showLangMenu ? <BsFillCaretUpFill /> : <BsFillCaretDownFill />}
               </button>
 
-              {showLangMenu && <ul className="w-24 text-orange-color  border-b border-orange-color border-b-0 mt-1">
+              {showLangMenu && <ul className="w-24 text-orange-color border-b border-orange-color mt-1">
                 {Object.keys(LANG).filter(tempL => tempL !== lang).map(tempL =>
                   (<li onClick={() => setLanguage(tempL)} className="rounded-md border-b border-orange-color cursor-pointer hover:border-b-orange-400 py-1">{LANG[tempL]}</li>))}
               </ul>}
@@ -300,11 +350,11 @@ const CreateGame = () => {
         </section>
       }
 
-
-      <div onClick={() => { setShowMenu(false); setShowLangMenu(false); }} className="max-w-xs p-3 mx-auto flex flex-col items-center justify-center gap-y-2 min-h-screen space-y-2">
-        <div className="h-[180px] w-[200px] bg-inherit mt-18 mb-8 ">
+      <div onClick={() => { setShowMenu(false); setShowLangMenu(false); }}
+        className={user ? "max-w-xs p-3 mx-auto flex flex-col items-center justify-center gap-y-2 min-h-[48vh] space-y-2" : "max-w-xs p-3 mx-auto flex flex-col items-center justify-center gap-y-2 min-h-[70vh] space-y-2 mt-16"}>
+        {!user && !token && <div className="h-[180px] w-[200px] bg-inherit mt-18 mb-8 ">
           <img src={avatar} className="" alt="avatar" />
-        </div>
+        </div>}
         <button
           onClick={() => {
             user && token ? createGameAI() : createGameAI_NoAuth()
@@ -365,7 +415,7 @@ const CreateGame = () => {
         <section className="w-4/5 max-w-[30rem] flex items-center justify-evenly mt-[12vh]">
           <Link
             to="/score-board"
-            className="sixth-step flex flex-col justify-evenly items-center "
+            className="sixth-step flex flex-col justify-evenly items-center mt-4"
           >
             <div className="h-6 w-8 bg-orange-color px-2 flex justify-center items-center rounded-sm">
               <svg
@@ -387,7 +437,7 @@ const CreateGame = () => {
           </Link>
           <Link
             to="/store"
-            className="seventh-step flex flex-col justify-evenly items-center"
+            className="seventh-step flex flex-col justify-evenly items-center mt-4"
           >
             <div className="h-6 w-8 bg-orange-color px-2 fle
           x justify-center items-center pt-1">
@@ -408,9 +458,47 @@ const CreateGame = () => {
               {Localization["Store"][lang]}
             </p>
           </Link>
+
+
         </section>
-        <Footer />
+
       </div>
+      <article className="w-full flex items-center justify-center mt-6">
+        <article className="w-4/5  max-w-[500px]">
+          <section className="text-white text-left font-bold">
+            <div className="flex">
+              <p className="">{Localization["top"][lang]}</p>
+              <p className="rounded-full bg-orange-color w-5 h-5 text-center ml-1 mt-[.1rem] text-sm pr-[0.1rem]">4</p>
+            </div>
+            <h3 className="text-3xl">{Localization["leaders"][lang]}</h3>
+          </section>
+
+          {!isLoading && allBadges &&
+            <section onClick={() => navigate("/score-board")} className="mt-2 flex justify-center items-center score-box h-[15vh] min-h-[7rem] md:min-h-[10rem] border">
+              {topFour.map(item => (
+                <TopFour item={item} user={user} badges={allBadges} />
+              ))}
+            </section>}
+
+          {isLoading && <section className="mt-2 flex justify-center items-center score-box h-[15vh] border">
+            <Circles
+              height="30"
+              width="50"
+              radius="9"
+              color="#FF4C01"
+              ariaLabel="three-dots-loading"
+              wrapperStyle={{}}
+              wrapperClassName=""
+              visible={true}
+            />
+          </section>}
+
+          <div className="score-box-bottom"></div>
+
+        </article>
+      </article>
+
+      <Footer />
 
     </div >
   );

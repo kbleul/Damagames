@@ -63,3 +63,4 @@ jobs:
         OTP_PASSWORD: ${{ secrets.OTP_PASSWORD }}
         REACT_APP_FRONTEND_URL: ${{ vars.REACT_APP_FRONTEND_URL }}
         REACT_APP_BACKEND_URL: ${{ vars.REACT_APP_BACKEND_URL }}
+        REACT_APP_GTM_ID: ${{ vars.REACT_APP_GTM_ID }}
