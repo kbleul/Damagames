@@ -45,7 +45,7 @@ jobs:
           DB_PORT: ${{ vars.DB_PORT }}
           DB_DATABASE: ${{ vars.DB_DATABASE }}
           DB_USERNAME: ${{ vars.DB_USERNAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
           RELEASE_VERSION: ${{ vars.RELEASE_VERSION }}
           TELEBIRR_APP_ID: ${{ vars.TELEBIRR_APP_ID }}
           TELEBIRR_APP_KEY: ${{ vars.TELEBIRR_APP_KEY }}
