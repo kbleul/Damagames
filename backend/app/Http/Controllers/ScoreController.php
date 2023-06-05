@@ -27,19 +27,14 @@ class ScoreController extends GameController
     public function top_four()
     {
         return User::orderByDesc('current_point')->take(4)
-            ->get()->map(function ($query) {
-                $query->rank = $this->getRanking($query->id);
-                return $query;
-            });
+            ->get();
     }
 
     public function scores_by_point()
     {
         return User::take(50)
-            ->get()->sortBy('game_point')->map(function ($query) {
-                $query->rank = $this->getRanking($query->id);
-                return $query;
-            });
+            ->get()
+            ->sortBy('game_point');
     }
 
     /**
