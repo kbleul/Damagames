@@ -20,7 +20,7 @@ class ScoreController extends GameController
      */
     public function index()
     {
-        return User::orderByDesc('current_point')->limit(50)
+        return User::orderByDesc('current_point')->take(25)
             ->get();
     }
 
