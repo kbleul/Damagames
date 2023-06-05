@@ -21,10 +21,7 @@ class ScoreController extends GameController
     public function index()
     {
         return User::orderByDesc('current_point')->limit(50)
-            ->get()->map(function ($query) {
-                $query->rank = $this->getRanking($query->id);
-                return $query;
-            });
+            ->get();
     }
 
     public function top_four()
