@@ -25,7 +25,7 @@ class User extends Authenticatable
      */
     protected $guarded = [];
 
-    public $appends = ['rank', 'rank_by_point', 'coin', 'game_point', 'match_history'];
+    public $appends = ['rank', 'coin', 'game_point', 'match_history'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -45,31 +45,6 @@ class User extends Authenticatable
     {
         $collection = collect(User::orderByDesc('current_point')
             ->get());
-
-        $data = $collection->where('id', $this->id);
-
-        if ($data->count() > 0) {
-            return $data->keys()->first() + 1;
-        } else {
-            return 0;
-        }
-    }
-    public function getRankByPointAttribute()
-    {
-        $users = User::all()->map(function ($user) {
-            $wins = Game::where('playerOne', $this->id)
-                ->orWhere('playerTwo', $this->id)
-                ->withCount(['scores' => function ($query) {
-                    $query->where('winner', $this->id);
-                }])
-                ->get()
-                ->sum('scores_count');
-
-            $user->game_point = ($wins * CoinSetting::first()->winnerCoins) + ($wins * CoinSetting::first()->drawCoins);
-            return $user;
-        });
-
-        $collection = collect($users);
 
         $data = $collection->where('id', $this->id);
 
@@ -124,8 +99,6 @@ class User extends Authenticatable
             ->get()
             ->sum('scores_count');
         $match_history =  [
-            'rank' => $this->getRanking($this->id),
-            'rank_by_point' => $this->getRankingByPoint($this->id),
             'played' => $completed + $incompleted,
             'started' => $completed + $incompleted,
             'completed' => $completed,
@@ -175,43 +148,5 @@ class User extends Authenticatable
     public function roles()
     {
         return $this->belongsToMany(Role::class, 'role_users');
-    }
-
-    public function getRanking($id)
-    {
-        $collection = collect(User::orderByDesc('current_point')
-            ->get());
-
-        $data = $collection->where('id', $id);
-        if ($data->count() > 0) {
-            return $data->keys()->first() + 1;
-        } else {
-            return 0;
-        }
-    }
-    public function getRankingByPoint($id)
-    {
-        $users = User::all()->map(function ($user) {
-            $wins = Game::where('playerOne', $this->id)
-                ->orWhere('playerTwo', $this->id)
-                ->withCount(['scores' => function ($query) {
-                    $query->where('winner', $this->id);
-                }])
-                ->get()
-                ->sum('scores_count');
-
-            $user->game_point = ($wins * CoinSetting::first()->winnerCoins) + ($wins * CoinSetting::first()->drawCoins);
-            return $user;
-        });
-
-        $collection = collect($users);
-
-        $data = $collection->where('id', $id);
-
-        if ($data->count() > 0) {
-            return $data->keys()->first() + 1;
-        } else {
-            return 0;
-        }
     }
 }
