@@ -151,10 +151,6 @@ body {
   background-color: #aa8611;
 }
 
-.square.movable.player1-all {
-  background-color: #444444;
-}
-
 .square.player1,
 .square.player2,
 .square.movable {

@@ -285,8 +285,8 @@ const Avatar = ({
           return;
         }
 
-        set_isShowModalOpen(true);
         setSelectedItem(avatar);
+        set_isShowModalOpen(true);
       }}
     >
       <section className="w-[20%] border rounded-lg mr-2">

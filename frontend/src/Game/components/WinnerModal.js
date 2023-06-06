@@ -62,13 +62,9 @@ const WinnerModal = ({
         {},
         {
           onSuccess: (responseData) => {
-            console.log(responseData?.data?.data?.id)
             localStorage.setItem("gameId", responseData?.data?.data?.id)
-            setNewGameWithComputer();
-            setIsWinnerModalOpen(false);
           },
           onError: (err) => {
-            console.log("responseData?.data?.data?.id")
           },
         }
       ) :
@@ -76,17 +72,13 @@ const WinnerModal = ({
           {},
           {
             onSuccess: (responseData) => {
-              console.log(responseData?.data?.data?.id)
               localStorage.setItem("gameId", responseData?.data?.data?.id)
-              setNewGameWithComputer();
-              setIsWinnerModalOpen(false);
             },
             onError: (err) => {
-              console.log("responseData?.data?.data?.id")
             },
           }
         )
-    } catch (err) { console.log(err.message) }
+    } catch (err) { }
   };
 
 
@@ -95,11 +87,10 @@ const WinnerModal = ({
     if (gameState.players > 1) {
       resetGame();
     } else {
-      console.log("Game reset")
+      setIsWinnerModalOpen(false);
+      console.log("sadjsa")
       createGameAI()
-      // setTimeout(() => {
-
-      // }, 1500)
+      setNewGameWithComputer();
     }
   };
 
@@ -318,7 +309,7 @@ const WinnerModal = ({
                     </button>
                   </div>
                 </Dialog.Panel>
-
+                
               </Transition.Child>
             </div>
           </div>

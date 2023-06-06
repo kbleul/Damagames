@@ -11,8 +11,7 @@ module.exports = {
       },
       colors: {
         "orange-color": "#FF4C01",
-      },
-      fontFamily: { "avarage": "Average" }
+      }
     },
   },
   plugins: [],

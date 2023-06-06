@@ -1,14 +1,5 @@
 import { useNavigate } from "react-router-dom";
 
-export const SORTBY = {
-  COMPUTER: "COMPUTER", PERSON: "PERSON", COIN: "COIN"
-}
-
-export const LANG = {
-  "AMH": "አማርኛ",
-  "ENG": "English",
-}
-
 export const clearCookie = [
   "gameId",
   "playerOne",

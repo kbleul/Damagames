@@ -25,9 +25,9 @@ const CreateAvater = () => {
     nameEng: Yup.string().required("English name is required"),
     nameAmh: Yup.string().required("Amharic name is required"),
     point: Yup.number().required("Point is required"),
-    badge_image: Yup.mixed().required("Badge image is required"),
     discEng: Yup.mixed().required("English description is required"),
     descAmh: Yup.mixed().required("Amharic description is required"),
+    color: Yup.mixed().required("Color is required"),
   });
 
   const initialValues = {
@@ -35,6 +35,7 @@ const CreateAvater = () => {
     nameAmh: "",
     badge_image: undefined,
     point: null,
+    color: null,
     discEng: "",
     descAmh: "",
   };
@@ -59,6 +60,7 @@ const CreateAvater = () => {
           descriptionAmharic: values.descAmh,
           badge_image: values.badge_image && values.badge_image,
           point: values.point,
+          color: values.color,
         },
         {
           onSuccess: (responseData: any) => {
@@ -148,6 +150,20 @@ const CreateAvater = () => {
 
             <div className="w-full flex flex-col items-start space-y-1">
               <span className="font-medium text-xs text-gray-color capitalize ">
+                Color
+              </span>
+              <Field
+                as={"input"}
+                name="color"
+                className="w-full p-[6px]  focus:ring-2 ring-blue-500 rounded-sm border border-gray-300 focus:outline-none ring-0"
+              />
+              {errors.color && touched.color ? (
+                <p className="text-[13px] text-red-500">{errors.color}</p>
+              ) : null}
+            </div>
+
+            <div className="w-full flex flex-col items-start space-y-1">
+              <span className="font-medium text-xs text-gray-color capitalize ">
                 Point
               </span>
               <Field
@@ -175,9 +191,9 @@ const CreateAvater = () => {
                 }
                 className="w-full p-[6px]  focus:ring-2 ring-blue-500 rounded-sm border border-gray-300 focus:outline-none ring-0"
               />
-              {errors.badge_image && touched.badge_image ? (
+              {/* {errors.badge_image && touched.badge_image ? (
                 <p className="text-[13px] text-red-500">{errors.badge_image}</p>
-              ) : null}
+              ) : null} */}
             </div>
 
             <div className="flex items-end justify-end self-end">

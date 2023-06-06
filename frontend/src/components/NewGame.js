@@ -244,6 +244,7 @@ const NewGame = () => {
 
   const shareLink = async () => {
     const tempurl = value.split("/").splice(-1)[0];
+    // console.log(tempurl[0])
     if (navigator.share) {
       try {
         await navigator

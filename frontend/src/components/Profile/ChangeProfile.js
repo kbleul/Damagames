@@ -13,11 +13,8 @@ import { AiFillStar } from "react-icons/ai";
 
 import { useHome } from "../../context/HomeContext";
 import { Localization } from "../../utils/language";
-import { useNavigate } from "react-router-dom";
 
 const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
-  const navigate = useNavigate();
-
   const { login, token, user, lang } = useAuth();
   const { setMessageType } = useHome();
   const [selected, setSelected] = useState(null);
@@ -154,10 +151,6 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
     }
   );
 
-  useEffect(() => {
-    console.log(selectedItem)
-  }, [selectedItem])
-
 
   return (
     <>
@@ -246,7 +239,6 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
                             onClick={() => {
                               setSelected(i);
                               setSelectedImage(img.value);
-                              setSelectedItem(null)
                             }}
                           >
                             {selected === i && (
@@ -268,11 +260,9 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
                             key={i + 3}
                             className="relative"
                             onClick={() => {
-                              console.log(avatar)
                               if (!avatar.price || parseInt(user.coin) >= avatar.price) {
                                 setSelected(i + 3);
                                 setSelectedItem({ id: avatar.id, img: avatar.item })
-                                return
                               }
 
                             }}
@@ -295,42 +285,18 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
                         ))}
 
                       </div>
-                      <div className="flex flex-col gap-4 w-full">
-                        {selected !== null && (<>
-                          <button
-                            disabled={profileSelectMutation.isLoading}
-                            onClick={selected < 3 ? profileMutationSubmitHandler : profileSelectSubmitHandler}
-                            className="relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
-                                active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
-                                active:border-b-[0px] flex items-center justify-center
-                                transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
-                                border-b-[1px] border-gray-400/50 font-semibold text-white"
-                          >
-                            <div className='absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md' />
 
-                            {profileSelectMutation.isLoading ?
-                              Localization["Loading"][lang]
-                              : Localization["Update"][lang]}
-                          </button>
-
-                          {selectedItem && selectedItem.id && <button
-                            onClick={() => {
-                              navigate(`/avatar-history/${selectedItem.id}`)
-                            }}
-                            className='relative w-full p-2 bg-orange-bg rounded-md cursor-pointer select-none
-                                active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
-                                active:border-b-[0px] flex items-center justify-center
-                                transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
-                                border-b-[1px] border-gray-400/50 font-semibold text-white
-                                '>
-                            <div className='absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md' />
-                            {Localization["View History"][lang]}
-                          </button>}
-                        </>
-                        )}
-
-                      </div>
-
+                      {selected !== null && (
+                        <button
+                          disabled={profileSelectMutation.isLoading}
+                          onClick={selected < 3 ? profileMutationSubmitHandler : profileSelectSubmitHandler}
+                          className="rounded-md bg-orange-bg text-white font-medium w-[70%] p-2"
+                        >
+                          {profileSelectMutation.isLoading ?
+                            Localization["Loading"][lang]
+                            : Localization["Update"][lang]}
+                        </button>
+                      )}
                     </div>
 
                   </div>
