@@ -3,12 +3,20 @@ import Score from "./Score";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Circles } from "react-loader-spinner";
+import { useState } from "react";
 
+import { SORTBY } from "../utils/data"
+import { assignBadgeToUser, sortScoreBoard } from "../utils/utilFunc"
 
 
 const ScoreBoard = () => {
 
   const navigate = useNavigate();
+  const [sortedScore, setSortedScore] = useState([])
+  const [sortBy, setSortBy] = useState(SORTBY.COIN)
+
+  const [badges, setBadges] = useState(null);
+
 
   const headers = {
     "Content-Type": "application/json",
@@ -25,10 +33,32 @@ const ScoreBoard = () => {
       refetchOnWindowFocus: false,
       retry: false,
       //   enabled: !!token,
-      onSuccess: (res) => { },
+      onSuccess: (res) => {
+        setSortedScore(sortScoreBoard(sortBy, res.data.data))
+      },
     }
   );
 
+  const getAllBadges = useQuery(
+    ["getAllBadgesApi"],
+    async () =>
+      await axios.get(`${process.env.REACT_APP_BACKEND_URL}get-badges`, {
+        headers,
+      }),
+    {
+      keepPreviousData: true,
+      refetchOnWindowFocus: false,
+      retry: false,
+      onSuccess: (res) => {
+        let tempArr = res.data.data.reverse()
+
+        setBadges(tempArr)
+
+        tempArr = []
+      },
+      enabled: !scoreBoardData.isLoading
+    }
+  );
 
   return (
     <div className="h-[100vh] overflow-y-scroll flex flex-col items-center ">
@@ -52,15 +82,33 @@ const ScoreBoard = () => {
         </svg>
       </button>
 
-      {scoreBoardData.isFetched ? (
-        scoreBoardData?.data?.data?.data?.map((score) => (
+      <section className="flex justify-evenly items-center w-full 
+      text-white mt-12 py-4 text-xs font-bold"
+        style={{
+          background: `linear-gradient(90deg, #FF4C01 0%, rgba(0, 0, 0, 0) 139.19%)`,
+        }}>
+        <button className={sortBy === SORTBY.COIN && "text-[#00E4FF] border-b border-b-2 border-b-[#00E4FF]"} onClick={() => {
+          setSortBy(SORTBY.COIN)
+          setSortedScore(prev => sortScoreBoard(SORTBY.COIN, prev))
+        }}>Coins Earned</button>
+        <button className={sortBy === SORTBY.COMPUTER && "text-[#00E4FF] border-b border-b-2 border-b-[#00E4FF]"} onClick={() => {
+          setSortBy(SORTBY.COMPUTER)
+          setSortedScore(prev => sortScoreBoard(SORTBY.COMPUTER, prev))
+        }}>Computer Defeated</button>
+        <button className={sortBy === SORTBY.PERSON && "text-[#00E4FF] border-b border-b-2 border-b-[#00E4FF]"} onClick={() => {
+          setSortBy(SORTBY.PERSON)
+          setSortedScore(prev => sortScoreBoard(SORTBY.PERSON, prev))
+        }}>Friends Defeated</button>
+      </section>
+
+      {sortedScore.length > 0 ? (
+        sortedScore?.map((score) => (
           <Score
             key={score?.created_at + "" + score?.id}
             score={score}
-            hasBadge={
-              scoreBoardData?.data?.data?.data.indexOf(score) < 3 ? true : false
-            }
-            index={scoreBoardData?.data?.data?.data.indexOf(score)}
+            badges={badges}
+            index={sortedScore.indexOf(score)}
+            sortBy={sortBy}
           />
         ))
       ) : (

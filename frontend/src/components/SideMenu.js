@@ -6,12 +6,16 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import Avatar from "../assets/Avatar.png"
 import { Localization } from "../utils/language";
+import { assignBadgeToUser } from "../utils/utilFunc";
+import { useState } from "react";
 
-
-
-const SideMenu = ({ showMenu, setShowMenu, isprofile }) => {
+const SideMenu = ({ showMenu, setShowMenu, isprofile, badges }) => {
   const navigate = useNavigate();
   const { user, token, logout, lang } = useAuth();
+
+  const [badgeData, setBadgeData] = useState(null);
+  const LANG = { "AMH": "amharic", "ENG": "english" }
+
 
 
   const headers = {
@@ -59,13 +63,22 @@ const SideMenu = ({ showMenu, setShowMenu, isprofile }) => {
       refetchOnWindowFocus: false,
       retry: false,
       enabled: !!token,
+      onSuccess: (responseData) => {
+        let data = assignBadgeToUser(user?.game_point, badges)
+        let badge = badges.find(item => item.id === data.id)
+
+        setBadgeData(badge)
+        data = badge = []
+      },
       onError: (res) => {
+        //logout user if token has expired
         if (res?.response?.status === 401) {
           logout();
         }
       }
     }
   );
+
 
   return (
     <>
@@ -102,13 +115,14 @@ const SideMenu = ({ showMenu, setShowMenu, isprofile }) => {
           !isprofile && <>
             <article className="flex ">
 
-              <section className="w-[96%] md:[90%] flex items-start justify-end ">
-                <div onClick={() => navigate("/profile")} className="w-14 h-14 md:w-16 md:h-16 border-2  border-black rounded-full flex items-center justify-center font-bold">
+              <section className="w-[96%] md:[90%] flex  items-start justify-end ">
+                <div onClick={() => navigate("/profile")} className="w-14 h-14 md:w-16 md:h-16 border-2 rounded-full border-black  flex flex-col items-center justify-center font-bold">
                   <img className="w-12 h-12 md:w-14 md:h-14  border rounded-full" src={user.profile_image ? user.profile_image : Avatar} alt="profile" />
                 </div>
                 <div className="border-b-2 border-black pb-2 w-4/5 md:[90%]">
                   <div className="flex justify-between items-center w-full">
-                    <h5 className="text-left font-bold text-black text-base md:text-[1.2rem] ml-2">{user.username}</h5>
+                    <h5 className="text-left font-bold text-black text-base md:text-[1.2rem] ml-2">{user.username} ({badgeData && badgeData.name[LANG[lang]]})</h5>
+
                   </div>
                   <div className="text-xs flex justify-between sidemenu-wrapper">
                     <p className="text-left ml-2">
@@ -127,20 +141,22 @@ const SideMenu = ({ showMenu, setShowMenu, isprofile }) => {
               </div>
             </article>
 
-            <section className="w-[60%] ml-[20%] flex items-center justify-center font-bold text-xs sidemenu-wrapper">
-              <div className="w-[33.33%] flex justify-center items-center gap-2">
+            <section className="w-full flex items-center justify-center font-bold text-xs sidemenu-wrapper">
+
+
+              <div className="w-1/4 flex justify-center items-center gap-2">
                 <h5>
                   {Localization["Wins"][lang]} -
                 </h5>
                 <p>{historyData?.data?.data?.data?.wins}</p>
               </div>
-              <div className="w-[33.33%] flex justify-center items-center gap-2">
+              <div className="w-1/4 flex justify-center items-center gap-2">
                 <h5>
                   {Localization["Draw"][lang]} -
                 </h5>
                 <p>{historyData?.data?.data?.data?.draw}</p>
               </div>
-              <div className="w-[33.33%] flex justify-center items-center gap-2">
+              <div className="w-1/4 flex justify-center items-center gap-2">
                 <h5>
                   {Localization["Loss"][lang]} -
                 </h5>
