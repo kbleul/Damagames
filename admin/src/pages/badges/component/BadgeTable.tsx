@@ -29,7 +29,7 @@ const BadgeTable = ({ badges, setIsUpdated }: Props) => {
     Accept: "application/json",
     Authorization: `Bearer ${token}`,
   };
-
+  console.log("test two");
   const deleteBadgeMutation = useMutation(
     async (id: string) =>
       await axios.delete(
@@ -120,6 +120,17 @@ const BadgeTable = ({ badges, setIsUpdated }: Props) => {
       },
     },
     {
+      field: "color",
+      headerName: "Color",
+      width: 90,
+      sortable: false,
+      filterable: false,
+      headerClassName: "super-app-theme--header",
+      renderCell: (params: GridCellParams) => {
+        return <p>{params.row.color}</p>;
+      },
+    },
+    {
       field: "item",
       headerName: "Image",
       sortable: false,
@@ -127,11 +138,14 @@ const BadgeTable = ({ badges, setIsUpdated }: Props) => {
       width: 100,
       renderCell: (params: GridCellParams) => {
         return (
-          <img
-            src={params.row.badge_image}
-            alt=""
-            className="h-11 w-11 rounded-sm object-cover"
-          />
+          params.row.badge_image &&
+          params.row.badge_image !== "" && (
+            <img
+              src={params.row.badge_image}
+              alt=""
+              className="h-11 w-11 rounded-sm object-cover"
+            />
+          )
         );
       },
     },

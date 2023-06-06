@@ -12,6 +12,17 @@ import { PulseLoader } from "react-spinners";
 // import ReactQuill from "react-quill";
 // import "react-quill/dist/quill.snow.css";
 import { MdDelete } from "react-icons/md";
+
+interface InitialValues {
+  name: string | undefined;
+  nameAm: string | undefined;
+  item: undefined;
+  price: string | undefined;
+  nickname: string | undefined;
+  history: any[];
+  [key: string]: string | undefined | any[];
+}
+
 const EditAvater = () => {
   const { id } = useParams();
   const { token } = useAuth();
@@ -49,27 +60,34 @@ const EditAvater = () => {
       refetchOnWindowFocus: false,
       retry: false,
       enabled: !!token,
-      onSuccess: (res) => {
-      },
+      onSuccess: (res) => {},
     }
   );
-  const initialValues = {
+  const initialValues: InitialValues = {
     name: storeData?.data?.data?.data?.item_name?.english as string,
     nameAm: storeData?.data?.data?.data?.item_name?.amharic as string,
     item: undefined,
     price: storeData?.data?.data?.data?.price as string,
     nickname: storeData?.data?.data?.data?.nickname as string,
-    history:storeData?.data?.data?.data?.history?.length > 0 ? 
-    [...storeData?.data?.data?.data?.history]: [],
-    // [
-    //   {
-    //     historyAmharic: "",
-    //     historyEnglish: "",
-    //     image: undefined,
-    //   },
-    // ],
+    history:
+      storeData?.data?.data?.data?.history?.length > 0
+        ? [...storeData?.data?.data?.data?.history]
+        : [],
   };
 
+  if (
+    storeData?.data?.data?.data?.history &&
+    storeData?.data?.data?.data?.history?.length > 0
+  ) {
+    storeData?.data?.data?.data?.history.forEach((item: any, index: number) => {
+      initialValues[`history.${index}.historyAmharic`] =
+        item?.history?.amharic && item?.history?.amharic;
+      initialValues[`history.${index}.historyEnglish`] =
+        item?.history?.english && item?.history?.english;
+    });
+  }
+
+  console.log("initialValues");
   //POST CREATE IN HOUSE PRODUCT
   const createAvaterHistoryMutation = useMutation(
     async (newData: any) =>
@@ -93,7 +111,7 @@ const EditAvater = () => {
           price: values.price,
           type: "Avatar",
           item: values.item && values.item,
-          nickname: values.nickname,
+          nickname: values.nickname && values.item,
           history: values.history,
         },
         {
@@ -216,10 +234,6 @@ const EditAvater = () => {
                               name={`history.${index}.historyAmharic`}
                               className="w-full p-[6px] h-28 focus:ring-2 ring-blue-500 rounded-sm border border-gray-300 focus:outline-none ring-0"
                             />
-                            <ErrorMessage
-                              name={`history.${index}.historyAmharic`}
-                              className="text-[13px] font-medium capitalize text-red-500"
-                            />
                           </div>
                           <div className="flex flex-col items-start w-full">
                             <span className="font-medium text-xs text-gray-color capitalize ">
@@ -229,11 +243,6 @@ const EditAvater = () => {
                               as={"textarea"}
                               name={`history.${index}.historyEnglish`}
                               className="w-full p-[6px] h-28 focus:ring-2 ring-blue-500 rounded-sm border border-gray-300 focus:outline-none ring-0"
-                            />
-                            <ErrorMessage
-                              component={"div"}
-                              name={`history.${index}.historyEnglish`}
-                              className="text-[13px] font-medium capitalize text-red-500"
                             />
                           </div>
                           <div className="flex flex-col items-start w-full">
@@ -250,10 +259,6 @@ const EditAvater = () => {
                                 )
                               }
                               className="w-full p-[6px]  focus:ring-2 ring-blue-500 rounded-sm border border-gray-300 focus:outline-none ring-0"
-                            />
-                            <ErrorMessage
-                              name={`history.${index}.image`}
-                              className="text-[13px] font-medium capitalize text-red-500"
                             />
                           </div>
                           {index > 0 && (

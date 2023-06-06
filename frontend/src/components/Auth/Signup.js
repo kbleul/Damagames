@@ -459,7 +459,7 @@ const Signup = () => {
           )}
         </div>
       </div>
-
+      <Footer />
       <Toaster />
     </article>
   );

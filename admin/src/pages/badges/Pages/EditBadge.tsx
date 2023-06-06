@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../context/Auth";
 
-import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -23,6 +23,7 @@ const EditBadge = () => {
     nameEng: Yup.string().required("English name is required"),
     nameAmh: Yup.string().required("Amharic name is required"),
     point: Yup.string().required("Point is required"),
+    color: Yup.string().required("Color is required"),
     descEng: Yup.mixed().required("English description is required"),
     descAmh: Yup.mixed().required("Amharic description is required"),
   });
@@ -52,6 +53,7 @@ const EditBadge = () => {
     descEng: badgeData?.data?.data?.data?.description?.english as string,
     badge_image: undefined,
     point: badgeData?.data?.data?.data?.point as string,
+    color: badgeData?.data?.data?.data?.color as string,
   };
 
   //POST CREATE IN HOUSE PRODUCT
@@ -79,6 +81,7 @@ const EditBadge = () => {
           descriptionEnglish: values.descEng,
           badge_image: values.badge_image && values.badge_image,
           point: values.point,
+          color: values.color,
           _method: "PATCH",
         },
         {
@@ -169,6 +172,17 @@ const EditBadge = () => {
 
               <div className="w-full flex flex-col items-start space-y-1">
                 <span className="font-medium text-xs text-gray-color capitalize ">
+                  Color
+                </span>
+                <Field
+                  as={"input"}
+                  name="color"
+                  className="w-full p-[6px]  focus:ring-2 ring-blue-500 rounded-sm border border-gray-300 focus:outline-none ring-0"
+                />
+              </div>
+
+              <div className="w-full flex flex-col items-start space-y-1">
+                <span className="font-medium text-xs text-gray-color capitalize ">
                   Point
                 </span>
                 <Field
@@ -186,11 +200,14 @@ const EditBadge = () => {
                   Image
                 </span>
                 <div className="w-full flex justify-center items-center gap-8">
-                  <img
-                    className="ml-16 w-16 h-16"
-                    src={badgeData?.data?.data?.data?.badge_image}
-                    alt=""
-                  />
+                  {badgeData?.data?.data?.data?.badge_image &&
+                    badgeData?.data?.data?.data?.badge_image !== "" && (
+                      <img
+                        className="ml-16 w-16 h-16"
+                        src={badgeData?.data?.data?.data?.badge_image}
+                        alt=""
+                      />
+                    )}
                   <input
                     type={"file"}
                     name={`badge_image`}

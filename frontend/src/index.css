@@ -32,45 +32,6 @@
   color: black;
 }
 
-.score-box {
-  border-width: 6px;
-  border-top-style: solid;
-  border-image: linear-gradient(to right, black, #b03806) 1;
-  border-left: none;
-  border-right: none;
-  border-bottom: none;
-}
-
-.score-box-bottom {
-  border-width: 6px;
-  border-top-style: solid;
-  border-image: linear-gradient(to left, black, #b03806) 1;
-  border-left: none;
-  border-right: none;
-  border-bottom: none;
-}
-
-.history-sec h1,
-.history-sec h2,
-.history-sec h4,
-.history-sec h5 {
-  font-size: large;
-  font-weight: bold;
-  padding: 1rem 0;
-  text-align: left;
-  width: 100%;
-}
-
-.history-sec h3 {
-  color: #222222;
-}
-
-.history-sec p {
-  color: #8b8b8a;
-  padding-bottom: 1rem;
-  text-align: left;
-}
-
 @media screen and (max-width: 420px) {
   .sidemenu-wrapper {
     font-size: 0.6rem;

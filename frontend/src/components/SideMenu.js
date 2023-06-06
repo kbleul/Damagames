@@ -6,18 +6,12 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import Avatar from "../assets/Avatar.png"
 import { Localization } from "../utils/language";
-import { assignBadgeToUser } from "../utils/utilFunc";
-import { useState } from "react";
-import BadgeHistory from "../Scoreboard/BadgeHistory";
 
 
 
 const SideMenu = ({ showMenu, setShowMenu, isprofile }) => {
   const navigate = useNavigate();
   const { user, token, logout, lang } = useAuth();
-
-  const [badge, setBadge] = useState(null);
-  const [isBadgeHistoryOpen, setIsBadgeHistoryOpen] = useState(false);
 
 
   const headers = {
@@ -73,33 +67,6 @@ const SideMenu = ({ showMenu, setShowMenu, isprofile }) => {
     }
   );
 
-  const getAllBadges = useQuery(
-    ["getAllBadgesApi"],
-    async () =>
-      await axios.get(`${process.env.REACT_APP_BACKEND_URL}get-badges`, {
-        headers,
-      }),
-    {
-      keepPreviousData: true,
-      refetchOnWindowFocus: false,
-      retry: false,
-      onSuccess: (res) => {
-        let tempArr = res.data.data.reverse()
-
-        let url = assignBadgeToUser(user.game_point, tempArr)
-
-        let { name, description } = res.data.data.find(item => item.badge_image === url)
-
-        setBadge({ url, name, desc: description })
-
-        tempArr = url = []
-        name = description = null
-      },
-      enabled: !historyData.isLoading
-    }
-  );
-
-
   return (
     <>
       {user && token && <article className="md:w-4/5 md:ml-[10%] py-4 text-white w-full pb-2 rounded-bl-3xl" style={{
@@ -135,8 +102,8 @@ const SideMenu = ({ showMenu, setShowMenu, isprofile }) => {
           !isprofile && <>
             <article className="flex ">
 
-              <section className="w-[96%] md:[90%] flex  items-start justify-end ">
-                <div onClick={() => navigate("/profile")} className="w-14 h-14 md:w-16 md:h-16 border-2 rounded-full border-black  flex flex-col items-center justify-center font-bold">
+              <section className="w-[96%] md:[90%] flex items-start justify-end ">
+                <div onClick={() => navigate("/profile")} className="w-14 h-14 md:w-16 md:h-16 border-2  border-black rounded-full flex items-center justify-center font-bold">
                   <img className="w-12 h-12 md:w-14 md:h-14  border rounded-full" src={user.profile_image ? user.profile_image : Avatar} alt="profile" />
                 </div>
                 <div className="border-b-2 border-black pb-2 w-4/5 md:[90%]">
@@ -160,25 +127,20 @@ const SideMenu = ({ showMenu, setShowMenu, isprofile }) => {
               </div>
             </article>
 
-            <section className="w-full flex items-center justify-center font-bold text-xs sidemenu-wrapper">
-              {badge && badge.url && <div className="w-[15%] ml-[10%] flex justify-end"
-                onClick={() => setIsBadgeHistoryOpen(true)}>
-                <img className="w-8 h-8 md:w-14 md:h-14  border rounded-full" src={badge.url} alt="profile" />
-              </div>}
-
-              <div className="w-1/4 flex justify-center items-center gap-2">
+            <section className="w-[60%] ml-[20%] flex items-center justify-center font-bold text-xs sidemenu-wrapper">
+              <div className="w-[33.33%] flex justify-center items-center gap-2">
                 <h5>
                   {Localization["Wins"][lang]} -
                 </h5>
                 <p>{historyData?.data?.data?.data?.wins}</p>
               </div>
-              <div className="w-1/4 flex justify-center items-center gap-2">
+              <div className="w-[33.33%] flex justify-center items-center gap-2">
                 <h5>
                   {Localization["Draw"][lang]} -
                 </h5>
                 <p>{historyData?.data?.data?.data?.draw}</p>
               </div>
-              <div className="w-1/4 flex justify-center items-center gap-2">
+              <div className="w-[33.33%] flex justify-center items-center gap-2">
                 <h5>
                   {Localization["Loss"][lang]} -
                 </h5>
@@ -189,8 +151,6 @@ const SideMenu = ({ showMenu, setShowMenu, isprofile }) => {
         }
 
       </article>}
-
-      {badge && <BadgeHistory isBadgeHistoryOpen={isBadgeHistoryOpen} setIsBadgeHistoryOpen={setIsBadgeHistoryOpen} badge={badge} />}
 
     </>
   );

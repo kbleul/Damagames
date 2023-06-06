@@ -73,7 +73,7 @@ const CreateAvater = () => {
           price: values.price,
           type: "Avatar",
           item: values.item,
-          nickname: values.nickname,
+          nickname: values.nickname && values.nickname,
           history: values.history,
         },
         {

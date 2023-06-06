@@ -231,6 +231,7 @@ const Login = () => {
         </p>
       </div>
     </main>
+    <Footer />
 
   </>
   );

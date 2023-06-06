@@ -125,14 +125,6 @@ export const Localization = {
         AMH: "አጋራ",
         ENG: "Share"
     },
-    "You": {
-        AMH: "እርሶ",
-        ENG: "You"
-    },
-    "Show Hint": {
-        AMH: "ፍንጭ አሳይ",
-        ENG: "Show Hint"
-    },
     "you are about to": {
         AMH: "ይህን ጨዋታ ለቀዉ ሊሄዱ ነው ።",
         ENG: "You are about to leave this game !"
@@ -461,14 +453,6 @@ export const Localization = {
         AMH: "ውጣ",
         ENG: "Exit"
     },
-    "Next": {
-        AMH: "ቀጣይ",
-        ENG: "Next"
-    },
-    "Done": {
-        AMH: "አጠናቅ",
-        ENG: "Done"
-    },
     "Leave": {
         AMH: "ውጣ",
         ENG: "Leave"
@@ -657,40 +641,6 @@ export const Localization = {
         AMH: "ተጋጣሚዎ አስኪቀላቀል በመጠበቅ ላይ ",
         ENG: "Waiting for someone to join your game."
     },
-    "Undo": {
-        AMH: "መመለስ",
-        ENG: "Undo"
-    },
-    "Redo": {
-        AMH: "ወደፊት",
-        ENG: "Redo"
-    },
-    "Undo limit reached.": {
-        AMH: "መመለስ ገደብ ላይ ደርሷል። ተጨማሪ እንቅስቃሴዎችን መመለስ አይችሉም።",
-        ENG: "Undo limit reached. You cannot undo any more moves!"
-    },
-    "resume computer turn ?": {
-        AMH: "የኮምፒተር ዙር",
-        ENG: "resume computer turn ?"
-    },
-    "Resume": {
-        AMH: "  ይቀጥል",
-        ENG: "  Resume"
-    },
-    "top": {
-        AMH: "ከፍተኛ",
-        ENG: "Top"
-    },
-    "leaders": {
-        AMH: "መሪዎች",
-        ENG: "Leaders"
-    },
-    "View History": {
-        AMH: "ታሪኩን ይመልከቱ",
-        ENG: "View History"
-    },
-
-
 
 
 
