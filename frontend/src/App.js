@@ -37,6 +37,8 @@ const Game = React.lazy(() => import("./Game/Game"));
 const Store = React.lazy(() => import("./components/Store/Store"));
 const ErrorPage = React.lazy(() => import("./components/ErrorPage"));
 const PrivacyPolicy = React.lazy(() => import("./components/PrivacyPolicy"));
+const AvatarHistory = React.lazy(() => import("./components/Store/AvatarHistory"))
+
 
 
 const App = () => {
@@ -78,6 +80,7 @@ const App = () => {
           <Route path="/join-public" element={<PublicGames />} />
           <Route path="/new-game-public" element={<NewGamePublic />} />
           <Route path="/store" element={<Store />} />
+          <Route path="/avatar-history/:id" element={<AvatarHistory />} />
           <Route path="/payment/success" element={<Success />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="*" element={<CreateGame />} />
@@ -106,6 +109,7 @@ const App = () => {
           <Route path="/join-public" element={<PublicGames />} />
           <Route path="/new-game-public" element={<NewGamePublic />} />
           <Route path="/store" element={<Store />} />
+          <Route path="/avatar-history/:id" element={<AvatarHistory />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="*" element={<Navigate to="/create-game" />} />
         </Routes>

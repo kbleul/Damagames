@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ChangePassword from "./ChangePassword";
 import ChangeUsername from "./ChangeUsername";
 
@@ -17,12 +17,9 @@ import ForgotPassword from "./ForgotPassword";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { Localization } from "../../utils/language";
+import { LANG } from "../../utils/data"
+import { assignBadgeToUser } from "../../utils/utilFunc";
 
-
-const LANG = {
-  "AMH": "አማርኛ",
-  "ENG": "English",
-}
 
 const Profile = () => {
   const [changePasswordModal, setChangePasswordModal] = useState(false);
@@ -39,8 +36,17 @@ const Profile = () => {
   const [showChangeCrownModal, setShowChangeCrownModal] = useState(false);
   const [showLangMenu, setShowLangMenu] = useState(false);
 
+  const [badgeData, setBadgeData] = useState(null);
+
+  const [isBadgeHistoryOpen, setIsBadgeHistoryOpen] = useState(false);
+
+
+
   const { user, token, lang, setLanguage } = useAuth();
   const navigate = useNavigate();
+
+
+  const LANGs = { "AMH": "amharic", "ENG": "english" }
 
   const headers = {
     "Content-Type": "application/json",
@@ -75,9 +81,30 @@ const Profile = () => {
     }
   );
 
-  const handleLangChange = (e) => {
-    if (e.target.value !== "") { localStorage.setItem("lang", e.target.value) }
-  }
+  const getAllBadges = useQuery(
+    ["getAllBadgesApi"],
+    async () =>
+      await axios.get(`${process.env.REACT_APP_BACKEND_URL}get-badges`, {
+        headers,
+      }),
+    {
+      keepPreviousData: true,
+      refetchOnWindowFocus: false,
+      retry: false,
+      onSuccess: (res) => {
+        let tempArr = res.data.data.reverse()
+
+        let data = assignBadgeToUser(user.game_point, tempArr)
+
+        let badge = res.data.data.find(item => item.id === data.id)
+        setBadgeData(badge)
+
+        tempArr = data = badge = []
+
+      },
+      enabled: !myItemsFetch.isLoading
+    }
+  );
 
 
   const langMutation = useMutation(
@@ -93,9 +120,9 @@ const Profile = () => {
       retry: false,
     }
   );
+
   const langMutationSubmitHandler = async (values) => {
     try {
-      console.log(values)
       langMutation.mutate(
         { language: values },
         {
@@ -112,9 +139,9 @@ const Profile = () => {
 
   const saveLang = (pref) => {
     setLanguage(pref);
-
     langMutationSubmitHandler(pref)
   }
+
 
   return (
     <article className="relative">
@@ -138,8 +165,8 @@ const Profile = () => {
         </svg>
       </button>
       <div className="mt-16">
-        <div className="flex flex-col items-center space-y-2  ml-[5%]">
-          <div className="flex items-center justify-end space-x-4">
+        <div className="flex flex-col items-center space-y-2">
+          <div className="flex items-center justify-end">
             <div className="relative flex items-center justify-center">
               <img
                 src={
@@ -157,9 +184,11 @@ const Profile = () => {
               >
                 <AiFillCamera size={20} />
               </button>
+
             </div>
           </div>
         </div>
+
 
         <ChangePassword
           changePasswordModal={changePasswordModal}
@@ -180,9 +209,19 @@ const Profile = () => {
         />
       </div>
 
-      <article className="text-white mt-16 flex flex-col gap-y-4 items-center justify-center">
+      <article className="text-white mt-4 flex flex-col gap-y-4 items-center justify-center">
+
+        {badgeData && <section className="w-1/2 md:max-w-[600px] mb-12 mt-2 flex flex-col items-center justify-center">
+
+          <div className=''>
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 32 32" fill="red"><path fill={badgeData?.color} d="m23 2l1.593 3L28 5.414l-2.5 2.253L26 11l-3-1.875L20 11l.5-3.333L18 5.414L21.5 5L23 2z" /><path fill={badgeData?.color} d="m22.717 13.249l-1.938-.498a6.994 6.994 0 1 1-5.028-8.531l.499-1.937A8.99 8.99 0 0 0 8 17.69V30l6-4l6 4V17.708a8.963 8.963 0 0 0 2.717-4.459ZM18 26.263l-4-2.667l-4 2.667V19.05a8.924 8.924 0 0 0 8 .006Z" /></svg>
+          </div>
+          <p className=" font-mono uppercase tracking-widest">{badgeData.name[LANGs[lang]]}</p>
+
+        </section>}
+
+
         <section className="w-[70%] md:max-w-[600px] ">
-          {/* <p className="text-left text-sm mb-1">Username</p> */}
 
           <div
             onClick={() => setChangeUsernameModal(true)}
@@ -208,7 +247,6 @@ const Profile = () => {
           </div>
         </section>
         <section className="w-[70%] md:max-w-[600px] ">
-          {/* <p className="text-left text-sm mb-1">Password</p> */}
           <div
             onClick={() => setChangePasswordModal(true)}
             className="py-2 border rounded-md border-orange-color text-orange-color text-sm flex gap-2 items-center justify-center "
@@ -239,16 +277,6 @@ const Profile = () => {
           </div>
         </section>
 
-        {/* <section className="w-[70%] md:max-w-[600px] "> */}
-
-        {/* <select onChange={e => handleLangChange(e)} name="pets" id="pet-select" className="text-black py-2 border w-full bg-inherit text-center rounded-md border-orange-color text-orange-color text-sm flex gap-2 items-center justify-center">
-            <option value="">
-              {Localization["Language"][lang]}
-            </option>
-            <option value="Eng">English</option>
-            <option value="Amh">አማርኛ</option>
-          </select>
-        </section> */}
         <div className="flex flex-col w-1/2 text-white w-[70%] md:max-w-[600px]">
 
           <button className="py-2 border rounded-md border-orange-color text-orange-color text-sm flex gap-2 items-center justify-center "
@@ -385,6 +413,9 @@ const Profile = () => {
         showChangeCrownModal={showChangeCrownModal}
         setShowChangeCrownModal={setShowChangeCrownModal}
       />
+
+
+
     </article >
   );
 };
