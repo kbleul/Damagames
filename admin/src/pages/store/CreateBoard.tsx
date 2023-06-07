@@ -89,7 +89,6 @@ const CreateBoard = () => {
         onSuccess: (responseData: any) => {
           //   setIsUpdated((prev) => !prev);
           navigate("/avatars");
-          console.log(responseData);
         },
         onError: (err: any) => {
           console.log(err);

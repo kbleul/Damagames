@@ -23,7 +23,7 @@ import FormControl from '@mui/material/FormControl';
 import { Circles } from "react-loader-spinner";
 import { SORTBY, LANG } from "../utils/data"
 import TopFour from "./TopFour";
-import { sortScoreBoard } from "../utils/utilFunc";
+import { sortScoreBoard, cacheApiResponse } from "../utils/utilFunc";
 
 
 
@@ -177,14 +177,18 @@ const CreateGame = () => {
       onSuccess: (res) => {
         let sortedArr = sortScoreBoard(SORTBY.PERSON, res.data.data)
 
+        cacheApiResponse("TopFour", sortedArr)
         setTopFour(sortedArr)
 
         sortedArr = []
         setIsLoading(false)
       },
-      enabled: true
+      enabled: localStorage.getItem("TopFour") ? false : true,
     }
   );
+
+
+
 
   const getAllBadges = useQuery(
     ["getAllBadgesApi"],
@@ -198,17 +202,27 @@ const CreateGame = () => {
       retry: false,
       onSuccess: (res) => {
         let tempArr = res.data.data.reverse()
+
+
         setAllBadges(tempArr)
+        cacheApiResponse("BadgesAll", tempArr)
 
         tempArr = []
       },
-      enabled: !isLoading
+      enabled: (!isLoading && !localStorage.getItem("BadgesAll")) ? true : false,
     }
   );
 
 
   useEffect(() => {
     localStorage.removeItem("isNotPublic");
+
+    //get cached items
+    if (localStorage.getItem("TopFour")) {
+      setTopFour(JSON.parse(localStorage.getItem("TopFour")))
+      setAllBadges(JSON.parse(localStorage.getItem("BadgesAll")))
+      setIsLoading(false)
+    }
   }, [])
 
   useEffect(() => {

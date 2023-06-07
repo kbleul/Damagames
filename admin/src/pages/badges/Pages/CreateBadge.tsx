@@ -67,7 +67,6 @@ const CreateAvater = () => {
             navigate(-1);
           },
           onError: (err: any) => {
-            console.log(err);
             alert(err?.response?.data?.data);
           },
         }

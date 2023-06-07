@@ -1,4 +1,5 @@
 import React, { useEffect, Suspense } from "react";
+import { clearCacheApiData } from "./utils/utilFunc"
 import { useHome } from "./context/HomeContext";
 import { useAuth } from "./context/auth";
 import TagManager from "react-gtm-module";
@@ -49,7 +50,16 @@ const App = () => {
 
   useEffect(() => {
     TagManager.initialize(tagManagerArgs);
+
+    window.addEventListener('beforeunload', clearCacheApiData);
+
+    return () => {
+      // Remove event listener when component unmounts
+      window.removeEventListener('beforeunload', clearCacheApiData);
+    };
+
   }, []);
+
 
   useEffect(() => {
     socket.on("connect", () => {

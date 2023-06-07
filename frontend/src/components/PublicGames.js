@@ -122,7 +122,6 @@ const PubicGames = () => {
 
 
           setTimeout(() => {
-            console.log({ isMessageListened })
 
             !isMessageListened && socket.emit("sendMessage", {
               status: "started",

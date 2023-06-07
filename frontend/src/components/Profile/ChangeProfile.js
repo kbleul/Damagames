@@ -154,10 +154,6 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
     }
   );
 
-  useEffect(() => {
-    console.log(selectedItem)
-  }, [selectedItem])
-
 
   return (
     <>
@@ -268,7 +264,6 @@ const ChangeProfile = ({ changeProfileModal, setChangeProfileModal }) => {
                             key={i + 3}
                             className="relative"
                             onClick={() => {
-                              console.log(avatar)
                               if (!avatar.price || parseInt(user.coin) >= avatar.price) {
                                 setSelected(i + 3);
                                 setSelectedItem({ id: avatar.id, img: avatar.item })

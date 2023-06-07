@@ -17,6 +17,9 @@ import StoreItemView from "./StoreItemViewModal";
 import LoginPromptModal from "./LoginPromptModal";
 import { Localization } from "../../utils/language";
 
+const LANG = { "AMH": "amharic", "ENG": "english" }
+
+
 const Store = () => {
   const navigate = useNavigate();
   const { token, lang } = useAuth();
@@ -36,6 +39,8 @@ const Store = () => {
   const [myCrownsId, setMyCrownsId] = useState([]);
 
   const [viewAll, setViewAll] = useState(false);
+
+
 
 
   function classNames(...classes) {
@@ -62,17 +67,25 @@ const Store = () => {
       keepPreviousData: true,
       refetchOnWindowFocus: false,
       retry: false,
-      enabled: token ? !itemIsLoading : false,
+      enabled: (token && !itemIsLoading && !localStorage.getItem("MyStoreItems")) ? true : false,
       onSuccess: (res) => {
+        let cacheDate = { avatars: [], boards: [], crowns: [] }
+
         for (const [, value] of Object.entries(res.data.data.avatars)) {
           setMyAvatarsId((prev) => [...prev, value.id]);
+          cacheDate.avatars = [...cacheDate.avatars, value.id]
         }
         for (const [, value] of Object.entries(res.data.data.boards)) {
           setMyBoardsId((prev) => [...prev, value.id]);
+          cacheDate.boards = [...cacheDate.boards, value.id]
         }
         for (const [, value] of Object.entries(res.data.data.crowns)) {
           setMyCrownsId((prev) => [...prev, value.id]);
+          cacheDate.crowns = [...cacheDate.crowns, value.id]
         }
+
+        localStorage.setItem('MyStoreItems', JSON.stringify({ ...cacheDate }))
+        cacheDate = ""
       },
       onError: (err) => { },
     }
@@ -92,13 +105,30 @@ const Store = () => {
       onSuccess: (res) => {
         setStoreItems(res.data.data);
         setItemIsLoading(false);
+
+        localStorage.setItem('StoreItems', JSON.stringify(res?.data?.data));
       },
       onError: (err) => {
         setItemIsLoading(false);
         setitemsError(true);
       },
+      enabled: localStorage.getItem('StoreItems') ? false : true,
     }
   );
+
+  useEffect(() => {
+    if (localStorage.getItem('StoreItems')) {
+      setStoreItems(JSON.parse(localStorage.getItem('StoreItems')))
+      setItemIsLoading(false);
+    }
+
+    if (localStorage.getItem('MyStoreItems')) {
+      setMyAvatarsId(JSON.parse(localStorage.getItem('MyStoreItems'))?.avatars)
+      setMyBoardsId(JSON.parse(localStorage.getItem('MyStoreItems'))?.boards)
+      setMyCrownsId(JSON.parse(localStorage.getItem('MyStoreItems'))?.crowns)
+    }
+  }, [])
+
 
   return (
 
@@ -293,7 +323,7 @@ const Avatar = ({
         <img src={avatar.item} alt="" />
       </section>
       <section className="w-[60%] text-sm md:text-lg text-left mr-4 py-2 text-white border-r-2 border-orange-color">
-        <p className="">{avatar.name}</p>
+        <p className="">{avatar.item_name[LANG[lang]]}</p>
 
       </section>
       {user && token && myAvatarsId.includes(avatar.id) ?

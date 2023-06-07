@@ -8,7 +8,10 @@ interface Props {
   isEditCoinModalOpen: boolean;
   setIsEditCoinModalOpen: (isEditCoinModalOpen: boolean) => void;
 }
-const EditCoinForm = ({ setIsEditCoinModalOpen ,isEditCoinModalOpen}: Props) => {
+const EditCoinForm = ({
+  setIsEditCoinModalOpen,
+  isEditCoinModalOpen,
+}: Props) => {
   const { token } = useAuth();
   const [error, setError] = useState<string>("");
   const newUserCoinRef = useRef<HTMLInputElement>(null);
@@ -23,7 +26,7 @@ const EditCoinForm = ({ setIsEditCoinModalOpen ,isEditCoinModalOpen}: Props) => 
   };
 
   const coinsData = useQuery(
-    ["editCoinsDataApi",isEditCoinModalOpen],
+    ["editCoinsDataApi", isEditCoinModalOpen],
     async () =>
       await axios.get(
         `${process.env.REACT_APP_BACKEND_URL}admin/coin-settings`,
@@ -39,11 +42,12 @@ const EditCoinForm = ({ setIsEditCoinModalOpen ,isEditCoinModalOpen}: Props) => 
       onSuccess: (res) => {},
     }
   );
-  console.log(coinsData?.data?.data?.data);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     editCoinSettingMutationHandler();
   };
+
   const editCoinMutation = useMutation(
     async (newData: any) =>
       await axios.patch(
@@ -70,17 +74,14 @@ const EditCoinForm = ({ setIsEditCoinModalOpen ,isEditCoinModalOpen}: Props) => 
         formData.append("winnerCoins", winnerCoinRef.current?.value);
       editCoinMutation.mutate(formData, {
         onSuccess: (responseData: any) => {
-          console.log(responseData);
           setIsEditCoinModalOpen(false);
           setError("");
         },
         onError: (err: any) => {
           setError("Oops! Some error occurred.");
-          console.log(err);
         },
       });
     } catch (err) {
-      console.log(err);
       setError("Oops! Some error occurred.");
     }
   };

@@ -462,8 +462,6 @@ const Game = () => {
         false
       );
 
-      console.log(clickedSquare.isKing)
-
       setGameState({
         ...gameState,
         activePiece: coordinates,
@@ -504,9 +502,8 @@ const Game = () => {
 
   //computer turn
   function computerTurn(newMoveState, piece = null) {
-    //  console.log(newMoveState);
+
     setTimeout(() => {
-      // const currentState = getCurrentState();
       const boardState = newMoveState.boardState;
       let computerMove;
       let moveTo;

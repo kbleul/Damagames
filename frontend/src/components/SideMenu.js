@@ -7,13 +7,15 @@ import { useQuery } from "@tanstack/react-query";
 import Avatar from "../assets/Avatar.png"
 import { Localization } from "../utils/language";
 import { assignBadgeToUser } from "../utils/utilFunc";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const SideMenu = ({ showMenu, setShowMenu, isprofile, badges }) => {
   const navigate = useNavigate();
   const { user, token, logout, lang } = useAuth();
 
   const [badgeData, setBadgeData] = useState(null);
+  const [matchHistory, setMatchHistory] = useState(null);
+
   const LANG = { "AMH": "amharic", "ENG": "english" }
 
 
@@ -62,12 +64,15 @@ const SideMenu = ({ showMenu, setShowMenu, isprofile, badges }) => {
       keepPreviousData: true,
       refetchOnWindowFocus: false,
       retry: false,
-      enabled: !!token,
       onSuccess: (responseData) => {
+
+        setMatchHistory(responseData?.data?.data);
         let data = assignBadgeToUser(user?.game_point, badges)
         let badge = badges.find(item => item.id === data.id)
 
         setBadgeData(badge)
+
+        localStorage.setItem("MatchHistory", JSON.stringify(responseData?.data?.data))
         data = badge = []
       },
       onError: (res) => {
@@ -75,10 +80,22 @@ const SideMenu = ({ showMenu, setShowMenu, isprofile, badges }) => {
         if (res?.response?.status === 401) {
           logout();
         }
-      }
+      },
+      enabled: (token && !localStorage.getItem("MatchHistory")) ? true : false
     }
   );
 
+  useEffect(() => {
+    if (token && localStorage.getItem("MatchHistory")) {
+      setMatchHistory(JSON.parse(localStorage.getItem("MatchHistory")))
+
+      let data = assignBadgeToUser(user?.game_point, badges)
+      let badge = badges.find(item => item.id === data.id)
+
+      setBadgeData(badge)
+
+    }
+  }, [])
 
   return (
     <>
@@ -128,9 +145,9 @@ const SideMenu = ({ showMenu, setShowMenu, isprofile, badges }) => {
                     <p className="text-left ml-2">
                       {Localization["Coins earned"][lang]} : {user.coin}
                     </p>
-                    <p className="mr-2">
-                      {Localization["Games played"][lang]} - {historyData?.data?.data?.data?.played}
-                    </p>
+                    {matchHistory && <p className="mr-2">
+                      {Localization["Games played"][lang]} - {matchHistory?.played}
+                    </p>}
                   </div>
 
                 </div>
@@ -141,28 +158,28 @@ const SideMenu = ({ showMenu, setShowMenu, isprofile, badges }) => {
               </div>
             </article>
 
-            <section className="w-full flex items-center justify-center font-bold text-xs sidemenu-wrapper">
+            {matchHistory && <section className="w-full flex items-center justify-center font-bold text-xs sidemenu-wrapper">
 
 
               <div className="w-1/4 flex justify-center items-center gap-2">
                 <h5>
                   {Localization["Wins"][lang]} -
                 </h5>
-                <p>{historyData?.data?.data?.data?.wins}</p>
+                <p>{matchHistory?.wins}</p>
               </div>
               <div className="w-1/4 flex justify-center items-center gap-2">
                 <h5>
                   {Localization["Draw"][lang]} -
                 </h5>
-                <p>{historyData?.data?.data?.data?.draw}</p>
+                <p>{matchHistory?.draw}</p>
               </div>
               <div className="w-1/4 flex justify-center items-center gap-2">
                 <h5>
                   {Localization["Loss"][lang]} -
                 </h5>
-                <p>{historyData?.data?.data?.data?.losses}</p>
+                <p>{matchHistory?.losses}</p>
               </div>
-            </section>
+            </section>}
           </>
         }
 

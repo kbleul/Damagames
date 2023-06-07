@@ -689,6 +689,14 @@ export const Localization = {
         AMH: "ታሪኩን ይመልከቱ",
         ENG: "View History"
     },
+    "Ethiopian": {
+        AMH: "የኢትዮጵያ",
+        ENG: "Ethiopian"
+    },
+    "Heros": {
+        AMH: "ጀግኖች",
+        ENG: "Heros"
+    },
 
 
 

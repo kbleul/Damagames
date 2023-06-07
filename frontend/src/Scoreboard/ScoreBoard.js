@@ -3,10 +3,10 @@ import Score from "./Score";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Circles } from "react-loader-spinner";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { SORTBY } from "../utils/data"
-import { assignBadgeToUser, sortScoreBoard } from "../utils/utilFunc"
+import { sortScoreBoard } from "../utils/utilFunc"
 
 
 const ScoreBoard = () => {
@@ -32,9 +32,11 @@ const ScoreBoard = () => {
       keepPreviousData: true,
       refetchOnWindowFocus: false,
       retry: false,
-      //   enabled: !!token,
+      enabled: localStorage.getItem("Scores") ? false : true,
       onSuccess: (res) => {
-        setSortedScore(sortScoreBoard(sortBy, res.data.data))
+        let sortedScore = sortScoreBoard(sortBy, res.data.data)
+        setSortedScore(sortedScore)
+        localStorage.setItem("Scores", JSON.stringify(sortedScore))
       },
     }
   );
@@ -54,11 +56,24 @@ const ScoreBoard = () => {
 
         setBadges(tempArr)
 
+        localStorage.setItem("BadgesAll", JSON.stringify(tempArr))
+
         tempArr = []
       },
-      enabled: !scoreBoardData.isLoading
+      enabled: (!scoreBoardData.isLoading && !localStorage.getItem("BadgesAll")) ? true : false
     }
   );
+
+  useEffect(() => {
+    if (localStorage.getItem("Scores")) {
+      setSortedScore(JSON.parse(localStorage.getItem("Scores")))
+    }
+
+    if (localStorage.getItem("BadgesAll")) {
+      setBadges(JSON.parse(localStorage.getItem("BadgesAll")))
+    }
+  }, [])
+
 
   return (
     <div className="h-[100vh] overflow-y-scroll flex flex-col items-center ">

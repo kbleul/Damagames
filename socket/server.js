@@ -173,7 +173,6 @@ io.on("connection", (socket) => {
 
   //when disconnect
   socket.on("disconnect", () => {
-    console.log("user disconnected");
     Object.keys(rooms).forEach((room) => {
       rooms[room].delete(socket.id);
       if (rooms[room].size === 0) delete rooms[room];

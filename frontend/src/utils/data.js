@@ -27,3 +27,14 @@ export const clearCookie = [
 
 
 
+export const CACHED_DATA = [
+  "TopFour",
+  "BadgesAll",
+  "MatchHistory",
+  "Scores",
+  "StoreItems",
+  "MyStoreItems"
+];
+
+
+

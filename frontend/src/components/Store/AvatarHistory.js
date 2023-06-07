@@ -11,6 +11,7 @@ import { Circles } from "react-loader-spinner";
 import parse from 'html-react-parser';
 import { useAuth } from '../../context/auth';
 import background from "../../assets/backdrop.jpg";
+import { Localization } from '../../utils/language';
 
 
 const AvatarHistory = () => {
@@ -47,7 +48,6 @@ const AvatarHistory = () => {
             retry: false,
             //   enabled: !!token,
             onSuccess: (res) => {
-                console.log({ ...res.data.data, img: res.data.data.item })
                 setDate(res?.data?.data?.history[0]?.history)
                 let tempArr = res.data.data.history
                 tempArr.shift()
@@ -97,8 +97,8 @@ const AvatarHistory = () => {
             {!isLoading && <article className='h-[98vh] overflow-y-scroll'>
                 <article className='mt-12'>
                     <section className='uppercase avarage'>
-                        <p className='text-gray-500 text-sm'>Ethiopian</p>
-                        <h3 className='text-2xl'>Royality</h3>
+                        <p className='text-gray-500 text-sm'>{Localization["Ethiopian"][lang]}</p>
+                        <h3 className='text-2xl'>{Localization["Heros"][lang]}</h3>
                     </section>
                     <section className=' py-2 relative flex justify-center items-start overflow-y-hidden'>
                         <div className='mt-12 bg-orange-bg w-60 h-60 rounded-full'></div>
@@ -118,7 +118,7 @@ const AvatarHistory = () => {
                                 <img className='w-10' src={rect} alt="" />
                             </div>
                             <div className='max-w-[700px] border-l history-sec text-left mb-8 ml-5 px-6 flex flex-col items-center'>
-                                {parse(history.history[LANG[lang]])}
+                                {parse(history.history[LANG[lang]], { color: "white" })}
                                 {history.image &&
                                     <img className="border-4 rounded-xl border-orange-700 w-full max-w-[350px] mt-4" src={history.image} alt="" />}
                             </div>

@@ -87,7 +87,6 @@ const EditAvater = () => {
     });
   }
 
-  console.log("initialValues");
   //POST CREATE IN HOUSE PRODUCT
   const createAvaterHistoryMutation = useMutation(
     async (newData: any) =>
