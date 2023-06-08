@@ -8,15 +8,15 @@ on:
       - "v*-rc[0-9]+"
 
 jobs:
-  fix_issue:
+  check_disk_space:
     runs-on: ubuntu-latest
     steps:
-      - name: Clean up Docker
-        run: docker system prune --force
+      - name: Check disk space
+        run: df -h
 
   build_arc_docs:
     uses: ./.github/workflows/build_arc_docs.yml
-    needs: "fix_issue"
+    needs: "check_disk_space"
 
 
   release:
