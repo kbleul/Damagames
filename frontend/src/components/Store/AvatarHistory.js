@@ -64,6 +64,7 @@ const AvatarHistory = () => {
 
     )
 
+
     return (
         <main className='text-white' style={{
             backgroundImage: `url(${background})`,
