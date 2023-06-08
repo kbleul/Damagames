@@ -8,15 +8,15 @@ on:
       - "v*-rc[0-9]+"
 
 jobs:
-  check_disk_space:
+  check:
     runs-on: ubuntu-latest
     steps:
-      - name: Check disk space
-        run: df -h
-
+      - name: Check Docker containers
+        run: docker container ls -a
+        
   build_arc_docs:
     uses: ./.github/workflows/build_arc_docs.yml
-    needs: "check_disk_space"
+    needs: "check"
 
 
   release:
