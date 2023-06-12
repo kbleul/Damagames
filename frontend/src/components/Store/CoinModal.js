@@ -6,9 +6,10 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useAuth } from "../../context/auth";
 import { MdOutlineCancel } from "react-icons/md";
-import Tele from '../../assets/Tele.png'
+import Tele from '../../assets/TeleNew.jpg'
+import { Localization } from "../../utils/language";
 const CoinModal = ({ isCoinModalOpen, setIsCoinModalOpen }) => {
-  const { token } = useAuth();
+  const { token, lang } = useAuth();
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -68,16 +69,16 @@ const CoinModal = ({ isCoinModalOpen, setIsCoinModalOpen }) => {
       paymentMutation.mutate(
         {
           price: selectedCoin.amountMoney,
+          coin: selectedCoin.coinAmount
         },
         {
           onSuccess: (responseData) => {
             window.open(responseData?.data?.data?.data?.toPayUrl, "_self");
-            // console.log(responseData?.data?.data?.data?.toPayUrl)
           },
-          onError: (err) => {},
+          onError: (err) => { },
         }
       );
-    } catch (err) {}
+    } catch (err) { }
   };
   return (
     <>
@@ -119,7 +120,7 @@ const CoinModal = ({ isCoinModalOpen, setIsCoinModalOpen }) => {
                       as="h3"
                       className="capitalize text-lg font-medium leading-6 text-white text-center"
                     >
-                      select coin
+                      {Localization["Select Coin"][lang]}
                     </Dialog.Title>
                   )}
                   {selectedCoin && (
@@ -150,7 +151,7 @@ const CoinModal = ({ isCoinModalOpen, setIsCoinModalOpen }) => {
                     </button>
                   )}
                   <MdOutlineCancel
-                    onClick={() => {setIsCoinModalOpen(false);setSelectedCoin(null)}}
+                    onClick={() => { setIsCoinModalOpen(false); setSelectedCoin(null) }}
                     className="absolute top-2 right-2 text-orange-color w-6 h-6"
                   />
                   {!selectedCoin ? (
@@ -167,9 +168,12 @@ const CoinModal = ({ isCoinModalOpen, setIsCoinModalOpen }) => {
                                 className="text-orange-color"
                               />
                               <div className="flex flex-col items-items space-y-1  text-white">
-                                <p>{coin.coinAmount} coins</p>
+                                <p>{coin.coinAmount}
+                                  {Localization["coins"][lang]}
+                                </p>
                                 <p className="font-medium text-white">
-                                  {coin.amountMoney} birr
+                                  {coin.amountMoney}
+                                  {Localization["birr"][lang]}
                                 </p>
                               </div>
                             </div>
@@ -182,7 +186,7 @@ const CoinModal = ({ isCoinModalOpen, setIsCoinModalOpen }) => {
                        border-b-[1px] border-gray-400/50 font-semibold text-white
                        "
                           >
-                            Buy
+                            {Localization["Buy"][lang]}
                           </button>
                         </div>
                       ))}
@@ -190,20 +194,19 @@ const CoinModal = ({ isCoinModalOpen, setIsCoinModalOpen }) => {
                   ) : (
                     <div className="flex flex-col items-center space-y-2 mt-4">
                       <div className="flex items-center space-x-2">
-                      {/* <h3 className="text-white font-medium capitalize">
-                          selected coin
-                        </h3> */}
+
                         <h3 className="text-white font-medium capitalize">
-                          <span className="text-orange-color text-3xl font-semibold">{selectedCoin?.coinAmount}</span> coins
+                          <span className="text-orange-color text-3xl font-semibold">{selectedCoin?.coinAmount}</span>
+                          {Localization["coins"][lang]}
                         </h3>
                       </div>
                       <div className="flex items-center space-x-2">
                         <h3 className="text-white font-medium capitalize">
-                          Amount
+                          {Localization["Amount"][lang]}
                         </h3>
                         <h3 className="text-white font-medium capitalize">
-                          {selectedCoin?.amountMoney} birr
-                          
+                          {selectedCoin?.amountMoney}
+                          {Localization["birr"][lang]}
                         </h3>
                       </div>
                       <button
@@ -218,7 +221,9 @@ const CoinModal = ({ isCoinModalOpen, setIsCoinModalOpen }) => {
                       >
                         {paymentMutation.isLoading
                           ? "please wait..."
-                          : <div className="flex items-center space-x-2"><span>Pay with</span>   <img src={Tele} alt="" className="h-8"/></div>}
+                          : <div className="flex items-center space-x-2"><span>
+                            {Localization["Pay with"][lang]}
+                          </span>   <img src={Tele} alt="" className="h-8" /></div>}
                       </button>
                     </div>
                   )}

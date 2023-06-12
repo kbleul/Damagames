@@ -46,6 +46,7 @@ class PlayersController extends Controller
 
     public function join_game(Game $game)
     {
+        // dd($game);
         if ($game->status !== 0) {
             return response()
                 ->json([
@@ -69,12 +70,10 @@ class PlayersController extends Controller
 
     public function join_game_via_code(Request $request)
     {
-        $game = Game::where('code', $request->code)->first();
+
+        $game = Game::where('code', $request->code)->where('status', 0)->first();
 
         // return $game->status == 3;
-        if ($game->status == 3) {
-            abort(400, "This game requires login because it has bet!");
-        }
 
         if (!$game) {
             return response()
@@ -83,6 +82,11 @@ class PlayersController extends Controller
                     'game' => $game,
                 ], 400);
         }
+
+        if ($game->status == 3) {
+            abort(400, "This game requires login because it has bet!");
+        }
+
 
         return response()
             ->json([
@@ -117,5 +121,15 @@ class PlayersController extends Controller
                 'playerTwo' => $user,
                 'ip' => request()->ip(),
             ], 201);
+    }
+
+    public function game_status(Game $game)
+    {
+
+        $game->update([
+            'status' => 2,
+        ]);
+
+        return "success";
     }
 }

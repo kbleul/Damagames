@@ -7,22 +7,7 @@ import { Socket } from "dgram";
 const httpServer = createServer();
 const io = new Server(httpServer, {
   cors: {
-    origin: [
-      "https://dama-game-socketio.vercel.app",
-      "http://172.17.104.252:3000",
-      "http://172.17.104.251:3000",
-      "http://192.168.43.253:3000",
-      "http://172.17.104.250:3000",
-      "http://172.17.104.248:3000",
-      "http://172.17.104.251:3000",
-      "http://172.17.104.246:3000",
-      "https://dama-blue.vercel.app",
-      "https://admin.socket.io",
-      "http://localhost:3000",
-      "http://172.17.104.251:3000",
-      "https://damagames.com",
-      "https://test.damagames.com",
-    ],
+    origin: "*",
     credentials: true,
   },
 });
@@ -66,7 +51,6 @@ console.log(`⚡: Server is live! PORT = ` + 7744);
 
 io.on("connection", (socket) => {
   //user connection
-  console.log("a user connected.");
 
   socket.on("postPublicGame", (data) => {
     publicGames.push({
@@ -105,8 +89,6 @@ io.on("connection", (socket) => {
 
   socket.on("join-room", async (room) => {
     const clients = await io.of("/").in(room).fetchSockets();
-
-    // , { clients, room, id: socket.id }
     let tempSocketObj = roomSocketObj[room];
     if (tempSocketObj && tempSocketObj.includes(socket.id)) {
       io.to(room).emit("samePerson", "You can't join a game you created");
@@ -127,9 +109,13 @@ io.on("connection", (socket) => {
     //send and get messages
 
     socket.on("sendMessage", (data) => {
-      console.log("send")
       io.to(room).emit("getMessage", data);
     });
+
+    socket.on("sendCrownType", (data) => {
+      io.to(room).emit("getCrownType", data);
+    });
+
     socket.on("sendGameMessage", (data) => {
       io.to(room).emit("getGameMessage", data);
       // socket.broadcast.to(room).emit("getGameMessage", data);
@@ -147,6 +133,13 @@ io.on("connection", (socket) => {
       socket
         .to(room)
         .emit("getRejectGameMessage", { data, type: "draw-rejected" });
+    });
+    //new added for reject game requests
+    socket.on("sendRejectDrawGameMessage", (data) => {
+      // io.to(room).emit("getRejectGameMessage", data);
+      socket
+        .to(room)
+        .emit("getRejectDrawGameMessage", { data, type: "New-Game-rejected" });
     });
     //send draw game message
     socket.on("sendDrawGameRequest", (data) => {
@@ -168,14 +161,19 @@ io.on("connection", (socket) => {
     });
   });
 
-  //leave room
   socket.on("leave", (room) => {
+    socket.leave(room);
     if (rooms[room]) {
       rooms[room].delete(socket.id);
+      if (rooms[room].size === 0) {
+        delete rooms[room];
+      }
     }
   });
+
   //when disconnect
   socket.on("disconnect", () => {
+    console.log("user disconnected");
     Object.keys(rooms).forEach((room) => {
       rooms[room].delete(socket.id);
       if (rooms[room].size === 0) delete rooms[room];
@@ -187,7 +185,7 @@ io.on("connection", (socket) => {
 
 instrument(io, {
   auth: false,
-  mode: "production",
+  mode: "development",
 });
 
 const PORT = process.env.PORT || 7744;

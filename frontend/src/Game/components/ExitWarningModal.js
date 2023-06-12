@@ -3,19 +3,66 @@ import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import socket from "../../utils/socket.io";
 import { clearCookie } from "../../utils/data";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { Localization } from "../../utils/language";
+import { useAuth } from "../../context/auth";
 
 export default function ExitWarningModal({
   isExitModalOpen,
   set_isExitModalOpen,
   gameState,
+  beforeGame
 }) {
   const navigate = useNavigate();
+  const gameId = localStorage.getItem("gameId");
+  const { lang } = useAuth();
+
+  const headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json"
+  };
+
+  const exitGameMutation = useMutation(
+    async (newData) =>
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}game-exit/${gameId}`,
+        newData,
+        {
+          headers,
+        }
+      ),
+    {
+      retry: false,
+    }
+  );
+
+  const exitGameMutationSubmitHandler = async (values) => {
+    try {
+      exitGameMutation.mutate(
+        {
+        },
+        {
+          onSuccess: (responseData) => {
+            //console.log(responseData?.data)
+          },
+          onError: (err) => {
+            // console.log(err)
+
+          },
+        }
+      );
+    } catch (err) { }
+  };
+
 
   const handleExit = () => {
     //exit socket code here
-    if (gameState?.players > 1) {
+    if (gameState?.players > 1 || beforeGame) {
+      exitGameMutationSubmitHandler()
       socket.emit("sendExitGameRequest", { status: "Exit" });
     }
+    socket.emit('leave', gameId)
     clearCookie.forEach((data) => {
       localStorage.getItem(data) && localStorage.removeItem(data);
     });
@@ -27,7 +74,7 @@ export default function ExitWarningModal({
       <Transition appear show={isExitModalOpen} as={Fragment}>
         <Dialog
           as="div"
-          className="relative z-10"
+          className="relative z-50"
           onClose={() => set_isExitModalOpen(true)}
         >
           <Transition.Child
@@ -58,13 +105,21 @@ export default function ExitWarningModal({
                     as="h3"
                     className="text-lg font-medium leading-6 text-white text-center"
                   >
-                    You are about to leave this game !
+                    {Localization["you are about to"][lang]}
                   </Dialog.Title>
-                  <div className="mt-2">
+
+
+                  {beforeGame ? <div className="mt-2">
                     <p className="text-sm text-gray-500 text-center ">
-                      Are you sure you want to leave and lose this game ?
+                      {Localization["Are you sure"][lang]}
                     </p>
-                  </div>
+                  </div> :
+                    <div className="mt-2">
+                      <p className="text-sm text-gray-500 text-center ">
+                        {Localization["Are you sure_"][lang]}
+                      </p>
+                    </div>
+                  }
 
                   <div className="mt-4 flex w-full items-center space-x-5 justify-center">
                     <button
@@ -75,9 +130,9 @@ export default function ExitWarningModal({
                        transition-all duration-150 [box-shadow:0_5px_0_0_#026ca4,0_5px_0_0_#026ca4]
                        border-b-[1px] border-gray-300/50 font-semibold text-white
                      "
-                       onClick={handleExit}
+                      onClick={handleExit}
                     >
-                      Yes
+                      {Localization["Yes"][lang]}
                     </button>
                     <button
                       type="button"
@@ -88,9 +143,8 @@ export default function ExitWarningModal({
                       transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
                       border-b-[1px] border-gray-300/50 font-medium text-white
                     "
-                    
                     >
-                      No
+                      {Localization["No"][lang]}
                     </button>
                   </div>
                 </Dialog.Panel>

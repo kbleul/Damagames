@@ -10,6 +10,7 @@ use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Requests\StoreSecurityQuestionAnswerRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UserAnswerRequest;
+use App\Http\Requests\UsernameRequest;
 use App\Models\CoinSetting;
 use App\Models\SecurityQuestion;
 use App\Models\SecurityQuestionAnswer;
@@ -93,8 +94,8 @@ class AuthController extends SendSmsController
                 'message' => 'Logged In!',
                 'token' => $token,
                 'user' => $user,
-                'default_board' => UserItem::where('user_id', auth()->id())->whereRelation('item', 'type', 'Board')->first()->item->item ?? null,
-                'default_crown' => UserItem::where('user_id', auth()->id())->whereRelation('item', 'type', 'Crown')->first()->item->item ?? null,
+                'default_board' => UserItem::where('user_id', auth()->id())->whereRelation('item', 'type', 'Board')->first()->item ?? null,
+                'default_crown' => UserItem::where('user_id', auth()->id())->whereRelation('item', 'type', 'Crown')->first()->item ?? null,
             ], 201);
         } else {
             return response()->json(['message' => 'Password is incorrect.'], 400);
@@ -200,6 +201,16 @@ class AuthController extends SendSmsController
         return User::find(auth()->id());
     }
 
+    public function update_language(Request $request)
+    {
+        $user =  User::find(auth()->id());
+
+        $user->update([
+            'language' => $request->language,
+        ]);
+        return User::find(auth()->id());
+    }
+
     public function logout()
     {
         User::find(auth()->id())->tokens()->delete();
@@ -232,5 +243,17 @@ class AuthController extends SendSmsController
         $user = User::where('phone', $request->phone)->first();
         $sqa = SecurityQuestionAnswer::where('user_id',  $user->id)->first();
         return  SecurityQuestion::find($sqa->security_question_id);
+    }
+
+    public function update_username(UsernameRequest $request)
+    {
+        // dd("dasda");
+        User::find(auth()->id())->update([
+            'username' => $request->username,
+        ]);
+        return response()->json([
+            'message' => 'Username updated successfully!',
+            'user' =>  User::find(auth()->id())
+        ], 201);
     }
 }

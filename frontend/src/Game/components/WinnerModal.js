@@ -3,6 +3,9 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import wancha from "../../assets/wancha.svg";
 import { useAuth } from "../../context/auth";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { Localization } from "../../utils/language";
 
 const WinnerModal = ({
   isWinnerModalOpen,
@@ -13,41 +16,208 @@ const WinnerModal = ({
   gameState,
   setNewGameWithComputer,
 }) => {
-  const { user, token, setUser } = useAuth();
+  const { user, token, setUser, lang } = useAuth();
   const navigate = useNavigate();
   const playerOneIp = localStorage.getItem("playerOneIp");
   const playerTwoIp = localStorage.getItem("playerTwoIp");
+
+
+  const headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+
+  const header = {
+    "Content-Type": "application/json",
+    Accept: "application/json"
+  };
+
+  const createGameMutation = useMutation(
+
+    async (newData) =>
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}play-with-computer`, newData, {
+        headers,
+      }),
+    {
+      retry: false,
+    }
+  );
+
+  const createGameMutation_NoAuth = useMutation(
+
+    async (newData) =>
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}play-with-computer-na`, newData, {
+        headers,
+      }),
+    {
+      retry: false,
+    }
+  );
+
+  const createGameAI = async (values) => {
+
+    try {
+      user && token ? createGameMutation.mutate(
+        {},
+        {
+          onSuccess: (responseData) => {
+            console.log(responseData?.data?.data?.id)
+            localStorage.setItem("gameId", responseData?.data?.data?.id)
+            setNewGameWithComputer();
+            setIsWinnerModalOpen(false);
+          },
+          onError: (err) => {
+            console.log("responseData?.data?.data?.id")
+          },
+        }
+      ) :
+        createGameMutation_NoAuth.mutate(
+          {},
+          {
+            onSuccess: (responseData) => {
+              console.log(responseData?.data?.data?.id)
+              localStorage.setItem("gameId", responseData?.data?.data?.id)
+              setNewGameWithComputer();
+              setIsWinnerModalOpen(false);
+            },
+            onError: (err) => {
+              console.log("responseData?.data?.data?.id")
+            },
+          }
+        )
+    } catch (err) { console.log(err.message) }
+  };
+
+
   const handleResetGame = () => {
-    calcPts()
+    checkWinner()
     if (gameState.players > 1) {
       resetGame();
     } else {
-      setIsWinnerModalOpen(false);
-      setNewGameWithComputer();
+      console.log("Game reset")
+      createGameAI()
+      // setTimeout(() => {
+
+      // }, 1500)
     }
   };
 
-  const calcPts = () => {
-    token && setUser({ ...user, coin: user.coin + 50 })
+
+  const savePts = () => {
+    setUser({ ...user, coin: user.coin + 50 })
+
+    const tempObj = { ...user, coin: user.coin + 50 }
+
+    localStorage.setItem("dama_user_data",
+      JSON.stringify({
+        token, user: { ...tempObj },
+      }))
+  }
+
+  const checkWinner = () => {
+
+    if (user && token) {
+
+      if (gameState.players == 1 && (gameState.winner === "player1pieces" || gameState.winner === "player1moves")) {
+        savePts()
+      }
+      else if (gameState.players > 1 && (winnerPlayer === "player1pieces" ||
+        winnerPlayer === "player1moves") && playerOneIp != null) {
+        savePts()
+      }
+      else if (gameState.players > 1 && (winnerPlayer === "player2pieces" ||
+        winnerPlayer === "player2moves") && playerTwoIp != null) {
+        savePts()
+      }
+
+    }
+
   }
 
   const userCoin = token ? JSON.parse(localStorage.getItem("dama_user_data")).user.coin : null
 
+
+  const finishGameMutation = useMutation(
+    async (newData) =>
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}play-with-computer-done/${localStorage.getItem("gameId")}`, newData, {
+        headers,
+      }),
+    {
+      retry: false,
+    }
+  );
+
+  const finishGameAI = async (values) => {
+    try {
+      finishGameMutation.mutate(
+        { is_user_win: values },
+        {
+          onSuccess: (responseData) => {
+            localStorage.removeItem("gameId")
+          },
+          onError: (err) => { },
+        }
+      );
+    } catch (err) { }
+  };
+
+
+  const finishGameMutation_NoAuth = useMutation(
+    async (newData) =>
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}play-with-computer-na-done/${localStorage.getItem("gameId")}`, newData, {
+        headers: header,
+      }),
+    {
+      retry: false,
+    }
+  );
+
+  const finishGameAI_NoAuth = async (values) => {
+    try {
+      finishGameMutation_NoAuth.mutate(
+        { is_user_win: values },
+        {
+          onSuccess: (responseData) => {
+            localStorage.removeItem("gameId")
+          },
+          onError: (err) => { },
+        }
+      );
+    } catch (err) { }
+  };
+
+  useEffect(() => {
+    if (isWinnerModalOpen && gameState.players === 1) {
+      if (user && token) {
+        if (gameState.winner === "player1pieces" || gameState.winner === "player1moves") { finishGameAI(true) }
+        else { finishGameAI(false) }
+      }
+
+      else {
+        if (gameState.winner === "player1pieces" || gameState.winner === "player1moves") { finishGameAI_NoAuth(true) }
+        else { finishGameAI_NoAuth(false) }
+      }
+    }
+
+  }, [isWinnerModalOpen])
+
+
   const CongraMsg = () => {
     return ((token && userCoin)
       ? <div className="text-white flex flex-col items-center justify-center gap-3 text-sm">
-        <h2 className="text-2xl">Congratulations!</h2>
-        <p>Previous = {userCoin - 50} coins</p>
-        <p>Total = {userCoin} coins</p>
-      </div> : <div className="text-white">Congratulations! You won 50 coins</div>)
+        <h2 className="text-2xl">{Localization["Congratulations"][lang]}</h2>
+        <p>{Localization["Previous"][lang]} = {userCoin} {Localization["coins"][lang]}</p>
+        <p>{Localization["Total"][lang]} = {userCoin + 50} {Localization["coins"][lang]}</p>
+      </div> : <div className="text-white">{Localization["Congratulations"][lang]}</div>)
   }
 
   const LostMsg = () => {
     return (token && userCoin ? <div className="text-white flex flex-col items-center justify-center gap-3 text-sm">
-      <h2 className="text-2xl">You Lost ! </h2>
-      <p>You won 0 coins.</p>
-      <p>Total = {userCoin} coins</p>
-    </div> : <div className="text-white">You Lost! You won 0 coins.</div>)
+      <h2 className="text-2xl">{Localization["You Lost !"][lang]}</h2>
+      <p>{Localization["You won 0 coins."][lang]}</p>
+      <p>{Localization["Total"][lang]} = {userCoin} {Localization["coins"][lang]}</p>
+    </div> : <div className="text-white">{Localization["You Lost !"][lang]} {Localization["You won 0 coins."][lang]}</div>)
   }
 
 
@@ -125,11 +295,10 @@ const WinnerModal = ({
                     active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
                     active:border-b-[0px]
                     transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
-                    border-b-[1px] border-gray-300/50 font-semibold text-white
-                  "
+                    border-b-[1px] border-gray-300/50 font-semibold text-white"
                       onClick={handleResetGame}
                     >
-                      Rematch
+                      {Localization["Rematch"][lang]}
                     </button>
                     <button
                       type="button"
@@ -140,15 +309,16 @@ const WinnerModal = ({
                     border-b-[1px] border-gray-300/50 font-semibold text-white
                   "
                       onClick={() => {
-                        calcPts();
-                        rejectGameRequest();
+                        checkWinner();
+                        gameState.players > 1 && rejectGameRequest();
                         navigate("/create-game");
                       }}
-                    >
-                      NewGame
+                    >{Localization["New Game"][lang]}
+
                     </button>
                   </div>
                 </Dialog.Panel>
+
               </Transition.Child>
             </div>
           </div>

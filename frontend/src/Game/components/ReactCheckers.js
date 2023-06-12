@@ -43,7 +43,6 @@ export function getMoves(columns, boardState, coordinates, isKing = false, hasJu
   const row = utils.getRowAsInt(coordinates);
   const player = boardState[coordinates].player;
 
-
   const advanceRow = player === "player1" ? row - 1 : row + 1;
 
   for (let key in corners) {
@@ -60,13 +59,13 @@ export function getMoves(columns, boardState, coordinates, isKing = false, hasJu
     if (!isKing && cornerCoordinates.indexOf(advanceRow) < 0) {
       continue;
     }
-
     if (boardState[cornerCoordinates] === null) {
       moves.push(cornerCoordinates);
     } else {
       let neighborPiece = boardState[cornerCoordinates];
 
-      if (neighborPiece.player === player) {
+
+      if (neighborPiece.player !== undefined && neighborPiece.player === player) {
         continue;
       }
 

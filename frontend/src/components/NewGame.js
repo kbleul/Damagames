@@ -14,17 +14,14 @@ import { BsTelegram } from "react-icons/bs";
 import { IoIosShareAlt } from "react-icons/io";
 
 import { Slider } from "@mui/material";
-import { Checkbox } from "@mui/material";
 
 import { useAuth } from "../context/auth";
-import { Footer } from "./Footer";
-import { useHome } from "../context/HomeContext";
 import { clearCookie } from "../utils/data";
-import { MdOutlineCancel } from "react-icons/md";
+import ExitWarningModal from "../Game/components/ExitWarningModal";
+import { Localization } from "../utils/language";
 
 const NewGame = () => {
-  const { user, token } = useAuth();
-  //const { setIsBet, setBetCoin } = useHome();
+  const { user, token, lang } = useAuth();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const [isCreated, setIsCreated] = useState(false);
@@ -44,6 +41,7 @@ const NewGame = () => {
 
   //coins input
   const [showInput, setShowInput] = useState(false);
+  const [isExitModalOpen, setIsExitModalOpen] = useState(false);
 
   const gameId = localStorage.getItem("gameId");
   const betRef = useRef();
@@ -72,18 +70,17 @@ const NewGame = () => {
     Accept: "application/json",
     Authorization: `Bearer ${token}`,
   };
-  const playerOneIp = localStorage.getItem("playerOneIp");
+
   useEffect(() => {
     socket.on("getMessage", (data) => {
-      // console.log(data?.player2);
       if (data.status === "started" && data?.player2) {
         navigate("/game");
         localStorage.setItem("p2Info", data?.player2);
+        localStorage.setItem("isNotPublic", true);
       }
     });
 
     socket.on("userLeaveMessage", (data) => { });
-
   }, []);
 
   const submitName = () => {
@@ -101,7 +98,7 @@ const NewGame = () => {
       }
     } else {
       if (!name) {
-        toast("name is required.");
+        toast(Localization["name is required."][lang]);
         return;
       }
       nameMutationSubmitHandler();
@@ -127,6 +124,9 @@ const NewGame = () => {
         { username: name, has_bet: false },
         {
           onSuccess: (responseData) => {
+            socket.emit("leave", gameId);
+            socket.emit("join-room", responseData?.data?.data?.game);
+
             socket.emit("join-room", responseData?.data?.data?.game);
 
             setIsCreated(true);
@@ -178,6 +178,8 @@ const NewGame = () => {
           : { has_bet: false },
         {
           onSuccess: (responseData) => {
+            socket.emit("leave", gameId);
+
             socket.emit("join-room", responseData?.data?.data?.game);
             setIsCreated(true);
             setValue(
@@ -217,9 +219,9 @@ const NewGame = () => {
     setCoinAmount(e.target.value);
 
     if (e.target.value > playerCoins) {
-      setCoinError("Amount has to be less than you coins");
+      setCoinError(Localization["Amount has to be less than you coins"][lang]);
     } else if (e.target.value <= 0) {
-      setCoinError("Invalid Amount");
+      setCoinError(Localization["Invalid Amount"][lang]);
     } else {
       setCoinError(null);
     }
@@ -242,7 +244,6 @@ const NewGame = () => {
 
   const shareLink = async () => {
     const tempurl = value.split("/").splice(-1)[0];
-    // console.log(tempurl[0])
     if (navigator.share) {
       try {
         await navigator
@@ -272,12 +273,10 @@ const NewGame = () => {
       }}
     >
       <button
-        className={
-          isCreated
-            ? "hidden"
-            : "z-10 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 fixed left-2 md:left-4"
+        className="z-10 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 fixed left-2 md:left-4"
+        onClick={() =>
+          isCreated ? setIsExitModalOpen(true) : navigate("/create-game")
         }
-        onClick={() => navigate("/create-game")}
       >
         <svg
           width="18"
@@ -306,7 +305,7 @@ const NewGame = () => {
          items-center justify-center min-h-screen space-y-2 p-5 "
         >
           <h2 className="font-medium text-white text-lg pt-5">
-            Tell Us Your name
+            {Localization["Tell us your name"][lang]}
           </h2>
           <input
             type="text"
@@ -315,7 +314,7 @@ const NewGame = () => {
             value={user ? user.username : name}
             className="bg-transparent border  border-orange-color  p-2 w-full rounded-md
                text-white focus:outline-none focus:ring-0  font-medium "
-            placeholder="Tell Us Your name"
+            placeholder={Localization["Tell us your name"][lang]}
           />
           <div className="flex justify-evenly items-center  w-3/5 accent-orange-600">
             <input
@@ -324,7 +323,7 @@ const NewGame = () => {
                 if (betRef.current.checked) {
                   if (user && token) {
                     setShowInput(true);
-                    setCoinAmount(profileData?.data?.data?.data?.coins / 10)
+                    setCoinAmount(profileData?.data?.data?.data?.coins / 10);
                   } else {
                     //show sign in promp
                     setLoginPromt(true);
@@ -341,25 +340,27 @@ const NewGame = () => {
             />
 
             <label for="bet" className="text-white">
-              Play for coins
+              {Localization["Play for coins"][lang]}
             </label>
           </div>
           {profileData?.data?.data?.data?.coins && (
             <p className="text-white">
-              Your coins : {profileData?.data?.data?.data?.coins}
+              {Localization["Your coins"][lang]}
+              : {profileData?.data?.data?.data?.coins}
             </p>
           )}
 
           {coinError && <p className="text-red-400 text-sm">{coinError}</p>}
           {loginPrompt && (
             <p className="text-red-400 text-sm">
-              Log in to bet coins{" "}
+              <>{Localization["Log in to bet coins"][lang]}</>
+              {" "}
               <span
                 onClick={() => navigate("/login")}
                 className="text-white font-bold cursor-pointer"
                 href="/login"
               >
-                Here
+                {Localization["Here"][lang]}
               </span>
             </p>
           )}
@@ -384,18 +385,6 @@ const NewGame = () => {
                 </div>
               )}
 
-              {/* (
-                <input
-                  className="bg-transparent border  border-orange-color  p-2 w-[60%] rounded-md
-                text-white focus:outline-none focus:ring-0 text-center font-medium"
-                  onChange={(e) => checkCoinAmoute(e)}
-                  type="number"
-                  placeholder="Enter number of coins"
-                  min="1"
-                  max="10"
-                  value={coinAmount}
-                />
-              ) */}
             </>
           )}
           <button
@@ -410,8 +399,9 @@ const NewGame = () => {
           >
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
             {nameMutation.isLoading || loggedInMutation.isLoading
-              ? "Creating..."
-              : "Create"}
+              ? <>{Localization["Creating"][lang]}</>
+              : <>{Localization["Create"][lang]}</>
+            }
           </button>
         </div>
       ) : (
@@ -425,9 +415,11 @@ const NewGame = () => {
             className="flex flex-col items-center justify-center max-w-xl mx-auto w-full 
             p-3 rounded-md"
           >
-            <h2 className="font-medium text-white text-lg ">Great Work!</h2>
+            <h2 className="font-medium text-white text-lg ">
+              {Localization["Great Work"][lang]}
+            </h2>
             <p className="text-gray-200 pb-2  ">
-              Now send this Link to your Friend
+              {Localization["Now send this"][lang]}
             </p>
 
             <div className="z-40 flex items-center border border-gray-400  w-full rounded-xl">
@@ -449,7 +441,9 @@ const NewGame = () => {
                   onCopy={() => setIsCopied(true)}
                 >
                   {isCopied ? (
-                    <p className="w-6 h-6 text-xs text-green-500">Copied</p>
+                    <p className="w-6 h-6 text-xs text-green-500">
+                      <>{Localization["Copied"][lang]}</>
+                    </p>
                   ) : (
                     <IoIosCopy
                       className={`${isCopied ? "text-green-500" : "text-red-500"
@@ -462,38 +456,19 @@ const NewGame = () => {
                     isCopied ? "hidden" : "text-white text-sm font-bold pr-1"
                   }
                 >
-                  {isCopied ? "Copied" : "Copy"}
+                  {isCopied ?
+                    <>{Localization["Copied"][lang]}</>
+                    : <>{Localization["Copy"][lang]}</>
+                  }
                 </p>
               </div>
-
-              {/* <input
-                type="text"
-                value={value}
-                disabled
-                className=" bg-transparent text-white focus:outline-none focus:ring-0  w-full pr-2 "
-              />
-
-              <button onClick={() => setCodeCopied(true)} className={codeCopied ? "text-green-500 text-sm border-l-2 p-2 font-bold" : "text-white text-sm border-l-2 p-2 font-bold"}>{codeCopied ? "Copied" : "Copy"}</button> */}
-
-              {/* <CopyToClipboard
-                className="w-8 h-5 text-orange-color border-2 border-orange-color p-2"
-                text={value}
-                onCopy={() => setIsCopied(true)}
-              >
-                {isCopied ? (
-                  <p className="text-xs text-green-500">Copied</p>
-                ) : (
-                  <IoIosCopy
-                    className={`${isCopied ? "text-green-500" : "text-gray-300"
-                      }`}
-                  />
-                )}
-              </CopyToClipboard> */}
             </div>
             {/* via code */}
             <div className="flex items-center space-x-2 justify-center">
               <div className="bg-orange-bg w-20 h-[1px]" />
-              <p className="text-center text-orange-color py-2">or</p>
+              <p className="text-center text-orange-color py-2">
+                {Localization["Or"][lang]}
+              </p>
               <div className="bg-orange-bg w-20 h-[1px]" />
             </div>
             {/* code */}
@@ -504,21 +479,6 @@ const NewGame = () => {
                 disabled
                 className="border-r-2 w-[90%] bg-transparent flex flex-grow text-white focus:outline-none focus:ring-0 p-2 rounded-"
               />
-
-              {/* <CopyToClipboard
-                className="w-8 h-5 text-white border-l-2 text-orange-color pl-2"
-                text={code}
-                onCopy={() => setCodeCopied(true)}
-              >
-                {codeCopied ? (
-                  <p className="text-xs text-green-500">Copied</p>
-                ) : (
-                  <IoIosCopy
-                    className={`${codeCopied ? "text-green-500" : "text-gray-400"
-                      }`}
-                  />
-                )}
-              </CopyToClipboard> */}
 
               <div className="flex items-center">
                 <CopyToClipboard
@@ -531,7 +491,9 @@ const NewGame = () => {
                   onCopy={() => setCodeCopied(true)}
                 >
                   {codeCopied ? (
-                    <p className="w-6 h-6 text-xs text-green-500">Copied</p>
+                    <p className="w-6 h-6 text-xs text-green-500">
+                      <>{Localization["Copied"][lang]}</>
+                    </p>
                   ) : (
                     <IoIosCopy
                       className={`${codeCopied ? "text-green-500" : "text-red-500"
@@ -544,7 +506,10 @@ const NewGame = () => {
                     codeCopied ? "hidden" : "text-white text-sm font-bold pr-1"
                   }
                 >
-                  {codeCopied ? "Copied" : "Copy"}
+                  {codeCopied ?
+                    <>{Localization["Copied"][lang]}</>
+                    : <>{Localization["Copy"][lang]}</>
+                  }
                 </p>
               </div>
             </div>
@@ -560,12 +525,13 @@ const NewGame = () => {
             >
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
               <IoIosShareAlt className="w-6 h-6" />
-              <p>Share</p>
+              <p>
+                {Localization["Share"][lang]}
+              </p>
             </div>
           </div>
         </div>
       )}
-      <Footer />
       <BottomSheet
         open={open}
         onDismiss={() => setOpen(false)}
@@ -584,6 +550,12 @@ const NewGame = () => {
         </div>
       </BottomSheet>
       <Toaster />
+
+      <ExitWarningModal
+        isExitModalOpen={isExitModalOpen}
+        set_isExitModalOpen={setIsExitModalOpen}
+        beforeGame={true}
+      />
     </div>
   );
 };

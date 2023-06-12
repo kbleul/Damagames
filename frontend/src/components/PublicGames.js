@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import socket from "../utils/socket.io";
 import Avatar from "../assets/Avatar.png";
 import PublicGameImg from "../assets/PublicGameImg.png";
@@ -8,14 +8,18 @@ import { useAuth } from "../context/auth";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Footer } from "./Footer";
-
+import { Localization } from "../utils/language";
 const PubicGames = () => {
-  const { user, token } = useAuth();
+  const { user, token, lang } = useAuth();
+  const [isMessageSent, setIsMessageSent] = useState(false);
+  const [isMessageListened, setIsMessageListened] = useState(false);
+  const [socketLoading, setsocketLoading] = useState(false);
+  const [tempPlayer, setTempPlayer] = useState(null);
 
   const [publicGames, setPublicGames] = useState([]);
-  const [myFriend, setMyFriend] = useState("Your Friend");
+  const [myFriend, setMyFriend] = useState(Localization["Your Friend"][lang]);
   const [code, setCode] = useState();
-
+  const useLess = useRef(false);
   const [isVerified, setIsVerified] = useState(false);
   const [name, setName] = useState(user && token ? user.username : "");
   const navigate = useNavigate();
@@ -32,16 +36,39 @@ const PubicGames = () => {
 
   useEffect(() => {
     socket.on("getPublicGames", (data) => {
-      // console.log("ola", data)
       setPublicGames([...data]);
     });
 
     socket.emit("publicGames");
   }, []);
 
+
+  useEffect(() => {
+    socket.on("getMessage", (data) => {
+      setIsMessageSent(false);
+      setIsMessageListened(true);
+      useLess.current = true;
+
+      navigate("/game");
+    });
+
+
+  }, [isMessageListened]);
+
+  // setInterval(() => {
+  //   if (!useLess.current) {
+  //     if (isMessageSent && !isMessageListened) {
+  //       socket.emit("sendMessage", {
+  //         status: "started",
+  //         player2: JSON.stringify(tempPlayer),
+  //       });
+  //     }
+  //   }
+  // }, 500);
+
   const handleJoin = () => {
     if (!name) {
-      toast("name is required.");
+      toast(Localization["name is required."][lang]);
 
       return;
     }
@@ -54,12 +81,10 @@ const PubicGames = () => {
     async (newData) =>
       await axios.post(
         user && token
-          ? `${
-              process.env.REACT_APP_BACKEND_URL
-            }auth-start-game/${localStorage.getItem("gameId")}`
-          : `${
-              process.env.REACT_APP_BACKEND_URL
-            }add-player/${localStorage.getItem("gameId")}`,
+          ? `${process.env.REACT_APP_BACKEND_URL
+          }auth-start-game/${localStorage.getItem("gameId")}`
+          : `${process.env.REACT_APP_BACKEND_URL
+          }add-player/${localStorage.getItem("gameId")}`,
         newData,
         {
           headers: user && token ? header : headers,
@@ -73,7 +98,6 @@ const PubicGames = () => {
   //with code
   const nameMutationWithCode = async (values) => {
     try {
-      //console.log({ gameid2: localStorage.getItem("gameId") })
       nameMutation.mutate(user && token ? {} : { username: name }, {
         onSuccess: (responseData) => {
           socket.emit("join-room", responseData?.data?.data?.game);
@@ -81,34 +105,47 @@ const PubicGames = () => {
           socket.emit("sendMessage", {
             status: "started",
             player2: JSON.stringify(responseData?.data?.data?.playerTwo),
+            pl: responseData?.data?.data?.playerOne?.username,
+            p2: responseData?.data?.data?.playerTwo?.username,
+            playerTwoIp: responseData?.data?.data?.ip,
+            gameId: responseData?.data?.data?.game
           });
 
-          //   console.log(responseData?.data.data?.playerTwo);
-
-          navigate("/game");
-          //first clear local storage
-          localStorage.clear();
-          localStorage.setItem("p1", responseData?.data?.data?.playerOne.name);
-          localStorage.setItem("p2", responseData?.data?.data?.playerTwo.name);
-          localStorage.setItem("playerTwoIp", responseData?.data?.data?.ip);
           localStorage.setItem(
             "playerTwo",
             JSON.stringify(responseData?.data?.data?.playerTwo)
           );
-          localStorage.setItem("gameId", responseData?.data?.data?.game);
+
+          setTempPlayer(JSON.stringify(responseData?.data?.data?.playerTwo));
+          setIsMessageSent(true);
+          setsocketLoading(true);
+
+
+          setTimeout(() => {
+            console.log({ isMessageListened })
+
+            !isMessageListened && socket.emit("sendMessage", {
+              status: "started",
+              player2: JSON.stringify(responseData?.data?.data?.playerTwo),
+              pl: responseData?.data?.data?.playerOne?.username,
+              p2: responseData?.data?.data?.playerTwo?.username,
+              playerTwoIp: responseData?.data?.data?.ip,
+              gameId: responseData?.data?.data?.game
+            });
+          }, 3000)
+
         },
         onError: (err) => {
-          //   console.log(err?.response?.data?.message);
         },
       });
     } catch (err) {
-      //  console.log(err);
     }
   };
 
   const handleSubmitCode = (mycode) => {
     socket.emit("joinPublicGame", mycode);
-    joinViaCodeMutationSubmitHandler();
+    joinViaCodeMutationSubmitHandler(mycode);
+
   };
 
   const joinViaCodeMutation = useMutation(
@@ -128,10 +165,9 @@ const PubicGames = () => {
   const joinViaCodeMutationSubmitHandler = async (values) => {
     try {
       joinViaCodeMutation.mutate(
-        { code: code },
+        { code: values },
         {
           onSuccess: (responseData) => {
-            //  console.log(responseData?.data);
             setIsVerified(true);
             responseData?.data?.data?.playerOne?.username &&
               setMyFriend(
@@ -139,15 +175,15 @@ const PubicGames = () => {
                   prev + " " + responseData?.data?.data?.playerOne?.username
               );
             localStorage.setItem("gameId", responseData?.data?.data?.game);
+            localStorage.setItem("p1", responseData?.data?.data?.playerOne?.username);
+
           },
           onError: (err) => {
-            //    console.log(err?.response?.data);
             toast(err?.response?.data?.message);
           },
         }
       );
     } catch (err) {
-      //  console.log(err);
     }
   };
   return (
@@ -174,11 +210,11 @@ const PubicGames = () => {
             </svg>
           </button>
           <div>
-            <img src={PublicGameImg} />
+            <img src={PublicGameImg} alt="" />
           </div>
           {publicGames?.length === 0 && (
             <p className="my-4 mt-[30vh] ml-[2%] w-[96%] max-w-[600px] text-orange-color font-bold">
-              No public games currently !
+              {Localization["No public games currently !"][lang]}
             </p>
           )}
           {publicGames?.map((game) => (
@@ -190,7 +226,7 @@ const PubicGames = () => {
               className="mt-4 mb-6 rounded-md ml-[2%] w-[96%] max-w-[600px] border "
             >
               <section className="flex justify-evenly px-4 text-xs text-white font-bold border-b border-gray-600">
-                <p className="w-1/2">{`Rank - ${game.rank}`}</p>
+                <p className="w-1/2">{`${Localization["Rank"][lang]} - ${game.rank}`}</p>
                 {/* <p className="">Coins - { game.coin ? game.coin : 0}</p> */}
                 <p className="text-xs w-full text-right text-gray-400 mr-2">
                   {game.time}
@@ -201,15 +237,15 @@ const PubicGames = () => {
                   <img className="w-6 h-6" src={Avatar} alt="avatar" />
                   <p className="text-white ml-4 font-bold">{game.createdBy}</p>
                 </div>
-                <a
+                <button
                   onClick={() => {
                     setCode(game.code);
                     handleSubmitCode(game.code);
                   }}
-                  className="w-[20%] mr-4 bg-orange-color hover:bg-orange-600 text-black font-bold px-12 flex items-center justify-center"
+                  className="w-[20%] mr-4 bg-orange-color hover:bg-orange-600 text-black font-bold px-12 flex items-center justify-center cursor-pointer"
                 >
-                  Play
-                </a>
+                  {Localization["Play"][lang]}
+                </button>
               </section>
               <section className="flex justify-between mt-2"></section>
             </article>
@@ -245,26 +281,26 @@ const PubicGames = () => {
              border-orange-color p-3 rounded-sm w-full max-w-xs mx-auto"
             >
               <h2 className="font-medium text-white text-lg pt-4">
-                Tell Us Your Name
+                {Localization["Tell us your name"][lang]}
               </h2>
               <p className="text-gray-400 pb-2">
                 <span
                   className={
-                    myFriend === "Your Friend"
+                    myFriend === Localization["Your Friend"][lang]
                       ? ""
                       : "font-bold text-orange-400"
                   }
                 >
                   {myFriend}
                 </span>{" "}
-                is waiting for you. <br />
-                Join Now !
+                {Localization["waiting for you."][lang]} <br />
+                {Localization["Join Now !!"][lang]}
               </p>
 
               <input
                 disabled={user && token}
                 type="text"
-                placeholder="Tell us Your name"
+                placeholder={Localization["Tell us your name"][lang]}
                 onChange={(e) => setName(e.target.value)}
                 value={name}
                 className="bg-transparent  border border-orange-color w-full
@@ -281,19 +317,18 @@ const PubicGames = () => {
           "
               >
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-                {nameMutation.isLoading ? "Loading.." : "Join"}
+                {nameMutation.isLoading || socketLoading ? Localization["Loading"][lang] : Localization["Join"][lang]}
               </button>
               <p
                 onClick={() => navigate("/create-game")}
                 className="text-orange-color text-center pt-3 cursor-pointer"
               >
-                Back
+                {Localization["Back"][lang]}
               </p>
             </div>
           </div>
         </main>
       )}
-      <Footer />
     </>
   );
 };

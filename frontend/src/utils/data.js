@@ -1,5 +1,14 @@
 import { useNavigate } from "react-router-dom";
 
+export const SORTBY = {
+  COMPUTER: "COMPUTER", PERSON: "PERSON", COIN: "COIN"
+}
+
+export const LANG = {
+  "AMH": "አማርኛ",
+  "ENG": "English",
+}
+
 export const clearCookie = [
   "gameId",
   "playerOne",
@@ -12,7 +21,8 @@ export const clearCookie = [
   "players",
   "bt_coin_amount",
   "dama-sound",
-  "p2Info"
+  "p2Info",
+  "pawns" //to show king icons in friends board
 ];
 
 

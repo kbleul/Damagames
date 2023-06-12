@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import dateFormat, { masks } from "dateformat";
 
 import { useAuth } from "../context/auth";
 import { useNavigate } from "react-router-dom";
@@ -7,12 +6,13 @@ import { useMutation } from "@tanstack/react-query";
 import socket from "../utils/socket.io";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
-import { CopyToClipboard } from "react-copy-to-clipboard";
-import { IoIosCopy } from "react-icons/io";
-import { IoIosShareAlt } from "react-icons/io";
-
+import { clearCookie } from "../utils/data";
 import background from "../assets/backdrop.jpg";
-import { Footer } from "./Footer";
+import ExitWarningModal from "../Game/components/ExitWarningModal";
+import { Localization } from "../utils/language";
+import { Circles } from "react-loader-spinner";
+
+import wellDone from "../assets/Done.png"
 
 const ACTION = {
   MENU: "menu",
@@ -21,17 +21,19 @@ const ACTION = {
 };
 
 const NewGamePublic = () => {
-  const { user, token } = useAuth();
+  const { user, token, lang } = useAuth();
   const navigate = useNavigate();
 
   //"menu" || "creating" || "created"
   const [action, setAction] = useState(ACTION.MENU);
   const [name, setName] = useState("");
-  const [open, setOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+  const [isCreated, setIsCreated] = useState(false);
+
   const [value, setValue] = useState("");
   const [code, setCode] = useState("");
   const [codeCopied, setCodeCopied] = useState(false);
+  const [isExitModalOpen, setIsExitModalOpen] = useState(false);
 
   const headers = {
     "Content-Type": "application/json",
@@ -68,23 +70,22 @@ const NewGamePublic = () => {
             setAction(ACTION.CREATED);
             setValue(
               `${process.env.REACT_APP_FRONTEND_URL}/join-game/` +
-                responseData?.data?.data?.game
+              responseData?.data?.data?.game
             );
             setCode(responseData?.data?.data?.code);
-            //first clear local storage
-            // localStorage.clear();
+
             localStorage.setItem("gameId", responseData?.data?.data?.game);
             localStorage.setItem(
               "playerOne",
               JSON.stringify(responseData?.data?.data?.playerOne)
             );
-            // localStorage.setItem("playerOneToken", responseData?.data?.data?.token);
+
             localStorage.setItem("playerOneIp", responseData?.data?.data?.ip);
           },
-          onError: (err) => {},
+          onError: (err) => { },
         }
       );
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const nameMutation = useMutation(
@@ -111,11 +112,13 @@ const NewGamePublic = () => {
             setAction(ACTION.CREATED);
             setValue(
               `${process.env.REACT_APP_FRONTEND_URL}/join-game/` +
-                responseData?.data?.data?.game
+              responseData?.data?.data?.game
             );
             setCode(responseData?.data?.data?.code);
             //first clear local storage
-            localStorage.clear();
+            clearCookie.forEach((data) => {
+              localStorage.getItem(data) && localStorage.removeItem(data);
+            });
             localStorage.setItem("gameId", responseData?.data?.data?.game);
             localStorage.setItem(
               "playerOne",
@@ -140,27 +143,28 @@ const NewGamePublic = () => {
               coin: responseData?.data?.data?.playerOne.coin,
             });
           },
-          onError: (err) => {},
+          onError: (err) => { },
         }
       );
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const submitName = () => {
     if (user && token) {
+      setIsCreated(true)
       loggedInNameMutationSubmitHandler();
     } else {
       if (!name) {
-        toast("name is required.");
+        toast(Localization["name is required."][lang]);
         return;
       }
+      setIsCreated(true)
       nameMutationSubmitHandler();
     }
   };
 
   const shareLink = async () => {
     const tempurl = value.split("/").splice(-1)[0];
-    // console.log(tempurl[0])
     if (navigator.share) {
       try {
         await navigator
@@ -169,27 +173,21 @@ const NewGamePublic = () => {
           })
           .then(() => console.log(""));
       } catch (error) {
-        //  console.log(`Oops! I couldn't share to the world because: ${error}`);
       }
     } else {
-      // fallback code
-      // console.log(
-      //   "Web share is currently not supported on this browser. Please provide a callback"
-      // );
     }
   };
 
   useEffect(() => {
     socket.on("getMessage", (data) => {
       if (data.status === "started") {
-        localStorage.setItem("p1", data.player1);
         localStorage.setItem("p2", data.player2);
         navigate("/game");
       }
     });
   }, []);
 
-  return (
+  return (<>
     <main
       style={{
         backgroundImage: `url(${background})`,
@@ -204,7 +202,7 @@ const NewGamePublic = () => {
     >
       <button
         className="z-10 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 fixed left-2 md:left-4"
-        onClick={() => navigate("/create-game")}
+        onClick={() => isCreated ? setIsExitModalOpen(true) : navigate("/create-game")}
       >
         <svg
           width="18"
@@ -233,7 +231,7 @@ const NewGamePublic = () => {
               "
           >
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-            Create Game
+            {Localization["Create Game"][lang]}
           </button>
 
           <button
@@ -246,7 +244,7 @@ const NewGamePublic = () => {
               "
           >
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-            Join Game
+            {Localization["Join Game"][lang]}
           </button>
         </section>
       )}
@@ -256,7 +254,7 @@ const NewGamePublic = () => {
             items-center justify-center min-h-screen space-y-2 p-5 "
         >
           <h2 className="font-medium text-white text-lg pt-5">
-            Tell Us Your name
+            {Localization["Tell us your name"][lang]}
           </h2>
           <input
             type="text"
@@ -265,7 +263,7 @@ const NewGamePublic = () => {
             value={user ? user.username : name}
             className="bg-transparent border  border-orange-color  p-2 w-full rounded-md
                 text-white focus:outline-none focus:ring-0  font-medium "
-            placeholder="Tell Us Your name"
+            placeholder={Localization["Tell us your name"][lang]}
           />
           <button
             onClick={submitName}
@@ -278,93 +276,45 @@ const NewGamePublic = () => {
           >
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
             {nameMutation.isLoading || loggedInMutation.isLoading
-              ? "Creating..."
-              : "Create"}
+              ? Localization["Creating"][lang]
+              : Localization["Create"][lang]}
           </button>
         </div>
       )}
 
-      {action === ACTION.CREATED && (
-        <div
-          className="absolute  w-full flex flex-col items-center justify-center 
-        min-h-screen space-y-2 p-5"
-        >
-          <div
-            className="flex flex-col items-center justify-center max-w-xl mx-auto w-full 
-           border-2 border-orange-color p-3 rounded-md"
-          >
-            <h2 className="font-medium text-white text-lg ">Great Work!</h2>
-            <p className="text-gray-200 pb-2 capitalize ">
-              Now send this link to your friend
-            </p>
-            <div className="z-40 flex items-center border border-gray-400 p-2 rounded-sm w-full">
-              <input
-                type="text"
-                value={value}
-                disabled
-                className=" bg-transparent text-white focus:outline-none focus:ring-0  w-full"
-              />
-              <CopyToClipboard text={value} onCopy={() => setIsCopied(true)}>
-                {isCopied ? (
-                  <p className="text-xs text-green-500">Copied</p>
-                ) : (
-                  <IoIosCopy
-                    className={`${
-                      isCopied ? "text-green-500" : "text-gray-300"
-                    }`}
-                  />
-                )}
-              </CopyToClipboard>
-            </div>
-            {/* via code */}
-            <div className="flex items-center space-x-2 justify-center">
-              <div className="bg-orange-bg w-20 h-[1px]" />
-              <p className="text-center text-orange-color py-2">or</p>
-              <div className="bg-orange-bg w-20 h-[1px]" />
-            </div>
-            {/* code */}
-            <div className="flex items-center  border border-gray-400 p-2 rounded-sm  w-full">
-              <input
-                type="text"
-                value={code}
-                disabled
-                className="bg-transparent flex flex-grow text-white focus:outline-none focus:ring-0"
-              />
-              <CopyToClipboard text={code} onCopy={() => setCodeCopied(true)}>
-                {codeCopied ? (
-                  <p className="text-xs text-green-500">Copied</p>
-                ) : (
-                  <IoIosCopy
-                    className={`${
-                      codeCopied ? "text-green-500" : "text-gray-400"
-                    }`}
-                  />
-                )}
-              </CopyToClipboard>
-            </div>
-
-            <div
-              onClick={shareLink}
-              className="relative w-4/5 mt-10 p-2 bg-orange-bg rounded-md cursor-pointer select-none
-              active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
-              active:border-b-[0px] flex items-center justify-center
-              transition-all duration-150 [box-shadow:0_5px_0_0_#c93b00,0_5px_0_0_#c93b00]
-              border-b-[1px] border-gray-400/50 font-semibold text-white
-            "
-            >
-              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
-              <IoIosShareAlt className="w-6 h-6" />
-              <p>Share</p>
-            </div>
+      {action === ACTION.CREATED && (<article className="flex items-center justify-center relative w-full h-[100vh] ">
+        <section className="text-white border-2 border-orange-color w-4/5 max-w-[400px] flex flex-col items-center justify-evenly 
+         space-y-2 py-8 rounded-[2rem]">
+          <div className="flex flex-col justify-center items-center w-4/5">
+            <img className="w-12 h-12" src={wellDone} alt="" />
+            <h2 className="font-bold text-2xl pt-4 ">{Localization["Great Work"][lang]}</h2>
+            <p className=" pb-2 text-sm">{Localization["Game created successfully!"][lang]}</p>
           </div>
-        </div>
+
+          <div className="flex flex-col justify-center items-center pt-4 ">
+            <Circles color="#FF4C01" height="40" width="40" />
+            <p className="px-6 py-8 ">{Localization["Waiting for someone to"][lang]}</p>
+          </div>
+        </section>
+      </article>
       )}
 
-      <Footer />
 
       <Toaster />
+
+      <ExitWarningModal
+        isExitModalOpen={isExitModalOpen}
+        set_isExitModalOpen={setIsExitModalOpen}
+        beforeGame={true}
+      />
     </main>
+
+
+
+  </>
   );
 };
 
 export default NewGamePublic;
+
+

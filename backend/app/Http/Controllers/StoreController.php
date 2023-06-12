@@ -22,6 +22,11 @@ class StoreController extends Controller
         ];
     }
 
+    public function store_item_show(Store $store)
+    {
+        return $store;
+    }
+
     public function purchase(PurchaseItemRequest $request)
     {
         $item = Store::find($request->item_id);

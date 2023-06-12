@@ -5,6 +5,7 @@ import {
   useEffect,
   useContext,
 } from "react";
+import { Localization } from "../utils/language";
 
 const AuthContext = createContext();
 
@@ -15,7 +16,10 @@ export function useAuth() {
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
+  const [lang, setLang] = useState(null);
   const [checked, setChecked] = useState(false);
+
+  useEffect(() => { }, [user]);
 
   const login = useCallback((token, user) => {
     setToken(token);
@@ -42,13 +46,28 @@ export function AuthProvider({ children }) {
     if (storedData) {
       if (storedData?.token) {
         loginData = login(storedData?.token, storedData?.user);
-        setTimeout(() => setChecked(true), 3000);
+        setTimeout(() => setChecked(true), 300);
       }
 
-      setTimeout(() => setChecked(true), 3000);
+      setTimeout(() => setChecked(true), 300);
     }
-    setTimeout(() => setChecked(true), 3000);
+    setTimeout(() => setChecked(true), 300);
   }, [loginData]);
+
+  useEffect(() => {
+    if (localStorage.getItem("lang")) {
+      setLang(localStorage.getItem("lang"));
+    } else {
+      setLang("ENG");
+      localStorage.setItem("lang", "ENG");
+    }
+  }, [])
+
+  const setLanguage = (pref) => {
+    setLang(pref);
+    localStorage.setItem("lang", pref)
+  }
+
 
   //Return
   return (
@@ -60,6 +79,9 @@ export function AuthProvider({ children }) {
         login,
         logout,
         setUser,
+        setToken,
+        lang,
+        setLanguage,
       }}
     >
       {children}

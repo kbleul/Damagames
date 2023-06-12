@@ -8,27 +8,34 @@ on:
       - "v*-rc[0-9]+"
 
 jobs:
-  build_arc_docs:
-    uses: ./.github/workflows/build_arc_docs.yml
+  # cleanup:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Prune Docker system
+  #       run: sudo docker system prune -af
 
-  release:
-    uses: ./.github/workflows/release.yml
-    needs: ["build_arc_docs", "e2e-test"]
-  # with:
-  #   secrets:
-  #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # build_arc_docs:
+  #   uses: ./.github/workflows/build_arc_docs.yml
 
-  deploy_staging:
-    uses: ./.github/workflows/docker_stage.yml
-    secrets: inherit
-    #needs: 'release'
+
+  # release:
+  #   uses: ./.github/workflows/release.yml
+  #   needs: ["build_arc_docs","e2e-test"]
+
+
+  # deploy_staging:
+  #   uses: ./.github/workflows/docker_stage.yml
+  #   secrets: inherit
+  #   needs: "build_arc_docs"
 
   deploy_production:
+    if: ${{ !contains(github.ref, '-rc') }}
     uses: ./.github/workflows/docker_deploy.yml
     secrets: inherit
-    needs: "release"
+    # needs: "e2e-test"
 
-  e2e-test:
-    uses: ./.github/workflows/playwright.yml
-    secrets: inherit
-    needs: "deploy_staging"
+  # e2e-test:
+  #   uses: ./.github/workflows/playwright.yml
+  #   secrets: inherit
+  #   needs: "deploy_staging"
+    

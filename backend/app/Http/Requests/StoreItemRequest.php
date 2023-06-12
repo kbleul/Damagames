@@ -25,9 +25,25 @@ class StoreItemRequest extends FormRequest
     {
         return [
             'name' => 'required|unique:stores,name',
+            'nameAm' => 'required',
+            'history' => 'required_if:type,Avatar|array',
+            'history.*.historyAmharic' => 'required',
+            'history.*.historyEnglish' => 'required',
+            'history.*.image' => 'nullable|',
             'price' => 'required|integer',
             'type' => 'required|in:Avatar,Crown,Board',
-            'item' => 'required|mimes:png,jpeg,jpg,svg|max:5000',
+            'item' => 'required|mimes:png,jpeg,jpg,svg,gif,bmp,bmp,tiff,webp|max:5000',
+            'color1' => 'required_if:type,Board',
+            'color2' => 'required_if:type,Board',
+            'lastMoveColor' => 'required_if:type,Board',
+            'board_pawn1' => 'required_if:type,Board',
+            'board_pawn2' => 'required_if:type,Board',
+            'board_pawn1_turn' => 'required_if:type,Board',
+            'board_pawn2_turn' => 'required_if:type,Board',
+            'board_pawn_king1' => 'required_if:type,Board',
+            'board_pawn_king2' => 'required_if:type,Board',
+            'board_pawn_king1_turn' => 'required_if:type,Board',
+            'board_pawn_king2_turn' => 'required_if:type,Board',
         ];
     }
 }

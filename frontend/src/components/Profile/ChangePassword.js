@@ -7,17 +7,23 @@ import axios from "axios";
 import { useAuth } from "../../context/auth";
 import toast, { Toaster } from "react-hot-toast";
 import { FaTimes } from "react-icons/fa";
+import { AiFillCheckCircle } from "react-icons/ai";
+import { Localization } from "../../utils/language";
+
 const ChangePassword = ({ changePasswordModal, setChangePasswordModal }) => {
-  const { token } = useAuth();
+  const { token, lang } = useAuth();
+
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState(null)
+
   const changePasswordValidationSchema = Yup.object().shape({
-    currentPassword: Yup.string().required("current password is required"),
-    password: Yup.string().min(6).required("new password is required"),
+    currentPassword: Yup.string().required(Localization["current password is required"][lang]),
+    password: Yup.string().min(6).required(Localization["new password is required"][lang]),
     confirmPassword: Yup.string().when("password", {
       is: (val) => (val && val.length > 0 ? true : false),
       then: Yup.string().oneOf(
         [Yup.ref("password")],
-        "new password does not match"
+        Localization["new password does not match"][lang]
       ),
     }),
   });
@@ -53,8 +59,12 @@ const ChangePassword = ({ changePasswordModal, setChangePasswordModal }) => {
         },
         {
           onSuccess: (responseData) => {
-            setChangePasswordModal(false);
-            toast("password changed successfully");
+
+            setSuccessMessage(Localization["Password changed."][lang])
+
+            setTimeout(() => {
+              setChangePasswordModal(false)
+            }, 800)
           },
           onError: (err) => {
             setErrorMessage(err?.response?.data?.data);
@@ -95,18 +105,15 @@ const ChangePassword = ({ changePasswordModal, setChangePasswordModal }) => {
                 leaveTo="opacity-0 scale-95"
               >
                 <Dialog.Panel
-                  className="w-full max-w-md transform overflow-hidden 
-            rounded-2xl bg-dark-bg p-6 text-left align-middle shadow-xl transition-all"
+                  className="border border-orange-500 bg-[#181920] w-full max-w-md transform overflow-hidden 
+            rounded-2xl p-6 text-left align-middle shadow-xl transition-all"
                 >
                   <div
                     onClick={() => setChangePasswordModal(false)}
-                    className={`absolute right-3 top-2 border-2 rounded-md  p-1 cursor-pointer`}
+                    className={`text-orange-color absolute rounded-full border-2 border-orange-color right-3 top-2 cursor-pointer`}
                   >
                     <FaTimes
-                      size={15}
-                      style={{
-                        color: "#fff",
-                      }}
+                      size={20}
                     />
                   </div>
                   <div
@@ -157,7 +164,7 @@ const ChangePassword = ({ changePasswordModal, setChangePasswordModal }) => {
                             <Field
                               as="input"
                               type="text"
-                              placeholder="currentPassword"
+                              placeholder={Localization["Current Password"][lang]}
                               name="currentPassword"
                               className={`rounded-[4px] pl-3 w-full h-[42px] bg-transparent font-medium  focus:outline-none focus:ring-0   text-gray-200 
                   ${errors.currentPassword && touched.currentPassword
@@ -175,7 +182,7 @@ const ChangePassword = ({ changePasswordModal, setChangePasswordModal }) => {
                             <Field
                               as="input"
                               type="text"
-                              placeholder="password"
+                              placeholder={Localization["New Password"][lang]}
                               name="password"
                               className={`rounded-[4px] pl-3 w-full h-[42px] bg-transparent font-medium  focus:outline-none focus:ring-0   text-gray-200 
                   ${errors.password && touched.password
@@ -192,7 +199,7 @@ const ChangePassword = ({ changePasswordModal, setChangePasswordModal }) => {
                             <Field
                               as="input"
                               type="text"
-                              placeholder="confirm Password"
+                              placeholder={Localization["Confirm Password"][lang]}
                               name="confirmPassword"
                               className={`rounded-[4px] pl-3 w-full h-[42px] bg-transparent font-medium  focus:outline-none focus:ring-0   text-gray-200 
                   ${errors.confirmPassword && touched.confirmPassword
@@ -207,6 +214,11 @@ const ChangePassword = ({ changePasswordModal, setChangePasswordModal }) => {
                               </p>
                             ) : null}
                           </div>
+
+                          {successMessage && <div className='w-full text-white flex items-center justify-center pt-2'>
+                            <p>{successMessage}</p>
+                            <AiFillCheckCircle size={20} className="text-green-300" />
+                          </div>}
                           <button
                             disabled={registerMutation.isLoading}
                             type="submit"
@@ -215,8 +227,8 @@ const ChangePassword = ({ changePasswordModal, setChangePasswordModal }) => {
                     hover:opacity-80"
                           >
                             {registerMutation.isLoading
-                              ? "Loading"
-                              : " Change Password"}
+                              ? <>{Localization["Loading"][lang]}</>
+                              : <>{Localization["Change Password"][lang]}</>}
                           </button>
                         </Form>
                       )}

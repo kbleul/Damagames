@@ -1,13 +1,22 @@
-import React, { useState } from "react";
+
 import { useAuth } from "../context/auth";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+import Avatar from "../assets/Avatar.png"
+import { Localization } from "../utils/language";
+import { assignBadgeToUser } from "../utils/utilFunc";
+import { useState } from "react";
 
-const SideMenu = () => {
+const SideMenu = ({ showMenu, setShowMenu, isprofile, badges }) => {
   const navigate = useNavigate();
-  const { user, token, logout } = useAuth();
-  const [showMenu, setShowMenu] = useState(false);
+  const { user, token, logout, lang } = useAuth();
+
+  const [badgeData, setBadgeData] = useState(null);
+  const LANG = { "AMH": "amharic", "ENG": "english" }
+
+
 
   const headers = {
     "Content-Type": "application/json",
@@ -36,63 +45,129 @@ const SideMenu = () => {
       logOutMutation.mutate(
         {},
         {
-          onSuccess: (responseData) => {},
-          onError: (err) => {},
+          onSuccess: (responseData) => { },
+          onError: (err) => { },
         }
       );
-    } catch (err) {}
+    } catch (err) { }
   };
+
+  const historyData = useQuery(
+    ["historyDataApi"],
+    async () =>
+      await axios.get(`${process.env.REACT_APP_BACKEND_URL}match-history`, {
+        headers,
+      }),
+    {
+      keepPreviousData: true,
+      refetchOnWindowFocus: false,
+      retry: false,
+      enabled: !!token,
+      onSuccess: (responseData) => {
+        let data = assignBadgeToUser(user?.game_point, badges)
+        let badge = badges.find(item => item.id === data.id)
+
+        setBadgeData(badge)
+        data = badge = []
+      },
+      onError: (res) => {
+        //logout user if token has expired
+        if (res?.response?.status === 401) {
+          logout();
+        }
+      }
+    }
+  );
+
 
   return (
     <>
-      {user && token ? (
-        <div className="absolute top-0 flex flex-col justify-end items-end w-[90%] mt-[3vh] ml-[5%]">
-          <button
-            className="mb-4 border-2 border-orange-500 rounded-full p-[.1rem]"
-            onClick={() => setShowMenu((prev) => !prev)}
-          >
-            <svg
-              width="27"
-              height="26"
-              viewBox="0 0 18 15"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M1.271 13.346C1.271 13.346 3.5 10.5 9 10.5C14.5 10.5 16.73 13.346 16.73 13.346M9 7C9.79565 7 10.5587 6.68393 11.1213 6.12132C11.6839 5.55871 12 4.79565 12 4C12 3.20435 11.6839 2.44129 11.1213 1.87868C10.5587 1.31607 9.79565 1 9 1C8.20435 1 7.44128 1.31607 6.87868 1.87868C6.31607 2.44129 6 3.20435 6 4C6 4.79565 6.31607 5.55871 6.87868 6.12132C7.44128 6.68393 8.20435 7 9 7Z"
-                stroke="#FF4C01"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
+      {user && token && <article className="md:w-4/5 md:ml-[10%] py-4 text-white w-full pb-2 rounded-bl-3xl" style={{
+        background: `linear-gradient(90deg, #FF4C01 0%, rgba(0, 0, 0, 0) 139.19%)`
+      }}>
 
-          {showMenu && (
-            <ul className="font-bold z-10 ml-24 w-[50%] max-w-[10rem] border border-orange-color border-b-0 text-orange-color cursor-pointer">
+        <section className="flex flex-col justify-end items-end">
+
+
+          {showMenu &&
+            <ul className="absolute right-0 top-12 bg-orange-color text-black font-bold z-10 ml-24 w-[50%] max-w-[10rem] border border-orange-color border-b-0 cursor-pointer">
               <li
-                className="text-orange-color hover:text-black py-2 w-full border-b border-orange-color hover:border-black hover:bg-orange-color"
+                className=" py-2 w-full border-b border-black hover:border-black hover:bg-orange-color"
                 onClick={() => {
                   setShowMenu(false);
                   navigate("/profile");
                 }}
               >
-                Profile
+                {Localization["Profile"][lang]}
               </li>
               <li
-                className="text-orange-color hover:text-black py-2 w-full border-b border-orange-color hover:border-black hover:bg-orange-color"
+                className="py-2 w-full border-b border-black hover:border-black hover:bg-orange-color"
                 onClick={() => {
                   userLogOut();
                 }}
               >
-                Logout
+                {Localization["Log out"][lang]}
               </li>
             </ul>
-          )}
-        </div>
-      ) : (
-        <></>
-      )}
+          }
+        </section>
+        {
+          !isprofile && <>
+            <article className="flex ">
+
+              <section className="w-[96%] md:[90%] flex  items-start justify-end ">
+                <div onClick={() => navigate("/profile")} className="w-14 h-14 md:w-16 md:h-16 border-2 rounded-full border-black  flex flex-col items-center justify-center font-bold">
+                  <img className="w-12 h-12 md:w-14 md:h-14  border rounded-full" src={user.profile_image ? user.profile_image : Avatar} alt="profile" />
+                </div>
+                <div className="border-b-2 border-black pb-2 w-4/5 md:[90%]">
+                  <div className="flex justify-between items-center w-full">
+                    <h5 className="text-left font-bold text-black text-base md:text-[1.2rem] ml-2">{user.username} ({badgeData && badgeData.name[LANG[lang]]})</h5>
+
+                  </div>
+                  <div className="text-xs flex justify-between sidemenu-wrapper">
+                    <p className="text-left ml-2">
+                      {Localization["Coins earned"][lang]} : {user.coin}
+                    </p>
+                    <p className="mr-2">
+                      {Localization["Games played"][lang]} - {historyData?.data?.data?.data?.played}
+                    </p>
+                  </div>
+
+                </div>
+              </section>
+
+              <div onClick={() => setShowMenu((prev) => !prev)} className="w-[4%] md:w-[10%] mr-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 32 32"><path fill="none" stroke="currentColor" stroke-width="2" d="M16 24a1 1 0 1 0 0-2a1 1 0 0 0 0 2Zm0-7a1 1 0 1 0 0-2a1 1 0 0 0 0 2Zm0-7a1 1 0 1 0 0-2a1 1 0 0 0 0 2Z" /></svg>
+              </div>
+            </article>
+
+            <section className="w-full flex items-center justify-center font-bold text-xs sidemenu-wrapper">
+
+
+              <div className="w-1/4 flex justify-center items-center gap-2">
+                <h5>
+                  {Localization["Wins"][lang]} -
+                </h5>
+                <p>{historyData?.data?.data?.data?.wins}</p>
+              </div>
+              <div className="w-1/4 flex justify-center items-center gap-2">
+                <h5>
+                  {Localization["Draw"][lang]} -
+                </h5>
+                <p>{historyData?.data?.data?.data?.draw}</p>
+              </div>
+              <div className="w-1/4 flex justify-center items-center gap-2">
+                <h5>
+                  {Localization["Loss"][lang]} -
+                </h5>
+                <p>{historyData?.data?.data?.data?.losses}</p>
+              </div>
+            </section>
+          </>
+        }
+
+      </article>}
+
     </>
   );
 };

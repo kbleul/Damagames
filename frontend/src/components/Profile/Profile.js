@@ -1,22 +1,52 @@
-import React, { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import React, { useEffect, useState } from "react";
 import ChangePassword from "./ChangePassword";
+import ChangeUsername from "./ChangeUsername";
+
 import { AiFillCamera } from "react-icons/ai";
-import { useQuery } from "@tanstack/react-query";
+import ChangeBoard from "./changeSettings/ChangeBoard";
+import ChangeCrown from "./changeSettings/ChangeCrown";
+import { AiFillCheckCircle } from "react-icons/ai";
+import { BsFillCaretDownFill, BsFillCaretUpFill } from "react-icons/bs";
+
+
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useAuth } from "../../context/auth";
 import ChangeProfile from "./ChangeProfile";
 import ForgotPassword from "./ForgotPassword";
-import PlayerHistory from "../../Scoreboard/PlayerHistory";
-import { Navigate, useNavigate } from "react-router-dom";
-import SideMenu from "../SideMenu";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { Localization } from "../../utils/language";
+import { LANG } from "../../utils/data"
+import { assignBadgeToUser } from "../../utils/utilFunc";
+
 
 const Profile = () => {
   const [changePasswordModal, setChangePasswordModal] = useState(false);
   const [forgotPasswordModal, setForgotPasswordModal] = useState(false);
   const [changeProfileModal, setChangeProfileModal] = useState(false);
-  const { user, token } = useAuth();
+  const [changeUsernameModal, setChangeUsernameModal] = useState(false);
+
+  const [myBoards, setMyBoards] = useState(null);
+  const [myCrowns, setMyCrowns] = useState(null);
+
+  const [selectedBoard, setSelectedBoard] = useState(null);
+  const [selectedCrown, setSelectedCrown] = useState(null);
+  const [showChangeBoardModal, setShowChangeBoardModal] = useState(false);
+  const [showChangeCrownModal, setShowChangeCrownModal] = useState(false);
+  const [showLangMenu, setShowLangMenu] = useState(false);
+
+  const [badgeData, setBadgeData] = useState(null);
+
+  const [isBadgeHistoryOpen, setIsBadgeHistoryOpen] = useState(false);
+
+
+
+  const { user, token, lang, setLanguage } = useAuth();
   const navigate = useNavigate();
+
+
+  const LANGs = { "AMH": "amharic", "ENG": "english" }
 
   const headers = {
     "Content-Type": "application/json",
@@ -24,19 +54,94 @@ const Profile = () => {
     Authorization: `Bearer ${token}`,
   };
 
-  const profileData = useQuery(
-    ["profileDataApi"],
+  const myItemsFetch = useQuery(
+    ["myItemsFetch"],
     async () =>
-      await axios.get(`${process.env.REACT_APP_BACKEND_URL}profile`, {
+      await axios.get(`${process.env.REACT_APP_BACKEND_URL}my-items`, {
         headers,
       }),
     {
       keepPreviousData: true,
       refetchOnWindowFocus: false,
       retry: false,
-      enabled: !!token,
+      onSuccess: (res) => {
+        setMyBoards([]);
+        setMyCrowns([]);
+
+        for (const [, value] of Object.entries(res.data.data.boards)) {
+          setMyBoards((prev) => [...prev, value]);
+        }
+        for (const [, value] of Object.entries(res.data.data.crowns)) {
+          setMyCrowns((prev) => [...prev, value]);
+        }
+      },
+      onError: (err) => {
+        toast(err.message);
+      },
     }
   );
+
+  const getAllBadges = useQuery(
+    ["getAllBadgesApi"],
+    async () =>
+      await axios.get(`${process.env.REACT_APP_BACKEND_URL}get-badges`, {
+        headers,
+      }),
+    {
+      keepPreviousData: true,
+      refetchOnWindowFocus: false,
+      retry: false,
+      onSuccess: (res) => {
+        let tempArr = res.data.data.reverse()
+
+        let data = assignBadgeToUser(user.game_point, tempArr)
+
+        let badge = res.data.data.find(item => item.id === data.id)
+        setBadgeData(badge)
+
+        tempArr = data = badge = []
+
+      },
+      enabled: !myItemsFetch.isLoading
+    }
+  );
+
+
+  const langMutation = useMutation(
+    async (newData) =>
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}update-language`,
+        newData,
+        {
+          headers,
+        }
+      ),
+    {
+      retry: false,
+    }
+  );
+
+  const langMutationSubmitHandler = async (values) => {
+    try {
+      langMutation.mutate(
+        { language: values },
+        {
+          onSuccess: (responseData) => {
+
+          },
+          onError: (err) => { },
+        }
+      );
+    } catch (err) { }
+  };
+
+
+
+  const saveLang = (pref) => {
+    setLanguage(pref);
+    langMutationSubmitHandler(pref)
+  }
+
 
   return (
     <article className="relative">
@@ -59,10 +164,9 @@ const Profile = () => {
           />
         </svg>
       </button>
-      <div className="h-[40vh]">
-        <SideMenu />
-        <div className="flex flex-col items-center space-y-2 pt-24 ml-[5%]">
-          <div className="flex items-center justify-end space-x-4">
+      <div className="mt-16">
+        <div className="flex flex-col items-center space-y-2">
+          <div className="flex items-center justify-end">
             <div className="relative flex items-center justify-center">
               <img
                 src={
@@ -71,39 +175,20 @@ const Profile = () => {
                     : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
                 }
                 alt=""
-                className="h-36 w-36 rounded-md object-cover"
+                className="h-36 w-36 rounded-full object-cover"
               />
               <button
                 onClick={() => setChangeProfileModal(true)}
-                className="bg-orange-bg text-white absolute 
-          bottom-0 w-full flex items-center justify-center space-x-2"
+                className="text-white absolute 
+          bottom-0 right-0  flex items-center justify-center space-x-4 h-8"
               >
-                <AiFillCamera />
-                <span className="whitespace-nowrap ">change profile</span>
+                <AiFillCamera size={20} />
               </button>
-            </div>
 
-            <button
-              className="bg-orange-bg p-1 rounded-md self-end"
-              onClick={() => setChangePasswordModal(true)}
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 18 18"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M3.88574 7.20002V4.27938C3.88574 3.74242 3.9915 3.21072 4.19699 2.71463C4.40248 2.21854 4.70366 1.76779 5.08335 1.3881C5.46304 1.00841 5.91379 0.707225 6.40988 0.501739C6.90597 0.296253 7.43767 0.190491 7.97463 0.190491C8.51159 0.190491 9.04329 0.296253 9.53938 0.501739C10.0355 0.707225 10.4862 1.00841 10.8659 1.3881C11.2456 1.76779 11.5468 2.21854 11.7523 2.71463C11.9578 3.21072 12.0635 3.74242 12.0635 4.27938V7.20002H13.8159C14.2807 7.20002 14.7264 7.38464 15.055 7.71327C15.3837 8.04191 15.5683 8.48764 15.5683 8.9524V9.59494C16.2285 9.729 16.8221 10.0872 17.2484 10.6088C17.6748 11.1305 17.9077 11.7835 17.9077 12.4572C17.9077 13.1309 17.6748 13.7839 17.2484 14.3055C16.8221 14.8271 16.2285 15.1853 15.5683 15.3194V15.9619C15.5683 16.4267 15.3837 16.8724 15.055 17.201C14.7264 17.5297 14.2807 17.7143 13.8159 17.7143H2.13336C1.6686 17.7143 1.22288 17.5297 0.894242 17.201C0.565607 16.8724 0.380981 16.4267 0.380981 15.9619L0.380981 8.9524C0.380981 8.48764 0.565607 8.04191 0.894242 7.71327C1.22288 7.38464 1.6686 7.20002 2.13336 7.20002H3.88574ZM5.054 4.27938C5.054 3.50478 5.36171 2.7619 5.90943 2.21418C6.45716 1.66645 7.20003 1.35874 7.97463 1.35874C8.74923 1.35874 9.49211 1.66645 10.0398 2.21418C10.5876 2.7619 10.8953 3.50478 10.8953 4.27938V7.20002H5.054V4.27938ZM10.3111 10.7048C9.84638 10.7048 9.40065 10.8894 9.07202 11.218C8.74338 11.5467 8.55876 11.9924 8.55876 12.4572C8.55876 12.9219 8.74338 13.3676 9.07202 13.6963C9.40065 14.0249 9.84638 14.2095 10.3111 14.2095H14.9842C15.4489 14.2095 15.8946 14.0249 16.2233 13.6963C16.5519 13.3676 16.7365 12.9219 16.7365 12.4572C16.7365 11.9924 16.5519 11.5467 16.2233 11.218C15.8946 10.8894 15.4489 10.7048 14.9842 10.7048H10.3111Z"
-                  fill="#191921"
-                />
-              </svg>
-            </button>
+            </div>
           </div>
         </div>
+
 
         <ChangePassword
           changePasswordModal={changePasswordModal}
@@ -117,11 +202,221 @@ const Profile = () => {
           setForgotPasswordModal={setForgotPasswordModal}
           forgotPasswordModal={forgotPasswordModal}
         />
+        <ChangeUsername
+          setChangeUsernameModal={setChangeUsernameModal}
+          changeUsernameModal={changeUsernameModal}
+          username={user?.username}
+        />
       </div>
 
-      <PlayerHistory playerName={profileData?.data?.data?.data?.username} />
+      <article className="text-white mt-4 flex flex-col gap-y-4 items-center justify-center">
 
-    </article>
+        {badgeData && <section className="w-1/2 md:max-w-[600px] mb-12 mt-2 flex flex-col items-center justify-center">
+
+          <div className=''>
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 32 32" fill="red"><path fill={badgeData?.color} d="m23 2l1.593 3L28 5.414l-2.5 2.253L26 11l-3-1.875L20 11l.5-3.333L18 5.414L21.5 5L23 2z" /><path fill={badgeData?.color} d="m22.717 13.249l-1.938-.498a6.994 6.994 0 1 1-5.028-8.531l.499-1.937A8.99 8.99 0 0 0 8 17.69V30l6-4l6 4V17.708a8.963 8.963 0 0 0 2.717-4.459ZM18 26.263l-4-2.667l-4 2.667V19.05a8.924 8.924 0 0 0 8 .006Z" /></svg>
+          </div>
+          <p className=" font-mono uppercase tracking-widest">{badgeData.name[LANGs[lang]]}</p>
+
+        </section>}
+
+
+        <section className="w-[70%] md:max-w-[600px] ">
+
+          <div
+            onClick={() => setChangeUsernameModal(true)}
+            className="relative w-full p-2 bg-orange-bg  cursor-pointer  border-gray-400/50 font-semibold text-white py-2 border rounded-md border-orange-colo  flex gap-2 items-center justify-center "
+          >
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
+
+            <p className="text-sm font-bold w-3/5">{user.username}</p>
+            <svg
+              width="14"
+              height="15"
+              viewBox="0 0 20 19"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M13.2933 0.792726C13.6683 0.417784 14.1769 0.207153 14.7073 0.207153C15.2376 0.207153 15.7462 0.417784 16.1213 0.792726L18.7073 3.37873C19.0822 3.75378 19.2928 4.2624 19.2928 4.79273C19.2928 5.32305 19.0822 5.83167 18.7073 6.20673L17.1213 7.79273L11.7073 2.37873L13.2933 0.792726ZM10.2933 3.79273L1.29328 12.7927C0.918177 13.1677 0.707389 13.6763 0.707275 14.2067V16.7927C0.707275 17.3232 0.917989 17.8319 1.29306 18.2069C1.66813 18.582 2.17684 18.7927 2.70728 18.7927H5.29328C5.82367 18.7926 6.33229 18.5818 6.70728 18.2067L15.7073 9.20673L10.2933 3.79273Z"
+                fill="#CCCCCC"
+              />
+            </svg>
+          </div>
+        </section>
+        <section className="w-[70%] md:max-w-[600px] ">
+          <div
+            onClick={() => setChangePasswordModal(true)}
+            className="py-2 border rounded-md border-orange-color text-orange-color text-sm flex gap-2 items-center justify-center "
+          >
+            <p className="w-3/5">
+              {Localization["Change Password"][lang]}
+            </p>
+            <svg
+              width="14"
+              height="15"
+              viewBox="0 0 25 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M5.09077 9.6V5.6C5.09077 4.8646 5.23562 4.1364 5.51705 3.45697C5.79847 2.77755 6.21097 2.16021 6.73097 1.6402C7.25098 1.12019 7.86832 0.707701 8.54774 0.426275C9.22717 0.144848 9.95537 0 10.6908 0C11.4262 0 12.1544 0.144848 12.8338 0.426275C13.5132 0.707701 14.1306 1.12019 14.6506 1.6402C15.1706 2.16021 15.5831 2.77755 15.8645 3.45697C16.1459 4.1364 16.2908 4.8646 16.2908 5.6V9.6H18.6908C19.3273 9.6 19.9377 9.85286 20.3878 10.3029C20.8379 10.753 21.0908 11.3635 21.0908 12V12.88C21.995 13.0636 22.8079 13.5542 23.3919 14.2686C23.9758 14.983 24.2948 15.8773 24.2948 16.8C24.2948 17.7227 23.9758 18.617 23.3919 19.3314C22.8079 20.0458 21.995 20.5364 21.0908 20.72V21.6C21.0908 22.2365 20.8379 22.847 20.3878 23.2971C19.9377 23.7471 19.3273 24 18.6908 24H2.69077C2.05425 24 1.4438 23.7471 0.993715 23.2971C0.543628 22.847 0.290771 22.2365 0.290771 21.6L0.290771 12C0.290771 11.3635 0.543628 10.753 0.993715 10.3029C1.4438 9.85286 2.05425 9.6 2.69077 9.6H5.09077ZM6.69077 5.6C6.69077 4.53913 7.1122 3.52172 7.86234 2.77157C8.61249 2.02143 9.6299 1.6 10.6908 1.6C11.7516 1.6 12.7691 2.02143 13.5192 2.77157C14.2693 3.52172 14.6908 4.53913 14.6908 5.6V9.6H6.69077V5.6ZM13.8908 14.4C13.2542 14.4 12.6438 14.6529 12.1937 15.1029C11.7436 15.553 11.4908 16.1635 11.4908 16.8C11.4908 17.4365 11.7436 18.047 12.1937 18.4971C12.6438 18.9471 13.2542 19.2 13.8908 19.2H20.2908C20.9273 19.2 21.5377 18.9471 21.9878 18.4971C22.4379 18.047 22.6908 17.4365 22.6908 16.8C22.6908 16.1635 22.4379 15.553 21.9878 15.1029C21.5377 14.6529 20.9273 14.4 20.2908 14.4H13.8908Z"
+                fill="white"
+              />
+            </svg>
+          </div>
+        </section>
+
+        <section className="w-[70%] md:max-w-[600px] ">
+          <div className="py-2 border rounded-md border-orange-color text-orange-color text-sm flex gap-2 items-center justify-center ">
+            <p>+{user.phone}</p>
+          </div>
+        </section>
+
+        <div className="flex flex-col w-1/2 text-white w-[70%] md:max-w-[600px]">
+
+          <button className="py-2 border rounded-md border-orange-color text-orange-color text-sm flex gap-2 items-center justify-center "
+            onClick={() => setShowLangMenu(prev => !prev)}>{LANG[lang]}
+            {showLangMenu ? <BsFillCaretUpFill /> : <BsFillCaretDownFill />}
+          </button>
+
+          {showLangMenu && <ul className="w-full text-sm text-orange-color border-b border-orange-color border-b-0 mt-1">
+            {Object.keys(LANG).filter(tempL => tempL !== lang).map(tempL =>
+              (<li onClick={() => saveLang(tempL)} className="cursor-pointer hover:border-b-orange-400 py-2 border-b rounded-md border-orange-color text-orange-color text-sm flex gap-2 items-center justify-center ">{LANG[tempL]}</li>))}
+          </ul>}
+
+
+        </div>
+      </article>
+
+      {
+        myBoards && (
+          <article
+            className="mt-16 mb-2 border-2 rounded-3xl mx-2 md:w-1/2 md:ml-[25%]"
+            style={{
+              background: `linear-gradient(90deg, #FF4C01 0%, rgba(0, 0, 0, 0) 139.19%)`,
+            }}
+          >
+            <h2 className="text-black font-extrabold">
+              {Localization["My Boards"][lang]}
+            </h2>
+
+            {myBoards?.length === 0 ? (
+              <div className="text-white py-4">
+                <p>{Localization["My Boards"][lang]}
+                </p>
+                <p>{Localization["You don't have any boards yet."][lang]}
+                </p>
+                <button
+                  className="bg-white text-black font-bold px-8 py-2 rounded-3xl mt-2 cursor-pointer"
+                  onClick={() => navigate("/store")}
+                >
+                  {Localization["Shop"][lang]}
+                </button>
+              </div>
+            ) : (
+              <section className="flex overflow-x-scroll text-white">
+                {myBoards?.map((board) => (
+                  <div
+                    onClick={() => {
+                      user.default_board?.id !== board.id &&
+                        setSelectedBoard(board);
+                      user.default_board?.id !== board.id &&
+                        setShowChangeBoardModal(true);
+                    }}
+                    className="flex-shrink-0 w-1/2 flex flex-col items-center justify-center pb-3"
+                    key={board.id}
+                  >
+                    <h2 className="text-center">{board.name}</h2>
+                    <div className="relative max-h-[30vh] w-[70%]">
+                      <img className="" src={board.item} alt="" />
+                      {user.default_board?.id === board.id && (
+                        <AiFillCheckCircle
+                          size={30}
+                          className="absolute bottom-0 right-0 text-green-400"
+                        />
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </section>
+            )}
+          </article>
+        )
+      }
+      {
+        myCrowns && (
+          <article
+            className="mt-16 mb-2 border-2 rounded-3xl mx-2 md:w-1/2 md:ml-[25%]"
+            style={{
+              background: `linear-gradient(90deg, #FF4C01 0%, rgba(0, 0, 0, 0) 139.19%)`,
+            }}
+          >
+            <h2 className="text-black font-extrabold">
+              {Localization["My Crowns"][lang]}
+            </h2>
+
+            {myCrowns?.length === 0 ? (
+              <div className="text-white py-4">
+                <p>{Localization["You don't have any crowns yet."][lang]}</p>
+                <p>{Localization["Go to the store to buy one"][lang]}
+                </p>
+                <button
+                  className="bg-white text-black font-bold px-8 py-2 rounded-3xl mt-2 cursor-pointer"
+                  onClick={() => navigate("/store")}
+                >
+                  {Localization["Shop"][lang]}
+                </button>
+              </div>
+            ) : (
+              <section className="flex overflow-x-scroll text-white">
+                {myCrowns?.map((crown) => (
+                  <div
+                    onClick={() => {
+                      user.default_crown?.id !== crown.id &&
+                        setSelectedCrown(crown);
+                      user.default_crown?.id !== crown.id &&
+                        setShowChangeCrownModal(true);
+                    }}
+                    className="flex-shrink-0 w-1/2 flex flex-col items-center justify-center pb-3"
+                    id={crown.id}
+                  >
+                    <h2 className="text-center">{crown.name}</h2>
+                    <div className="relative max-h-[30vh] w-[70%]">
+                      <img className="" src={crown.item} alt="" />
+                      {user.default_crown?.id === crown.id && (
+                        <AiFillCheckCircle
+                          size={30}
+                          className="absolute bottom-0 right-0  text-green-400"
+                        />
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </section>
+            )}
+          </article>
+        )
+      }
+
+      <ChangeBoard
+        board={selectedBoard}
+        showChangeBoardModal={showChangeBoardModal}
+        setShowChangeBoardModal={setShowChangeBoardModal}
+      />
+      <ChangeCrown
+        crown={selectedCrown}
+        showChangeCrownModal={showChangeCrownModal}
+        setShowChangeCrownModal={setShowChangeCrownModal}
+      />
+
+
+
+    </article >
   );
 };
 

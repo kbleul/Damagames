@@ -6,11 +6,9 @@ import socket from "./utils/socket.io";
 import {
   Route,
   Routes,
-  Navigate,
-  NavLink,
-  useNavigate,
+  Navigate
 } from "react-router-dom";
-import { Circles } from "react-loader-spinner";
+import ToastContainer from "./utils/ToastContainer";
 //'G-YM283P3T0J'
 const tagManagerArgs = {
   gtmId: process.env.REACT_APP_GTM_ID,
@@ -18,6 +16,8 @@ const tagManagerArgs = {
 
 const SplashScreen = React.lazy(() => import("./components/SplashScreen"));
 // import SplashScreen from "./components/SplashScreen"
+const Success = React.lazy(() => import("./components/Success"));
+
 const CreateGame = React.lazy(() => import("./components/CreateGame"));
 const JoinGame = React.lazy(() => import("./components/JoinGame"));
 const NewGame = React.lazy(() => import("./components/NewGame"));
@@ -37,29 +37,27 @@ const Game = React.lazy(() => import("./Game/Game"));
 const Store = React.lazy(() => import("./components/Store/Store"));
 const ErrorPage = React.lazy(() => import("./components/ErrorPage"));
 const PrivacyPolicy = React.lazy(() => import("./components/PrivacyPolicy"));
+const AvatarHistory = React.lazy(() => import("./components/Store/AvatarHistory"))
+
+
+
 const App = () => {
+
   const { checked } = useHome();
   const { user, token } = useAuth();
 
-  // function to delete cookies
-  function deleteCookies() {
-    var Cookies = document.cookie.split(";");
-    // set 1 Jan, 1970 expiry for every cookies
-    for (let i = 0; i < Cookies.length; i++)
-      document.cookie =
-        Cookies[i] + "=;expires=" + new Date(0).toUTCString();
-  }
 
   useEffect(() => {
     TagManager.initialize(tagManagerArgs);
-    deleteCookies()
   }, []);
 
   useEffect(() => {
     socket.on("connect", () => {
-      console.log("Connected to Socket.io server");
+      console.log("Connected to Socket.io server ");
     });
+
   });
+
 
   const HomeComp = () => {
     return (
@@ -82,6 +80,8 @@ const App = () => {
           <Route path="/join-public" element={<PublicGames />} />
           <Route path="/new-game-public" element={<NewGamePublic />} />
           <Route path="/store" element={<Store />} />
+          <Route path="/avatar-history/:id" element={<AvatarHistory />} />
+          <Route path="/payment/success" element={<Success />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="*" element={<CreateGame />} />
         </Routes>
@@ -109,10 +109,7 @@ const App = () => {
           <Route path="/join-public" element={<PublicGames />} />
           <Route path="/new-game-public" element={<NewGamePublic />} />
           <Route path="/store" element={<Store />} />
-          <Route
-            path="/profile"
-            element={user && token ? <Profile /> : <Navigate to="/login" />}
-          />
+          <Route path="/avatar-history/:id" element={<AvatarHistory />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="*" element={<Navigate to="/create-game" />} />
         </Routes>
@@ -130,6 +127,7 @@ const App = () => {
     <>
       {checked ? (
         <Suspense fallback={<SplashScreen />}>
+          <ToastContainer />
           <RoutComp />
         </Suspense>
       ) : (

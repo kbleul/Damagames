@@ -14,7 +14,7 @@ class TelebirrController extends Controller
     {
         $outTradeNo = uniqid();
         $data = [
-            'outTradeNo' => uniqid(),
+            'outTradeNo' => $outTradeNo,
             'subject' => config('telebirr.subject'),
             'totalAmount' => $request->price,
             'shortCode' => config('telebirr.short_code'),
@@ -26,6 +26,7 @@ class TelebirrController extends Controller
             'nonce' => uniqid(),
             'timestamp' => strtotime(date('Y-m-d H:i:s')),
         ];
+
 
 
         $data['appKey'] = config('telebirr.app_key');
@@ -73,22 +74,26 @@ class TelebirrController extends Controller
 
         $ussd = base64_encode($crypto);
 
+        Telebirr::create([
+            'user_id' => auth()->id(),
+            'outTradeNo' => $outTradeNo,
+            'totalAmount' => $request->price,
+        ]);
+
         $returnContent = Http::post(config('telebirr.web_url'), [
             'appid' => config('telebirr.app_id'),
             'sign' => $sign,
             'ussd' => $ussd
         ]);
 
-        Telebirr::create([
-            'user_id' => auth()->id(),
-            'outTradeNo' => $outTradeNo,
-        ]);
+
 
         return $returnContent->json();
     }
 
     public function response(Request $request)
     {
+        // dd(config('telebirr.public_key'));
         $pubPem = chunk_split(config('telebirr.public_key'), 64, "\n");
         $pubPem = "-----BEGIN PUBLIC KEY-----\n" . $pubPem . "-----END PUBLIC KEY-----\n";
         $public_key = openssl_pkey_get_public($pubPem);
@@ -106,19 +111,20 @@ class TelebirrController extends Controller
             $decrypted .= $partial;
         }
 
-        Log::info("\n\ndecrypted_message: " . $decrypted);
+        Log::info("\n\ndecrypted_message: " . $decrypted . " \n" . $request->getContent());
 
         $telebirr = Telebirr::where('outTradeNo', json_decode($decrypted)->outTradeNo)->first();
 
         $user =  User::find($telebirr->user_id);
 
         $user->update([
-            'current_point' => json_decode($decrypted)->totalAmount * 100
+            'current_point' => (json_decode($decrypted)->totalAmount * 100) + $user->current_point
         ]);
+
         $telebirr->update([
             'transactionNo' => json_decode($decrypted)->transactionNo,
             'msisdn' => json_decode($decrypted)->msisdn,
-            'totalAmount' => json_decode($decrypted)->totalAmount,
+            'totalAmount' => json_decode($decrypted)->totalAmount ?? $telebirr->totalAmount,
             'tradeDate' => json_decode($decrypted)->tradeDate,
             'tradeStatus' => json_decode($decrypted)->tradeStatus,
         ]);

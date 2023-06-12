@@ -1,133 +1,135 @@
-
-
-import React, { useEffect } from 'react'
+import React, { Fragment, useState } from "react";
 import axios from "axios";
-import { useMutation, } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { Dialog, Transition } from "@headlessui/react";
 
 import { useAuth } from "../../../context/auth";
-import { BsFillPatchCheckFill } from "react-icons/bs";
-import { AiFillStar } from "react-icons/ai";
 
-import toast, { Toaster } from "react-hot-toast";
-import { useNavigate } from 'react-router-dom';
-
+import { FaTimes } from "react-icons/fa";
+import { AiFillCheckCircle } from "react-icons/ai";
+import { Localization } from "../../../utils/language";
 
 const ChangeCrown = ({
-    myCrowns,
-    selected,
-    selectedItem,
-    setSelected,
-    setSelectedItem,
-    setErrorMessage,
-    setChangeProfileModal }) => {
+  crown,
+  showChangeCrownModal,
+  setShowChangeCrownModal,
+}) => {
+  const { login, token, user, lang } = useAuth();
+  const [successMessage, setSuccessMessage] = useState(null);
 
-    useEffect(() => {
-        setSelected(null)
-        setSelectedItem([])
-        setErrorMessage("")
-    }, [])
+  const headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    Authorization: `Bearer ${token}`,
+  };
 
-    const navigate = useNavigate()
-    const { login, token, user } = useAuth();
-
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
-    //for items that are bought from store
-    const crownSelectMutation = useMutation(
-        async (newData) =>
-            await axios.post(
-                `${process.env.REACT_APP_BACKEND_URL}select-crown/${selectedItem.id}`,
-                newData,
-                {
-                    headers,
-                }
-            ),
+  //for items that are bought from store
+  const crownSelectMutation = useMutation(
+    async (newData) =>
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}select-crown/${crown?.id}`,
+        newData,
         {
-            retry: false,
+          headers,
         }
-    );
+      ),
+    {
+      retry: false,
+    }
+  );
 
-    const crownSelectSubmitHandler = async (values) => {
-        try {
-            crownSelectMutation.mutate(
-                {},
-                {
-                    onSuccess: (responseData) => {
+  const crownSelectSubmitHandler = async (values) => {
+    try {
+      crownSelectMutation.mutate(
+        {},
+        {
+          onSuccess: (responseData) => {
+            setSuccessMessage(Localization["Crown changed."][lang])
 
-                        login(token, { ...user, default_crown: selectedItem.img });
-                        setChangeProfileModal(false);
-                        toast("Default crown changed successfully");
-                    },
-                    onError: (err) => {
-                        setErrorMessage(err?.response?.data?.data);
-                    },
-                }
-            );
-        } catch (err) { }
-    };
+            setTimeout(() => {
+              login(token, { ...user, default_crown: crown });
+            }, 800);
+          },
+          onError: (err) => {
+          },
+        }
+      );
+    } catch (err) { }
+  };
 
-    return (
-        <div className="flex flex-col items-center space-y-2 w-full">
-            <div className="grid grid-cols-3 gap-y-2 items-center space-x-3 just-fy-center">
-                {myCrowns.map((crown, i) => (
-                    < div
-                        key={i === "0" ? "pl-3 relative" : "relative"}
-                        className="relative"
-                        onClick={() => {
-                            if (!crown.price || parseInt(user.coin) >= crown.price) {
-                                setSelected(i);
-                                setSelectedItem({ id: crown.id, img: crown.item })
-                            }
+  return (
+    <Transition appear show={showChangeCrownModal} as={Fragment}>
+      <Dialog
+        as="div"
+        className="relative z-10"
+        onClose={() => setShowChangeCrownModal(true)}
+      >
+        <Transition.Child
+          as={Fragment}
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="fixed inset-0 bg-black bg-opacity-25" />
+        </Transition.Child>
 
-                        }}
-                    >
-                        {selected === i && (
-                            <BsFillPatchCheckFill className="absolute bottom-2 right-2 text-orange-color" />
-                        )}
-
-                        {user.default_crown && !selected && crown.item === user.default_crown &&
-                            <AiFillStar className="absolute bottom-2 right-2 text-orange-color" />
-                        }
-
-                        <img
-                            src={crown.item}
-                            alt=""
-                            className={crown.price ? "h-20 w-20 object-cover opacity-4 0" : "h-20 w-20 object-cover"}
+        <div className="fixed inset-0 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4 text-center">
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95"
+            >
+              <Dialog.Panel
+                className="border border-orange-500 bg-[#181920] w-full max-w-md transform overflow-hidden 
+            rounded-2xl p-6 text-left align-middle shadow-xl transition-all"
+              >
+                <div
+                  onClick={() => setShowChangeCrownModal(false)}
+                  className={`text-orange-color absolute rounded-full border-2 border-orange-color right-3 top-2 cursor-pointer`}
+                >
+                  <FaTimes size={20} />
+                </div>
+                <div className="flex flex-col items-center space-y-2 w-full">
+                  <div className="text-white mb-4 flex flex-col items-center space-x-3 just-fy-center">
+                    <h2>{crown?.name}</h2>
+                    <img className="w-1/2" src={crown?.item} alt="" />
+                    {successMessage && (
+                      <div className="text-white flex items-center justify-center pt-2">
+                        <p>{successMessage}</p>
+                        <AiFillCheckCircle
+                          size={20}
+                          className="text-green-300"
                         />
+                      </div>
+                    )}
+                  </div>
 
-
-                    </div>
-                ))}
-
-            </div>
-
-            {selected !== null && (
-                <button
+                  <button
                     disabled={crownSelectMutation.isLoading}
                     onClick={crownSelectSubmitHandler}
                     className="rounded-md bg-orange-bg text-white font-medium w-[70%] p-2"
-                >
-                    {crownSelectMutation.isLoading ? "Loading..." : "Update"}
-                </button>
-            )
-            }
-
-            {myCrowns.length === 0 &&
-                <div className='text-sm mt-4 flex flex-col justify-center items-center'>
-                    <p className='text-white text-center'>Buy crowns from our store to change your preference !</p>
-                    <button onClick={() => navigate("/store")}
-                        className="mt-4 rounded-md bg-orange-bg text-black font-bold w-[40%] p-2"
-                    > Store</button>
+                  >
+                    {" "}
+                    {crownSelectMutation.isLoading
+                      ? <>{Localization["Loading"][lang]}</>
+                      : <>{Localization["Update default crown"][lang]}</>}
+                  </button>
                 </div>
-            }
+              </Dialog.Panel>
+            </Transition.Child>
+          </div>
+        </div>
+      </Dialog>
+    </Transition>
+  );
+};
 
-
-        </div >
-    )
-}
-
-export default ChangeCrown
+export default ChangeCrown;

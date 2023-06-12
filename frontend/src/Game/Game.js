@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext, useRef } from "react";
 import Board from "./components/Board.js";
 import { returnPlayerName } from "./components/utils.js";
 import "./game.css";
-import { motion, useAnimation } from "framer-motion";
+import { motion } from "framer-motion";
 import { getMoves, movePiece } from "./components/ReactCheckers";
 import WinnerModal from "./components/WinnerModal";
 import ExitWarningModal from "./components/ExitWarningModal";
@@ -27,10 +27,25 @@ import { ThreeDots } from "react-loader-spinner";
 import UserLeavesModal from "./components/UserLeavesModal.js";
 import { clearCookie } from "../utils/data.js";
 import { useAuth } from "../context/auth.js";
-import { IoMdLogIn } from "react-icons/io";
+import NewGameRequestModal from "./components/NewGameRequestModal.js";
+//crowns
+//crowns
+// import yellowCoin from "../assets/yellow-coin.svg";
+// import yellowWhiteCoin from "../assets/yellow-coin-white.svg";
+// import redNegus from "../assets/redNegus.svg";
+// import yellowNegus from "../assets/YellowNegus.svg";
+// import yellowNegusWhite from "../assets/YellowNegus-white.svg";
+// import orangeCoin from "../assets/orange-coin.svg";
+// import orangeWhiteCoin from "../assets/orange-coin-white.svg";
+// import redNegusWhite from "../assets/redNegus-white.svg";
+// import { useHome } from "../context/HomeContext.js";
+
+import { Localization } from "../utils/language";
+
 const Game = () => {
   const { id } = useParams();
-  const { user, token } = useAuth();
+  const { user, token, lang } = useAuth();
+  const [tourCounter, setTourCounter] = useState(10);
   const navigate = useNavigate();
   const [playMove] = useSound(moveSound);
   const [playStrike] = useSound(strikeSound);
@@ -46,7 +61,7 @@ const Game = () => {
   const [MyTurn, setMyTurn] = useContext(TurnContext);
   const [isWinnerModalOpen, setIsWinnerModalOpen] = useState(false);
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
-
+  const [isNewGameModalOpen, setIsNewGameModalOpen] = useState(false);
   const [timerP1, setTimerP1] = useState(15);
   const [timerP2, setTimerP2] = useState(15);
 
@@ -67,6 +82,218 @@ const Game = () => {
   const [messageInputOpen, setMessageInputOpen] = useState(false);
   const [latestMessage, setLatestMessage] = useState(null);
   const [showResetWaiting, setShowResetWaiting] = useState(false);
+  const [msgSender, setMsgSender] = useState(null);
+
+  //send king icon
+  const [firstMove, setFirstMove] = useState(true);
+
+  //trach previous game states for undo
+  const [matchHistory, setMatchHistory] = useState([])
+  const [redoHistory, setRedoHistory] = useState([])
+
+  const [undoCount, setUndoCount] = useState(0)
+  const [showUndoWarning, setShowUndoWarning] = useState(false)
+  const [showRedoPrompt, setShowRedoPrompt] = useState(false)
+  const [showAllMoves, setShowAllMoves] = useState(true)
+
+  const undoAllowedAmount = 3
+
+  // const { playerCrown, playerBoard } = useHome();
+  // useEffect(() => {
+  //   document.documentElement.style.setProperty(
+  //     "--playerTwoPawn",
+  //     !user && !token
+  //       ? `url(${yellowCoin})`
+  //       : user?.default_board
+  //         ? `url(${user?.default_board?.board_pawn2})`
+  //         : `url(${yellowCoin})`
+  //   );
+  //   document.documentElement.style.setProperty(
+  //     "--playerTwoPawnTurn",
+  //     !user && !token
+  //       ? `url(${yellowWhiteCoin})`
+  //       : user?.default_board
+  //         ? `url(${user?.default_board?.board_pawn2_turn})`
+  //         : `url(${yellowWhiteCoin})`
+  //   );
+
+  //   document.documentElement.style.setProperty(
+  //     "--playerOnePawn",
+  //     !user && !token
+  //       ? `url(${orangeCoin})`
+  //       : user?.default_board
+  //         ? `url(${user?.default_board?.board_pawn1})`
+  //         : `url(${orangeCoin})`
+  //   );
+  //   document.documentElement.style.setProperty(
+  //     "--playerOnePawnTurn",
+  //     !user && !token
+  //       ? `url(${orangeWhiteCoin})`
+  //       : user?.default_board
+  //         ? `url(${user?.default_board?.board_pawn1_turn})`
+  //         : `url(${orangeWhiteCoin})`
+  //   );
+  //   //king icon and king turn
+  //   if (id) {
+  //     //king icon
+  //     document.documentElement.style.setProperty(
+  //       "--playerTwoPawnKing",
+  //         !user && !token
+  //         ? `url(${yellowNegusWhite})`
+  //         : user?.default_crown?.board_pawn_king2_turn
+  //         ? `url(${user?.default_crown?.board_pawn_king2_turn})`
+  //         : user?.default_board?.board_pawn_king2_turn
+  //         ? `url(${user?.default_board?.board_pawn_king2_turn})`
+  //         : `url(${yellowNegusWhite})`
+  //       //
+  //     );
+  //     document.documentElement.style.setProperty(
+  //       "--playerOnePawnKing",
+  //       !user && !token
+  //         ? `url(${redNegus})`
+  //         : user?.default_crown?.board_pawn_king1
+  //         ? `url(${user?.default_crown?.board_pawn_king1})`
+  //         : user?.default_board?.board_pawn_king1
+  //         ? `url(${user?.default_board?.board_pawn_king1})`
+  //         : `url(${redNegus})`
+  //     );
+  //     document.documentElement.style.setProperty(
+  //       "--playerOnePawnKingTurn",
+  //       !user && !token
+  //         ? `url(${redNegusWhite})`
+  //         : user?.default_crown?.board_pawn_king1_turn
+  //         ? `url(${user?.default_crown?.board_pawn_king1_turn})`
+  //         : user?.default_board?.board_pawn_king1_turn
+  //         ? `url(${user?.default_board?.board_pawn_king1_turn})`
+  //         : `url(${redNegusWhite})`
+  //       //
+  //     );
+  //   } else {
+  //     console.log("playingCrowns", playingCrowns);
+  //     if (isPlayerOne) {
+  //       document.documentElement.style.setProperty(
+  //         "--playerTwoPawnKing",
+  //         !user && !token
+  //           ? `url(${yellowNegus})`
+  //           : JSON.parse(localStorage.getItem("pawns"))?.normal
+  //           ? `url(${JSON.parse(localStorage.getItem("pawns"))?.normal})`
+  //           : user?.default_crown?.board_pawn_king2
+  //           ? `url(${user?.default_crown?.board_pawn_king2})`
+  //           : user?.default_board?.board_pawn_king2
+  //           ? `url(${user?.default_board?.board_pawn_king2})`
+  //           : `url(${yellowNegus})`
+  //       );
+  //       //king icon turn
+  //       document.documentElement.style.setProperty(
+  //         "--playerTwoPawnKingTurn",
+  //         !user && !token
+  //           ? `url(${yellowNegusWhite})`
+  //           : JSON.parse(localStorage.getItem("pawns"))?.active
+  //           ? `url(${JSON.parse(localStorage.getItem("pawns"))?.active})`
+  //           : user?.default_crown?.board_pawn_king2_turn
+  //           ? `url(${user?.default_crown?.board_pawn_king2_turn})`
+  //           : user?.default_board?.board_pawn_king2_turn
+  //           ? `url(${user?.default_board?.board_pawn_king2_turn})`
+  //           : `url(${yellowNegusWhite})`
+  //       );
+  //       document.documentElement.style.setProperty(
+  //         "--playerOnePawnKing",
+  //         !user && !token
+  //           ? `url(${redNegus})`
+  //           : user?.default_crown?.board_pawn_king1
+  //           ? `url(${user?.default_crown?.board_pawn_king1})`
+  //           : user?.default_board?.board_pawn_king1
+  //           ? `url(${user?.default_board?.board_pawn_king1})`
+  //           : `url(${redNegus})`
+  //       );
+  //       document.documentElement.style.setProperty(
+  //         "--playerOnePawnKingTurn",
+  //         !user && !token
+  //           ? `url(${redNegusWhite})`
+  //           : user?.default_crown?.board_pawn_king1_turn
+  //           ? `url(${user?.default_crown?.board_pawn_king1_turn})`
+  //           : user?.default_board?.board_pawn_king1_turn
+  //           ? `url(${user?.default_board?.board_pawn_king1_turn})`
+  //           : `url(${redNegusWhite})`
+  //       );
+  //     } else {
+  //       //it is second player
+  //       document.documentElement.style.setProperty(
+  //         "--playerOnePawnKing",
+  //         !user && !token
+  //           ? `url(${redNegus})`
+  //           : JSON.parse(localStorage.getItem("pawns"))?.normal
+  //           ? `url(${JSON.parse(localStorage.getItem("pawns"))?.normal})`
+  //           : user?.default_crown?.board_pawn_king1
+  //           ? `url(${user?.default_crown?.board_pawn_king1})`
+  //           : user?.default_board?.board_pawn_king1
+  //           ? `url(${user?.default_board?.board_pawn_king1})`
+  //           : `url(${redNegus})`
+  //       );
+  //       //king icon turn
+  //       document.documentElement.style.setProperty(
+  //         "--playerOnePawnKingTurn",
+  //         !user && !token
+  //           ? `url(${redNegusWhite})`
+  //           : JSON.parse(localStorage.getItem("pawns"))?.active
+  //           ? `url(${JSON.parse(localStorage.getItem("pawns"))?.active})`
+  //           : user?.default_crown?.board_pawn_king1_turn
+  //           ? `url(${user?.default_crown?.board_pawn_king1_turn})`
+  //           : user?.default_board?.board_pawn_king1_turn
+  //           ? `url(${user?.default_board?.board_pawn_king1_turn})`
+  //           : `url(${redNegusWhite})`
+  //       );
+  //       document.documentElement.style.setProperty(
+  //         "--playerTwoPawnKing",
+  //         !user && !token
+  //           ? `url(${yellowNegus})`
+  //           : user?.default_crown?.board_pawn_king2
+  //           ? `url(${user?.default_crown?.board_pawn_king2})`
+  //           : user?.default_board?.board_pawn_king2
+  //           ? `url(${user?.default_board?.board_pawn_king2})`
+  //           : `url(${yellowNegus})`
+  //       );
+  //       document.documentElement.style.setProperty(
+  //         "--playerTwoPawnKingTurn",
+  //         !user && !token
+  //           ? `url(${yellowNegusWhite})`
+  //           : user?.default_crown?.board_pawn_king2_turn
+  //           ? `url(${user?.default_crown?.board_pawn_king2_turn})`
+  //           : user?.default_board?.board_pawn_king2_turn
+  //           ? `url(${user?.default_board?.board_pawn_king2_turn})`
+  //           : `url(${yellowNegusWhite})`
+  //       );
+  //     }
+  //   }
+
+  //   //board and pawn
+  //   document.documentElement.style.setProperty(
+  //     "--playerSquareBoard",
+  //     !user && !token
+  //       ? `#181920`
+  //       : user?.default_board
+  //         ? user?.default_board?.color?.color1
+  //         : `#181920`
+  //   );
+  // document.documentElement.style.setProperty(
+  //   "--playerBoardColor",
+  //   !user && !token
+  //     ? `#2c2c37`
+  //     : user?.default_board
+  //       ? user?.default_board?.color?.color2
+  //       : `#2c2c37`
+  // );
+  //   // last move shower
+  //   document.documentElement.style.setProperty(
+  //     "--lastMoveColor",
+  //     !user && !token
+  //       ? `#858484`
+  //       : user?.default_board
+  //         ? user?.default_board?.color?.lastMoveColor
+  //         : `#858484`
+  //   );
+  // }, [id, user, token]);
+
 
   useEffect(() => {
     if (!id && !localStorage.getItem("gameId")) {
@@ -75,6 +302,7 @@ const Game = () => {
       navigate("/create-game");
     }
   }, []);
+
 
   const headers = {
     "Content-Type": "application/json",
@@ -155,7 +383,7 @@ const Game = () => {
 
     return board;
   }
-  const [latestBoardState, setLatestBoardState] = useState(createBoard());
+
   const [gameState, setGameState] = useState({
     players: 2,
     history: [
@@ -185,7 +413,11 @@ const Game = () => {
     return history[history.length - 1];
   }
 
+
   function handleClick(coordinates) {
+
+    redoHistory.length > 0 && setRedoHistory([])
+
     if (gameState.winner !== null) {
       return;
     }
@@ -229,6 +461,9 @@ const Game = () => {
         clickedSquare.isKing,
         false
       );
+
+      console.log(clickedSquare.isKing)
+
       setGameState({
         ...gameState,
         activePiece: coordinates,
@@ -252,6 +487,7 @@ const Game = () => {
         return;
       }
 
+      setMatchHistory(prev => [postMoveState, ...prev])
       updateStatePostMove(postMoveState);
       soundOn && playMove();
       if (
@@ -268,6 +504,7 @@ const Game = () => {
 
   //computer turn
   function computerTurn(newMoveState, piece = null) {
+    //  console.log(newMoveState);
     setTimeout(() => {
       // const currentState = getCurrentState();
       const boardState = newMoveState.boardState;
@@ -310,6 +547,7 @@ const Game = () => {
           newMoveState.boardState.isKing,
           true
         );
+
         coordinates = piece;
         moveTo = movesData[0][Math.floor(Math.random() * movesData[0].length)];
       }
@@ -326,9 +564,9 @@ const Game = () => {
       setTimeout(() => {
         const postMoveState = movesData[1]
           ? movePiece(columns, mergerObj.moves[0], {
-              ...mergerObj,
-              jumpKills: movesData[1],
-            })
+            ...mergerObj,
+            jumpKills: movesData[1],
+          })
           : movePiece(columns, mergerObj.moves[0], mergerObj);
         if (postMoveState === null) {
           return;
@@ -372,45 +610,46 @@ const Game = () => {
       track = gametrackes.tracker;
     }
 
-    //   console.log("Rever: ", gameState.moves, gameState.activePiece)
+
+
     id == 1
       ? setGameState((prevGameState) => {
-          return {
-            ...prevGameState,
+        return {
+          ...prevGameState,
 
-            history: gameState.history.concat([
-              {
-                boardState: postMoveState.boardState,
-                currentPlayer: postMoveState.currentPlayer,
-              },
-            ]),
-            activePiece: postMoveState.activePiece,
-            moves: postMoveState.moves,
-            jumpKills: postMoveState.jumpKills,
-            hasJumped: postMoveState.hasJumped,
-            stepNumber: gameState.history.length,
-            winner: postMoveState.winner,
-            tracker: track,
-          };
-        })
+          history: gameState.history.concat([
+            {
+              boardState: postMoveState.boardState,
+              currentPlayer: postMoveState.currentPlayer,
+            },
+          ]),
+          activePiece: postMoveState.activePiece,
+          moves: postMoveState.moves,
+          jumpKills: postMoveState.jumpKills,
+          hasJumped: postMoveState.hasJumped,
+          stepNumber: gameState.history.length,
+          winner: postMoveState.winner,
+          tracker: track,
+        };
+      })
       : setGameState((prevGameState) => {
-          return {
-            ...prevGameState,
+        return {
+          ...prevGameState,
 
-            history: gameState.history.concat([
-              {
-                boardState: postMoveState.boardState,
-                currentPlayer: postMoveState.currentPlayer,
-              },
-            ]),
-            activePiece: postMoveState.activePiece,
-            moves: postMoveState.moves,
-            jumpKills: postMoveState.jumpKills,
-            hasJumped: postMoveState.hasJumped,
-            stepNumber: gameState.history.length,
-            winner: postMoveState.winner,
-          };
-        });
+          history: gameState.history.concat([
+            {
+              boardState: postMoveState.boardState,
+              currentPlayer: postMoveState.currentPlayer,
+            },
+          ]),
+          activePiece: postMoveState.activePiece,
+          moves: postMoveState.moves,
+          jumpKills: postMoveState.jumpKills,
+          hasJumped: postMoveState.hasJumped,
+          stepNumber: gameState.history.length,
+          winner: postMoveState.winner,
+        };
+      });
 
     if (gameState.players == 1) {
       setMyTurn(postMoveState.currentPlayer ? "player1" : "player2");
@@ -426,6 +665,39 @@ const Game = () => {
       });
 
     calcPawns(postMoveState.boardState);
+
+    const tempObj = localStorage.getItem("playerOne")
+      ? {
+        p1: user
+          ? user.default_crown
+            ? {
+              normal: user?.default_crown?.board_pawn_king1,
+              active: user?.default_crown?.board_pawn_king1_turn,
+            }
+            : user?.default_board
+              ? {
+                normal: user?.default_crown?.board_pawn_king1,
+                active: user?.default_board?.board_pawn_king1_turn,
+              }
+              : null
+          : null,
+      }
+      : {
+        p2: user
+          ? user.default_crown
+            ? {
+              normal: user?.default_crown?.board_pawn_king2,
+              active: user?.default_crown?.board_pawn_king2_turn,
+            }
+            : user?.default_board
+              ? {
+                normal: user?.default_crown?.board_pawn_king2,
+                active: user?.default_board?.board_pawn_king2_turn,
+              }
+              : null
+          : null,
+      };
+    socket.emit("sendCrownType", tempObj);
   }
 
   const stateHistory = gameState.history;
@@ -438,9 +710,11 @@ const Game = () => {
   const playerOneIp = localStorage.getItem("playerOneIp");
   const playerTwoIp = localStorage.getItem("playerTwoIp");
   const btCoin = localStorage.getItem("bt_coin_amount");
-  const p2Info = JSON.parse(localStorage.getItem("p2Info"));
+  const temp = JSON.parse(localStorage.getItem("p2Info"));
+  const p2Info = temp?.username
+    ? JSON.parse(localStorage.getItem("p2Info"))
+    : JSON.parse(JSON.parse(localStorage.getItem("p2Info")));
   const p1Info = localStorage.getItem("p1");
-  //console.log({p2Info:p1Info})
   let gameStatus;
   switch (gameState.winner) {
     case "player1pieces":
@@ -530,13 +804,47 @@ const Game = () => {
       }
     }
   }, [gameState, gameStatus, winnerPlayer]);
+
+  const showAllHint = () => {
+    let myCoordinates = []
+    for (let i = 0; i < document.getElementsByClassName("player1").length; i++) {
+      let coordinates = document.getElementsByClassName("player1")[i].classList[1]
+
+      let movesData = getMoves(
+        columns,
+        gameState.history[gameState.history.length - 1].boardState,
+        coordinates,
+        document.getElementsByClassName("player1")[i].classList.contains("king"),
+        false
+      );
+      if (movesData[0].length > 0) {
+        myCoordinates.push(coordinates)
+      }
+    }
+
+    myCoordinates.forEach(item => {
+      document.getElementsByClassName(item)[0].classList.add("movable")
+      document.getElementsByClassName(item)[0].classList.add("player1-all")
+    })
+
+  }
+
   const resetGame = () => {
     moveRef.current = [0, 0];
 
     socket.emit("sendResetGameRequest", { status: "Pending" });
   };
+
   const rejectGameRequest = () => {
     socket.emit("sendRejectGameMessage", { status: "Reject" });
+    socket.emit("leave", gameId);
+    setShowResetWaiting(false);
+    setIsDrawModalOpen(false);
+  };
+
+  const rejectDrawGameRequest = () => {
+    socket.emit("sendRejectDrawGameMessage", { status: "Reject" });
+    // socket.emit('leave',gameId)
     setShowResetWaiting(false);
     setIsDrawModalOpen(false);
   };
@@ -564,6 +872,8 @@ const Game = () => {
     });
     moveRef.current = [0, 0];
   };
+
+
   const setNewGameWithComputer = () => {
     setGameState({
       players: 1,
@@ -582,6 +892,14 @@ const Game = () => {
     });
     setMyTurn("player1");
     setPawns([0, 0]);
+
+    setFirstMove(true)
+    setMatchHistory([])
+    setRedoHistory([])
+    setUndoCount(0)
+    setShowUndoWarning(false)
+    setShowRedoPrompt(false)
+
   };
 
   const drawGame = () => {
@@ -599,6 +917,7 @@ const Game = () => {
 
     socket.emit("sendChatMessage", {
       message: messageInputRef.current.value,
+      sender: localStorage.getItem("playerOne") ? "playerOne" : "playerTwo",
     });
     setMessageInputOpen(false);
   };
@@ -654,16 +973,47 @@ const Game = () => {
 
   let array = gameState.history;
   let lastElement = array[array.length - 1];
+  const checkTurn = useRef(true) //check if player get getMessage 
 
   useEffect(() => {
-    // let cPlayer = currentPlayer
+    //listen for king icon
+
+    // if (!JSON.parse(localStorage.getItem("pawns"))) {
+    //   socket.on("getCrownType", (data) => {
+    //     if (!JSON.parse(localStorage.getItem("pawns"))) {
+    //       const tempObj = localStorage.getItem("playerOne")
+    //         ? (playingCrowns.current = data.p2)
+    //         : (playingCrowns.current = data.p1);
+    //       !JSON.parse(localStorage.getItem("pawns")) &&
+    //         localStorage.setItem("pawns", JSON.stringify(tempObj));
+    //     }
+    //   });
+    // }
+
+
     socket.on(
       "getGameMessage",
       ({ winnerPlayer, boardState, currentPlayer, turnPlayer, tracker }) => {
         stopInterval();
-
+        firstMove && setFirstMove(false)
         setMyTurn(turnPlayer);
         setWinnerPlayer(winnerPlayer);
+
+        checkTurn.current = turnPlayer === "player2" ? !checkTurn.current : checkTurn.current
+
+        turnPlayer === "player2"
+          ? function () {
+            if (localStorage.getItem("isNotPublic")) {
+              checkTurn.current && (moveRef.current = [1 + moveRef.current[0], moveRef.current[1]])
+            }
+            else {
+              moveRef.current = [1 + moveRef.current[0], moveRef.current[1]]
+            }
+          }()
+          : (moveRef.current = [moveRef.current[0], 1 + moveRef.current[1]]);
+
+        calcPawns(boardState);
+        compareObjects(lastElement?.boardState, boardState);
 
         setGameState((prevGameState) => {
           return {
@@ -678,15 +1028,9 @@ const Game = () => {
             tracker,
           };
         });
-
-        turnPlayer === "player2"
-          ? (moveRef.current = [1 + moveRef.current[0], moveRef.current[1]])
-          : (moveRef.current = [moveRef.current[0], 1 + moveRef.current[1]]);
-
-        calcPawns(boardState);
-        compareObjects(lastElement?.boardState, boardState);
       }
     );
+
 
     socket.on(
       "getResetGameMessage",
@@ -703,6 +1047,12 @@ const Game = () => {
         setPassedCounter(0);
         setShowResetWaiting(false);
         moveRef.current = [0, 0];
+        setFirstMove(true)
+        setMatchHistory([])
+        setRedoHistory([])
+        setUndoCount(0)
+        setShowUndoWarning(false)
+        setShowRedoPrompt(false)
       }
     );
     socket.on("getResetGameRequest", ({ status }) => {
@@ -713,18 +1063,28 @@ const Game = () => {
       setIsDrawModalOpen(true);
     });
     socket.on("getRejectGameMessage", (status) => {
-      setShowResetWaiting(false);
-      toast("You friend did not accept the request");
-
       socket.emit("leave", gameId);
+      setShowResetWaiting(false);
+      // toast("You friend did not accept the request");
       if (!status.type) {
+      }
+      setIsNewGameModalOpen(true);
+      setTimeout(() => {
         clearCookie.forEach((data) => {
           localStorage.getItem(data) && localStorage.removeItem(data);
         });
         navigate("/create-game");
-      }
+      }, 3500);
     });
 
+    //get reject draw game message
+    socket.on("getRejectDrawGameMessage", (status) => {
+      setShowResetWaiting(false);
+      setIsNewGameModalOpen(true);
+      // toast("You friend did not accept the request");
+      if (!status.type) {
+      }
+    });
     //listen for if user left room
     socket.on("userLeaveMessage", (data) => {
       setIsLeaveModalOpen(true);
@@ -738,23 +1098,24 @@ const Game = () => {
 
     //listen for if the user exit the game
     socket.on("getExitGameRequest", (data) => {
+      socket.emit("leave", gameId);
       setIsLeaveModalOpen(true);
       setTimeout(() => {
         clearCookie.forEach((data) => {
           localStorage.getItem(data) && localStorage.removeItem(data);
         });
-        socket.emit("leave", gameId);
         navigate("/create-game");
       }, 5000);
     });
     //listen for chat message
-    socket.on("getChatMessage", ({ message }) => {
-      setLatestMessage(message);
+    socket.on("getChatMessage", (data) => {
+      setMsgSender(data.sender);
+      setLatestMessage(data.message);
     });
-    //if the first player not in the game
-    socket.emit("sendMessage", {
-      status: "started",
-    });
+    //if the matchHistory player not in the game
+    //   socket.emit("sendMessage", {
+    //     status: "started",
+    //   });
   }, []);
 
   useEffect(() => {
@@ -782,8 +1143,7 @@ const Game = () => {
 
   const timeChecker = () => {
     let myCounter = 0;
-
-    if (currentPlayer && localStorage.getItem("playerOneIp")) {
+    if (id != 1 && currentPlayer && localStorage.getItem("playerOneIp")) {
       intervalRef.current = setInterval(() => {
         if (myCounter === 0) {
           setTimerP1(15);
@@ -834,7 +1194,11 @@ const Game = () => {
           });
         }
       }, 1000);
-    } else if (!currentPlayer && localStorage.getItem("playerTwoIp")) {
+    } else if (
+      id != 1 &&
+      !currentPlayer &&
+      localStorage.getItem("playerTwoIp")
+    ) {
       intervalRef.current = setInterval(() => {
         if (myCounter === 0) {
           setTimerP2(15);
@@ -890,6 +1254,7 @@ const Game = () => {
 
   useEffect(() => {
     timeChecker();
+    showAllMoves && id == 1 && currentPlayer && showAllHint()
   }, [currentPlayer]);
 
   useEffect(() => {
@@ -909,9 +1274,7 @@ const Game = () => {
     }
   }, [winnerPlayer]);
 
-  useEffect(() => {
-    localStorage.setItem("dama-sound", true);
-  }, []);
+
 
   //send winner
   const gameId = localStorage.getItem("gameId");
@@ -932,24 +1295,179 @@ const Game = () => {
           game_id: gameId,
         },
         {
-          onSuccess: (responseData) => {},
-          onError: (err) => {},
+          onSuccess: (responseData) => { },
+          onError: (err) => { },
         }
       );
-    } catch (err) {}
+    } catch (err) { }
   };
+
+
 
   const changeSound = () => {
     localStorage.setItem("dama-sound", !soundOn);
     setSoundOn((prev) => !prev);
   };
 
-  return (
+
+  useEffect(() => {
+
+    localStorage.setItem("dama-sound", true);
+
+    if (id == 1) {
+      localStorage.getItem("showOnBoardig") &&
+        !localStorage.getItem("gameOnBoardig") && setTimeout(() => {
+          document.getElementsByClassName("sub-box")[61].classList.add("first-steps")
+          document.getElementsByClassName("sub-box")[52].classList.add("second-steps")
+
+          setTourCounter(0)
+
+          setTimeout(() => {
+            document.getElementsByClassName("sub-box")[61].querySelectorAll("div > button.square")[0].style.backgroundColor = "#b56464"
+            setTimeout(() => {
+              document.getElementsByClassName("sub-box")[61].querySelectorAll("div > button.square")[0].click()
+            }, 1400)
+          }, 800)
+
+        }, 1000)
+    }
+
+  }, []);
+
+  const undo = () => {
+
+    if (gameState.stepNumber === 0) { return }
+
+    if (undoAllowedAmount <= undoCount) {
+      //input other code here
+      setShowUndoWarning(true)
+      setTimeout(() => setShowUndoWarning(false), 3500)
+      return
+    }
+
+    setRedoHistory(prev => [{
+      boardState: gameState.history[gameState.history.length - 1].boardState,
+      currentPlayer: gameState.history[gameState.history.length - 1].currentPlayer,
+      activePiece: gameState.activePiece,
+      moves: gameState.moves,
+      jumpKills: gameState.jumpKills,
+      hasJumped: gameState.hasJumped,
+      stepNumber: gameState.history.length,
+      winner: gameState.winner,
+    }, ...prev])
+
+    if (matchHistory.length > 1) {
+      let temparr = [...matchHistory]
+      temparr.shift()
+      updateStatePostMove({ ...matchHistory[1], currentPlayer: !matchHistory[1].currentPlayer })
+      setMatchHistory(temparr)
+
+    } else {
+      setGameState(
+        {
+          players: 1,
+          history: [
+            {
+              boardState: createBoard(),
+              currentPlayer: true,
+            },
+          ],
+          activePiece: null,
+          moves: [],
+          jumpKills: null,
+          hasJumped: null,
+          stepNumber: 0,
+          winner: null,
+        }
+      )
+      setMatchHistory([])
+    }
+
+    setUndoCount(function (latest) { return ++latest })
+
+  }
+
+  const redo = () => {
+    if (redoHistory.length > 0) {
+      updateStatePostMove({ ...redoHistory[0], currentPlayer: !redoHistory[0].currentPlayer })
+      let temparr = [...redoHistory]
+      temparr.shift()
+
+      setRedoHistory(temparr)
+      setShowRedoPrompt(true)
+    }
+  }
+
+  const resumeComputerTurn = () => {
+    redoHistory.length > 0 && setRedoHistory([])
+
+    computerTurn({
+      boardState: gameState.history[gameState.history.length - 1].boardState,
+      currentPlayer: gameState.history[gameState.history.length - 1].currentPlayer,
+      activePiece: gameState.activePiece,
+      moves: gameState.moves,
+      jumpKills: gameState.jumpKills,
+      hasJumped: gameState.hasJumped,
+      stepNumber: gameState.history.length,
+      winner: gameState.winner,
+    })
+
+    setShowRedoPrompt(false)
+  }
+
+  const showNextTour = () => {
+    setTourCounter(function (latest) { return ++latest })
+    if (tourCounter === 0) {
+      document.getElementsByClassName("sub-box")[52].style.backgroundColor = "red"
+
+      setTimeout(() => {
+        document.getElementsByClassName("sub-box")[52].querySelectorAll("div > button.square")[0].click()
+      }, 1200)
+    }
+
+    if (tourCounter !== 0) {
+      localStorage.removeItem("showOnBoardig")
+      setPawns([0, 0]);
+      moveRef.current = [0, 0];
+
+      setGameState(
+        {
+          players: 2,
+          history: [
+            {
+              boardState: createBoard(),
+              currentPlayer: true,
+            },
+          ],
+          activePiece: null,
+          moves: [],
+          jumpKills: null,
+          hasJumped: null,
+          stepNumber: 0,
+          winner: null,
+        }
+      )
+
+    }
+  }
+
+  return (localStorage.getItem("gameId") && <>
     <div
       className={`
   
     relative  flex flex-col min-h-screen items-center justify-evenly `}
     >
+
+
+      {tourCounter < 2 && <section className="absolute top-[5%] right-0  h-[100vh] flex items-center justify-center w-3/4 max-w-[450px]  z-10">
+        <div className=" w-[90%] max-w-[450px] py-2 rounded-lg onboarding_prompt">
+          <p className="pb-6 px-1 text-white">{Localization[`tour${tourCounter}`][lang]}</p>
+          <button className="bg-white px-4 py-2 font-bold text-sm rounded" onClick={showNextTour}>{tourCounter === 0 ? Localization["Next"][lang] : Localization["Done"][lang]}</button>
+        </div>
+      </section>}
+
+
+
       <section className="w-full flex items-center justify-between">
         {soundOn ? (
           <button
@@ -968,7 +1486,9 @@ const Game = () => {
                 fill="#FF4C01"
               />
             </svg>
-            <p className="text-white text-xs">SoundOn</p>
+            <p className="text-white text-xs">
+              {Localization["SoundOn"][lang]}
+            </p>
           </button>
         ) : (
           <button
@@ -987,23 +1507,28 @@ const Game = () => {
                 fill="#FF4C01"
               />
             </svg>
-            <p className="text-white text-xs">SoundOff</p>
+            <p className="text-white text-xs">
+              {Localization["SoundOff"][lang]}
+            </p>
           </button>
         )}
-        {/* currentPlayer && localStorage.getItem("playerOneIp") && 
-      {!currentPlayer && localStorage.getItem("playerTwoIp") && */}
+
         <section className="flex flex-col">
           <div>
             {currentPlayer && localStorage.getItem("playerOneIp") && (
-              <p className="text-white font-bold text-sm">Timer : {timerP1}</p>
+              <p className="text-white font-bold text-sm">
+                {Localization["Timer"][lang]} : {timerP1}
+              </p>
             )}
             {!currentPlayer && localStorage.getItem("playerTwoIp") && (
-              <p className="text-white font-bold text-sm">Timer : {timerP2}</p>
+              <p className="text-white font-bold text-sm">
+                {Localization["Timer"][lang]} : {timerP2}
+              </p>
             )}
           </div>
           {passedCounter === 3 && (
             <p className="text-yellow-400 font-bold text-xs">
-              You will lose if you don't move next
+              {Localization["You will lose"][lang]}
             </p>
           )}
         </section>
@@ -1033,10 +1558,10 @@ const Game = () => {
               strokeLinejoin="round"
             />
           </svg>
-          <p className="text-white text-xs">Exit</p>
+          <p className="text-white text-xs">{Localization["Exit"][lang]}</p>
         </button>
       </section>
-      <section className="flex justify-evenly items-center w-full ">
+      <section className="flex justify-evenly items-center w-full md:hidden">
         <div className="">
           <div
             onClick={() => this.openModal(true)}
@@ -1062,12 +1587,12 @@ const Game = () => {
             {id == 1
               ? user
                 ? user.username
-                : "You"
+                : Localization["You"][lang]
               : playerOneIp && user
-              ? user?.username
-              : playerOneIp
-              ? firstPlayer?.username
-              : p1Info}
+                ? user?.username
+                : playerOneIp
+                  ? firstPlayer?.username
+                  : p1Info}
           </h4>
         </div>
 
@@ -1097,29 +1622,29 @@ const Game = () => {
           <h4 className="text-white capitalize  font-semibold text-xs">
             {/* {secondPlayer?.name} */}
             {id == 1
-              ? "Computer"
+              ? Localization["Computer"][lang]
               : playerTwoIp && user
-              ? user?.username
-              : playerTwoIp
-              ? secondPlayer?.username
-              : p1Info
-              ? p1Info
-              : p2Info?.username}
+                ? user?.username
+                : playerTwoIp
+                  ? secondPlayer?.username
+                  : p1Info
+                    ? p1Info
+                    : p2Info?.username}
           </h4>
         </div>
       </section>
 
-      <section className="flex justify-evenly items-center text-sm w-full">
+      <section className="flex justify-evenly items-center text-sm w-full md:hidden">
         <div className="border-r-[3px] border-gray-400 text-white w-1/2 ">
           <div className="flex justify-center items-center text-[.7rem] gap-x-2 font-bold mb-2">
             <p className="bg-gray-300 text-black pr-[.2rem] w-12 rounded">
-              Moves
+              {Localization["Moves"][lang]}
             </p>
             <p>{moveRef.current[0]}</p>
           </div>
           <div className="flex justify-center items-center text-[.7rem] gap-x-2 font-bold mb-2">
             <p className="bg-gray-300 text-black pr-[.2rem] w-12 rounded">
-              Pawns
+              {Localization["Pawns"][lang]}
             </p>
             <p>{pawns[0]}</p>
           </div>
@@ -1129,13 +1654,13 @@ const Game = () => {
           <div className="flex justify-center items-center text-[.7rem] gap-x-2 font-bold mb-2">
             <p>{moveRef.current[1]}</p>
             <p className="bg-gray-300 text-black pr-[.2rem] w-12 rounded">
-              Moves
+              {Localization["Moves"][lang]}
             </p>
           </div>
           <div className="flex justify-center items-center text-[.7rem] gap-x-2 font-bold mb-2">
             <p>{pawns[1]}</p>
             <p className="bg-gray-300 text-black pr-[.2rem] w-12 rounded">
-              Pawns
+              {Localization["Pawns"][lang]}
             </p>
           </div>
         </div>
@@ -1145,7 +1670,7 @@ const Game = () => {
           id != 1 ? "hidden" : "w-full h-4 flex justify-center items-center"
         }
       >
-        {id == 1 && !currentPlayer && (
+        {id == 1 && !currentPlayer ? (
           <ThreeDots
             height="20"
             width="40"
@@ -1156,6 +1681,10 @@ const Game = () => {
             wrapperClassName=""
             visible={true}
           />
+        ) : (
+          <h1 className="text-white font-normal">
+            {Localization["Your turn"][lang]}
+          </h1>
         )}
       </div>
 
@@ -1164,56 +1693,65 @@ const Game = () => {
           id == 1 ? "hidden" : "w-full h-4 flex justify-center items-center"
         }
       >
-        {!currentPlayer && localStorage.getItem("playerOne") && (
-          <ThreeDots
-            height="20"
-            width="40"
-            radius="9"
-            color="#f75105"
-            ariaLabel="three-dots-loading"
-            wrapperStyle={{}}
-            wrapperClassName=""
-            visible={true}
-          />
-        )}
-        {currentPlayer && localStorage.getItem("playerTwo") && (
-          <ThreeDots
-            height="20"
-            width="40"
-            radius="9"
-            color="#f75105"
-            ariaLabel="three-dots-loading"
-            wrapperStyle={{}}
-            wrapperClassName=""
-            visible={true}
-          />
-        )}
+        {playerOneIp &&
+          (!currentPlayer ? (
+            <ThreeDots
+              height="20"
+              width="40"
+              radius="9"
+              color="#f75105"
+              ariaLabel="three-dots-loading"
+              wrapperStyle={{}}
+              wrapperClassName=""
+              visible={true}
+            />
+          ) : (
+            <h1 className="text-white font-normal">
+              {Localization["Your turn"][lang]}
+            </h1>
+          ))}
+        {playerTwoIp &&
+          (currentPlayer ? (
+            <ThreeDots
+              height="20"
+              width="40"
+              radius="9"
+              color="#f75105"
+              ariaLabel="three-dots-loading"
+              wrapperStyle={{}}
+              wrapperClassName=""
+              visible={true}
+            />
+          ) : (
+            <h1 className="text-white font-normal">
+              {Localization["Your turn"][lang]}
+            </h1>
+          ))}
       </div>
       <div className={""}>
         <div
-          className={`box   ${
-            !id
-              ? currentPlayer === true
-                ? currentPlayer === true && !firstPlayer
-                  ? "pointer-events-none"
-                  : ""
-                : currentPlayer === false
+          className={`box ${!id
+            ? currentPlayer === true
+              ? currentPlayer === true && !firstPlayer
+                ? "pointer-events-none"
+                : ""
+              : currentPlayer === false
                 ? currentPlayer === false && !secondPlayer
                   ? "pointer-events-none"
                   : ""
                 : ""
-              : ""
-          }`}
+            : ""
+            }`}
         >
           <Board
             boardState={
               id === "1"
                 ? dict_reverse(boardState)
                 : !id
-                ? localStorage.getItem("playerOne")
-                  ? dict_reverse(boardState)
+                  ? localStorage.getItem("playerOne")
+                    ? dict_reverse(boardState)
+                    : boardState
                   : boardState
-                : boardState
             }
             currentPlayer={currentPlayer}
             activePiece={gameState.activePiece}
@@ -1222,6 +1760,9 @@ const Game = () => {
             onClick={(coordinates) => handleClick(coordinates)}
             numberOfPlayers={gameState.players}
             tracker={gameState.tracker ? gameState.tracker : null}
+            isFirstMove={firstMove}
+            setIsFirstMove={setFirstMove}
+            showAllMoves={showAllMoves}
           />
         </div>
       </div>
@@ -1243,30 +1784,70 @@ const Game = () => {
                 />
               </svg>
             </div>
-            <p className="text-xs font-bold text-white">Draw</p>
+            <p className="text-xs font-bold text-white">
+              {Localization["Draw"][lang]}
+            </p>
           </div>
         )}
+
+        {id == "1" && <><div onClick={undo} className={showUndoWarning || undoCount >= undoAllowedAmount ? "flex flex-col opacity-80" : "flex flex-col cursor-pointer"}>
+          <div className="rounded-full flex flex-col items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 512 512"><path fill="#ff4c01" d="M256 48C141.13 48 48 141.13 48 256s93.13 208 208 208s208-93.13 208-208S370.87 48 256 48Zm97.67 281.1c-24.07-25.21-51.51-38.68-108.58-38.68v37.32a8.32 8.32 0 0 1-14.05 6L146.58 254a8.2 8.2 0 0 1 0-11.94L231 
+            162.29a8.32 8.32 0 0 1 14.05 6v37.32c88.73 0 117.42 55.64 122.87 117.09c.73 7.72-8.85 12.05-14.25 6.4Z" /></svg>
+          </div>
+          <p className="text-xs font-bold text-white">
+            {Localization['Undo'][lang]}
+          </p>
+        </div>
+
+          <div onClick={redo} className={redoHistory.length === 0 ? "flex flex-col opacity-80" : "flex flex-col cursor-pointer"}>
+            <div className="rounded-full flex flex-col items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 512 512"><path fill="#ff4c01" d="M48 256c0 114.87 93.13 208 208 208s208-93.13 208-208S370.87 48 256 48S48 141.13 48 256Zm96 66.67c5.45-61.45 34.14-117.09 122.87-117.09v-37.32a8.32 8.32 0 0 1 14-6L365.42 242a8.2 8.2 0 0 1 0 11.94L281 
+          333.71a8.32 8.32 0 0 1-14-6v-37.29c-57.07 0-84.51 13.47-108.58 38.68c-5.49 5.65-15.07 1.32-14.42-6.43Z"/></svg>
+            </div>
+            <p className="text-xs font-bold text-white">
+              {Localization['Redo'][lang]}
+            </p>
+          </div></>}
+
+        <div onClick={() => setShowAllMoves(prev => !prev)} className={redoHistory.length === 0 ? "flex flex-col opacity-80" : "flex flex-col cursor-pointer"}>
+          <div className="rounded-full flex flex-col items-center justify-center">
+            {showAllMoves ? <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 24 24"><path fill="#ff4c01" d="M7 18q-2.5 0-4.25-1.75T1 12q0-2.5 1.75-4.25T7 6h10q2.5 0 4.25 1.75T23 12q0 2.5-1.75 4.25T17 18H7Zm10-3q1.25 0 2.125-.875T20 12q0-1.25-.875-2.125T17 9q-1.25 0-2.125.875T14 12q0 1.25.875 2.125T17 15Z" /></svg>
+              : <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 24 24"><path fill="#ff4c01" d="M17 7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h10c2.76 0 5-2.24 5-5s-2.24-5-5-5zM7 15c-1.66 0-3-1.34-3-3s1.34-3 3-3s3 1.34 3 3s-1.34 3-3 3z" /></svg>
+            }
+          </div>
+          <p className="text-xs font-bold text-white">
+            {Localization["Show Hint"][lang]}
+          </p>
+        </div>
+
         {id != 1 && (
-          <div className="flex items-end justify-end flex-col">
+          <div className="flex items-center justify-center flex-col">
             <BsFillChatFill
               onClick={openChatFilled}
               size={30}
               className="text-orange-color"
             />
-            <p className="text-xs font-bold text-white">Chat</p>
+            <p className="text-xs font-bold text-white">{Localization["Chat"][lang]}</p>
           </div>
         )}
       </div>
-      {/* message */}
+
+      {showUndoWarning && <p className="text-orange-color text-sm w-[70%]">{Localization["Undo limit reached."][lang]}</p>}
+
+      {showRedoPrompt && <p className="text-white">{Localization["resume computer turn ?"][lang]}
+        <span onClick={resumeComputerTurn} className="text-orange-color font-bold cursor-pointer border-b border-orange-color ml-2 pr-1">{Localization["Resume"][lang]}</span></p>}
+
       {latestMessage && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ type: "tween", duration: 1, ease: "easeInOut" }}
-          className={`absolute top-36  bg-white max-w-sm  p-1 w-44 ${
-            playerOneIp ? "left-3" : "right-3"
+          className={
+            msgSender === "playerOne"
+              ? "absolute top-36  bg-white max-w-sm  p-1 w-44 left-3  border border-orange-color rounded-lg m-3"
+              : "absolute top-36  bg-white max-w-sm  p-1 w-44 right-3  border border-orange-color rounded-lg m-3"
           }
-       border border-orange-color rounded-lg m-3`}
         >
           <div className="text-gray-800">
             <p className="text-start text-sm pl-2 font-medium">
@@ -1300,7 +1881,7 @@ const Game = () => {
               ref={messageInputRef}
               autoFocus
               onKeyDown={handleSubmit}
-              placeholder="write your message..."
+              placeholder={Localization["write your message..."][lang]}
               type="text"
               className="bg-transparent  p-2 flex-grow w-full
                text-white focus:outline-none focus:ring-0  font-medium "
@@ -1315,7 +1896,9 @@ const Game = () => {
       )}
       <div>
         {btCoin && (
-          <p className="text-xs font-bold text-white">Bet : {btCoin} coins</p>
+          <p className="text-xs font-bold text-white">
+            {Localization["Bet"][lang]} {btCoin} {Localization["coins"][lang]}
+          </p>
         )}
       </div>
       <ExitWarningModal
@@ -1343,47 +1926,21 @@ const Game = () => {
         isDrawModalOpen={isDrawModalOpen}
         setIsDrawModalOpen={setIsDrawModalOpen}
         acceptGameRequest={acceptGameRequest}
-        rejectGameRequest={rejectGameRequest}
+        rejectGameRequest={rejectDrawGameRequest}
         showResetWaiting={showResetWaiting}
       />
       <UserLeavesModal
         setIsLeaveModalOpen={setIsLeaveModalOpen}
         isLeaveModalOpen={isLeaveModalOpen}
       />
+      <NewGameRequestModal
+        isNewGameModalOpen={isNewGameModalOpen}
+        setIsNewGameModalOpen={setIsNewGameModalOpen}
+      />
       <Toaster />
     </div>
+  </>
   );
 };
 
 export default Game;
-
-/*
-
-
-{!winnerPlayer && currentPlayer === true
-          ? currentPlayer === true && !firstPlayer
-            ? "flex flex-col items-center space-y-2 p-1 rounded-full border border-yellow-400"
-            : "flex flex-col items-center space-y-2 p-1 rounded-full border-4 border-yellow-400"
-          : currentPlayer === false
-          ? currentPlayer === false && !secondPlayer
-            ? "flex flex-col items-center space-y-2 p-1 rounded-full border-4 border-yellow-color"
-            : "flex flex-col items-center space-y-2 p-1 rounded-full border-4 border-yellow-400"
-          : "flex flex-col items-center space-y-2 p-1 rounded-full border border-orange-color"}
-
-            // <div className="p-3">
-      //   {/* {gameStatus} }
-      //   <div className={`py-1 px-3 rounded-lg ${currentPlayer === true ? "bg-red-500" : "bg-amber-500"}`}>
-      //     <h1 className={`font-medium text-white `}>
-      //       {!winnerPlayer && currentPlayer === true
-      //         ? currentPlayer === true && !firstPlayer
-      //           ? "Your Friend"
-      //           : "You"
-      //         : currentPlayer === false
-      //         ? currentPlayer === false && !secondPlayer
-      //           ? "Your Friend"
-      //           : "You"
-      //         : ""}
-      //     </h1>
-      //   </div>
-      // </div>
-  */
