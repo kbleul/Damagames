@@ -10,6 +10,8 @@ import {
   Navigate
 } from "react-router-dom";
 import ToastContainer from "./utils/ToastContainer";
+import League from "./components/League/League";
+import LeagueHistory from "./components/League/LeagueHistory";
 //'G-YM283P3T0J'
 const tagManagerArgs = {
   gtmId: process.env.REACT_APP_GTM_ID,
@@ -92,6 +94,10 @@ const App = () => {
           <Route path="/store" element={<Store />} />
           <Route path="/avatar-history/:id" element={<AvatarHistory />} />
           <Route path="/payment/success" element={<Success />} />
+
+          <Route path="/league" element={<League />} />
+          <Route path="/league/history" element={<LeagueHistory />} />
+
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="*" element={<CreateGame />} />
         </Routes>
@@ -120,6 +126,10 @@ const App = () => {
           <Route path="/new-game-public" element={<NewGamePublic />} />
           <Route path="/store" element={<Store />} />
           <Route path="/avatar-history/:id" element={<AvatarHistory />} />
+
+          <Route path="/league" element={<League />} />
+          <Route path="/league/history" element={<LeagueHistory />} />
+
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="*" element={<Navigate to="/create-game" />} />
         </Routes>

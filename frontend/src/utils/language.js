@@ -697,6 +697,10 @@ export const Localization = {
         AMH: "ጀግኖች",
         ENG: "Heros"
     },
+    "League": {
+        AMH: "ሊግ",
+        ENG: "League"
+    },
 
 
 
