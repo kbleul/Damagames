@@ -21,7 +21,7 @@ return new class extends Migration
             $table->json('ending_date')->nullable();
             $table->json('starting_time')->nullable();
             $table->json('ending_time')->nullable();
-$table->boolean('is_active')->default(0);
+            $table->boolean('is_active')->default(0);
             $table->timestamps();
             $table->softDeletes();
 
