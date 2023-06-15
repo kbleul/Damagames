@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('leagues', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('league_name');
+            $table->json('league_name');
             $table->decimal('league_price', 22);
             $table->unsignedInteger('status')->default(1);
-            $table->longText('description')->nullable();
+            $table->json('description')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

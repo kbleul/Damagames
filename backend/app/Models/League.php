@@ -17,6 +17,11 @@ class League extends Model
 
     protected $hidden = ['deleted_at', 'created_at', 'updated_at'];
 
+    protected $casts = [
+        'league_name' => 'json',
+        'description' => 'json',
+    ];
+
     public function Seasons(): HasMany
     {
         return $this->hasMany(Season::class);

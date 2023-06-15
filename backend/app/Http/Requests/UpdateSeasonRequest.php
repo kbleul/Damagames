@@ -27,9 +27,9 @@ class UpdateSeasonRequest extends FormRequest
             'league_id' => 'required|integer|in:leagues',
             'season_name' => 'required|string',
             'starting_date' => 'required|date',
-            'ending_date' => 'required|date',
+            'ending_date' => 'required|date|after:starting_date',
             'starting_time' => 'required|date',
-            'ending_time' => 'required|date',
+            'ending_time' => 'required|date|after:starting_time',
         ];
     }
 }

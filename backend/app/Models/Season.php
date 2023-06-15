@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use App\Traits\Uuids;
 use App\Models\League;
 use App\Models\SeasonPlayer;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Season extends Model
 {
@@ -18,6 +18,14 @@ class Season extends Model
     protected $guarded = [];
 
     protected $hidden = ['deleted_at', 'created_at', 'updated_at'];
+
+    protected $casts = [
+        'season_name' => 'json',
+        'starting_date' => 'json',
+        'ending_date' => 'json',
+        'starting_time' => 'json',
+        'ending_time' => 'json',
+    ];
 
     public function league(): BelongsTo
     {

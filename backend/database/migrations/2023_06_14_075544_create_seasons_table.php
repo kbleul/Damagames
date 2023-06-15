@@ -16,11 +16,11 @@ return new class extends Migration
         Schema::create('seasons', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('league_id')->constrained('leagues')->cascadeOnDelete();
-            $table->string('season_name');
-            $table->date('starting_date')->nullable();
-            $table->date('ending_date')->nullable();
-            $table->dateTime('starting_time')->nullable();
-            $table->dateTime('ending_time')->nullable();
+            $table->json('season_name');
+            $table->json('starting_date')->nullable();
+            $table->json('ending_date')->nullable();
+            $table->json('starting_time')->nullable();
+            $table->json('ending_time')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
