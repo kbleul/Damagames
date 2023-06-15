@@ -26,6 +26,7 @@ class StoreSeasonRequest extends FormRequest
         return [
             'league_id' => 'required|integer|in:leagues',
             'season_name' => 'required|string|unique:seasons',
+            'is_active'=>'required|boolean',
             'starting_date' => 'required|date',
             'ending_date' => 'required|date|after:starting_date',
             'starting_time' => 'required|date',

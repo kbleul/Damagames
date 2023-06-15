@@ -25,6 +25,7 @@ class Season extends Model
         'ending_date' => 'json',
         'starting_time' => 'json',
         'ending_time' => 'json',
+        'is_active' => 'boolean',
     ];
 
     public function league(): BelongsTo
