@@ -1,7 +1,6 @@
 import { Dialog, Transition } from "@headlessui/react";
-import React, { Fragment, useState } from "react";
+import React, { Fragment } from "react";
 import { ImCancelCircle } from "react-icons/im"
-// import BsCircleGrRadialSelected from "react-icons/bs-circle";
 
 const PAYMENTOPTIONS = [
     {

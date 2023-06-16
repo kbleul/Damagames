@@ -9,6 +9,9 @@ export const LANG = {
   "ENG": "English",
 }
 
+export const LEAGUE_CATAGORIES = ["Standing", "Active", "Matches"]
+
+
 export const clearCookie = [
   "gameId",
   "playerOne",
