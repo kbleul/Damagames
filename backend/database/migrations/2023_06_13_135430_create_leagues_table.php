@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('leagues', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->json('league_name');
+            $table->unsignedBigInteger('min_join_point')->nullable();
             $table->decimal('league_price', 22);
             $table->unsignedInteger('status')->default(1);
             $table->json('description')->nullable();

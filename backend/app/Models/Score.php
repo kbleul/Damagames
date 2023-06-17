@@ -40,4 +40,14 @@ class Score extends Model
     {
         return $this->belongsTo(User::class, 'winner', 'id');
     }
+
+    public function winnerScore(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'winner');
+    }
+
+    public function loserScore()
+    {
+        return $this->belongsTo(User::class, 'loser');
+    }
 }

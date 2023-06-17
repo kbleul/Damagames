@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('seasons', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('league_id')->constrained('leagues')->cascadeOnDelete();
+            $table->unsignedBigInteger('number_of_player');
             $table->json('season_name');
             $table->json('starting_date')->nullable();
             $table->json('ending_date')->nullable();

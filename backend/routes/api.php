@@ -1,23 +1,23 @@
 <?php
 
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AuthPlayerController;
+use App\Http\Controllers\BadgeController;
+use App\Http\Controllers\ComputerGameController;
+use App\Http\Controllers\GameController;
+use App\Http\Controllers\LeagueController;
+use App\Http\Controllers\PlayersController;
+use App\Http\Controllers\PusherAuthController;
+use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\ScoreController;
+use App\Http\Controllers\SeasonController;
+use App\Http\Controllers\SecurityQuestionController;
+use App\Http\Controllers\StoreController;
+use App\Http\Controllers\TelebirrController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\GameController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\BadgeController;
-use App\Http\Controllers\ScoreController;
-use App\Http\Controllers\StoreController;
-use App\Http\Controllers\LeagueController;
-use App\Http\Controllers\SeasonController;
-use App\Http\Controllers\PlayersController;
-use App\Http\Controllers\TelebirrController;
-use App\Http\Controllers\AuthPlayerController;
-use App\Http\Controllers\PusherAuthController;
-use App\Http\Controllers\ComputerGameController;
-use App\Http\Controllers\ResetPasswordController;
-use App\Http\Controllers\SecurityQuestionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -75,6 +75,8 @@ Route::middleware('response')->group(function () {
     //leagues
     Route::get('get-leagues', [LeagueController::class, 'index']);
     Route::get('get-seasons', [SeasonController::class, 'index']);
+    Route::get('standings/{league}', [LeagueController::class, 'standings']);
+    Route::get('histories/{league}', [LeagueController::class, 'histories']);
 });
 
 Route::resource('security-questions', SecurityQuestionController::class);
