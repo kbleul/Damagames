@@ -3,7 +3,8 @@ import Avatar from "../../../assets/Avatar.png";
 
 const PlayerCard = ({ index, player }) => {
 
-    console.log("dsffd")
+
+
     return (<article className="flex items-start justify-center  my-8 pr-2">
         <p className="w-[6%] pt-2 text-xs text-gray-300">{index}</p>
         <section className="border-2 border-gray-200 rounded-2xl flex max-w-[550px] w-[94%] py-1 px-2" style={{
