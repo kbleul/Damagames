@@ -7,6 +7,7 @@ import Nav from "./components/Nav"
 import { useNavigate } from "react-router-dom"
 import { LEAGUE_CATAGORIES } from "../../utils/data"
 import Matches from "./components/Matches"
+import LeagueDetails from "./components/LeagueDetails"
 
 const LeagueHistory = () => {
 
@@ -14,6 +15,35 @@ const LeagueHistory = () => {
 
     const [active, setActive] = useState("Standing")
     const [playerItems, setPlayerItems] = useState(null)
+
+
+    // const headers = {
+    //     "Content-Type": "application/json",
+    //     Accept: "application/json",
+    // };
+
+    // const LeaguesData = useQuery(
+    //     ["getLeaguesDataApi"],
+    //     async () =>
+    //         await axios.get(`${process.env.REACT_APP_BACKEND_URL}get-league`, {
+    //             headers,
+    //         }),
+    //     {
+    //         keepPreviousData: true,
+    //         refetchOnWindowFocus: false,
+    //         retry: false,
+    //         onSuccess: (res) => {
+    //             setError(null)
+    //             setLeagues([...res?.data?.data])
+    //             setIsLoading(false)
+    //         },
+    //         onError: (err) => {
+    //             setError(err.message)
+    //             setIsLoading(false)
+    //         }
+    //     }
+    // );
+
 
     return (
         <article style={{
@@ -49,39 +79,14 @@ const LeagueHistory = () => {
                 <p className="text-2xl ml-[32%] md:ml-[40%] w-3/5  text-left px-1">League</p>
             </section>
 
-            <Nav setPlayerItems={setPlayerItems} active={active} setActive={setActive} />
+            {/* <Nav setPlayerItems={setPlayerItems} active={active} setActive={setActive} /> */}
 
-            {playerItems && <article>{
+            {/* {playerItems && <article>{
                 playerItems.map((player, index) => (
-                    <PlayerCard key={playerItems.username} index={index} player={player} />
+                    <PlayerCard key={player.id} index={index} player={player} />
                 ))}
             </article>}
 
-            {playerItems && <article>{
-                playerItems.map((player, index) => (
-                    <PlayerCard key={playerItems.username} index={index} player={player} />
-                ))}
-            </article>}
-            {playerItems && <article>{
-                playerItems.map((player, index) => (
-                    <PlayerCard key={playerItems.username} index={index} player={player} />
-                ))}
-            </article>}
-            {playerItems && <article>{
-                playerItems.map((player, index) => (
-                    <PlayerCard key={playerItems.username} index={index} player={player} />
-                ))}
-            </article>}
-            {playerItems && <article>{
-                playerItems.map((player, index) => (
-                    <PlayerCard key={playerItems.username} index={index} player={player} />
-                ))}
-            </article>}
-            {playerItems && <article>{
-                playerItems.map((player, index) => (
-                    <PlayerCard key={playerItems.username} index={index} player={player} />
-                ))}
-            </article>}
 
 
 
@@ -95,7 +100,9 @@ const LeagueHistory = () => {
                 </article>}
 
             {active === LEAGUE_CATAGORIES[2] &&
-                <Matches />}
+                <Matches />} */}
+
+            <LeagueDetails />
 
         </article>
     )

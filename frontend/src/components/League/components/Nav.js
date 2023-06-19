@@ -1,8 +1,10 @@
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { VscListSelection } from "react-icons/vsc"
 
 import { LEAGUE_CATAGORIES } from '../../../utils/data'
+import { useMutation } from '@tanstack/react-query'
+import axios from 'axios'
 
 const PLAYERS = [
     {
@@ -21,9 +23,68 @@ const PLAYERS = [
 
 const Nav = ({ setPlayerItems, active, setActive }) => {
 
+    const [leagueTable, setLeagueTable] = useState(null)
+    const [error, setError] = useState(null)
+    const [isLoading, setIsLoading] = useState(true)
+
+
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+    };
+
+    const tableMutation = useMutation(
+        async (newData) =>
+            await axios.get(
+                `${process.env.REACT_APP_BACKEND_URL}standings/5bf01639-84bd-4af8-b01b-ad1d84318be3`,
+                newData,
+                {
+                    headers,
+                }
+            ),
+        {
+            retry: false,
+        }
+    );
+
+    const tableMutationSubmitHandler = async (values) => {
+        try {
+            tableMutation.mutate(
+                {},
+                {
+                    onSuccess: (responseData) => {
+                        let tempStanding = []
+                        responseData.data.data.forEach(item => {
+                            item.userData.seasonPoint = item.points
+                            tempStanding.push(item.userData)
+                        })
+
+                        setLeagueTable([...tempStanding])
+                        console.log(tempStanding)
+
+                        tempStanding = []
+
+                        setError(null)
+                        setIsLoading(false)
+                    },
+                    onError: (err) => {
+                        setError(err.message || err)
+                        setIsLoading(false)
+                    },
+                }
+            );
+        } catch (err) { }
+    };
+
+
+
     useEffect(() => {
-        setPlayerItems([...PLAYERS])
+        tableMutationSubmitHandler()
     }, [])
+
+    useEffect(() => {
+        active === LEAGUE_CATAGORIES[0] && leagueTable && leagueTable.length > 0 && setPlayerItems([...leagueTable])
+    }, [active, leagueTable])
 
 
     return (<section className="relative mt-6 w-[94%] ml-[3%] max-w-[600px] border border-orange-600 rounded-full text-orange-color bg-black flex items-center justify-center">

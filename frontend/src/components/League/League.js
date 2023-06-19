@@ -70,26 +70,20 @@ const LEAGUES = [
 const League = () => {
 
     const navigate = useNavigate()
-    const { token } = useAuth();
 
     const [leagues, setLeagues] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
 
-
-
-
-
     const headers = {
         "Content-Type": "application/json",
         Accept: "application/json",
-        Authorization: `Bearer  ${token}`
     };
 
     const LeaguesData = useQuery(
         ["getLeaguesDataApi"],
         async () =>
-            await axios.get(`${process.env.REACT_APP_BACKEND_URL}admin/leagues`, {
+            await axios.get(`${process.env.REACT_APP_BACKEND_URL}get-league`, {
                 headers,
             }),
         {
@@ -137,7 +131,7 @@ const League = () => {
 
             <section className="text-white pt-2">
                 <h2 className="text-6xl font-bold ml-[32%] md:ml-[40%] w-3/5  text-left ">Dama</h2>
-                <p className="text-2xl ml-[32%] md:ml-[40%] w-3/5  text-left px-1">Leaguea</p>
+                <p className="text-2xl ml-[32%] md:ml-[40%] w-3/5  text-left px-1">League</p>
             </section>
 
             {!error && !isLoading && <section>

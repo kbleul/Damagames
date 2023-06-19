@@ -36,7 +36,7 @@ const LeaguesCard = ({ league }) => {
 
                 <div>
                     <p className="text-xs ">{league.description[[LANG[lang]]]}</p>
-                    <p className="text-xs">5 Season</p>
+                    <p className="text-xs">{league.seasons.length} Seasons</p>
                 </div>
 
                 <div className="w-full flex justify-evenly items-center">
