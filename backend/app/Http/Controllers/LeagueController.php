@@ -88,6 +88,8 @@ class LeagueController extends Controller
         }
 
         return Score::with('winnerScore', 'loserScore')->where('season_id', $season->id)
-        ->get()->groupBy('created_at');
+        ->get()->groupBy(function($score) {
+            return $score->created_at->format('Y-m-d');
+        });;
     }
 }

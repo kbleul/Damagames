@@ -26,7 +26,9 @@ class SeasonController extends Controller
     public function show(Season $season)
     {
         $histories = Score::with('winnerScore', 'loserScore')->where('season_id', $season->id)
-            ->get()->groupBy('created_at');
+            ->get()->groupBy(function ($score) {
+            return $score->created_at->format('Y-m-d');
+        });
 
         return ['season' => $season, 'histories' => $histories];
     }
