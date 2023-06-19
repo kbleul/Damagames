@@ -8,7 +8,6 @@ use App\Models\League;
 use App\Models\Score;
 use App\Models\Season;
 use App\Models\User;
-use DateTime;
 use Illuminate\Support\Facades\DB;
 
 class LeagueController extends Controller
@@ -88,13 +87,9 @@ class LeagueController extends Controller
             return abort(400, 'No active season found');
         }
 
-        $yesterday = new DateTime('yesterday');
-        $latests = Score::with('winnerScore', 'loserScore')->where('season_id', $season->id)
-            ->where('created_at', '>', $yesterday)->get();
-
-        $olders = Score::with('winnerScore', 'loserScore')->where('season_id', $season->id)
-            ->where('created_at', '<', $yesterday)->get();
-
-        return ['yesterday' => $latests, 'older' => $olders];
+        return Score::with('winnerScore', 'loserScore')->where('season_id', $season->id)
+        ->get()->groupBy(function($score) {
+            return $score->created_at->format('Y-m-d');
+        });;
     }
 }
