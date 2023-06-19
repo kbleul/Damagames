@@ -73,10 +73,12 @@ Route::middleware('response')->group(function () {
     Route::get('get-badges', [BadgeController::class, 'index']);
 
     //leagues
-    Route::get('get-leagues', [LeagueController::class, 'index']);
-    Route::get('get-seasons', [SeasonController::class, 'index']);
-    Route::get('standings/{league}', [LeagueController::class, 'standings']);
-    Route::get('histories/{league}', [LeagueController::class, 'histories']);
+    Route::get('get-league', [LeagueController::class, 'index']);
+    Route::get('show-league', [LeagueController::class, 'index']);
+    Route::get('get-season', [SeasonController::class, 'index']);
+    Route::get('show-season', [SeasonController::class, 'show']);
+    Route::get('standing/{league}', [LeagueController::class, 'standings']);
+    Route::get('historie/{league}', [LeagueController::class, 'histories']);
 });
 
 Route::resource('security-questions', SecurityQuestionController::class);
