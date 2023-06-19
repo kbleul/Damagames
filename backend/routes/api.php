@@ -74,7 +74,7 @@ Route::middleware('response')->group(function () {
 
     //leagues
     Route::get('get-league', [LeagueController::class, 'index']);
-    Route::get('show-league', [LeagueController::class, 'index']);
+    Route::get('show-league', [LeagueController::class, 'show']);
     Route::get('get-season', [SeasonController::class, 'index']);
     Route::get('show-season', [SeasonController::class, 'show']);
     Route::get('standing/{league}', [LeagueController::class, 'standings']);
