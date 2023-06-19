@@ -77,6 +77,10 @@ class LeagueController extends Controller
             $standings[] = ['points' => $points, 'userData' => $userData];
         }
 
+        usort($standings, function ($a, $b) {
+            return $b['points'] - $a['points'];
+        });
+
         return $standings;
     }
 
@@ -88,8 +92,8 @@ class LeagueController extends Controller
         }
 
         return Score::with('winnerScore', 'loserScore')->where('season_id', $season->id)
-        ->get()->groupBy(function($score) {
+            ->get()->groupBy(function ($score) {
             return $score->created_at->format('Y-m-d');
-        });;
+        });
     }
 }

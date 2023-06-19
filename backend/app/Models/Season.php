@@ -19,7 +19,7 @@ class Season extends Model
 
     protected $hidden = ['seasonPlayers', 'deleted_at', 'created_at', 'updated_at'];
 
-    protected $appends = ['player_count'];
+    protected $appends = ['player_count', 'top3Player'];
 
     protected $casts = [
         'season_name' => 'json',
@@ -43,5 +43,45 @@ class Season extends Model
     public function getPlayerCountAttribute()
     {
         return $this->seasonPlayers->count();
+    }
+
+    public function getTop3PlayerAttribute()
+    {
+        if ($this->is_active != 0) {
+            return null;
+        }
+
+        $userIds = Score::where('season_id', $this->id)
+            ->select('winner')
+            ->union(Score::where('season_id', $this->id)->select('loser'))
+            ->pluck('winner')
+            ->unique()
+            ->toArray();
+
+        $gamePoint = User::all();
+
+        $top3Player = [];
+        foreach ($userIds as $userId) {
+            $userData = $gamePoint->where('id', $userId)->first();
+            $points = 0;
+            foreach (Score::all() as $score) {
+                if ($score->winner == $userId && $score->draw != 1) {
+                    $points += 3;
+                }
+
+                if ($score->draw == 1) {
+                    $points += 1;
+                }
+            }
+            $top3Player[] = ['points' => $points, 'userData' => $userData];
+        }
+
+        usort($top3Player, function ($a, $b) {
+            return $b['points'] - $a['points'];
+        });
+
+        $top3Player = array_slice($top3Player, 0, 3);
+
+        return $top3Player;
     }
 }
