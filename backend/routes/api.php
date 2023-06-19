@@ -74,11 +74,11 @@ Route::middleware('response')->group(function () {
 
     //leagues
     Route::get('get-league', [LeagueController::class, 'index']);
-    Route::get('show-league{league}', [LeagueController::class, 'show']);
+    Route::get('show-league/{league}', [LeagueController::class, 'show']);
     Route::get('get-season', [SeasonController::class, 'index']);
     Route::get('show-season/{season}', [SeasonController::class, 'show']);
-    Route::get('standing/{league}', [LeagueController::class, 'standings']);
-    Route::get('historie/{league}', [LeagueController::class, 'histories']);
+    Route::get('standings/{league}', [LeagueController::class, 'standings']);
+    Route::get('histories/{league}', [LeagueController::class, 'histories']);
 });
 
 Route::resource('security-questions', SecurityQuestionController::class);
