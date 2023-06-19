@@ -15,7 +15,7 @@ class LeagueController extends Controller
 {
     public function index()
     {
-        return League::all();
+        return League::with('seasons')->get();
     }
 
     public function store(StoreLeagueRequest $request)
@@ -30,7 +30,7 @@ class LeagueController extends Controller
 
     public function show(League $league)
     {
-        return $league;
+        return $league->load('seasons');
     }
 
     public function update(UpdateLeagueRequest $request, League $league)
@@ -46,11 +46,11 @@ class LeagueController extends Controller
         $league->delete();
     }
 
-    public function standings($leagueId)
+    public function standings($seasonId)
     {
-        $season = Season::where('league_id', $leagueId)->where('is_active', 1)->first();
+        $season = Season::where('id', $seasonId)->first();
         if (empty($season)) {
-            return abort(400, 'No active season found');
+            return abort(400, 'Season not found');
         }
 
         $userIds = Score::where('season_id', $season->id)
@@ -81,9 +81,9 @@ class LeagueController extends Controller
         return $standings;
     }
 
-    public function histories($leagueId)
+    public function histories($seasonId)
     {
-        $season = Season::where('league_id', $leagueId)->where('is_active', 1)->first();
+        $season = Season::where('id', $seasonId)->where('is_active', 1)->first();
         if (empty($season)) {
             return abort(400, 'No active season found');
         }
