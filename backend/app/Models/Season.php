@@ -17,7 +17,9 @@ class Season extends Model
 
     protected $guarded = [];
 
-    protected $hidden = ['deleted_at', 'created_at', 'updated_at'];
+    protected $hidden = ['seasonPlayers', 'deleted_at', 'created_at', 'updated_at'];
+
+    protected $appends = ['player_count'];
 
     protected $casts = [
         'season_name' => 'json',
@@ -36,5 +38,10 @@ class Season extends Model
     public function seasonPlayers(): HasMany
     {
         return $this->hasMany(SeasonPlayer::class);
+    }
+
+    public function getPlayerCountAttribute()
+    {
+        return $this->seasonPlayers->count();
     }
 }
