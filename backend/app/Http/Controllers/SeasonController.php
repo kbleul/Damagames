@@ -6,7 +6,6 @@ use App\Http\Requests\StoreSeasonRequest;
 use App\Http\Requests\UpdateSeasonRequest;
 use App\Models\Score;
 use App\Models\Season;
-use DateTime;
 use Illuminate\Support\Facades\DB;
 
 class SeasonController extends Controller
@@ -26,14 +25,10 @@ class SeasonController extends Controller
 
     public function show(Season $season)
     {
-        $yesterday = new DateTime('yesterday');
-        $latests = Score::with('winnerScore', 'loserScore')->where('season_id', $season->id)
-            ->where('created_at', '>', $yesterday)->get();
+        $histories = Score::with('winnerScore', 'loserScore')->where('season_id', $season->id)
+            ->get()->groupBy('created_at');
 
-        $olders = Score::with('winnerScore', 'loserScore')->where('season_id', $season->id)
-            ->where('created_at', '<', $yesterday)->get();
-
-        return ['season' => $season, 'yesterday' => $latests, 'older' => $olders];
+        return ['season' => $season, 'histories' => $histories];
     }
 
     public function update(UpdateSeasonRequest $request, Season $season)
