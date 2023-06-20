@@ -42,7 +42,7 @@ class LeagueController extends Controller
 
     public function destroy(League $league)
     {
-        $league->delete();
+        $league->forceDelete();
     }
 
     public function standings($seasonId)

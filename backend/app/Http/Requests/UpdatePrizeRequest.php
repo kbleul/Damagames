@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateSeasonRequest extends FormRequest
+class UpdatePrizeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,13 +24,11 @@ class UpdateSeasonRequest extends FormRequest
     public function rules()
     {
         return [
-            'league_id' => 'required|uuid',
-            'season_name' => 'required|json|unique:seasons',
-            'is_active' => 'required|boolean',
-            'starting_date' => 'required|json',
-            'ending_date' => 'required|json',
-            'starting_time' => 'required|json',
-            'ending_time' => 'required|json',
+            'season_id' => 'required|uuid|exists:seasons,id',
+            'prize_name' => 'required|json',
+            'level' => 'required|numeric',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
+            'description' => 'nullable|json',
         ];
     }
 }

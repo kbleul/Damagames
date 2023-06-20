@@ -41,6 +41,6 @@ class SeasonController extends Controller
 
     public function destroy(Season $season)
     {
-        $season->delete();
+        $season->forceDelete();
     }
 }

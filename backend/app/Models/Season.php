@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\League;
+use App\Models\Prize;
 use App\Models\SeasonPlayer;
 use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,7 +20,7 @@ class Season extends Model
 
     protected $hidden = ['seasonPlayers', 'deleted_at', 'created_at', 'updated_at'];
 
-    protected $appends = ['player_count', 'top3Player'];
+    protected $appends = ['player_count', 'prizes', 'top3Player'];
 
     protected $casts = [
         'season_name' => 'json',
@@ -40,9 +41,19 @@ class Season extends Model
         return $this->hasMany(SeasonPlayer::class);
     }
 
+    public function prizes(): HasMany
+    {
+        return $this->hasMany(Prize::class);
+    }
+
     public function getPlayerCountAttribute()
     {
         return $this->seasonPlayers->count();
+    }
+
+    public function getPrizesAttribute()
+    {
+        return $this->prizes()->get();
     }
 
     public function getTop3PlayerAttribute()
