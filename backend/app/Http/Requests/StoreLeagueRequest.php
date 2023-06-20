@@ -24,10 +24,10 @@ class StoreLeagueRequest extends FormRequest
     public function rules()
     {
         return [
-            'league_name' => 'required|string|unique:leagues',
+            'league_name' => 'required|json|unique:leagues',
             'league_price' => 'required|numeric',
             'status' => 'nullable|boolean',
-            'description' => 'nullable|string',
+            'description' => 'nullable|json',
         ];
     }
 }

@@ -24,13 +24,13 @@ class StoreSeasonRequest extends FormRequest
     public function rules()
     {
         return [
-            'league_id' => 'required|integer|in:leagues',
-            'season_name' => 'required|string|unique:seasons',
-            'is_active'=>'required|boolean',
-            'starting_date' => 'required|date',
-            'ending_date' => 'required|date|after:starting_date',
-            'starting_time' => 'required|date',
-            'ending_time' => 'required|date|after:starting_time',
+            'league_id' => 'required|uuid',
+            'season_name' => 'required|json|unique:seasons',
+            'is_active' => 'required|boolean',
+            'starting_date' => 'required|json',
+            'ending_date' => 'required|json',
+            'starting_time' => 'required|json',
+            'ending_time' => 'required|json',
         ];
     }
 }

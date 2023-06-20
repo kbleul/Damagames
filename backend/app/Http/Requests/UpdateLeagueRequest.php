@@ -24,10 +24,10 @@ class UpdateLeagueRequest extends FormRequest
     public function rules()
     {
         return [
-            'league_name' => 'required|string',
+            'league_name' => 'required|json',
             'league_price' => 'required|numeric',
             'status' => 'nullable|boolean',
-            'description' => 'nullable|string',
+            'description' => 'nullable|json',
         ];
     }
 }

@@ -22,7 +22,7 @@ class League extends Model
         'description' => 'json',
     ];
 
-    public function Seasons(): HasMany
+    public function seasons(): HasMany
     {
         return $this->hasMany(Season::class);
     }

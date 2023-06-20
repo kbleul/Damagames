@@ -33,8 +33,8 @@ class SeasonFactory extends Factory
         ]];
         $start_date = [['english' => '2023-06-15', 'amharic' => '2015-06-8'], ['english' => '2023-06-13', 'amharic' => '2015-07-8']];
         $end_date = [['english' => '2023-07-15', 'amharic' => '2015-07-8'], ['english' => '2023-04-15', 'amharic' => '2015-01-8']];
-        $starting_time = [['english' => '2023-07-15-13:00:00', 'amharic' => '2015-07-8-17:00:00'],['english' => '2023-07-15-12:00:00', 'amharic' => '2015-07-4-11:08:00']];
-        $ending_time = [['english' => '2023-07-15-03:06:00', 'amharic' => '2015-07-8-03:08:00'],'english' => '2023-07-15-03:06:04', 'amharic' => '2015-01-8-03:02:00'];
+        $starting_time = [['english' => '12:00:00', 'amharic' => '09:08:00'], ['english' => '12:30:00', 'amharic' => '11:30:00']];
+        $ending_time = [['english' => '06:00:00', 'amharic' => '03:08:00'], 'english' => '06:30:00', 'amharic' => '05:30:00'];
 
         return [
             'league_id' => $this->faker->randomElement($leagueName),
