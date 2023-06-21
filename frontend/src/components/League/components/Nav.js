@@ -21,7 +21,7 @@ const PLAYERS = [
 ]
 
 
-const Nav = ({ setPlayerItems, active, setActive }) => {
+const Nav = ({ setPlayerItems, active, setActive, isInSeason }) => {
 
     const [leagueTable, setLeagueTable] = useState(null)
     const [error, setError] = useState(null)
@@ -60,7 +60,6 @@ const Nav = ({ setPlayerItems, active, setActive }) => {
                         })
 
                         setLeagueTable([...tempStanding])
-                        console.log(tempStanding)
 
                         tempStanding = []
 
@@ -87,11 +86,18 @@ const Nav = ({ setPlayerItems, active, setActive }) => {
     }, [active, leagueTable])
 
 
-    return (<section className="relative mt-6 w-[94%] ml-[3%] max-w-[600px] border border-orange-600 rounded-full text-orange-color bg-black flex items-center justify-center">
+    const className = !isInSeason ?
+        "w-1/2 bg-gradient-to-b from-orange-500 to-orange-700 rounded-full flex items-center justify-center gap-x-1 py-3 text-black font-bold"
+        : "w-1/3 bg-gradient-to-b from-orange-500 to-orange-700 rounded-full flex items-center justify-center gap-x-1 py-3 text-black font-bold"
 
-        <div className={active === LEAGUE_CATAGORIES[0] ?
-            "w-1/3 bg-gradient-to-b from-orange-500 to-orange-700 rounded-full flex items-center justify-center gap-x-1 py-3 text-black font-bold"
-            : "w-1/3 flex items-center justify-center gap-x-1 py-3 cursor-pointer"}
+    const className_active = !isInSeason ?
+        "w-1/2 flex items-center justify-center gap-x-1 py-3 cursor-pointer" :
+        "w-1/3 flex items-center justify-center gap-x-1 py-3 cursor-pointer"
+
+    return (<section className={isInSeason ? "relative mt-6 w-[94%] ml-[3%] max-w-[600px] border border-orange-600 rounded-full text-orange-color bg-black flex items-center justify-center"
+        : "relative mt-6 w-4/5 ml-[10%] max-w-[600px] border border-orange-600 rounded-full text-orange-color bg-black flex items-center justify-center"}>
+
+        <div className={active === LEAGUE_CATAGORIES[0] ? className : className_active}
             onClick={() => {
                 if (active !== LEAGUE_CATAGORIES[0]) {
                     setActive(LEAGUE_CATAGORIES[0])
@@ -102,7 +108,7 @@ const Nav = ({ setPlayerItems, active, setActive }) => {
             <p className="text-xs">{LEAGUE_CATAGORIES[0]}</p>
         </div>
 
-        <div className={active === LEAGUE_CATAGORIES[1] ?
+        {isInSeason && <div className={active === LEAGUE_CATAGORIES[1] ?
             "w-1/3 bg-gradient-to-b from-orange-500 to-orange-700 rounded-full flex items-center justify-center gap-x-1 py-3 text-black font-bold"
             : "w-1/3 flex items-center justify-center gap-x-1 py-3 cursor-pointer"}
             onClick={() => {
@@ -113,11 +119,9 @@ const Nav = ({ setPlayerItems, active, setActive }) => {
             }}>
             <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-5" viewBox="0 0 24 24"><path fill="currentColor" d="m21.1 12.5l1.4 1.41l-6.53 6.59L12.5 17l1.4-1.41l2.07 2.08l5.13-5.17M10 17l3 3H3v-2c0-2.21 3.58-4 8-4l1.89.11L10 17m1-13a4 4 0 0 1 4 4a4 4 0 0 1-4 4a4 4 0 0 1-4-4a4 4 0 0 1 4-4Z" /></svg>
             <p className="text-xs">{LEAGUE_CATAGORIES[1]} Users</p>
-        </div>
+        </div>}
 
-        <div className={active === LEAGUE_CATAGORIES[2] ?
-            "ml-1 w-1/3 bg-gradient-to-b from-orange-500 to-orange-700 rounded-full flex items-center justify-center gap-x-1 py-3 text-black font-bold"
-            : "w-1/3 flex items-center justify-center gap-x-1 py-3 cursor-pointer"}
+        <div className={active === LEAGUE_CATAGORIES[2] ? className : className_active}
             onClick={() => {
                 if (active !== LEAGUE_CATAGORIES[2]) {
                     setActive(LEAGUE_CATAGORIES[2])

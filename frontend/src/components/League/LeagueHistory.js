@@ -4,45 +4,75 @@ import { useState } from "react"
 import leagueImgMain from "../../assets/leagueBg.jpg"
 import PlayerCard from "./components/PlayerCard"
 import Nav from "./components/Nav"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { LEAGUE_CATAGORIES } from "../../utils/data"
 import Matches from "./components/Matches"
-import LeagueDetails from "./components/LeagueDetails"
+import { useQuery } from "@tanstack/react-query"
+import axios from "axios"
+
+import { Circles } from "react-loader-spinner";
+import { useAuth } from "../../context/auth"
+
 
 const LeagueHistory = () => {
 
     const navigate = useNavigate()
+    const { id } = useParams()
+    const { token, user } = useAuth();
 
     const [active, setActive] = useState("Standing")
     const [playerItems, setPlayerItems] = useState(null)
 
+    const [error, setError] = useState(null)
+    const [isLoading, setIsLoading] = useState(true)
+    const [leagues, setLeagues] = useState(null)
 
-    // const headers = {
-    //     "Content-Type": "application/json",
-    //     Accept: "application/json",
-    // };
+    //is user in this competion
+    const [isInSeason, setIsInSeason] = useState(false)
 
-    // const LeaguesData = useQuery(
-    //     ["getLeaguesDataApi"],
-    //     async () =>
-    //         await axios.get(`${process.env.REACT_APP_BACKEND_URL}get-league`, {
-    //             headers,
-    //         }),
-    //     {
-    //         keepPreviousData: true,
-    //         refetchOnWindowFocus: false,
-    //         retry: false,
-    //         onSuccess: (res) => {
-    //             setError(null)
-    //             setLeagues([...res?.data?.data])
-    //             setIsLoading(false)
-    //         },
-    //         onError: (err) => {
-    //             setError(err.message)
-    //             setIsLoading(false)
-    //         }
-    //     }
-    // );
+
+    const badges = localStorage.getItem("BadgesAll") ? JSON.parse(localStorage.getItem("BadgesAll")) : null
+
+
+    const checkUserInSeason = (playersArr) => {
+        if (!user && !token) return
+
+        let player = playersArr.find(player => player.userData.id === user.id)
+
+        player ? setIsInSeason(true) : setIsInSeason(false)
+    }
+
+
+
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+    };
+
+
+    const SeasonData = useQuery(
+        ["getSeasonDataApi"],
+        async () =>
+            await axios.get(`${process.env.REACT_APP_BACKEND_URL}standings/${id}`, {
+                headers,
+            }),
+        {
+            keepPreviousData: true,
+            refetchOnWindowFocus: false,
+            retry: false,
+            onSuccess: (res) => {
+                setError(null)
+                setLeagues([...res?.data?.data])
+                setIsLoading(false)
+
+                checkUserInSeason(res?.data?.data)
+            },
+            onError: (err) => {
+                setError(err.message)
+                setIsLoading(false)
+            }
+        }
+    );
 
 
     return (
@@ -55,7 +85,7 @@ const LeagueHistory = () => {
         }} className="w-full h-[100vh] overflow-y-scroll">
 
             <button
-                className="z-10 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 absolute top-0 left-2 md:right-4"
+                className="z-50 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 absolute top-0 left-2 md:right-4"
                 onClick={() => navigate("/create-game")}
             >
                 <svg
@@ -79,15 +109,31 @@ const LeagueHistory = () => {
                 <p className="text-2xl ml-[32%] md:ml-[40%] w-3/5  text-left px-1">League</p>
             </section>
 
-            {/* <Nav setPlayerItems={setPlayerItems} active={active} setActive={setActive} /> */}
+            <Nav setPlayerItems={setPlayerItems} active={active} setActive={setActive} isInSeason={isInSeason} />
 
-            {/* {playerItems && <article>{
-                playerItems.map((player, index) => (
-                    <PlayerCard key={player.id} index={index} player={player} />
+            {active === LEAGUE_CATAGORIES[0] && leagues && <article>{
+                leagues.map((player, index) => (
+                    <PlayerCard key={player.userData.id} index={index} player={player} badges={badges} />
                 ))}
             </article>}
 
+            {active === LEAGUE_CATAGORIES[0] && isLoading &&
+                <section className="w-full h-[60vh] flex items-center justify-center ">
+                    <Circles
+                        height="50"
+                        width="70"
+                        radius="9"
+                        color="#FF4C01"
+                        ariaLabel="three-dots-loading"
+                        wrapperStyle={{}}
+                        wrapperClassName=""
+                        visible={true}
+                    />
+                </section>}
 
+            {active === LEAGUE_CATAGORIES[0] && error && <section className="w-full h-[60vh] flex items-center justify-center">
+                <p className="text-orange-600 ">{error}</p>
+            </section>}
 
 
             {active === LEAGUE_CATAGORIES[1] && playerItems.length === 0 &&
@@ -99,10 +145,8 @@ const LeagueHistory = () => {
                     <p className="text-orange-500 fold-bold text-center">No Active Users Curently !</p>
                 </article>}
 
-            {active === LEAGUE_CATAGORIES[2] &&
-                <Matches />} */}
+            {active === LEAGUE_CATAGORIES[2] && <Matches seasonId={id} />}
 
-            <LeagueDetails />
 
         </article>
     )

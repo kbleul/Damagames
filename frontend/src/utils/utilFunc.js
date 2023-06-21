@@ -1,4 +1,4 @@
-import { SORTBY, CACHED_DATA } from "./data"
+import { SORTBY, CACHED_DATA, ET_MONTHS } from "./data"
 
 export const sortScoreBoard = (by, arr) => {
     switch (by) {
@@ -82,6 +82,41 @@ export const clearCacheApiData = () => {
     })
 }
 
+
+/* takes in date in 25/06/2014 formate
+     and returns date in June 25 || SENE 10 format
+     TYPE == lang   "ENG" || "AMH"
+    */
+export const convertDateType = (unformattedDate, lang) => {
+
+    if (lang === "ENG") {
+        const newDate = new Date(unformattedDate);
+
+        const options = { month: 'long', day: 'numeric' }
+
+        let formattedDate;
+
+        formattedDate = newDate.toLocaleDateString('en-US', options);
+
+        return formattedDate;
+    } else {
+        const datesArr = unformattedDate.split("-")
+        return ET_MONTHS[datesArr[1]] + " " + datesArr[2]
+    }
+
+};
+
+
+export const convertTimeType = (startingTime, endingTime) => {
+
+    const startingArr = startingTime.split(":")
+    const endingArr = endingTime.split(":")
+
+    return {
+        starting: startingArr[0] + ":" + startingArr[1],
+        ending: endingArr[0] + ":" + endingArr[1]
+    }
+}
 
 
 

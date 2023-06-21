@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
 import { useAuth } from "../../context/auth";
+import LeagueDetails from "./components/LeagueDetails";
 
 
 const LEAGUES = [
@@ -69,9 +70,14 @@ const LEAGUES = [
 
 const League = () => {
 
+    const LANG = { "AMH": "amharic", "ENG": "english" }
+    const { lang } = useAuth();
+
     const navigate = useNavigate()
 
     const [leagues, setLeagues] = useState([])
+    const [selectedLeague, setSelectedLeague] = useState(null)
+
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
 
@@ -101,6 +107,8 @@ const League = () => {
             }
         }
     );
+
+
     return (
         <article style={{
             backgroundImage: `url(${leagueImgMain})`,
@@ -109,9 +117,12 @@ const League = () => {
             backgroundRepeat: "no-repeat",
             position: "relative",
         }} className="w-full h-[100vh] overflow-y-scroll">
+
             <button
-                className="z-10 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 fixed left-2 md:right-4"
-                onClick={() => navigate("/create-game")}
+                className="z-10 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 fixed left-2 md:right-4 z-40"
+                onClick={() => {
+                    selectedLeague ? setSelectedLeague(null) : navigate("/create-game")
+                }}
             >
                 <svg
                     width="18"
@@ -134,38 +145,36 @@ const League = () => {
                 <p className="text-2xl ml-[32%] md:ml-[40%] w-3/5  text-left px-1">League</p>
             </section>
 
-            {!error && !isLoading && <section>
-                {leagues.map(league => (
-                    <LeaguesCard key={league.id} league={league} />
-                ))}
-            </section>}
+            {!selectedLeague && <article>
+                {!error && !isLoading && <section>
+                    {leagues.map(league => (
+                        <LeaguesCard key={league.id} league={league} setSelectedLeague={setSelectedLeague} />
+                    ))}
+                </section>}
 
-            {isLoading && <section className="w-full h-[60vh] flex items-center justify-center ">
-                <Circles
-                    height="50"
-                    width="70"
-                    radius="9"
-                    color="#FF4C01"
-                    ariaLabel="three-dots-loading"
-                    wrapperStyle={{}}
-                    wrapperClassName=""
-                    visible={true}
-                />
-            </section>}
+                {isLoading && <section className="w-full h-[60vh] flex items-center justify-center ">
+                    <Circles
+                        height="50"
+                        width="70"
+                        radius="9"
+                        color="#FF4C01"
+                        ariaLabel="three-dots-loading"
+                        wrapperStyle={{}}
+                        wrapperClassName=""
+                        visible={true}
+                    />
+                </section>}
 
-            {error && <section className="w-full h-[60vh] flex items-center justify-center">
-                <p className="text-orange-600 ">{error}</p>
-            </section>}
+                {error && <section className="w-full h-[60vh] flex items-center justify-center">
+                    <p className="text-orange-600 ">{error}</p>
+                </section>}
+            </article>}
+
+            {selectedLeague && <LeagueDetails selectedLeague={selectedLeague} />}
+
         </article>
     )
 }
 
-
-// const Details = () => {
-
-//     return (<article>
-
-//     </article>)
-// }
 
 export default League

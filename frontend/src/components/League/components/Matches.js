@@ -1,9 +1,19 @@
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Avatar from "../../../assets/Avatar.png"
 
 import { AiOutlineCheck } from "react-icons/ai"
 import { AiOutlineClose } from "react-icons/ai"
+import { FaEquals } from "react-icons/fa"
+
+
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
+import { assignBadgeToUser } from '../../../utils/utilFunc'
+
+import { useAuth } from '../../../context/auth'
+
+const LANG = { "AMH": "amharic", "ENG": "english" }
 
 
 const MATCHES = [
@@ -163,23 +173,61 @@ const MATCHES = [
 ]
 
 
-const Matches = () => {
+const Matches = ({ seasonId }) => {
+
+    const [error, setError] = useState(null)
+    const [isLoading, setIsLoading] = useState(true)
+    const [matchesId, setMatchesId] = useState(null)
+
+    const badges = localStorage.getItem("BadgesAll") ? JSON.parse(localStorage.getItem("BadgesAll")) : null
+
+
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+    };
+
+
+    const matchesData = useQuery(
+        ["getMatchesDataApi"],
+        async () =>
+            await axios.get(`${process.env.REACT_APP_BACKEND_URL}histories/${seasonId}`, {
+                headers,
+            }),
+        {
+            keepPreviousData: true,
+            refetchOnWindowFocus: false,
+            retry: false,
+            onSuccess: (res) => {
+                setError(null)
+                setIsLoading(false)
+
+                setMatchesId(Object.keys(res?.data?.data))
+            },
+            onError: (err) => {
+                setError(err.message)
+                setIsLoading(false)
+                setMatchesId(null)
+            }
+        }
+    );
+
     return (
         <article>
-            <h2 style={{
+            {/* <h2 style={{
                 background: `linear-gradient(120deg, rgb(39, 138, 134) 1%, rgba(11, 42, 43, 0.32) 10%, rgb(22, 85, 82) 98%) repeat scroll 0% 0%`,
-            }} className='text-left w-[32%] ml-[68%] p-1 my-4 text-white text-sm font-bold '>Season {MATCHES[0].season}</h2>
+            }} className='text-left w-[32%] ml-[68%] p-1 my-4 text-white text-sm font-bold '>Season {MATCHES[0].season}</h2> */}
 
 
-            {MATCHES.length >= 0 &&
+            {!isLoading && !error && matchesId?.length > 0 &&
                 <section>
-                    {MATCHES.map(match => (<section id={match.date} className='mb-8'>
+                    {matchesId.map(matchId => (<section key={matchId} className='mb-8 mt-6'>
                         <div className='w-[96%] ml-[2%] border-b-2 border-[#ff4c01]'>
-                            <h2 className='w-1/4 bg-orange-color text-black text-sm font-bold rounded-md rounded-bl-none rounded-br-none'>{match.date}</h2>
+                            <h2 className='w-1/4 bg-orange-color text-black text-xs font-bold rounded-md rounded-bl-none rounded-br-none'>{matchId}</h2>
                         </div>
 
-                        {match.matches.length > 0 && match.matches.map(match => (
-                            <MatchesCard key={match.id} match={match} />
+                        {matchesData?.data?.data?.data[matchId]?.map(match => (
+                            <MatchesCard key={match.id} match={match} badges={badges} />
                         ))}
                     </section>
                     ))}
@@ -201,34 +249,60 @@ const Matches = () => {
 }
 
 
-const MatchesCard = ({ match }) => {
+const MatchesCard = ({ match, badges }) => {
+
+    const { lang, user } = useAuth();
+
+    const className = (user && user.id === match.winner_score.id) ?
+        'w-2/5 flex items-center justify-center px-1 border-2 border-orange-600 rounded-xl py-2'
+        : 'w-2/5 flex items-center justify-center px-1 border-2 border-gray-300 rounded-xl py-2'
+
+    const classNameTwo = (user && user.id === match.loser_score.id) ?
+        'w-2/5 flex items-center justify-center border-2 border-orange-600 rounded-xl py-2'
+        : 'w-2/5 flex items-center justify-center border-2 border-gray-300 rounded-xl py-2'
 
     return (<article className='text-white flex items-center justify-center px-2 my-4'>
-        <section className='w-[43%] flex items-center justify-center px-1 border-2 border-gray-300 rounded-xl py-2' style={{
+        <section className={className} style={{
             background: `linear-gradient(120deg, rgb(39, 138, 134) 1%, rgba(11, 42, 43, 0.32) 10%, rgb(22, 85, 82) 98%) repeat scroll 0% 0%`,
         }}>
-            <div className='w-1/4 rounded-lg max-w-[5rem] flex justify-center'>
-                <img src={match.p1.img} alt="" />
+            <div className='w-1/4 max-w-[5rem] flex justify-center overflow-hidden pl-1'>
+                <img className='w-[94%] ml-[3%] rounded-md' src={match.winner_score.profile_image ? match.winner_score.profile_image : Avatar} alt="" />
             </div>
             <div className='w-4/5 flex flex-col items-start pl-1'>
-                <p className='font-bold text-sm'>{match.p1.name}</p>
-                <p className='text-xs'>Guandari</p>
+                <p className='font-bold text-sm'>{match.winner_score.username}</p>
+                <p className='text-xs'>{assignBadgeToUser(match.winner_score?.game_point, badges).name[LANG[lang]]}</p>
             </div>
         </section>
-        <section className='w-[14%] flex items-center justify-center gap-x-1'>
-            <AiOutlineCheck className='text-green-300 w-6 h-6' />
-            <p className='text-xs font-bold'>VS</p>
-            <AiOutlineClose className='text-red-500 w-6 h-6' />
+
+
+        <section className='w-1/5 flex items-center justify-center gap-x-1'>
+            {match.draw === "0" &&
+                <div>{match.winner_score.id === match.winner ? <AiOutlineCheck className='text-green-300 w-4 h-4' /> : <AiOutlineClose className='text-red-500 w-4 h-4' />}</div>
+            }
+            {match.draw === "0" && <p className='text-xs font-bold'>VS</p>}
+
+            {match.draw === "0" &&
+                <div>{match.loser_score.id === match.winner ? <AiOutlineCheck className='text-green-300 w-4 h-4' /> : <AiOutlineClose className='text-red-500 w-4 h-4' />}</div>
+            }
+
+            {match.draw !== "0" && <div className='w-full flex flex-col items-center justify-center'>
+                <p className='text-xs font-bold'>VS</p>
+
+                <FaEquals className='text-white w-4 h-4' />
+                <p className='text-white text-xs font-bod'>Draw</p>
+            </div>}
         </section>
-        <section className='w-[43%] flex items-center justify-center border-2 border-gray-300 rounded-xl py-2' style={{
+
+
+        <section className={classNameTwo} style={{
             background: `linear-gradient(120deg, rgb(39, 138, 134) 1%, rgba(11, 42, 43, 0.32) 10%, rgb(22, 85, 82) 98%) repeat scroll 0% 0%`,
         }}>
-            <div className='w-1/4 rounded-lg max-w-[5rem] flex justify-center'>
-                <img src={match.p2.img} alt="" />
+            <div className='w-1/4 max-w-[5rem] flex justify-center overflow-hidden pl-1'>
+                <img className='w-[94%] ml-[3%] rounded-md' src={match.loser_score.profile_image ? match.loser_score.profile_image : Avatar} alt="" />
             </div>
             <div className='w-4/5 flex flex-col items-start pl-1'>
-                <p className='font-bold text-sm'>{match.p2.name}</p>
-                <p className='text-xs'>Guandari</p>
+                <p className='font-bold text-sm'>{match.loser_score.username}</p>
+                <p className='text-xs'>{assignBadgeToUser(match.loser_score?.game_point, badges).name[LANG[lang]]}</p>
             </div>
         </section>
     </article>)

@@ -6,7 +6,7 @@ import PaymentPrompt from "./PaymentPrompt"
 import leagueImg from "../../../assets/league_bg.png"
 import { useAuth } from "../../../context/auth"
 
-const LeaguesCard = ({ league }) => {
+const LeaguesCard = ({ league, setSelectedLeague }) => {
 
     const LANG = { "AMH": "amharic", "ENG": "english" }
     const { lang } = useAuth();
@@ -28,11 +28,6 @@ const LeaguesCard = ({ league }) => {
             </section>
             <section className="relative z-10 w-full flex flex-col items-center py-2">
                 <h4 className="text-xl font-bold">{league.league_name[[LANG[lang]]] ? league.league_name[[LANG[lang]]] : "Null"}</h4>
-                {/* <p className="text-sm font-bold">{league.description[[LANG[lang]]]}</p> */}
-                {/* <div>
-                    <p className="text-xs ">{league.date}</p>
-                    <p className="text-xs">{league.time}</p>
-                </div> */}
 
                 <div>
                     <p className="text-xs ">{league.description[[LANG[lang]]]}</p>
@@ -40,7 +35,7 @@ const LeaguesCard = ({ league }) => {
                 </div>
 
                 <div className="w-full flex justify-evenly items-center">
-                    <button
+                    <button onClick={() => setSelectedLeague(league)}
                         className="w-2/5 bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-sm text-black">View Details
                     </button>
                     <button onClick={() => setIsPaymentModalOpen(true)}

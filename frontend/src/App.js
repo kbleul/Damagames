@@ -96,7 +96,7 @@ const App = () => {
           <Route path="/payment/success" element={<Success />} />
 
           <Route path="/league" element={<League />} />
-          <Route path="/league/history" element={<LeagueHistory />} />
+          <Route path="/league/:id" element={<LeagueHistory />} />
 
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="*" element={<CreateGame />} />
@@ -128,7 +128,7 @@ const App = () => {
           <Route path="/avatar-history/:id" element={<AvatarHistory />} />
 
           <Route path="/league" element={<League />} />
-          <Route path="/league/history" element={<LeagueHistory />} />
+          <Route path="/league/:id" element={<LeagueHistory />} />
 
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="*" element={<Navigate to="/create-game" />} />
