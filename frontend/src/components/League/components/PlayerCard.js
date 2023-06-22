@@ -9,7 +9,6 @@ const PlayerCard = ({ index, player, badges }) => {
 
     const { lang, user } = useAuth();
 
-
     let badge = null
     if (badges && badges.length > 0) {
         const { name } = assignBadgeToUser(player.userData?.game_point, badges)
@@ -26,7 +25,7 @@ const PlayerCard = ({ index, player, badges }) => {
             background: `linear-gradient(120deg, rgb(39, 138, 134) 1%, rgba(11, 42, 43, 0.32) 10%, rgb(22, 85, 82) 98%) repeat scroll 0% 0%`,
         }}>
 
-            <div className="p-2 border w-[18%] rounded-lg max-w-[5rem] flex justify-center ">
+            <div className="p-2 border w-[18%] rounded-lg max-w-[5rem] h-14 flex justify-center ">
                 <img
                     src={
                         player?.userData?.profile_image ? player?.userData?.profile_image : Avatar
@@ -40,14 +39,21 @@ const PlayerCard = ({ index, player, badges }) => {
                 <div className=" flex items-center justify-between gap-4 px-2 ">
                     <p className="text-gray-300 font-bold text-xs">{badge ? badge[LANG[lang]] : ""}</p>
                 </div>
+
+                <section className="text-white flex items-center justify-end gap-x-[20%] text-xs w-full capitalize">
+                    <p>win - 10</p>
+                    <p>loss - 2</p>
+                </section>
             </section>
 
-            <div className='w-[30%] flex items-center'>
-                <p className="text-white text-xs w-full">Pts {player?.points}</p>
+            <div className='w-[30%] flex flex-col items-center justify-center text-white  text-xs'>
+                <p className="w-full pb-2">Pts {player?.points}</p>
             </div>
 
 
         </section>
+
+
     </article>
 
     )

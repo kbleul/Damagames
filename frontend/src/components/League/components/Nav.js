@@ -6,22 +6,7 @@ import { LEAGUE_CATAGORIES } from '../../../utils/data'
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 
-const PLAYERS = [
-    {
-        username: "Lu tenet",
-        point: 60
-    },
-    {
-        username: "Ruvi Makr ",
-        point: 120
-    }, {
-        username: "Suli Wipt",
-        point: 1000
-    }
-]
-
-
-const Nav = ({ setPlayerItems, active, setActive, isInSeason }) => {
+const Nav = ({ active, setActive, isInSeason }) => {
 
     const [leagueTable, setLeagueTable] = useState(null)
     const [error, setError] = useState(null)
@@ -81,9 +66,9 @@ const Nav = ({ setPlayerItems, active, setActive, isInSeason }) => {
         tableMutationSubmitHandler()
     }, [])
 
-    useEffect(() => {
-        active === LEAGUE_CATAGORIES[0] && leagueTable && leagueTable.length > 0 && setPlayerItems([...leagueTable])
-    }, [active, leagueTable])
+    // useEffect(() => {
+    //     active === LEAGUE_CATAGORIES[0] && leagueTable && leagueTable.length > 0 && setActivePlayers([...leagueTable])
+    // }, [active, leagueTable])
 
 
     const className = !isInSeason ?
@@ -101,7 +86,6 @@ const Nav = ({ setPlayerItems, active, setActive, isInSeason }) => {
             onClick={() => {
                 if (active !== LEAGUE_CATAGORIES[0]) {
                     setActive(LEAGUE_CATAGORIES[0])
-                    setPlayerItems([...PLAYERS])
                 }
             }}>
             <VscListSelection className="w-4 h-5" />
@@ -114,7 +98,6 @@ const Nav = ({ setPlayerItems, active, setActive, isInSeason }) => {
             onClick={() => {
                 if (active !== LEAGUE_CATAGORIES[1]) {
                     setActive(LEAGUE_CATAGORIES[1])
-                    setPlayerItems([])
                 }
             }}>
             <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-5" viewBox="0 0 24 24"><path fill="currentColor" d="m21.1 12.5l1.4 1.41l-6.53 6.59L12.5 17l1.4-1.41l2.07 2.08l5.13-5.17M10 17l3 3H3v-2c0-2.21 3.58-4 8-4l1.89.11L10 17m1-13a4 4 0 0 1 4 4a4 4 0 0 1-4 4a4 4 0 0 1-4-4a4 4 0 0 1 4-4Z" /></svg>
@@ -125,7 +108,6 @@ const Nav = ({ setPlayerItems, active, setActive, isInSeason }) => {
             onClick={() => {
                 if (active !== LEAGUE_CATAGORIES[2]) {
                     setActive(LEAGUE_CATAGORIES[2])
-                    setPlayerItems([])
                 }
             }}>
             <svg className="w-4 h-5" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -25,6 +25,7 @@ import { SORTBY, LANG } from "../utils/data"
 import TopFour from "./TopFour";
 import { sortScoreBoard, cacheApiResponse } from "../utils/utilFunc";
 
+import socket from "../utils/socket.io";
 
 
 const CreateGame = () => {
@@ -163,6 +164,21 @@ const CreateGame = () => {
     }
   };
 
+
+  const checkIn = () => {
+
+    const { id, username, profile_image, game_point, default_board, default_crown } = user
+
+    socket.emit("checkInLeague", {
+      seasonId: "12s",
+      userData: { id, username, profile_image, game_point, default_board, default_crown }
+    });
+
+    socket.emit("clearSeason", {
+      seasonId: "1234s"
+    });
+  }
+
   const scoreBoardData = useQuery(
     ["soreBoardDataApi"],
     async () =>
@@ -223,6 +239,8 @@ const CreateGame = () => {
       setAllBadges(JSON.parse(localStorage.getItem("BadgesAll")))
       setIsLoading(false)
     }
+
+
   }, [])
 
   useEffect(() => {
@@ -507,8 +525,8 @@ const CreateGame = () => {
             </p>
           </Link>
 
-          <Link
-            to="/league/history"
+          <button
+            onClick={checkIn}
             className="seventh-step flex flex-col justify-evenly items-center mt-4"
           >
             <div className="h-8 w-10 rounded-sm bg-orange-color px-2 fle
@@ -538,9 +556,9 @@ const CreateGame = () => {
               </svg>
             </div>
             <p className="text-orange-color text-[.7rem]">
-              history
+              Check IN
             </p>
-          </Link>
+          </button>
 
 
         </section>

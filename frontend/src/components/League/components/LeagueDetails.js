@@ -106,8 +106,6 @@ const ActiveSeason = ({ season, setIsPaymentModalOpen }) => {
     const { lang } = useAuth();
 
     const totalPlayer = season.number_of_player || 20
-    const className = `w-[${Math.round((season.player_count / totalPlayer) * 100)}%] bg-orange-color h-full`
-
 
     const formattedStaringDate = convertDateType(season?.starting_date[LANG[lang]], lang)
     const formattedEndDate = convertDateType(season?.ending_date[LANG[lang]], lang)
@@ -118,7 +116,9 @@ const ActiveSeason = ({ season, setIsPaymentModalOpen }) => {
         <section className="py-4">
             <p className="capitalize font-bold">joined player - {season.player_count}</p>
             <div className="bg-transparent mx-8 rounded-full w-4/5 ml-[10%] h-10 border border-orange-600 overflow-x-hidden">
-                <div className={className}></div>
+                <div style={{
+                    width: `${Math.round((season.player_count / totalPlayer) * 100)}%`
+                }} className="bg-orange-color h-full"></div>
             </div>
             {season.number_of_player !== season.player_count &&
                 <p><span className={totalPlayer - season.player_count > 6 && "hidden"}>Only</span> {(season.number_of_player || 20) - season.player_count} spots left</p>}

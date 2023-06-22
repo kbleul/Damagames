@@ -1,4 +1,4 @@
-import React, { useEffect, Suspense } from "react";
+import React, { useEffect, Suspense, useState } from "react";
 import { clearCacheApiData } from "./utils/utilFunc"
 import { useHome } from "./context/HomeContext";
 import { useAuth } from "./context/auth";
@@ -12,6 +12,7 @@ import {
 import ToastContainer from "./utils/ToastContainer";
 import League from "./components/League/League";
 import LeagueHistory from "./components/League/LeagueHistory";
+import DrawGameModal from "./components/League/components/invite";
 //'G-YM283P3T0J'
 const tagManagerArgs = {
   gtmId: process.env.REACT_APP_GTM_ID,
@@ -49,6 +50,7 @@ const App = () => {
   const { checked } = useHome();
   const { user, token } = useAuth();
 
+  const [isDrawModalOpen, setisDrawModalOpen] = useState(false)
 
   useEffect(() => {
     TagManager.initialize(tagManagerArgs);
@@ -66,6 +68,11 @@ const App = () => {
   useEffect(() => {
     socket.on("connect", () => {
       console.log("Connected to Socket.io server ");
+
+      socket.on("play-league-invite", data => {
+        console.log(data)
+        !isDrawModalOpen && setisDrawModalOpen(true)
+      })
     });
 
   });
@@ -74,6 +81,8 @@ const App = () => {
   const HomeComp = () => {
     return (
       <>
+        <DrawGameModal isDrawModalOpen={isDrawModalOpen} setIsDrawModalOpen={setisDrawModalOpen} />
+
         <Routes>
           <Route path="*" element={<Navigate to="/create-game" />} />
           <Route path="/create-game" element={<CreateGame />} />
@@ -108,6 +117,7 @@ const App = () => {
   const AuthComp = () => {
     return (
       <>
+        <DrawGameModal isDrawModalOpen={isDrawModalOpen} setIsDrawModalOpen={setisDrawModalOpen} />
         <Routes>
           <Route path="" element={<Navigate to="/create-game" />} />
           <Route path="/create-game" element={<CreateGame />} />

@@ -9,6 +9,8 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Footer } from "./Footer";
 import { Localization } from "../utils/language";
+
+
 const PubicGames = () => {
   const { user, token, lang } = useAuth();
   const [isMessageSent, setIsMessageSent] = useState(false);
