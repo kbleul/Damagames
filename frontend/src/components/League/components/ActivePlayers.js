@@ -6,6 +6,8 @@ import socket from "../../../utils/socket.io";
 import { useAuth } from "../../../context/auth";
 import { useParams } from "react-router-dom";
 import { assignBadgeToUser } from "../../../utils/utilFunc";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
 const LANG = { "AMH": "amharic", "ENG": "english" }
 
@@ -93,7 +95,7 @@ const ActivePlayers = () => {
 
 const ActivePlayersCard = ({ player, badges, seasonId }) => {
 
-    const { lang, user } = useAuth();
+    const { user, token } = useAuth();
 
     let badge = null
     if (badges && badges.length > 0) {
@@ -101,20 +103,101 @@ const ActivePlayersCard = ({ player, badges, seasonId }) => {
         badge = name
     }
 
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
 
-    const createGame = (playerId) => {
-        //create game first 
-        const tempGameId = "123456789"
-        const { id: userId, username, profile_image, game_point, default_board, default_crown } = user
 
-        socket.emit("join-room-league", {
-            gameId: tempGameId,
-            seasonId: seasonId,
-            sender: { id: userId, username, profile_image, game_point, default_board, default_crown },
-            receiverId: playerId
-        });
+    const startGameMutation = useMutation(
+        async (newData) => {
+            console.log("newData", newData)
+            await axios.post(`${process.env.REACT_APP_BACKEND_URL
+                }auth-start-game/${localStorage.getItem("gameId")}`,
+                newData,
+                {
+                    headers
+                }
+            )
+        },
+        {
+            retry: false,
+        }
+    );
 
-    }
+    //with code
+    const startGameMutationWithCode = async (values) => {
+        try {
+            startGameMutation.mutate({}, {
+                onSuccess: (responseData) => {
+
+                    const { id: userId, username, profile_image, game_point, default_board, default_crown } = user
+
+                    const { receiverId, gameCode } = values
+
+                    socket.emit("join-room-league", {
+                        gameId: responseData?.data?.data?.game,
+                        gameCode,
+                        seasonId,
+                        sender: { id: userId, username, profile_image, game_point, default_board, default_crown },
+                        receiverId: receiverId,
+                    });
+
+                    localStorage.setItem(
+                        "playerTwo",
+                        JSON.stringify(responseData?.data?.data?.playerTwo)
+                    );
+
+                },
+                onError: (err) => {
+                },
+            });
+        } catch (err) {
+        }
+    };
+
+
+    //no userName if the user logged in
+    const createGameMutation = useMutation(
+        async (newData) =>
+            await axios.post(
+                `${process.env.REACT_APP_BACKEND_URL}auth-create-game`,
+                newData,
+                {
+                    headers
+                }
+            ),
+        {
+            retry: false,
+        }
+    );
+
+    const createGameMutationSubmitHandler = async (values) => {
+        try {
+            createGameMutation.mutate(
+                { has_bet: false },
+                {
+                    onSuccess: (responseData) => {
+
+                        const { game, code, playerOne, ip } = responseData?.data?.data
+
+                        localStorage.setItem("gameId", responseData?.data?.data?.game);
+                        localStorage.setItem(
+                            "playerOne",
+                            JSON.stringify(responseData?.data?.data?.playerOne)
+                        );
+
+                        localStorage.setItem("playerOneIp", responseData?.data?.data?.ip);
+
+                        startGameMutationWithCode({ receiverId: values.receiverId, gameCode: responseData?.data?.data?.code })
+                    },
+                    onError: (err) => { },
+                }
+            );
+        } catch (err) { }
+    };
+
 
     return (<article className="flex items-start justify-center  my-8 pr-2">
         <section className="border-2 border-gray-200 rounded-2xl flex max-w-[550px] w-[94%] py-1 px-2" style={{
@@ -144,7 +227,8 @@ const ActivePlayersCard = ({ player, badges, seasonId }) => {
 
             <div className='w-[30%] flex flex-col items-center justify-center text-white  text-xs'>
                 <p className="w-full pb-2">Pts 20 </p>
-                <button onClick={() => createGame(player?.id)} className="w-4/5 ml-[10%] rounded-full py-1 text-white bg-orange-600">Play</button>
+                <button onClick={() => createGameMutationSubmitHandler({ receiverId: player?.id })}
+                    className="w-4/5 ml-[10%] rounded-full py-1 text-white bg-orange-600">Play</button>
             </div>
 
 

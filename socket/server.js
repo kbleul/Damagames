@@ -1,9 +1,7 @@
 import { createServer } from "http";
 import { Server } from "socket.io";
-import { differenceInMinutes, formatDistance } from "date-fns";
+import { formatDistance } from "date-fns";
 import { instrument } from "@socket.io/admin-ui";
-import { Console } from "console";
-import { Socket } from "dgram";
 const httpServer = createServer();
 const io = new Server(httpServer, {
   cors: {
@@ -49,14 +47,16 @@ const removePublicGame = (code, type) => {
 
 
 /*
-  Remove player from leagueActivePlayers using socket.id
+  Remove player from leagueActivePlayers using by == "socketId" || "userId" by default
   check if user exists and remove if exists
   */
-const removeLeagueActivePlayer = (socketId) => {
+const removeLeagueActivePlayer = (id, by = "userId") => {
   if (leagueActivePlayers.length === 0) return
 
   leagueActivePlayers.forEach((season, index) => {
-    const updatedSeason = season[Object.keys(season)[0]].filter(player => player.socketId !== socketId)
+    const updatedSeason = by === "socketId" ?
+      season[Object.keys(season)[0]].filter(player => player.socketId !== id)
+      : season[Object.keys(season)[0]].filter(player => player.id !== id)
 
     if (updatedSeason) {
 
@@ -67,8 +67,23 @@ const removeLeagueActivePlayer = (socketId) => {
 
   })
 
-  console.log("league", leagueActivePlayers)
 }
+
+const getLeagueActivePlayer = (userId) => {
+  if (leagueActivePlayers.length === 0) return
+
+  let returnObj = null
+  leagueActivePlayers.forEach((season, index) => {
+    const foundPlayer = season[Object.keys(season)[0]].find(player => player.id === userId)
+    console.log("foundPlayer", foundPlayer)
+    if (foundPlayer) {
+      returnObj = { ...foundPlayer }
+    }
+  })
+
+  return returnObj
+}
+
 
 const joinRoom = async (socket, room) => {
   const clients = await io.of("/").in(room).fetchSockets();
@@ -203,7 +218,6 @@ io.on("connection", (socket) => {
 
     if (!season) {
       leagueActivePlayers.push({ [seasonId]: [{ ...userData, socketId: socket.id }] });
-      console.log(leagueActivePlayers)
 
       return;
     }
@@ -213,6 +227,7 @@ io.on("connection", (socket) => {
     if (!userExists) {
       season[seasonId].push({ ...userData, socketId: socket.id });
     }
+    console.log("checkin", leagueActivePlayers)
 
   });
 
@@ -236,30 +251,70 @@ io.on("connection", (socket) => {
   })
 
 
-  socket.on("join-room-league", data => {
-    const { gameId, seasonId, sender, receiverId } = data
+  socket.on("join-room-league", async (data) => {
+
+    console.log("joined")
+    const { gameId, gameCode, seasonId, sender, receiverId } = data
 
     const season = leagueActivePlayers.find((season) => season.hasOwnProperty(seasonId))
 
     if (season) {
       const playerTwo = season[seasonId].find((user) => user.id === receiverId)
-      console.log("playerTwo", playerTwo)
+
+      console.log("season found-----------------------")
+
+      console.log("sender : ", season[seasonId].find((user) => user.id === sender.id))
+      console.log("reviver : ", playerTwo)
+
       if (playerTwo) {
-        joinRoom(socket, gameId)
-        console.log("playerTwo", playerTwo.socketId)
-        io.to(playerTwo.socketId).emit("play-league-invite", {
-          sender,
-          gameId,
-          seasonId
-        })
+        const room = gameId
+
+        joinRoom(socket, room)
+
+        const clients = await io.of("/").in(room).fetchSockets();
+        console.log(clients + "-----------------------")
+        if (!data.isPlayerTwo) {
+          console.log("invited", gameCode, gameId)
+          io.to(playerTwo.socketId).emit("play-league-invite", {
+            sender,
+            gameId,
+            gameCode,
+            seasonId
+          })
+        } else {
+
+          console.log("before remove",
+            leagueActivePlayers.find((season) => season.hasOwnProperty(seasonId)),
+            receiverId, sender.id)
+
+
+          const playerOne = getLeagueActivePlayer(receiverId)
+          const playerTwo = getLeagueActivePlayer(sender.id)
+          console.log(playerOne, playerTwo)
+          if (playerOne && playerTwo) {
+            removeLeagueActivePlayer(receiverId)
+            removeLeagueActivePlayer(sender.id)
+
+            console.log("after remove", leagueActivePlayers)
+
+            io.to(room).emit("leauge-game-started", {
+              message: "League game started !",
+              gameId: room,
+              gameCode,
+              playerOne,
+              playerTwo
+            })
+          }
+        }
 
       } else {
         //player two has disconnected error
-        io.to(socket.id).emit("play-league-invite-error", "Play two has left the game")
+        io.to(socket.id).emit("play-league-invite-error", "Players two has left the game")
       }
 
     } else {
-      checkInLeague({ seasonId, userData: sender })
+      console.log("Error")
+      // checkInLeague({ seasonId, userData: sender })
       //send player two had disconnected message
       io.to(socket.id).emit("play-league-invite-error", "Play two has left the game")
 
@@ -286,7 +341,7 @@ io.on("connection", (socket) => {
     });
 
     removePublicGame(socket.id, "socketId");
-    removeLeagueActivePlayer(socket.id)
+    removeLeagueActivePlayer(socket.id, "socketId")
   });
 
 });

@@ -7,12 +7,15 @@ import socket from "./utils/socket.io";
 import {
   Route,
   Routes,
-  Navigate
+  Navigate,
+  useNavigate
 } from "react-router-dom";
 import ToastContainer from "./utils/ToastContainer";
 import League from "./components/League/League";
 import LeagueHistory from "./components/League/LeagueHistory";
-import DrawGameModal from "./components/League/components/invite";
+import DrawGameModal from "./components/League/components/PlayLeagueInvite";
+import PlayLeagueInvite from "./components/League/components/PlayLeagueInvite";
+import LeagueGame from "./components/League/LeagueGame";
 //'G-YM283P3T0J'
 const tagManagerArgs = {
   gtmId: process.env.REACT_APP_GTM_ID,
@@ -49,8 +52,11 @@ const App = () => {
 
   const { checked } = useHome();
   const { user, token } = useAuth();
+  const navigate = useNavigate()
 
-  const [isDrawModalOpen, setisDrawModalOpen] = useState(false)
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false)
+  const [inviteData, setInviteData] = useState(null)
+
 
   useEffect(() => {
     TagManager.initialize(tagManagerArgs);
@@ -71,7 +77,16 @@ const App = () => {
 
       socket.on("play-league-invite", data => {
         console.log(data)
-        !isDrawModalOpen && setisDrawModalOpen(true)
+        if (!isInviteModalOpen) {
+          setInviteData(data)
+          setIsInviteModalOpen(true)
+        }
+      })
+
+      socket.on("leauge-game-started", data => {
+        isInviteModalOpen && setIsInviteModalOpen(false)
+        navigate(`/league-game/${data.gameId}`)
+        console.log("League game started", data)
       })
     });
 
@@ -81,7 +96,12 @@ const App = () => {
   const HomeComp = () => {
     return (
       <>
-        <DrawGameModal isDrawModalOpen={isDrawModalOpen} setIsDrawModalOpen={setisDrawModalOpen} />
+        {/* <DrawGameModal isDrawModalOpen={isDrawModalOpen} setIsDrawModalOpen={setisDrawModalOpen} /> */}
+
+        {isInviteModalOpen && <PlayLeagueInvite
+          isInviteModalOpen={isInviteModalOpen}
+          setIsInviteModalOpen={setIsInviteModalOpen}
+          inviteData={inviteData} />}
 
         <Routes>
           <Route path="*" element={<Navigate to="/create-game" />} />
@@ -106,6 +126,8 @@ const App = () => {
 
           <Route path="/league" element={<League />} />
           <Route path="/league/:id" element={<LeagueHistory />} />
+          <Route path="/league-game/:id" element={<LeagueGame />} />
+
 
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="*" element={<CreateGame />} />
@@ -117,7 +139,6 @@ const App = () => {
   const AuthComp = () => {
     return (
       <>
-        <DrawGameModal isDrawModalOpen={isDrawModalOpen} setIsDrawModalOpen={setisDrawModalOpen} />
         <Routes>
           <Route path="" element={<Navigate to="/create-game" />} />
           <Route path="/create-game" element={<CreateGame />} />
