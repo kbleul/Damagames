@@ -85,7 +85,7 @@ const App = () => {
 
       socket.on("leauge-game-started", data => {
         isInviteModalOpen && setIsInviteModalOpen(false)
-        navigate(`/league-game/${data.gameId}`)
+        data?.gameId && navigate(`/league-game/${data?.gameId}`)
         console.log("League game started", data)
       })
     });

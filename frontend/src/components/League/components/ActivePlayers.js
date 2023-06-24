@@ -180,17 +180,29 @@ const ActivePlayersCard = ({ player, badges, seasonId }) => {
                 {
                     onSuccess: (responseData) => {
 
-                        const { game, code, playerOne, ip } = responseData?.data?.data
+                        const { game, playerOne, ip, code } = responseData?.data?.data
 
-                        localStorage.setItem("gameId", responseData?.data?.data?.game);
+                        localStorage.setItem("gameId", game);
                         localStorage.setItem(
                             "playerOne",
-                            JSON.stringify(responseData?.data?.data?.playerOne)
+                            JSON.stringify(playerOne)
                         );
 
-                        localStorage.setItem("playerOneIp", responseData?.data?.data?.ip);
+                        localStorage.setItem("playerOneIp", ip);
 
-                        startGameMutationWithCode({ receiverId: values.receiverId, gameCode: responseData?.data?.data?.code })
+                        const { id: userId, username, profile_image, game_point, default_board, default_crown } = user
+
+                        const { receiverId } = values
+
+                        socket.emit("join-room-league", {
+                            gameId: game,
+                            gameCode: code,
+                            seasonId,
+                            sender: { id: userId, username, profile_image, game_point, default_board, default_crown },
+                            receiverId: receiverId,
+                        });
+
+                        // startGameMutationWithCode({ receiverId: values.receiverId, gameCode: responseData?.data?.data?.code })
                     },
                     onError: (err) => { },
                 }

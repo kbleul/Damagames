@@ -14,58 +14,6 @@ import { useAuth } from "../../context/auth";
 import LeagueDetails from "./components/LeagueDetails";
 
 
-const LEAGUES = [
-    {
-        id: "Awra1",
-        name: "Awra League",
-        "date": "June 25 -July25",
-        "time": "8:00pm-9:00pm",
-        playerCount: 25,
-        img: leagueImg
-    },
-    {
-        id: "Mesafint1",
-        name: "Mesafint League",
-        "date": "June 25 -July25",
-        "time": "8:00pm-9:00pm",
-        playerCount: 25,
-        img: leagueImg
-    },
-    {
-        id: "Abyssina1",
-        name: "Abyssina League",
-        "date": "June 25 -July25",
-        "time": "8:00pm-9:00pm",
-        playerCount: 25,
-        img: leagueImg
-    },
-    {
-        id: "Gora1",
-        name: "Gora League",
-        "date": "June 25 -July25",
-        "time": "8:00pm-9:00pm",
-        playerCount: 25,
-        img: leagueImg
-    },
-    {
-        id: "Awra2",
-        name: "Awra League",
-        "date": "June 25 -July25",
-        "time": "8:00pm-9:00pm",
-        playerCount: 25,
-        img: leagueImg
-    },
-    {
-        id: "Mesafint2",
-        name: "Mesafint League",
-        "date": "June 25 -July25",
-        "time": "8:00pm-9:00pm",
-        playerCount: 25,
-        img: leagueImg
-    },
-
-
-]
 
 
 const League = () => {

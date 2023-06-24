@@ -227,7 +227,7 @@ io.on("connection", (socket) => {
     if (!userExists) {
       season[seasonId].push({ ...userData, socketId: socket.id });
     }
-    console.log("checkin", leagueActivePlayers)
+    console.log("checkin", leagueActivePlayers, { socketId: socket.id })
 
   });
 
@@ -255,6 +255,7 @@ io.on("connection", (socket) => {
 
     console.log("joined")
     const { gameId, gameCode, seasonId, sender, receiverId } = data
+    const isPlayerTwo = data.isPlayerTwo || null
 
     const season = leagueActivePlayers.find((season) => season.hasOwnProperty(seasonId))
 
@@ -263,8 +264,8 @@ io.on("connection", (socket) => {
 
       console.log("season found-----------------------")
 
-      console.log("sender : ", season[seasonId].find((user) => user.id === sender.id))
-      console.log("reviver : ", playerTwo)
+      // console.log("sender : ", season[seasonId].find((user) => user.id === sender.id))
+      // console.log("reviver : ", playerTwo)
 
       if (playerTwo) {
         const room = gameId
@@ -273,8 +274,8 @@ io.on("connection", (socket) => {
 
         const clients = await io.of("/").in(room).fetchSockets();
         console.log(clients + "-----------------------")
-        if (!data.isPlayerTwo) {
-          console.log("invited", gameCode, gameId)
+        if (!isPlayerTwo) {
+          console.log("invited", gameCode, gameId, playerTwo.socketId)
           io.to(playerTwo.socketId).emit("play-league-invite", {
             sender,
             gameId,
