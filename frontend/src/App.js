@@ -86,6 +86,7 @@ const App = () => {
       socket.on("leauge-game-started", data => {
         isInviteModalOpen && setIsInviteModalOpen(false)
         data?.gameId && navigate(`/league-game/${data?.gameId}`)
+        localStorage.setItem("seasonId", data.seasonId)
         console.log("League game started", data)
       })
     });

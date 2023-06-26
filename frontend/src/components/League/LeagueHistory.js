@@ -29,6 +29,8 @@ const LeagueHistory = () => {
 
     //is user in this competion
     const [isInSeason, setIsInSeason] = useState(false)
+    const [isGameTime, setIsGameTime] = useState(false)
+
 
 
     const badges = localStorage.getItem("BadgesAll") ? JSON.parse(localStorage.getItem("BadgesAll")) : null
@@ -61,11 +63,13 @@ const LeagueHistory = () => {
             refetchOnWindowFocus: false,
             retry: false,
             onSuccess: (res) => {
+                console.log(res?.data?.data)
                 setError(null)
-                setLeagues([...res?.data?.data])
+                setLeagues([...res?.data?.data?.users])
                 setIsLoading(false)
 
-                checkUserInSeason(res?.data?.data)
+                checkUserInSeason(res?.data?.data?.users)
+                setIsGameTime(res?.data?.data?.is_game_time)
             },
             onError: (err) => {
                 setError(err.message)
@@ -136,7 +140,7 @@ const LeagueHistory = () => {
             </section>}
 
 
-            {active === LEAGUE_CATAGORIES[1] && <ActivePlayers />}
+            {active === LEAGUE_CATAGORIES[1] && <ActivePlayers isGameTime={isGameTime} />}
 
             {active === LEAGUE_CATAGORIES[2] && <Matches seasonId={id} />}
 

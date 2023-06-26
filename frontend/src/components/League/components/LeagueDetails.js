@@ -102,15 +102,15 @@ const LeagueDetails = ({ selectedLeague }) => {
 
 
 const ActiveSeason = ({ season, setIsPaymentModalOpen }) => {
-
     const { lang } = useAuth();
+    console.log(JSON.parse(season.starting_time))
 
     const totalPlayer = season.number_of_player || 20
 
-    const formattedStaringDate = convertDateType(season?.starting_date[LANG[lang]], lang)
-    const formattedEndDate = convertDateType(season?.ending_date[LANG[lang]], lang)
+    const formattedStaringDate = convertDateType(JSON.parse(season?.starting_date)[LANG[lang]], lang)
+    const formattedEndDate = convertDateType(JSON.parse(season?.ending_date)[LANG[lang]], lang)
 
-    const formattedGameTime = convertTimeType(season.starting_time[LANG[lang]], season.ending_time[LANG[lang]])
+    const formattedGameTime = convertTimeType(JSON.parse(season.starting_time)[LANG[lang]], JSON.parse(season.ending_time)[LANG[lang]])
 
     return (<article className="border rounded-3xl  my-4 mx-2 px-2">
         <section className="py-4">

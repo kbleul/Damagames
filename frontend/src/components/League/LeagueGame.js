@@ -14,7 +14,7 @@ import toast, { Toaster } from "react-hot-toast";
 import RematchModal from "../../Game/components/RematchModal";
 import useSound from "use-sound";
 import axios from "axios";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import DrawGameModal from "../../Game/components/DrawGameModal.js";
 import winSound from "../../assets/sounds/win.mp3";
 import loseSound from "../../assets/sounds/lose.mp3";
@@ -34,6 +34,7 @@ import { Localization } from "../../utils/language";
 
 const LeagueGame = () => {
     const { id } = useParams();
+    const seasonId = localStorage.getItem("seasonId")
     const { user, token, lang } = useAuth();
 
     const navigate = useNavigate();
@@ -533,6 +534,26 @@ const LeagueGame = () => {
         socket.emit("sendDrawGameRequest", { status: "Draw" });
     };
 
+    const handleDrawGame = useQuery(
+        ["getLeaguesDataApi"],
+        async () =>
+            await axios.post(`${process.env.REACT_APP_BACKEND_URL}draw/${id}`,
+                { seasonId },
+                { headers }
+            ),
+        {
+            keepPreviousData: true,
+            refetchOnWindowFocus: false,
+            retry: false,
+            onSuccess: (res) => {
+            },
+            onError: (err) => {
+                console.log(err?.message)
+            }
+        }
+    );
+
+
     //send chat message
     const sendChatMessage = () => {
         if (!messageInputRef.current.value) {
@@ -603,6 +624,9 @@ const LeagueGame = () => {
     let lastElement = array[array.length - 1];
     const checkTurn = useRef(true) //check if player get getMessage 
 
+
+
+
     useEffect(() => {
 
         socket.on(
@@ -646,8 +670,7 @@ const LeagueGame = () => {
         );
 
 
-        socket.on(
-            "getResetGameMessage",
+        socket.on("getResetGameMessage",
             ({ winnerPlayer, gameState, isWinnerModalOpen, pawns, moves }) => {
                 setGameState(gameState);
                 setWinnerPlayer(winnerPlayer);
@@ -665,6 +688,8 @@ const LeagueGame = () => {
                 setMatchHistory([])
                 setRedoHistory([])
                 setUndoCount(0)
+
+                handleDrawGame()
             }
         );
         socket.on("getResetGameRequest", ({ status }) => {
@@ -869,34 +894,39 @@ const LeagueGame = () => {
 
 
     const reCheckInPlayer = () => {
+        console.log("recheckin")
         const { id: userId, username, profile_image, game_point, default_board, default_crown } = user
 
         socket.emit("checkInLeague", {
-            seasonId: id,
+            seasonId,
             userData: { id: userId, username, profile_image, game_point, default_board, default_crown }
         });
+
+        localStorage.removeItem("seasonId")
     }
 
 
     useEffect(() => {
-        console.log("recheckIn")
         if (winnerPlayer) {
             if (winnerPlayer === "player1pieces" || winnerPlayer === "player1moves") {
                 if (playerOneIp) {
                     nameMutationSubmitHandler(firstPlayer);
-                    reCheckInPlayer()
                 }
                 return;
             }
             if (winnerPlayer === "player2pieces" || winnerPlayer === "player2moves") {
                 if (playerTwoIp) {
                     nameMutationSubmitHandler(secondPlayer);
-                    reCheckInPlayer()
                 }
                 return;
             }
         }
+
+        return () => {
+            reCheckInPlayer()
+        }
     }, [winnerPlayer]);
+
 
 
 
@@ -911,13 +941,14 @@ const LeagueGame = () => {
             retry: false,
         }
     );
+
     const nameMutationSubmitHandler = async (values) => {
         try {
             winnerMutation.mutate(
                 {
                     winner: values.id,
                     game_id: gameId,
-                    seasonId: id
+                    seasonId
                 },
                 {
                     onSuccess: (responseData) => { },

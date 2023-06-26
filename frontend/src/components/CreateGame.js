@@ -169,14 +169,14 @@ const CreateGame = () => {
 
     const { id, username, profile_image, game_point, default_board, default_crown } = user
 
-    socket.emit("checkInLeague", {
-      seasonId: "12s",
-      userData: { id, username, profile_image, game_point, default_board, default_crown }
-    });
+    // socket.emit("checkInLeague", {
+    //   seasonId: "12s",
+    //   userData: { id, username, profile_image, game_point, default_board, default_crown }
+    // });
 
-    socket.emit("clearSeason", {
-      seasonId: "1234s"
-    });
+    // socket.emit("clearSeason", {
+    //   seasonId: "1234s"
+    // });
   }
 
   const scoreBoardData = useQuery(

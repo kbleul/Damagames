@@ -69,15 +69,19 @@ const removeLeagueActivePlayer = (id, by = "userId") => {
 
 
   leagueActivePlayers.forEach((value, key, map) => {
+
+    console.log("---", value)
     const updatedSeason = by === "socketId"
       ? value.filter(player => player.socketId !== id)
-      : value.filter(player => player.id !== id)
+      : value.filter(player => { player.id !== id; console.log(player.id, "---------", id) })
 
     if (updatedSeason) {
 
       if (updatedSeason.length === 0) map.delete(key)
-      else map[key] = updatedSeason
+      else value = updatedSeason
     }
+
+    console.log(leagueActivePlayers)
   })
 }
 
@@ -219,21 +223,40 @@ io.on("connection", (socket) => {
     const seasonId = data.seasonId;
     const userData = data.userData;
 
+    leagueActivePlayers.forEach((value, key) => {
+      console.log(key);
+    });
+
+    console.log("keys------------------");
+    leagueActivePlayers.forEach((value, key) => {
+      console.log(key);
+    });
+
     const season = leagueActivePlayers.get(seasonId);
 
     if (!season) {
-      leagueActivePlayers.set(seasonId, [{ ...userData, socketId: socket.id }])
+      console.log("-----season-----", seasonId);
+
+      console.log("checkin", leagueActivePlayers);
+      leagueActivePlayers.set(seasonId, [{ ...userData, socketId: socket.id }]);
+      console.log("-----season-----2", seasonId);
+
+      console.log("checkin", leagueActivePlayers);
+
       return;
     }
 
-    const userExists = season.some((user) => user.id === userData.id);
+    const userIndex = season.findIndex((user) => user.id === userData.id);
 
-    if (!userExists) {
+    if (userIndex === -1) {
+      // User doesn't exist, add a new object to the array
       season.push({ ...userData, socketId: socket.id });
+    } else {
+      // User already exists, update the existing object
+      season[userIndex] = { ...season[userIndex], socketId: socket.id };
     }
-    console.log("checkin", leagueActivePlayers, userData.username, { socketId: socket.id })
-
   });
+
 
 
   socket.on("clearSeason", (data) => {
@@ -263,9 +286,6 @@ io.on("connection", (socket) => {
     if (season) {
       const playerTwo = season.find((user) => user.id === receiverId)
 
-      console.log("season found-----------------------")
-
-
       if (playerTwo) {
         const room = gameId
 
@@ -274,7 +294,7 @@ io.on("connection", (socket) => {
         const clients = await io.of("/").in(room).fetchSockets();
         console.log(clients + "-----------------------")
         if (!isPlayerTwo) {
-          console.log("invited", gameCode, gameId, playerTwo.socketId)
+          console.log("invited", leagueActivePlayers.get(seasonId), socket.id, playerTwo.socketId)
           io.to(playerTwo.socketId).emit("play-league-invite", {
             sender,
             gameId,
@@ -284,7 +304,7 @@ io.on("connection", (socket) => {
         } else {
 
           console.log("before remove",
-            leagueActivePlayers.get(seasonId),
+            leagueActivePlayers,
             receiverId, sender.id)
 
 
@@ -299,6 +319,7 @@ io.on("connection", (socket) => {
 
             io.to(room).emit("leauge-game-started", {
               message: "League game started !",
+              seasonId,
               gameId: room,
               gameCode,
               playerOne,
@@ -308,15 +329,22 @@ io.on("connection", (socket) => {
         }
 
       } else {
+        console.log("err")
         //player two has disconnected error
-        io.to(socket.id).emit("play-league-invite-error", "Players two has left the game")
+        io.to(socket.id).emit("play-league-invite-error", {
+          AMH: "amrna error",
+          ENG: "Player has left the game. Try playing with someone else."
+        })
       }
 
     } else {
       console.log("Error")
       // checkInLeague({ seasonId, userData: sender })
       //send player two had disconnected message
-      io.to(socket.id).emit("play-league-invite-error", "Play two has left the game")
+      io.to(socket.id).emit("play-league-invite-error", {
+        AMH: "amrna error",
+        ENG: "Couldn't connect to season. Try again in a minute"
+      })
 
     }
   })
@@ -335,6 +363,7 @@ io.on("connection", (socket) => {
 
   //when disconnect
   socket.on("disconnect", () => {
+    console.log("Disconnected")
     Object.keys(rooms).forEach((room) => {
       rooms[room].delete(socket.id);
       if (rooms[room].size === 0) delete rooms[room];

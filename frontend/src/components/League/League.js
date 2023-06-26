@@ -45,6 +45,7 @@ const League = () => {
             refetchOnWindowFocus: false,
             retry: false,
             onSuccess: (res) => {
+                console.log(res?.data?.data)
                 setError(null)
                 setLeagues([...res?.data?.data])
                 setIsLoading(false)
