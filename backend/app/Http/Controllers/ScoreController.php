@@ -9,7 +9,7 @@ use App\Models\CoinSetting;
 use App\Models\Game;
 use App\Models\Score;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 class ScoreController extends GameController
 {
@@ -86,6 +86,7 @@ class ScoreController extends GameController
 
         return Score::create([
             'game_id' => $request->game_id,
+            'season_id' => $request->season_id ?? null,
             'winner' => $winner,
             'loser' => $loser,
         ]);
@@ -136,9 +137,15 @@ class ScoreController extends GameController
         //
     }
 
-    public function draw(Game $game)
+    public function draw(Request $request, Game $game)
     {
-        Score::create([
+        isset($request->season_id) ? Score::create([
+            'game_id' => $game->id,
+            'season_id' => $request->season_id,
+            'winner' => $game->playerOne,
+            'loser' => $game->playerTwo,
+            'draw' => true,
+        ]) : Score::create([
             'game_id' => $game->id,
             'draw' => true,
         ]);

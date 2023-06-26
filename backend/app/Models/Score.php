@@ -16,6 +16,7 @@ class Score extends Model
 
     protected $hidden = [
         'game_id',
+        'season_id',
         'status',
         'created_at',
         'updated_at',
