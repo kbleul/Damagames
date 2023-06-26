@@ -81,7 +81,7 @@ class LeagueController extends Controller
             return $b['points'] - $a['points'];
         });
 
-        return $standings;
+        return ['is_game_time' => $season->is_game_time, $standings];
     }
 
     public function histories($seasonId)
