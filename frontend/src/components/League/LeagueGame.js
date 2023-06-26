@@ -119,30 +119,30 @@ const LeagueGame = () => {
         const player1 = [
             "a8",
             "c8",
-            "e8",
-            "g8",
-            "b7",
-            "d7",
-            "f7",
-            "h7",
-            "a6",
-            "c6",
-            "e6",
-            "g6",
+            // "e8",
+            // "g8",
+            // "b7",
+            // "d7",
+            // "f7",
+            // "h7",
+            // "a6",
+            // "c6",
+            // "e6",
+            // "g6",
         ];
         const player2 = [
             "b3",
             "d3",
-            "f3",
-            "h3",
-            "a2",
-            "c2",
-            "e2",
-            "g2",
-            "b1",
-            "d1",
-            "f1",
-            "h1",
+            // "f3",
+            // "h3",
+            // "a2",
+            // "c2",
+            // "e2",
+            // "g2",
+            // "b1",
+            // "d1",
+            // "f1",
+            // "h1",
         ];
 
         player1.forEach(function (i) {
@@ -806,6 +806,7 @@ const LeagueGame = () => {
                     });
                 }
             }, 1000);
+
         } else if (!currentPlayer && localStorage.getItem("playerTwoIp")) {
 
             intervalRef.current = setInterval(() => {
@@ -866,17 +867,31 @@ const LeagueGame = () => {
         showAllMoves && currentPlayer && showAllHint()
     }, [currentPlayer]);
 
+
+    const reCheckInPlayer = () => {
+        const { id: userId, username, profile_image, game_point, default_board, default_crown } = user
+
+        socket.emit("checkInLeague", {
+            seasonId: id,
+            userData: { id: userId, username, profile_image, game_point, default_board, default_crown }
+        });
+    }
+
+
     useEffect(() => {
+        console.log("recheckIn")
         if (winnerPlayer) {
             if (winnerPlayer === "player1pieces" || winnerPlayer === "player1moves") {
                 if (playerOneIp) {
                     nameMutationSubmitHandler(firstPlayer);
+                    reCheckInPlayer()
                 }
                 return;
             }
             if (winnerPlayer === "player2pieces" || winnerPlayer === "player2moves") {
                 if (playerTwoIp) {
                     nameMutationSubmitHandler(secondPlayer);
+                    reCheckInPlayer()
                 }
                 return;
             }
@@ -902,6 +917,7 @@ const LeagueGame = () => {
                 {
                     winner: values.id,
                     game_id: gameId,
+                    seasonId: id
                 },
                 {
                     onSuccess: (responseData) => { },

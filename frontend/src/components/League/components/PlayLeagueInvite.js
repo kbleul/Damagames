@@ -6,7 +6,6 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 
 const PlayLeagueInvite = ({ isInviteModalOpen, setIsInviteModalOpen, inviteData }) => {
-    console.log(inviteData)
     const { user } = useAuth()
 
     const headers = {

@@ -18,7 +18,7 @@ let roomSocketObj = {};
 leagueActivePlayers = [
   { seasonId : [userObject, userObject, ...]}
 ] */
-let leagueActivePlayers = [];
+let leagueActivePlayers = new Map();
 
 const createReadableDate = (date) => {
   const newdate = formatDistance(date, new Date(), { includeSeconds: true });
@@ -51,37 +51,42 @@ const removePublicGame = (code, type) => {
   check if user exists and remove if exists
   */
 const removeLeagueActivePlayer = (id, by = "userId") => {
-  if (leagueActivePlayers.length === 0) return
+  // if (leagueActivePlayers.size === 0) return
 
-  leagueActivePlayers.forEach((season, index) => {
-    const updatedSeason = by === "socketId" ?
-      season[Object.keys(season)[0]].filter(player => player.socketId !== id)
-      : season[Object.keys(season)[0]].filter(player => player.id !== id)
+  // leagueActivePlayers.forEach((season, index) => {
+  //   const updatedSeason = by === "socketId" ?
+  //     season[Object.keys(season)[0]].filter(player => player.socketId !== id)
+  //     : season[Object.keys(season)[0]].filter(player => player.id !== id)
+
+  //   if (updatedSeason) {
+
+  //     if (updatedSeason.length === 0) leagueActivePlayers.splice(index, 1);
+  //     else
+  //       season[Object.keys(season)[0]] = updatedSeason
+  //   }
+
+  // })
+
+
+  leagueActivePlayers.forEach((value, key, map) => {
+    const updatedSeason = by === "socketId"
+      ? value.filter(player => player.socketId !== id)
+      : value.filter(player => player.id !== id)
 
     if (updatedSeason) {
 
-      if (updatedSeason.length === 0) leagueActivePlayers.splice(index, 1);
-      else
-        season[Object.keys(season)[0]] = updatedSeason
+      if (updatedSeason.length === 0) map.delete(key)
+      else map[key] = updatedSeason
     }
-
   })
-
 }
 
-const getLeagueActivePlayer = (userId) => {
-  if (leagueActivePlayers.length === 0) return
+const getLeagueActivePlayer = (seasonId, userId) => {
+  if (leagueActivePlayers.size === 0) return
 
-  let returnObj = null
-  leagueActivePlayers.forEach((season, index) => {
-    const foundPlayer = season[Object.keys(season)[0]].find(player => player.id === userId)
-    console.log("foundPlayer", foundPlayer)
-    if (foundPlayer) {
-      returnObj = { ...foundPlayer }
-    }
-  })
+  const returnedUser = leagueActivePlayers.get(seasonId).find(player => player.id === userId)
 
-  return returnObj
+  return returnedUser
 }
 
 
@@ -214,38 +219,34 @@ io.on("connection", (socket) => {
     const seasonId = data.seasonId;
     const userData = data.userData;
 
-    const season = leagueActivePlayers.find((season) => season.hasOwnProperty(seasonId));
+    const season = leagueActivePlayers.get(seasonId);
 
     if (!season) {
-      leagueActivePlayers.push({ [seasonId]: [{ ...userData, socketId: socket.id }] });
-
+      leagueActivePlayers.set(seasonId, [{ ...userData, socketId: socket.id }])
       return;
     }
 
-    const userExists = season[seasonId].some((user) => user.id === userData.id);
+    const userExists = season.some((user) => user.id === userData.id);
 
     if (!userExists) {
-      season[seasonId].push({ ...userData, socketId: socket.id });
+      season.push({ ...userData, socketId: socket.id });
     }
-    console.log("checkin", leagueActivePlayers, { socketId: socket.id })
+    console.log("checkin", leagueActivePlayers, userData.username, { socketId: socket.id })
 
   });
 
 
   socket.on("clearSeason", (data) => {
-    const seasonExits = leagueActivePlayers.find(season => season.hasOwnProperty(data.seasonId))
+    const seasonExits = leagueActivePlayers.get(data.seasonId)
 
-    if (seasonExits) {
-      const newPlayers = leagueActivePlayers.filter(season => !season.hasOwnProperty(data.seasonId))
-      leagueActivePlayers = [...newPlayers]
-    }
+    seasonExits && leagueActivePlayers.delete(data.seasonId)
   })
 
   socket.on("getActiveSeasonPlayers", (data) => {
-    const seasonExits = leagueActivePlayers.find(season => season.hasOwnProperty(data.seasonId))
+    const season = leagueActivePlayers.get(data.seasonId)
 
-    seasonExits ?
-      io.emit("activeSeasonPlayers", { activePlayers: seasonExits[data.seasonId] })
+    season ?
+      io.emit("activeSeasonPlayers", { activePlayers: season })
       : io.emit("activeSeasonPlayers", { error: "Season not found" })
 
   })
@@ -257,15 +258,13 @@ io.on("connection", (socket) => {
     const { gameId, gameCode, seasonId, sender, receiverId } = data
     const isPlayerTwo = data.isPlayerTwo || null
 
-    const season = leagueActivePlayers.find((season) => season.hasOwnProperty(seasonId))
+    const season = leagueActivePlayers.get(seasonId)
 
     if (season) {
-      const playerTwo = season[seasonId].find((user) => user.id === receiverId)
+      const playerTwo = season.find((user) => user.id === receiverId)
 
       console.log("season found-----------------------")
 
-      // console.log("sender : ", season[seasonId].find((user) => user.id === sender.id))
-      // console.log("reviver : ", playerTwo)
 
       if (playerTwo) {
         const room = gameId
@@ -285,12 +284,12 @@ io.on("connection", (socket) => {
         } else {
 
           console.log("before remove",
-            leagueActivePlayers.find((season) => season.hasOwnProperty(seasonId)),
+            leagueActivePlayers.get(seasonId),
             receiverId, sender.id)
 
 
-          const playerOne = getLeagueActivePlayer(receiverId)
-          const playerTwo = getLeagueActivePlayer(sender.id)
+          const playerOne = getLeagueActivePlayer(seasonId, receiverId)
+          const playerTwo = getLeagueActivePlayer(seasonId, sender.id)
           console.log(playerOne, playerTwo)
           if (playerOne && playerTwo) {
             removeLeagueActivePlayer(receiverId)

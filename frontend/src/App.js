@@ -76,8 +76,8 @@ const App = () => {
       console.log("Connected to Socket.io server ");
 
       socket.on("play-league-invite", data => {
-        console.log(data)
-        if (!isInviteModalOpen) {
+        console.log(user)
+        if (user && user.id !== data.sender.id && !isInviteModalOpen) {
           setInviteData(data)
           setIsInviteModalOpen(true)
         }
