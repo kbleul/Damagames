@@ -6,6 +6,7 @@ use App\Models\League;
 use App\Models\Prize;
 use App\Models\SeasonPlayer;
 use App\Traits\Uuids;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -20,7 +21,7 @@ class Season extends Model
 
     protected $hidden = ['seasonPlayers', 'deleted_at', 'created_at', 'updated_at'];
 
-    protected $appends = ['player_count', 'prizes', 'top3Player'];
+    protected $appends = ['player_count', 'prizes', 'top3Player', 'is_game_time'];
 
     protected $casts = [
         'season_name' => 'json',
@@ -28,6 +29,7 @@ class Season extends Model
         'ending_date' => 'json',
         'starting_time' => 'json',
         'ending_time' => 'json',
+        'playing_day' => 'json',
         'is_active' => 'boolean',
     ];
 
@@ -54,6 +56,19 @@ class Season extends Model
     public function getPrizesAttribute()
     {
         return $this->prizes()->get();
+    }
+
+    public function getIsGameTimeAttribute()
+    {
+        $startDate = Carbon::parse(json_decode($this->starting_date, true)["english"]);
+        $endDate = Carbon::parse(json_decode($this->ending_date, true)["english"]);
+        $currentDate = Carbon::now();
+        $startTime = Carbon::parse(json_decode($this->starting_time, true)["english"]);
+        $endTime = Carbon::parse(json_decode($this->ending_time, true)["english"]);
+        $currentDay = Carbon::now()->englishDayOfWeek;
+        $days = json_decode($this->playing_day, true);
+
+        return (in_array($currentDay, $days) && $currentDate->between($startDate, $endDate) && $currentDate->between($startTime, $endTime));
     }
 
     public function getTop3PlayerAttribute()
