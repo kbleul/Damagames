@@ -31,6 +31,7 @@ class UpdateSeasonRequest extends FormRequest
             'ending_date' => 'required|json',
             'starting_time' => 'required|json',
             'ending_time' => 'required|json',
+            'playing_day' => 'required|json',
         ];
     }
 }
