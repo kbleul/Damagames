@@ -65,7 +65,7 @@ class LeagueController extends Controller
         foreach ($userIds as $userId) {
             $userData = $gamePoint->where('id', $userId)->first();
             $points = 0;
-            foreach (Score::all() as $score) {
+            foreach (Score::where('season_id', $seasonId)->get() as $score) {
                 if ($score->winner == $userId && $score->draw != 1) {
                     $points += 3;
                 }
