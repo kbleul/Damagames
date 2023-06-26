@@ -21,7 +21,7 @@ class Season extends Model
 
     protected $hidden = ['seasonPlayers', 'deleted_at', 'created_at', 'updated_at'];
 
-    protected $appends = ['player_count', 'prizes', 'top3Player', 'is_game_time'];
+    protected $appends = ['player_count', 'is_game_time', 'prizes', 'top3Player'];
 
     protected $casts = [
         'season_name' => 'json',
