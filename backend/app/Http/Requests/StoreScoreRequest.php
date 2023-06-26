@@ -26,6 +26,7 @@ class StoreScoreRequest extends FormRequest
         return [
             'game_id' => 'required|exists:games,id',
             'winner' => 'required|exists:users,id',
+            'season_id' => 'nullable|exists:seasons,id',
         ];
     }
 }
