@@ -81,7 +81,7 @@ class LeagueController extends Controller
             return $b['points'] - $a['points'];
         });
 
-        return ['is_game_time' => $season->is_game_time, 'users'=>$standings];
+        return ['is_game_time' => $season->is_game_time, 'users' => $standings];
     }
 
     public function histories($seasonId)
@@ -91,9 +91,11 @@ class LeagueController extends Controller
             return abort(400, 'No active season found');
         }
 
-        return Score::with('winnerScore', 'loserScore')->where('season_id', $season->id)
-            ->get()->groupBy(function ($score) {
-            return $score->created_at->format('Y-m-d');
-        });
+        return Score::with('winnerScore', 'loserScore')
+            ->where('season_id', $season->id)
+            ->get()
+            ->groupBy(function ($score) {
+                return $score->created_at->format('Y-m-d');
+            });
     }
 }
