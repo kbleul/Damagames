@@ -7,7 +7,6 @@ namespace App\Models;
 use App\Models\Score;
 use App\Models\SeasonPlayer;
 use App\Traits\Uuids;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -73,9 +72,7 @@ class User extends Authenticatable
     {
         $seasonId = SeasonPlayer::where('user_id', $this->id)->pluck('season_id')->unique();
 
-        $seasons = Season::whereIn('id', $seasonId)->get()->filter(function ($season) {
-            return Carbon::parse(json_decode($season->ending_date, true)["english"]) >= now();
-        });
+        $seasons = Season::whereIn('id', $seasonId)->get();
 
         $completed = Game::where('playerOne', $this->id)
             ->orWhere('playerTwo', $this->id)
