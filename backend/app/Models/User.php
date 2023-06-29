@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Models\Score;
 use App\Models\SeasonPlayer;
 use App\Traits\Uuids;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -27,7 +28,7 @@ class User extends Authenticatable
      */
     protected $guarded = [];
 
-    public $appends = ['rank', 'coin', 'game_point', 'match_history'];
+    public $appends = ['rank', 'coin', 'game_point', 'match_history', 'seasons'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -41,6 +42,7 @@ class User extends Authenticatable
         'phone_verified_at',
         'updated_at',
         'deleted_at',
+        'seasonPlayers',
     ];
 
     public function getRankAttribute()
@@ -165,5 +167,14 @@ class User extends Authenticatable
     public function loserScore(): HasMany
     {
         return $this->hasMany(Score::class, 'loser');
+    }
+
+    public function getSeasonsAttribute()
+    {
+        $seasonIds = $this->seasonPlayers->pluck('season_id')->toArray();
+
+        return Season::whereIn('id', $seasonIds)->get()->filter(function ($season) {
+            return Carbon::parse(json_decode($season->ending_date, true)["english"]) >= now();
+        });
     }
 }
