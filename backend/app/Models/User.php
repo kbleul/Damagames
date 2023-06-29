@@ -166,12 +166,4 @@ class User extends Authenticatable
     {
         return $this->hasMany(Score::class, 'loser');
     }
-
-    // public function getSeasonAttribute()
-    // {
-    //     $seasonIds = $this->seasonPlayers->pluck('season_id')->unique();
-
-    //     $season = Season::whereIn('id', $seasonIds)->get();
-    //     return $season;
-    // }
 }
