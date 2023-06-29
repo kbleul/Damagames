@@ -8,21 +8,17 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Requests\StoreSecurityQuestionAnswerRequest;
-use App\Http\Requests\StoreUserRequest;
-use App\Http\Requests\UserAnswerRequest;
 use App\Http\Requests\UsernameRequest;
 use App\Models\CoinSetting;
+use App\Models\Season;
+use App\Models\SeasonPlayer;
 use App\Models\SecurityQuestion;
 use App\Models\SecurityQuestionAnswer;
-use App\Models\SQUser;
 use App\Models\User;
 use App\Models\UserItem;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
-use Symfony\Component\Console\Output\ConsoleOutput;
 
 class AuthController extends SendSmsController
 {
@@ -40,7 +36,6 @@ class AuthController extends SendSmsController
         if (empty($user)) {
             abort(404, "User not found");
         }
-
 
         if (Hash::check($request['password'], $user->password)) {
             $credentials = request(['phone', 'password']);
@@ -71,7 +66,7 @@ class AuthController extends SendSmsController
 
             $this->sendSMS($request->phone, $password);
 
-            return  User::where('phone', $request->phone)->update(['password' => Hash::make($password)]);
+            return User::where('phone', $request->phone)->update(['password' => Hash::make($password)]);
         } else {
             return response()->json(['message' => 'User not found.'], 400);
         }
@@ -89,11 +84,15 @@ class AuthController extends SendSmsController
         if (Auth::attempt($credentials)) {
             $token = $user->createToken('DAMA')->plainTextToken;
             $user = auth()->user();
+            $seasonIds = SeasonPlayer::where('user_id', auth()->id())->pluck('season_id')->unique();
+
+            $season = Season::whereIn('id', $seasonIds)->get();
 
             return response()->json([
                 'message' => 'Logged In!',
                 'token' => $token,
                 'user' => $user,
+                'seasons' => $season,
                 'default_board' => UserItem::where('user_id', auth()->id())->whereRelation('item', 'type', 'Board')->first()->item ?? null,
                 'default_crown' => UserItem::where('user_id', auth()->id())->whereRelation('item', 'type', 'Crown')->first()->item ?? null,
             ], 201);
@@ -101,9 +100,6 @@ class AuthController extends SendSmsController
             return response()->json(['message' => 'Password is incorrect.'], 400);
         }
     }
-
-
-
 
     public function register_new(RegisterRequest $request)
     {
@@ -113,8 +109,8 @@ class AuthController extends SendSmsController
             if (empty($user->username)) {
                 $this->sendSMS($request->phone, $password);
                 $user->update(['phone_verified_at' => null]);
-                return  User::where('phone', $request->phone)->update([
-                    'password' => Hash::make($password)
+                return User::where('phone', $request->phone)->update([
+                    'password' => Hash::make($password),
                 ]);
             }
             return response()->json(['message' => 'User Already Registered.'], 400);
@@ -122,31 +118,29 @@ class AuthController extends SendSmsController
 
         if (!empty($user) && empty($user->phone_verified_at)) {
             $this->sendSMS($request->phone, $password);
-            return  User::where('phone', $request->phone)->update(['password' => Hash::make($password)]);
+            return User::where('phone', $request->phone)->update(['password' => Hash::make($password)]);
         }
 
         $this->sendSMS($request->phone, $password);
 
         $user = User::create([
             'phone' => $request->phone,
-            'password' =>  Hash::make($password),
-            'current_point' =>   CoinSetting::first()->newUserCoins,
+            'password' => Hash::make($password),
+            'current_point' => CoinSetting::first()->newUserCoins,
         ]);
 
         return response()->json(['message' => 'OTP sent successfully!'], 201);
     }
 
-
-
     public function finish_regster(ResetPasswordRequest $request)
     {
 
-        $user =  User::find(auth()->id())->update([
+        $user = User::find(auth()->id())->update([
             'username' => $request->username,
             'password' => Hash::make($request->password),
         ]);
 
-        return response()->json(['message' => 'User registered successfully!', 'user' =>  User::find(auth()->id())], 201);
+        return response()->json(['message' => 'User registered successfully!', 'user' => User::find(auth()->id())], 201);
     }
 
     public function register(RegisterRequest $request, User $user)
@@ -159,8 +153,8 @@ class AuthController extends SendSmsController
             if (empty($user->username)) {
                 $this->sendSMS($request->phone, $password);
                 $user->update(['phone_verified_at' => null]);
-                return  User::where('phone', $request->phone)->update([
-                    'password' => Hash::make($password)
+                return User::where('phone', $request->phone)->update([
+                    'password' => Hash::make($password),
                 ]);
             }
             return response()->json(['message' => 'User Already Registered.'], 400);
@@ -168,15 +162,15 @@ class AuthController extends SendSmsController
 
         if (!empty($user) && empty($user->phone_verified_at)) {
             $this->sendSMS($request->phone, $password);
-            return  User::where('phone', $request->phone)->update(['password' => Hash::make($password)]);
+            return User::where('phone', $request->phone)->update(['password' => Hash::make($password)]);
         }
 
         $this->sendSMS($request->phone, $password);
 
         $user = User::create([
             'phone' => $request->phone,
-            'password' =>  Hash::make($password),
-            'current_point' =>  CoinSetting::first()->newUserCoins,
+            'password' => Hash::make($password),
+            'current_point' => CoinSetting::first()->newUserCoins,
         ]);
 
         return response()->json(['message' => 'OTP sent successfully!'], 201);
@@ -192,7 +186,7 @@ class AuthController extends SendSmsController
 
     public function update_profile_image(Request $request)
     {
-        $user =  User::find(auth()->id());
+        $user = User::find(auth()->id());
 
         $user->update([
             'profile_image' => $request->profile_image,
@@ -203,7 +197,7 @@ class AuthController extends SendSmsController
 
     public function update_language(Request $request)
     {
-        $user =  User::find(auth()->id());
+        $user = User::find(auth()->id());
 
         $user->update([
             'language' => $request->language,
@@ -231,8 +225,8 @@ class AuthController extends SendSmsController
             return "created";
         } else {
             $squ->update([
-                'security_question_id' => $request->security_question_id ??  $squ->security_question_id,
-                'answer' => $request->answer ??  $squ->answer,
+                'security_question_id' => $request->security_question_id ?? $squ->security_question_id,
+                'answer' => $request->answer ?? $squ->answer,
             ]);
             return "updated";
         }
@@ -241,8 +235,8 @@ class AuthController extends SendSmsController
     public function forget_password(ForgetPasswordRequest $request)
     {
         $user = User::where('phone', $request->phone)->first();
-        $sqa = SecurityQuestionAnswer::where('user_id',  $user->id)->first();
-        return  SecurityQuestion::find($sqa->security_question_id);
+        $sqa = SecurityQuestionAnswer::where('user_id', $user->id)->first();
+        return SecurityQuestion::find($sqa->security_question_id);
     }
 
     public function update_username(UsernameRequest $request)
@@ -253,7 +247,7 @@ class AuthController extends SendSmsController
         ]);
         return response()->json([
             'message' => 'Username updated successfully!',
-            'user' =>  User::find(auth()->id())
+            'user' => User::find(auth()->id()),
         ], 201);
     }
 }
