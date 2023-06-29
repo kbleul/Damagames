@@ -16,6 +16,7 @@ use App\Models\SecurityQuestion;
 use App\Models\SecurityQuestionAnswer;
 use App\Models\User;
 use App\Models\UserItem;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -86,7 +87,9 @@ class AuthController extends SendSmsController
             $user = auth()->user();
             $seasonIds = SeasonPlayer::where('user_id', auth()->id())->pluck('season_id')->unique();
 
-            $season = Season::whereIn('id', $seasonIds)->get();
+            $season = Season::whereIn('id', $seasonIds)->get()->filter(function ($season) {
+                return Carbon::parse(json_decode($season->ending_date, true)["english"]) >= now();
+            });
 
             return response()->json([
                 'message' => 'Logged In!',
