@@ -170,7 +170,7 @@ class User extends Authenticatable
 
     public function getSeasonsAttribute()
     {
-        $seasonIds = $this->seasonPlayers->pluck('season_id');
+        $seasonIds = $this->seasonPlayers->pluck('season_id')->unique();
 
         return Season::whereIn('id', $seasonIds)->get();
     }
