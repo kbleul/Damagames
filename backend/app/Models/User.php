@@ -27,7 +27,7 @@ class User extends Authenticatable
      */
     protected $guarded = [];
 
-    public $appends = ['rank', 'coin', 'game_point', 'match_history', 'seasons'];
+    public $appends = ['rank', 'coin', 'game_point', 'match_history'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -41,7 +41,6 @@ class User extends Authenticatable
         'phone_verified_at',
         'updated_at',
         'deleted_at',
-        'seasonPlayers',
     ];
 
     public function getRankAttribute()
@@ -168,10 +167,10 @@ class User extends Authenticatable
         return $this->hasMany(Score::class, 'loser');
     }
 
-    public function getSeasonsAttribute()
-    {
-        $seasonIds = $this->seasonPlayers->pluck('season_id')->unique();
+    // public function getSeasonAttribute()
+    // {
+    //     $seasonIds = $this->seasonPlayers->pluck('season_id')->unique();
 
-        return Season::whereIn('id', $seasonIds)->get();
-    }
+    //     return Season::whereIn('id', $seasonIds)->get();
+    // }
 }
