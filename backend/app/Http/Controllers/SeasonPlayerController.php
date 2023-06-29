@@ -14,6 +14,6 @@ class SeasonPlayerController extends Controller
 
         return Season::whereIn('id', $seasonId)->get()->filter(function ($season) {
             return Carbon::parse(json_decode($season->ending_date, true)["english"]) >= now();
-        });
+        })->flatten(1);
     }
 }
