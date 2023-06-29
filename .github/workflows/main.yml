@@ -17,15 +17,13 @@ jobs:
   # build_arc_docs:
   #   uses: ./.github/workflows/build_arc_docs.yml
 
-
   # release:
   #   uses: ./.github/workflows/release.yml
   #   needs: ["build_arc_docs","e2e-test"]
 
-
-  # deploy_staging:
-  #   uses: ./.github/workflows/docker_stage.yml
-  #   secrets: inherit
+  deploy_staging:
+    uses: ./.github/workflows/docker_stage.yml
+    secrets: inherit
   #   needs: "build_arc_docs"
 
   deploy_production:
@@ -38,4 +36,3 @@ jobs:
   #   uses: ./.github/workflows/playwright.yml
   #   secrets: inherit
   #   needs: "deploy_staging"
-    
