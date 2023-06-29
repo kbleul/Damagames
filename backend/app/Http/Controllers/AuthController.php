@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ChangePasswordRequest;
-use App\Http\Requests\ForgetPasswordRequest;
-use App\Http\Requests\LoginRequest;
-use App\Http\Requests\RegisterRequest;
-use App\Http\Requests\ResetPasswordRequest;
-use App\Http\Requests\StoreSecurityQuestionAnswerRequest;
-use App\Http\Requests\UsernameRequest;
-use App\Models\CoinSetting;
-use App\Models\Season;
-use App\Models\SeasonPlayer;
-use App\Models\SecurityQuestion;
-use App\Models\SecurityQuestionAnswer;
-use App\Models\User;
-use App\Models\UserItem;
 use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Season;
+use App\Models\UserItem;
+use App\Models\CoinSetting;
+use App\Models\SeasonPlayer;
 use Illuminate\Http\Request;
+use App\Models\SecurityQuestion;
+use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\UsernameRequest;
+use App\Models\SecurityQuestionAnswer;
+use App\Http\Requests\ResetPasswordRequest;
+use App\Http\Requests\ChangePasswordRequest;
+use App\Http\Requests\ForgetPasswordRequest;
+use App\Http\Requests\StoreSecurityQuestionAnswerRequest;
 
 class AuthController extends SendSmsController
 {
@@ -88,8 +88,8 @@ class AuthController extends SendSmsController
             $seasonIds = SeasonPlayer::where('user_id', auth()->id())->pluck('season_id')->unique();
 
             $season = Season::whereIn('id', $seasonIds)->get()->filter(function ($season) {
-                return Carbon::parse(json_decode($season->ending_date, true)["english"]) >= now();
-            });
+            return Carbon::parse(json_decode($season->ending_date, true)["english"]) >= now();
+        })->flatten(1);
 
             return response()->json([
                 'message' => 'Logged In!',
