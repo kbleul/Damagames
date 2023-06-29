@@ -1925,7 +1925,9 @@ const Game = () => {
         acceptGameRequest={acceptGameRequest}
         rejectGameRequest={rejectDrawGameRequest}
         showResetWaiting={showResetWaiting}
+        gameId={id}
       />
+
       <UserLeavesModal
         setIsLeaveModalOpen={setIsLeaveModalOpen}
         isLeaveModalOpen={isLeaveModalOpen}

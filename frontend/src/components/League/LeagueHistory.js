@@ -15,7 +15,7 @@ import { useAuth } from "../../context/auth"
 import ActivePlayers from "./components/ActivePlayers"
 
 
-const LeagueHistory = () => {
+const LeagueHistory = ({ isInviteModalOpen, setIsInviteModalOpen, setInviteData }) => {
 
     const navigate = useNavigate()
     const { id } = useParams()
@@ -113,7 +113,7 @@ const LeagueHistory = () => {
                 <p className="text-2xl ml-[32%] md:ml-[40%] w-3/5  text-left px-1">League</p>
             </section>
 
-            <Nav active={active} setActive={setActive} isInSeason={isInSeason} />
+            <Nav active={active} setActive={setActive} isInSeason={isInSeason} setIsGameTime={setIsGameTime} />
 
             {active === LEAGUE_CATAGORIES[0] && leagues && <article>{
                 leagues.map((player, index) => (
@@ -140,7 +140,11 @@ const LeagueHistory = () => {
             </section>}
 
 
-            {active === LEAGUE_CATAGORIES[1] && <ActivePlayers isGameTime={isGameTime} />}
+            {active === LEAGUE_CATAGORIES[1] &&
+                <ActivePlayers isGameTime={isGameTime}
+                    isInviteModalOpen={isInviteModalOpen}
+                    setIsInviteModalOpen={setIsInviteModalOpen}
+                    setInviteData={setInviteData} />}
 
             {active === LEAGUE_CATAGORIES[2] && <Matches seasonId={id} />}
 

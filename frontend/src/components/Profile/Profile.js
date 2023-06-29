@@ -38,10 +38,6 @@ const Profile = () => {
 
   const [badgeData, setBadgeData] = useState(null);
 
-  const [isBadgeHistoryOpen, setIsBadgeHistoryOpen] = useState(false);
-
-
-
   const { user, token, lang, setLanguage } = useAuth();
   const navigate = useNavigate();
 

@@ -51,34 +51,21 @@ const removePublicGame = (code, type) => {
   check if user exists and remove if exists
   */
 const removeLeagueActivePlayer = (id, by = "userId") => {
-  // if (leagueActivePlayers.size === 0) return
-
-  // leagueActivePlayers.forEach((season, index) => {
-  //   const updatedSeason = by === "socketId" ?
-  //     season[Object.keys(season)[0]].filter(player => player.socketId !== id)
-  //     : season[Object.keys(season)[0]].filter(player => player.id !== id)
-
-  //   if (updatedSeason) {
-
-  //     if (updatedSeason.length === 0) leagueActivePlayers.splice(index, 1);
-  //     else
-  //       season[Object.keys(season)[0]] = updatedSeason
-  //   }
-
-  // })
-
 
   leagueActivePlayers.forEach((value, key, map) => {
+    console.log("arr", leagueActivePlayers.get(key), id)
 
-    console.log("---", value)
     const updatedSeason = by === "socketId"
-      ? value.filter(player => player.socketId !== id)
-      : value.filter(player => { player.id !== id; console.log(player.id, "---------", id) })
-
+      ? leagueActivePlayers.get(key).filter(player => {
+        return player.socketId !== id
+      })
+      : leagueActivePlayers.get(key).filter(player => {
+        return player.id !== id
+      })
     if (updatedSeason) {
-
+      console.log("yes", updatedSeason)
       if (updatedSeason.length === 0) map.delete(key)
-      else value = updatedSeason
+      else map.set(key, updatedSeason);
     }
 
     console.log(leagueActivePlayers)
@@ -163,6 +150,8 @@ const joinRoom = async (socket, room) => {
   socket.on("sendChatMessage", (data) => {
     io.to(room).emit("getChatMessage", data);
   });
+
+
   //send message if user left the room
   socket.on("disconnect", () => {
     io.to(room).emit("userLeaveMessage", "Someone has left the room");
@@ -347,6 +336,30 @@ io.on("connection", (socket) => {
       })
 
     }
+  })
+
+
+  socket.on("reject-league-invite", data => {
+    console.log("reject", data)
+    const { sender, receiverId, seasonId } = data
+
+    let season = leagueActivePlayers.get(seasonId)
+    let receiver
+    console.log("reject2", season)
+
+    if (season) {
+      receiver = season.filter(user => { return user.id === receiverId })
+      console.log("reject3", receiver)
+
+      if (receiver) {
+        io.to(receiver[0].socketId).emit("get-reject-league-invite", {
+          messageHeading: "Request rejected by " + sender.username,
+          messagePara: "Try playing with someone else"
+        })
+      }
+
+    }
+
   })
 
 

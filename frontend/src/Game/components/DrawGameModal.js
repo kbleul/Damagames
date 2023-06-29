@@ -3,6 +3,8 @@ import { Dialog, Transition } from "@headlessui/react";
 import { ThreeDots } from "react-loader-spinner";
 import { Localization } from "../../utils/language";
 import { useAuth } from "../../context/auth";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
 const DrawGameModal = ({
   isDrawModalOpen,
@@ -10,8 +12,46 @@ const DrawGameModal = ({
   acceptGameRequest,
   rejectGameRequest,
   showResetWaiting,
+  gameId,
+  seasonId
 }) => {
   const { lang } = useAuth();
+  const headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+
+  };
+
+  const handleDrawGameMutation = useMutation(
+    async (newData) =>
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}draw/${gameId}`,
+        newData,
+        {
+          headers,
+        }
+      ),
+    {
+      retry: false,
+    }
+  );
+
+  const handleDrawGameMutationSubmitHandler = async (values) => {
+    console.log(values)
+    try {
+      handleDrawGameMutation.mutate(
+        { seasonId: seasonId ? seasonId : null },
+        {
+          onSuccess: (responseData) => {
+          },
+          onError: (err) => {
+          },
+
+        }
+      );
+    } catch (err) { }
+  };
+
 
   return (
     <>
@@ -61,7 +101,10 @@ active:border-b-[0px]
 transition-all duration-150 [box-shadow:0_5px_0_0_#026ca4,0_5px_0_0_#026ca4]
 border-b-[1px] border-gray-300/50 font-medium text-white
 "
-                        onClick={acceptGameRequest}
+                        onClick={() => {
+                          handleDrawGameMutationSubmitHandler()
+                          acceptGameRequest()
+                        }}
                       >
                         {Localization["Accept"][lang]}
                       </button>

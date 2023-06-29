@@ -1,5 +1,8 @@
 
 import React, { useEffect, useState, useContext, useRef } from "react";
+
+import Avatar from "../..//assets/Avatar.png";
+
 import Board from "../../Game/components/Board";
 import { returnPlayerName } from "../../Game/components/utils";
 import "../../Game/game.css";
@@ -79,23 +82,67 @@ const LeagueGame = () => {
     const [firstMove, setFirstMove] = useState(true);
 
     //trach previous game states for undo
-    const [matchHistory, setMatchHistory] = useState([])
-    const [redoHistory, setRedoHistory] = useState([])
-
-    const [undoCount, setUndoCount] = useState(0)
     const [showAllMoves, setShowAllMoves] = useState(true)
+
+
+
+    const playerOneData = JSON.parse(localStorage.getItem("gamePlayers")).p1
+    const playerTwoData = JSON.parse(localStorage.getItem("gamePlayers")).p2
+
+    const header = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    }
+
+    const startGameMutation = useMutation(
+        async (newData) =>
+            await axios.post(
+                `${process.env.REACT_APP_BACKEND_URL}auth-start-game/${id}`,
+                newData,
+                {
+                    headers: header,
+                }
+            ),
+        {
+            retry: false,
+        }
+    );
+
+    const startGameMutationSubmitHandler = async (values) => {
+        try {
+            startGameMutation.mutate(
+                {},
+                {
+                    onSuccess: (responseData) => { },
+                    onError: (err) => { },
+                }
+            );
+        } catch (err) { }
+    };
+
 
 
     useEffect(() => {
         if (!id) navigate("/create-game");
         localStorage.setItem("dama-sound", true);
+
+        startGameMutationSubmitHandler()
+
+        return () => {
+            localStorage.getItem("seasonId") && localStorage.removeItem("seasonId")
+            localStorage.getItem("gameId") && localStorage.removeItem("gameId")
+            localStorage.getItem("gamePlayers") && localStorage.removeItem("gamePlayers")
+        }
     }, []);
 
 
     const headers = {
         "Content-Type": "application/json",
         Accept: "application/json",
+
     };
+
     const [columns, setColumns] = useState({
         a: 0,
         b: 1,
@@ -197,8 +244,6 @@ const LeagueGame = () => {
 
     function handleClick(coordinates) {
 
-        redoHistory.length > 0 && setRedoHistory([])
-
         if (gameState.winner !== null) {
             return;
         }
@@ -212,9 +257,16 @@ const LeagueGame = () => {
             // Can't select opponents pieces
             if (
                 clickedSquare.player !== returnPlayerName(currentState.currentPlayer)
+
+
             ) {
                 return;
             }
+            console.log("---", currentPlayer, clickedSquare.player, currentState.currentPlayer)
+
+            if (playerOneIp && clickedSquare.player !== "player1") return
+            if (playerTwoIp && clickedSquare.player !== "player2") return
+
             // Unset active piece if it's clicked
             if (
                 gameState.activePiece === coordinates &&
@@ -266,7 +318,6 @@ const LeagueGame = () => {
                 return;
             }
 
-            setMatchHistory(prev => [postMoveState, ...prev])
             updateStatePostMove(postMoveState);
             soundOn && playMove();
         }
@@ -363,7 +414,7 @@ const LeagueGame = () => {
     const firstPlayer = JSON.parse(localStorage.getItem("playerOne"));
     const secondPlayer = JSON.parse(localStorage.getItem("playerTwo"));
     const playerOneIp = localStorage.getItem("playerOneIp");
-    const playerTwoIp = localStorage.getItem("playerTwoIp");
+    const playerTwoIp = localStorage.getItem("p1");
     const btCoin = localStorage.getItem("bt_coin_amount");
     const temp = JSON.parse(localStorage.getItem("p2Info"));
     const p2Info = temp?.username
@@ -526,6 +577,8 @@ const LeagueGame = () => {
             moves: [0, 0],
         });
         moveRef.current = [0, 0];
+
+
     };
 
 
@@ -533,26 +586,6 @@ const LeagueGame = () => {
         setShowResetWaiting(true);
         socket.emit("sendDrawGameRequest", { status: "Draw" });
     };
-
-    const handleDrawGame = useQuery(
-        ["getLeaguesDataApi"],
-        async () =>
-            await axios.post(`${process.env.REACT_APP_BACKEND_URL}draw/${id}`,
-                { seasonId },
-                { headers }
-            ),
-        {
-            keepPreviousData: true,
-            refetchOnWindowFocus: false,
-            retry: false,
-            onSuccess: (res) => {
-            },
-            onError: (err) => {
-                console.log(err?.message)
-            }
-        }
-    );
-
 
     //send chat message
     const sendChatMessage = () => {
@@ -685,11 +718,6 @@ const LeagueGame = () => {
                 setShowResetWaiting(false);
                 moveRef.current = [0, 0];
                 setFirstMove(true)
-                setMatchHistory([])
-                setRedoHistory([])
-                setUndoCount(0)
-
-                handleDrawGame()
             }
         );
         socket.on("getResetGameRequest", ({ status }) => {
@@ -832,7 +860,7 @@ const LeagueGame = () => {
                 }
             }, 1000);
 
-        } else if (!currentPlayer && localStorage.getItem("playerTwoIp")) {
+        } else if (!currentPlayer && playerTwoIp) {
 
             intervalRef.current = setInterval(() => {
                 if (myCounter === 0) {
@@ -1019,12 +1047,12 @@ const LeagueGame = () => {
 
                 <section className="flex flex-col">
                     <div>
-                        {currentPlayer && localStorage.getItem("playerOneIp") && (
+                        {currentPlayer && playerOneIp && (
                             <p className="text-white font-bold text-sm">
                                 {Localization["Timer"][lang]} : {timerP1}
                             </p>
                         )}
-                        {!currentPlayer && localStorage.getItem("playerTwoIp") && (
+                        {!currentPlayer && playerTwoIp && (
                             <p className="text-white font-bold text-sm">
                                 {Localization["Timer"][lang]} : {timerP2}
                             </p>
@@ -1076,23 +1104,13 @@ const LeagueGame = () => {
                         }
                     >
                         <img
-                            src={
-                                playerOneIp || (id == 1 && user?.profile_image)
-                                    ? user?.profile_image
-                                        ? user.profile_image
-                                        : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
-                                    : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
-                            }
+                            src={playerOneData && playerOneData?.profile_image ? playerOneData?.profile_image : Avatar}
                             className="h-12 rounded-full"
                             alt=""
                         />
                     </div>
                     <h4 className="text-white capitalize  font-semibold text-xs">
-                        {playerOneIp && user
-                            ? user?.username
-                            : playerOneIp
-                                ? firstPlayer?.username
-                                : p1Info}
+                        {playerOneData && playerOneData.username}
                     </h4>
                 </div>
 
@@ -1110,24 +1128,14 @@ const LeagueGame = () => {
                         }
                     >
                         <img
-                            src={
-                                playerTwoIp && user?.profile_image
-                                    ? user?.profile_image
-                                    : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
+                            src={playerTwoData && playerTwoData.profile_image ? playerTwoData?.profile_image : Avatar
                             }
                             className="h-12 rounded-full"
                             alt=""
                         />
                     </div>
                     <h4 className="text-white capitalize  font-semibold text-xs">
-                        {/* {secondPlayer?.name} */}
-                        {playerTwoIp && user
-                            ? user?.username
-                            : playerTwoIp
-                                ? secondPlayer?.username
-                                : p1Info
-                                    ? p1Info
-                                    : p2Info?.username}
+                        {playerTwoData && playerTwoData.username}
                     </h4>
                 </div>
             </section>
@@ -1163,26 +1171,7 @@ const LeagueGame = () => {
                     </div>
                 </div>
             </section>
-            <div
-                className="w-full h-4 flex justify-center items-center"
-            >
-                {!currentPlayer ? (
-                    <ThreeDots
-                        height="20"
-                        width="40"
-                        radius="9"
-                        color="#f75105"
-                        ariaLabel="three-dots-loading"
-                        wrapperStyle={{}}
-                        wrapperClassName=""
-                        visible={true}
-                    />
-                ) : (
-                    <h1 className="text-white font-normal">
-                        {Localization["Your turn"][lang]}
-                    </h1>
-                )}
-            </div>
+
 
             <div
                 className="w-full h-4 flex justify-center items-center"
@@ -1278,7 +1267,7 @@ const LeagueGame = () => {
                     </p>
                 </div>
 
-                <div onClick={() => setShowAllMoves(prev => !prev)} className={redoHistory.length === 0 ? "flex flex-col opacity-80" : "flex flex-col cursor-pointer"}>
+                <div onClick={() => setShowAllMoves(prev => !prev)} className="flex flex-col cursor-pointer">
                     <div className="rounded-full flex flex-col items-center justify-center">
                         {showAllMoves ? <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 24 24"><path fill="#ff4c01" d="M7 18q-2.5 0-4.25-1.75T1 12q0-2.5 1.75-4.25T7 6h10q2.5 0 4.25 1.75T23 12q0 2.5-1.75 4.25T17 18H7Zm10-3q1.25 0 2.125-.875T20 12q0-1.25-.875-2.125T17 9q-1.25 0-2.125.875T14 12q0 1.25.875 2.125T17 15Z" /></svg>
                             : <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 24 24"><path fill="#ff4c01" d="M17 7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h10c2.76 0 5-2.24 5-5s-2.24-5-5-5zM7 15c-1.66 0-3-1.34-3-3s1.34-3 3-3s3 1.34 3 3s-1.34 3-3 3z" /></svg>
@@ -1375,19 +1364,22 @@ const LeagueGame = () => {
                 resetGame={resetGame}
                 rejectGameRequest={rejectGameRequest}
                 gameState={gameState}
+                isLeague={true}
             />
-            <RematchModal
+            {/* <RematchModal
                 isRematchModalOpen={isRematchModalOpen}
                 setIsRematchModalOpen={setIsRematchModalOpen}
                 acceptGameRequest={acceptGameRequest}
                 rejectGameRequest={rejectGameRequest}
-            />
+            /> */}
             <DrawGameModal
                 isDrawModalOpen={isDrawModalOpen}
                 setIsDrawModalOpen={setIsDrawModalOpen}
                 acceptGameRequest={acceptGameRequest}
                 rejectGameRequest={rejectDrawGameRequest}
                 showResetWaiting={showResetWaiting}
+                gameId={id}
+                seasonId={seasonId}
             />
             <UserLeavesModal
                 setIsLeaveModalOpen={setIsLeaveModalOpen}

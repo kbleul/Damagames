@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { Oval } from "react-loader-spinner";
 
 
-const PlayLeagueInvite = ({ isInviteModalOpen, setIsInviteModalOpen, inviteData }) => {
+const PlayLeagueInvite = ({ setIsInviteModalOpen, inviteData }) => {
     const { user, lang } = useAuth()
 
     const [inviteErr, setInviteErr] = useState(null)
@@ -84,6 +84,16 @@ const PlayLeagueInvite = ({ isInviteModalOpen, setIsInviteModalOpen, inviteData 
     }, [])
 
 
+    const handleRejectInvite = (receiverId, seasonId) => {
+
+        const { id: userId, username, profile_image } = user
+
+        socket.emit("reject-league-invite", {
+            sender: { id: userId, username, profile_image },
+            receiverId,
+            seasonId,
+        })
+    }
 
     return (
         <article className="absolute w-full h-[100vh] bg-transparent z-70">
@@ -111,7 +121,10 @@ const PlayLeagueInvite = ({ isInviteModalOpen, setIsInviteModalOpen, inviteData 
                     <p className="text-white text-sm py-4"><span className="text-orange-600">{inviteData?.sender?.username}</span> is asking you to play.</p>
 
                     <div className="w-full flex items-center justify-center gap-x-[5%]">
-                        <button onClick={() => setIsInviteModalOpen(false)} className="w-[30%] mb-2 bg-transparent border border-orange-600 text-white rounded-full my-2 py-2 font-semibold text-xs">Reject
+                        <button onClick={() => {
+                            setIsInviteModalOpen(false);
+                            handleRejectInvite(inviteData.sender.id, inviteData.seasonId)
+                        }} className="w-[30%] mb-2 bg-transparent border border-orange-600 text-white rounded-full my-2 py-2 font-semibold text-xs">Reject
                         </button>
                         <button onClick={() => {
                             setIsLoading(true);

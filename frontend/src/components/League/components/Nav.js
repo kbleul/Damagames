@@ -6,7 +6,7 @@ import { LEAGUE_CATAGORIES } from '../../../utils/data'
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 
-const Nav = ({ active, setActive, isInSeason }) => {
+const Nav = ({ active, setActive, isInSeason, setIsGameTime }) => {
 
     const [leagueTable, setLeagueTable] = useState(null)
     const [error, setError] = useState(null)
@@ -38,8 +38,9 @@ const Nav = ({ active, setActive, isInSeason }) => {
                 {},
                 {
                     onSuccess: (responseData) => {
+                        console.log(responseData.data.data)
                         let tempStanding = []
-                        responseData.data.data.forEach(item => {
+                        responseData.data.data?.users.forEach(item => {
                             item.userData.seasonPoint = item.points
                             tempStanding.push(item.userData)
                         })
@@ -50,6 +51,7 @@ const Nav = ({ active, setActive, isInSeason }) => {
 
                         setError(null)
                         setIsLoading(false)
+                        setIsGameTime(responseData.data.data?.is_game_time)
                     },
                     onError: (err) => {
                         setError(err.message || err)

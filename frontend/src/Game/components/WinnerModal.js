@@ -15,6 +15,7 @@ const WinnerModal = ({
   rejectGameRequest,
   gameState,
   setNewGameWithComputer,
+  isLeague
 }) => {
   const { user, token, setUser, lang } = useAuth();
   const navigate = useNavigate();
@@ -281,7 +282,7 @@ const WinnerModal = ({
                   </div>
                   {/* button */}
                   <div className="mt-4 flex flex-col items-center justify-center w-full space-y-4 pb-2">
-                    <button
+                    {!isLeague && <button
                       type="button"
                       className="w-[60%] p-2 bg-orange-bg rounded-md cursor-pointer select-none
                     active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841]
@@ -291,7 +292,7 @@ const WinnerModal = ({
                       onClick={handleResetGame}
                     >
                       {Localization["Rematch"][lang]}
-                    </button>
+                    </button>}
                     <button
                       type="button"
                       className="w-[60%] p-2 bg-sky-700 rounded-md cursor-pointer select-none

@@ -25,8 +25,6 @@ import { SORTBY, LANG } from "../utils/data"
 import TopFour from "./TopFour";
 import { sortScoreBoard, cacheApiResponse } from "../utils/utilFunc";
 
-import socket from "../utils/socket.io";
-
 
 const CreateGame = () => {
   const navigate = useNavigate();
@@ -165,19 +163,19 @@ const CreateGame = () => {
   };
 
 
-  const checkIn = () => {
+  // const checkIn = () => {
 
-    const { id, username, profile_image, game_point, default_board, default_crown } = user
+  //   const { id, username, profile_image, game_point, default_board, default_crown } = user
 
-    // socket.emit("checkInLeague", {
-    //   seasonId: "12s",
-    //   userData: { id, username, profile_image, game_point, default_board, default_crown }
-    // });
+  //   // socket.emit("checkInLeague", {
+  //   //   seasonId: "12s",
+  //   //   userData: { id, username, profile_image, game_point, default_board, default_crown }
+  //   // });
 
-    // socket.emit("clearSeason", {
-    //   seasonId: "1234s"
-    // });
-  }
+  //   // socket.emit("clearSeason", {
+  //   //   seasonId: "1234s"
+  //   // });
+  // }
 
   const scoreBoardData = useQuery(
     ["soreBoardDataApi"],
@@ -525,7 +523,7 @@ const CreateGame = () => {
             </p>
           </Link>
 
-          <button
+          {/* <button
             onClick={checkIn}
             className="seventh-step flex flex-col justify-evenly items-center mt-4"
           >
@@ -558,7 +556,7 @@ const CreateGame = () => {
             <p className="text-orange-color text-[.7rem]">
               Check IN
             </p>
-          </button>
+          </button> */}
 
 
         </section>
