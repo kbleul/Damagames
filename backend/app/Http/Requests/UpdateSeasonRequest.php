@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateSeasonRequest extends FormRequest
@@ -26,7 +27,14 @@ class UpdateSeasonRequest extends FormRequest
         return [
             'league_id' => 'required|uuid',
             'season_name' => 'required|json|unique:seasons',
-            'is_active' => 'required|boolean',
+            'is_active' => [
+                'required',
+                'boolean',
+                Rule::unique('seasons')->where(function ($query) {
+                    return $query->where('league_id', $this->input('league_id'))
+                        ->where('is_active', true);
+                })->ignore($this->input('id')),
+            ],
             'starting_date' => 'required|json',
             'ending_date' => 'required|json',
             'starting_time' => 'required|json',
