@@ -27,6 +27,7 @@ class StoreLeagueRequest extends FormRequest
             'league_name' => 'required|json|unique:leagues',
             'league_price' => 'required|numeric',
             'status' => 'nullable|boolean',
+            'min_join_point' => 'integer',
             'description' => 'nullable|json',
         ];
     }

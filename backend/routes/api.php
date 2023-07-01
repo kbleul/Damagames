@@ -116,6 +116,7 @@ Route::middleware('response', 'auth:sanctum')->group(function () {
 
     // TELEBIRR
     Route::post('telebirr/pay', [TelebirrController::class, 'telebirr']);
+    Route::post('add-season-player', [SeasonPlayerController::class, 'add_season_player']);
 });
 
 Route::middleware(['response', 'auth:sanctum', 'admin'])->prefix('admin')->group(function () {
