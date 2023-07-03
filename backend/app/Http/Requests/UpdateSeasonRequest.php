@@ -28,11 +28,13 @@ class UpdateSeasonRequest extends FormRequest
             'league_id' => 'required|uuid',
             'season_name' => 'required|json|unique:seasons',
             'is_active' => 'required|boolean',
+            'number_of_player'=>'nullable:integer',
             'starting_date' => 'required|json',
             'ending_date' => 'required|json',
             'starting_time' => 'required|json',
             'ending_time' => 'required|json',
             'playing_day' => 'required|json',
+            'coin_amount'=>'required',
         ];
     }
 }

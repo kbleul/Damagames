@@ -27,6 +27,7 @@ class StoreSeasonRequest extends FormRequest
         return [
             'league_id' => 'required|uuid',
             'season_name' => 'required|json|unique:seasons',
+            'number_of_player'=>'nullable:integer',
             'is_active' => [
                 'required',
                 'boolean',
@@ -40,6 +41,7 @@ class StoreSeasonRequest extends FormRequest
             'starting_time' => 'required|json',
             'ending_time' => 'required|json',
             'playing_day' => 'required|json',
+            'coin_amount'=>'required',
         ];
     }
 }
