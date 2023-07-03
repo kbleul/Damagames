@@ -16,7 +16,7 @@ class SeasonPlayerController extends Controller
         $seasonId = SeasonPlayer::where('user_id', $userId)->pluck('season_id')->unique();
 
         return Season::whereIn('id', $seasonId)->get()->filter(function ($season) {
-            return Carbon::parse(json_decode($season->ending_date, true)["english"]) >= now();
+            return Carbon::parse(is_array($season->ending_date)?$season->ending_date["english"]: json_decode($season->ending_date, true)["english"]) >= now();
         })->flatten(1);
     }
 
@@ -32,7 +32,7 @@ class SeasonPlayerController extends Controller
 
         if (!$user || !$season || $user->current_point < $season->coin_amount) {
             return response()
-                ->json(["message" => "User does not have enough coins to join the season"], 404);
+                ->json(["message" => "User does not have enough coins to join the season"], 402);
         }
 
         DB::beginTransaction();
@@ -44,6 +44,5 @@ class SeasonPlayerController extends Controller
 
         return response()
             ->json(["message" => "User joined the season"], 200);
-
     }
 }

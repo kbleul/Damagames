@@ -88,7 +88,7 @@ class AuthController extends SendSmsController
             $seasonIds = SeasonPlayer::where('user_id', auth()->id())->pluck('season_id')->unique();
 
             $season = Season::whereIn('id', $seasonIds)->get()->filter(function ($season) {
-            return Carbon::parse(json_decode($season->ending_date, true)["english"]) >= now();
+            return Carbon::parse(is_array($season->ending_date)?$season->ending_date["english"]:json_decode($season->ending_date, true)["english"]) >= now();
         })->flatten(1);
 
             return response()->json([
