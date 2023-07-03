@@ -30,13 +30,13 @@ class SeasonPlayerController extends Controller
                 ->json(["message" => "User already join this season"], 409);
         }
 
-        if (!$user || !$season || $user->current_point < $season->coin_amount) {
+        if (!$user || !$season || $user->current_point < $season->season_price) {
             return response()
                 ->json(["message" => "User does not have enough coins to join the season"], 402);
         }
 
         DB::beginTransaction();
-        $user->current_point = $user->current_point - $season->coin_amount;
+        $user->current_point = $user->current_point - $season->season_price;
         $user->save();
 
         SeasonPlayer::create($request->validated());

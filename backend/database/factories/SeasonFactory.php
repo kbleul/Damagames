@@ -45,7 +45,7 @@ class SeasonFactory extends Factory
             'ending_time' => $this->faker->randomElement($ending_time),
             'is_active'=>0,
             'playing_day'=>"[\"Monday\",\"Friday\"]",
-            'coin_amount'=>100,
+            'season_price'=>100,
         ];
     }
 }
