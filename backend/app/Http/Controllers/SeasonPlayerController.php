@@ -20,7 +20,7 @@ class SeasonPlayerController extends Controller
         })->flatten(1);
     }
 
-    public function add_season_player(StoreSeasonPlayerRequest $request)
+    public function join_season(StoreSeasonPlayerRequest $request)
     {
         $season = Season::where('id', $request->season_id)->first();
         $user = User::where('id', $request->user_id)->first();
