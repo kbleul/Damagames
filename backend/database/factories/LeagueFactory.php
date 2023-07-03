@@ -49,6 +49,7 @@ class LeagueFactory extends Factory
             'league_name' => $this->faker->unique()->randomElement($leagueName),
             'league_price' => $this->faker->randomElement($price),
             'status' => 1,
+            'in_join_point'=>200,
             'description' => $this->faker->randomElement($description),
         ];
     }
