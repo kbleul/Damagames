@@ -7,10 +7,12 @@ import { toast } from "react-hot-toast";
 import { useEffect, useState } from "react";
 
 import { Oval } from "react-loader-spinner";
+import { useNavigate } from "react-router-dom";
 
 
 const PlayLeagueInvite = ({ setIsInviteModalOpen, inviteData }) => {
     const { user, lang } = useAuth()
+    const navigate = useNavigate()
 
     const [inviteErr, setInviteErr] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
@@ -43,6 +45,18 @@ const PlayLeagueInvite = ({ setIsInviteModalOpen, inviteData }) => {
                 {
                     onSuccess: (responseData) => {
                         const { id: userId, username, profile_image, game_point, default_board, default_crown } = user
+
+                        // socket.on("leauge-game-started", data => {
+                        //     if (data.gameId && data.seasonId) {
+                        //         setIsInviteModalOpen(false)
+                        //         navigate(`/league-game/${data.gameId}`)
+                        //         localStorage.setItem("seasonId", data.seasonId)
+                        //         console.log("League game started", data)
+                        //         localStorage.setItem("gamePlayers", JSON.stringify({
+                        //             p1: data.playerOne, p2: data.playerTwo
+                        //         }))
+                        //     }
+                        // })
 
                         socket.emit("join-room-league", {
                             gameId: inviteData.gameId,
@@ -104,7 +118,7 @@ const PlayLeagueInvite = ({ setIsInviteModalOpen, inviteData }) => {
             </section> :
 
 
-                <section className="z-[100] absolute top-[30vh] w-4/5 ml-[10%] h-[40vh] border border-orange-600 rounded-xl bg-black flex flex-col items-center justify-center">
+                <section className="z-[100] absolute top-[17vh] w-4/5 ml-[10%] h-[40vh] border border-orange-600 rounded-xl bg-black flex flex-col items-center justify-center">
                     <div className="w-full flex items-center justify-center text-white gap-x-4">
                         <div className="flex flex-col items-center justify-center">
                             <img className="w-10 h-10 rounded-full border border-gray-500" src={inviteData?.sender?.profile_image ? inviteData?.sender?.profile_image : Avatar} alt="" />

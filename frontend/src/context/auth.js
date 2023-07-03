@@ -6,6 +6,8 @@ import {
   useContext,
 } from "react";
 import { Localization } from "../utils/language";
+import socket from "../utils/socket.io";
+
 
 const AuthContext = createContext();
 
@@ -37,6 +39,9 @@ export function AuthProvider({ children }) {
     setToken(null);
     setUser(null);
     localStorage.removeItem("dama_user_data");
+    localStorage.getItem("dama-user-seasons") && localStorage.removeItem("dama-user-seasons");
+
+    socket.emit("remove-from-active-league")
   }, []);
 
   let loginData;

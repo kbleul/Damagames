@@ -53,7 +53,6 @@ const removePublicGame = (code, type) => {
 const removeLeagueActivePlayer = (id, by = "userId") => {
 
   leagueActivePlayers.forEach((value, key, map) => {
-    console.log("arr", leagueActivePlayers.get(key), id)
 
     const updatedSeason = by === "socketId"
       ? leagueActivePlayers.get(key).filter(player => {
@@ -63,12 +62,9 @@ const removeLeagueActivePlayer = (id, by = "userId") => {
         return player.id !== id
       })
     if (updatedSeason) {
-      console.log("yes", updatedSeason)
       if (updatedSeason.length === 0) map.delete(key)
       else map.set(key, updatedSeason);
     }
-
-    console.log(leagueActivePlayers)
   })
 }
 
@@ -209,28 +205,16 @@ io.on("connection", (socket) => {
 
 
   socket.on("checkInLeague", (data) => {
+    console.log("checkInLeague1")
+
     const seasonId = data.seasonId;
     const userData = data.userData;
-
-    leagueActivePlayers.forEach((value, key) => {
-      console.log(key);
-    });
-
-    console.log("keys------------------");
-    leagueActivePlayers.forEach((value, key) => {
-      console.log(key);
-    });
 
     const season = leagueActivePlayers.get(seasonId);
 
     if (!season) {
-      console.log("-----season-----", seasonId);
-
-      console.log("checkin", leagueActivePlayers);
       leagueActivePlayers.set(seasonId, [{ ...userData, socketId: socket.id }]);
-      console.log("-----season-----2", seasonId);
-
-      console.log("checkin", leagueActivePlayers);
+      console.log("checkInLeague", seasonId, userData.id, leagueActivePlayers)
 
       return;
     }
@@ -244,6 +228,9 @@ io.on("connection", (socket) => {
       // User already exists, update the existing object
       season[userIndex] = { ...season[userIndex], socketId: socket.id };
     }
+
+    console.log("checkInLeague", seasonId, userData.id, leagueActivePlayers)
+
   });
 
 
@@ -266,7 +253,6 @@ io.on("connection", (socket) => {
 
   socket.on("join-room-league", async (data) => {
 
-    console.log("joined")
     const { gameId, gameCode, seasonId, sender, receiverId } = data
     const isPlayerTwo = data.isPlayerTwo || null
 
@@ -280,10 +266,7 @@ io.on("connection", (socket) => {
 
         joinRoom(socket, room)
 
-        const clients = await io.of("/").in(room).fetchSockets();
-        console.log(clients + "-----------------------")
         if (!isPlayerTwo) {
-          console.log("invited", leagueActivePlayers.get(seasonId), socket.id, playerTwo.socketId)
           io.to(playerTwo.socketId).emit("play-league-invite", {
             sender,
             gameId,
@@ -291,22 +274,13 @@ io.on("connection", (socket) => {
             seasonId
           })
         } else {
-
-          console.log("before remove",
-            leagueActivePlayers,
-            receiverId, sender.id)
-
-
           const playerOne = getLeagueActivePlayer(seasonId, receiverId)
           const playerTwo = getLeagueActivePlayer(seasonId, sender.id)
-          console.log(playerOne, playerTwo)
           if (playerOne && playerTwo) {
             removeLeagueActivePlayer(receiverId)
             removeLeagueActivePlayer(sender.id)
 
-            console.log("after remove", leagueActivePlayers)
-
-            io.to(room).emit("leauge-game-started", {
+            io.to(playerOne.socketId).emit("leauge-game-started", {
               message: "League game started !",
               seasonId,
               gameId: room,
@@ -314,11 +288,20 @@ io.on("connection", (socket) => {
               playerOne,
               playerTwo
             })
+
+            io.to(playerTwo.socketId).emit("leauge-game-started", {
+              message: "League game started !",
+              seasonId,
+              gameId: room,
+              gameCode,
+              playerOne,
+              playerTwo
+            })
+
           }
         }
 
       } else {
-        console.log("err")
         //player two has disconnected error
         io.to(socket.id).emit("play-league-invite-error", {
           AMH: "amrna error",
@@ -327,7 +310,6 @@ io.on("connection", (socket) => {
       }
 
     } else {
-      console.log("Error")
       // checkInLeague({ seasonId, userData: sender })
       //send player two had disconnected message
       io.to(socket.id).emit("play-league-invite-error", {
@@ -340,16 +322,13 @@ io.on("connection", (socket) => {
 
 
   socket.on("reject-league-invite", data => {
-    console.log("reject", data)
     const { sender, receiverId, seasonId } = data
 
     let season = leagueActivePlayers.get(seasonId)
     let receiver
-    console.log("reject2", season)
 
     if (season) {
       receiver = season.filter(user => { return user.id === receiverId })
-      console.log("reject3", receiver)
 
       if (receiver) {
         io.to(receiver[0].socketId).emit("get-reject-league-invite", {
@@ -363,6 +342,11 @@ io.on("connection", (socket) => {
   })
 
 
+  socket.on("remove-from-active-league", () => {
+    removeLeagueActivePlayer(socket.id, "socketId")
+
+    console.log("after remove", leagueActivePlayers)
+  })
 
   socket.on("leave", (room) => {
     socket.leave(room);
@@ -384,6 +368,7 @@ io.on("connection", (socket) => {
 
     removePublicGame(socket.id, "socketId");
     removeLeagueActivePlayer(socket.id, "socketId")
+    console.log(leagueActivePlayers)
   });
 
 });

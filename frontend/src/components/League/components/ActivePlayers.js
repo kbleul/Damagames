@@ -54,20 +54,20 @@ const ActivePlayers = ({ isGameTime, isInviteModalOpen, setIsInviteModalOpen, se
                 setRejectedInviteData(data)
             })
 
-            socket.on("leauge-game-started", (data) => {
+            // socket.on("leauge-game-started", (data) => {
 
-                console.log("invite two", data)
-                if (data.gameId && data.seasonId) {
-                    setIsInviteModalOpen(false)
-                    navigate(`/league-game/${data.gameId}`)
-                    localStorage.setItem("seasonId", data.seasonId)
-                    console.log("League game started", data)
-                    localStorage.setItem("gamePlayers", JSON.stringify({
-                        p1: data.playerOne, p2: data.playerTwo
-                    }))
-                }
+            //     console.log("invite two", data)
+            //     if (data.gameId && data.seasonId) {
+            //         setIsInviteModalOpen(false)
+            //         navigate(`/league-game/${data.gameId}`)
+            //         localStorage.setItem("seasonId", data.seasonId)
+            //         console.log("League game started", data)
+            //         localStorage.setItem("gamePlayers", JSON.stringify({
+            //             p1: data.playerOne, p2: data.playerTwo
+            //         }))
+            //     }
 
-            });
+            // });
 
 
             socket.on("play-league-invite", data => {
@@ -103,7 +103,7 @@ const ActivePlayers = ({ isGameTime, isInviteModalOpen, setIsInviteModalOpen, se
 
     return (<article>
 
-        {!isGameTime ? <section className="h-[80vh] w-full flex flex-col items-center justify-center">
+        {!isLoading && !isGameTime ? <section className="h-[80vh] w-full flex flex-col items-center justify-center">
             <p className="text-orange-500 fold-bold text-center">Game time is false </p>
 
         </section> :
@@ -111,7 +111,7 @@ const ActivePlayers = ({ isGameTime, isInviteModalOpen, setIsInviteModalOpen, se
 
             <article>
 
-                {activePlayers &&
+                {activePlayers && !isLoading && !inviteErr && !error &&
                     (activePlayers.length === 0 || (activePlayers.length === 1 && activePlayers[0].id === user?.id))
                     && <section className="h-[70vh] w-full flex flex-col items-center justify-center">
                         <svg className="text-gray-100 w-20 h-36" viewBox="0 0 188 195" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -137,12 +137,12 @@ const ActivePlayers = ({ isGameTime, isInviteModalOpen, setIsInviteModalOpen, se
                         />
                     </section>}
 
-                {error && <section className="w-full h-[60vh] flex items-center justify-center">
+                {!isLoading && !inviteErr && error && <section className="w-full h-[60vh] flex items-center justify-center">
                     <p className="text-orange-600 ">{error}</p>
                 </section>}
 
-                {inviteErr && <section className="w-full h-[60vh] flex items-center justify-center">
-                    <p className="text-orange-600 ">{inviteErr}</p>
+                {!isLoading && inviteErr && !error && <section className="h-[70vh] w-4/5 ml-[10%] flex flex-col items-center justify-center">
+                    <p className="text-orange-500 text-sm ">{inviteErr}</p>
                 </section>}
 
                 {!error && !inviteErr && !isLoading && activePlayers &&
@@ -153,7 +153,7 @@ const ActivePlayers = ({ isGameTime, isInviteModalOpen, setIsInviteModalOpen, se
             </article>}
 
         <RejectInviteModal rejectedInviteData={rejectedInviteData} setRejectedInviteData={setRejectedInviteData} />
-    </article>
+    </article >
     )
 }
 

@@ -59,6 +59,7 @@ const Login = () => {
               default_board: responseData?.data?.data?.default_board,
               default_crown: responseData?.data?.data?.default_crown
             }
+            console.log(newUser)
             login(
               responseData?.data?.data?.token,
               newUser

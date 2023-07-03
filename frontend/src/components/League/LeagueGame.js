@@ -62,7 +62,6 @@ const LeagueGame = () => {
     const [passedCounter, setPassedCounter] = useState(0);
     const intervalRef = useRef(null);
 
-    const [isRematchModalOpen, setIsRematchModalOpen] = useState(false);
     const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
 
     const [isDrawModalOpen, setIsDrawModalOpen] = useState(false);
@@ -262,7 +261,6 @@ const LeagueGame = () => {
             ) {
                 return;
             }
-            console.log("---", currentPlayer, clickedSquare.player, currentState.currentPlayer)
 
             if (playerOneIp && clickedSquare.player !== "player1") return
             if (playerTwoIp && clickedSquare.player !== "player2") return
@@ -709,7 +707,6 @@ const LeagueGame = () => {
                 setWinnerPlayer(winnerPlayer);
                 setIsWinnerModalOpen(isWinnerModalOpen);
                 setIsDrawModalOpen(false);
-                setIsRematchModalOpen(false);
                 setMyTurn("player1");
                 setPawns([0, 0]);
                 setTimerP1(15);
@@ -720,10 +717,6 @@ const LeagueGame = () => {
                 setFirstMove(true)
             }
         );
-        socket.on("getResetGameRequest", ({ status }) => {
-            setIsRematchModalOpen(true);
-            moveRef.current = [0, 0];
-        });
         socket.on("getDrawGameRequest", ({ status }) => {
             setIsDrawModalOpen(true);
         });
@@ -917,7 +910,9 @@ const LeagueGame = () => {
 
     useEffect(() => {
         timeChecker();
-        showAllMoves && currentPlayer && showAllHint()
+        //showAllMoves && currentPlayer && showAllHint()
+
+        id == 1 && playerOneIp && currentPlayer && showAllHint()
     }, [currentPlayer]);
 
 
@@ -1267,7 +1262,7 @@ const LeagueGame = () => {
                     </p>
                 </div>
 
-                <div onClick={() => setShowAllMoves(prev => !prev)} className="flex flex-col cursor-pointer">
+                {id === 1 && <div onClick={() => setShowAllMoves(prev => !prev)} className="flex flex-col cursor-pointer">
                     <div className="rounded-full flex flex-col items-center justify-center">
                         {showAllMoves ? <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 24 24"><path fill="#ff4c01" d="M7 18q-2.5 0-4.25-1.75T1 12q0-2.5 1.75-4.25T7 6h10q2.5 0 4.25 1.75T23 12q0 2.5-1.75 4.25T17 18H7Zm10-3q1.25 0 2.125-.875T20 12q0-1.25-.875-2.125T17 9q-1.25 0-2.125.875T14 12q0 1.25.875 2.125T17 15Z" /></svg>
                             : <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 24 24"><path fill="#ff4c01" d="M17 7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h10c2.76 0 5-2.24 5-5s-2.24-5-5-5zM7 15c-1.66 0-3-1.34-3-3s1.34-3 3-3s3 1.34 3 3s-1.34 3-3 3z" /></svg>
@@ -1276,7 +1271,7 @@ const LeagueGame = () => {
                     <p className="text-xs font-bold text-white">
                         {Localization["Show Hint"][lang]}
                     </p>
-                </div>
+                </div>}
 
                 <div className="flex items-center justify-center flex-col">
                     <BsFillChatFill
@@ -1366,12 +1361,7 @@ const LeagueGame = () => {
                 gameState={gameState}
                 isLeague={true}
             />
-            {/* <RematchModal
-                isRematchModalOpen={isRematchModalOpen}
-                setIsRematchModalOpen={setIsRematchModalOpen}
-                acceptGameRequest={acceptGameRequest}
-                rejectGameRequest={rejectGameRequest}
-            /> */}
+
             <DrawGameModal
                 isDrawModalOpen={isDrawModalOpen}
                 setIsDrawModalOpen={setIsDrawModalOpen}

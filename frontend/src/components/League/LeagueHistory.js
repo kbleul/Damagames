@@ -140,7 +140,7 @@ const LeagueHistory = ({ isInviteModalOpen, setIsInviteModalOpen, setInviteData 
             </section>}
 
 
-            {active === LEAGUE_CATAGORIES[1] &&
+            {user && active === LEAGUE_CATAGORIES[1] &&
                 <ActivePlayers isGameTime={isGameTime}
                     isInviteModalOpen={isInviteModalOpen}
                     setIsInviteModalOpen={setIsInviteModalOpen}

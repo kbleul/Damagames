@@ -12,6 +12,11 @@ import EditAvater from "../pages/store/EditAvater";
 import Badges from "../pages/badges/Pages/Badges";
 import CreateBadge from "../pages/badges/Pages/CreateBadge";
 import EditBadge from "../pages/badges/Pages/EditBadge";
+import League from "../pages/league/League";
+import LeagueCreate from "../pages/league/LeagueCreate";
+import EditLeague from "../pages/league/EditLeague";
+import Season from "../pages/league/season/season";
+import CreateSeason from "../pages/league/season/createSeason";
 
 interface Props {}
 const AuthRoutes: React.FC<Props> = () => {
@@ -89,6 +94,13 @@ const AuthRoutes: React.FC<Props> = () => {
             <Route path="/board/create/:id" element={<CreateBoard />} />
             <Route path="/pawn/create" element={<CreatePawn />} />
             <Route path="/pawn/create/:id" element={<CreatePawn />} />
+
+            <Route path="/league" element={<League />} />
+            <Route path="/league/create" element={<LeagueCreate />} />
+            <Route path="/league/edit/:id" element={<EditLeague />} />
+
+            <Route path="/season" element={<CreateSeason />} />
+            <Route path="/season/:id" element={<Season />} />
           </Routes>
         </div>
       </div>

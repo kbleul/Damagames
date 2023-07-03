@@ -17,6 +17,7 @@ import PlayLeagueInvite from "./components/League/components/PlayLeagueInvite";
 import LeagueGame from "./components/League/LeagueGame";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import LeagueGameIsActiveModal from "./components/League/components/LeagueGameIsActiveModal";
 //'G-YM283P3T0J'
 const tagManagerArgs = {
   gtmId: process.env.REACT_APP_GTM_ID,
@@ -55,6 +56,8 @@ const App = () => {
   const navigate = useNavigate()
 
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false)
+  const [activeSeasons, setActiveSeasons] = useState(null)
+
   const [inviteData, setInviteData] = useState(null)
 
 
@@ -81,19 +84,15 @@ const App = () => {
     socket.on("connect", () => {
       console.log("Connected to Socket.io server ");
 
-      socket.on("play-league-invite", data => {
-        console.log(user)
-        if (user && user.id !== data.sender.id && !isInviteModalOpen) {
-          setInviteData(data)
-          setIsInviteModalOpen(true)
-        }
-      })
+      // socket.on("play-league-invite", data => {
+      //   console.log(user)
+      //   if (user && user.id !== data.sender.id && !isInviteModalOpen) {
+      //     setInviteData(data)
+      //     setIsInviteModalOpen(true)
+      //   }
+      // })
 
-      socket.on("leauge-game-started", data => {
-        isInviteModalOpen && setIsInviteModalOpen(false)
-        data?.gameId && navigate(`/league-game/${data?.gameId}`)
-        localStorage.setItem("seasonId", data.seasonId)
-      })
+
     });
 
   });
@@ -102,6 +101,28 @@ const App = () => {
   const checkInUser = (seasonId) => {
 
     const { id, username, profile_image, game_point, default_board, default_crown } = user
+
+    socket.on("play-league-invite", data => {
+      console.log(user)
+      if (user && user.id !== data.sender.id && !isInviteModalOpen) {
+        setActiveSeasons(null)
+        setInviteData(data)
+        setIsInviteModalOpen(true)
+      }
+    })
+
+    socket.on("leauge-game-started", data => {
+      if (data.gameId && data.seasonId) {
+        setActiveSeasons(null)
+        setIsInviteModalOpen(false)
+        navigate(`/league-game/${data.gameId}`)
+        localStorage.setItem("seasonId", data.seasonId)
+        console.log("League game started", data)
+        localStorage.setItem("gamePlayers", JSON.stringify({
+          p1: data.playerOne, p2: data.playerTwo
+        }))
+      }
+    })
 
     socket.emit("checkInLeague", {
       seasonId: seasonId,
@@ -137,17 +158,27 @@ const App = () => {
           onSuccess: (responseData) => {
             const seasons = responseData?.data?.data
 
-            seasons.forEach((season) => { checkInUser(season.id) })
+            console.log(seasons)
+            setActiveSeasons([...seasons])
+            seasons.forEach((season) => {
+              season.is_game_time && checkInUser(season.id)
+            })
             // 
+            localStorage.setItem("dama-user-seasons", JSON.stringify(seasons));
           },
           onError: (err) => { },
           enabled: user ? true : false,
-        }
+        },
       );
     } catch (err) { }
   };
 
-  useEffect(() => fetchSeasons(), [])
+  useEffect(() => {
+    console.log("first")
+    user && fetchSeasons()
+
+    return () => localStorage.removeItem("dama-user-seasons")
+  }, [user])
 
   const HomeComp = () => {
     return (
@@ -156,6 +187,8 @@ const App = () => {
           isInviteModalOpen={isInviteModalOpen}
           setIsInviteModalOpen={setIsInviteModalOpen}
           inviteData={inviteData} />}
+
+        {activeSeasons && <LeagueGameIsActiveModal activeSeasons={activeSeasons} setActiveSeasons={setActiveSeasons} />}
 
         <Routes>
           <Route path="*" element={<Navigate to="/create-game" />} />
