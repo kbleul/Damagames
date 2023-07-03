@@ -27,7 +27,7 @@ class SeasonPlayerController extends Controller
 
         if (SeasonPlayer::where('user_id',$request->user_id)->where('season_id',$request->season_id)->exists()) {
             return response()
-                ->json(["message" => "User already join this season"], 401);
+                ->json(["message" => "User already join this season"], 409);
         }
 
         if (!$user || !$season || $user->current_point < $season->coin_amount) {
