@@ -60,11 +60,11 @@ class Season extends Model
 
     public function getIsGameTimeAttribute()
     {
-        $startDate = Carbon::parse(json_decode($this->starting_date, true)["english"]);
-        $endDate = Carbon::parse(json_decode($this->ending_date, true)["english"]);
+        $startDate = Carbon::parse(is_array($this->starting_date)?$this->starting_date["english"]:json_decode($this->starting_date, true)["english"]);
+        $endDate = Carbon::parse(is_array($this->ending_date)?$this->ending_date["english"]:json_decode($this->ending_date, true)["english"]);
         $currentDate = Carbon::now();
-        $startTime = Carbon::parse(json_decode($this->starting_time, true)["english"]);
-        $endTime = Carbon::parse(json_decode($this->ending_time, true)["english"]);
+        $startTime = Carbon::parse(is_array($this->starting_time)?$this->starting_time["english"] :json_decode($this->starting_time, true)["english"]);
+        $endTime = Carbon::parse(is_array($this->ending_time)?$this->ending_time["english"] :json_decode($this->ending_time, true)["english"]);
         $currentDay = Carbon::now()->englishDayOfWeek;
         $days = json_decode($this->playing_day, true);
 
