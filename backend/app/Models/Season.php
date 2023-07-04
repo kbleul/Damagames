@@ -55,7 +55,7 @@ class Season extends Model
 
     public function getPrizesAttribute()
     {
-        return $this->prizes()->get();
+        return $this->prizes()->orderBy('level')->get();
     }
 
     public function getIsGameTimeAttribute()
