@@ -22,27 +22,26 @@ class SeasonPlayerController extends Controller
 
     public function join_season(StoreSeasonPlayerRequest $request)
     {
-        $season = Season::where('id', $request->season_id)->first();
-        $user = User::where('id', $request->user_id)->first();
-
-        if (SeasonPlayer::where('user_id',$request->user_id)->where('season_id',$request->season_id)->exists()) {
-            return response()
-                ->json(["message" => "User already join this season"], 409);
+        $season = Season::find($request->season_id);
+        $user = User::find($request->user_id);
+    
+        if ($user->seasonPlayers()->where('season_id', $request->season_id)->exists()) {
+            return response()->json(["message" => "User already joined this season"], 409);
         }
-
+    
         if (!$user || !$season || $user->current_point < $season->season_price) {
-            return response()
-                ->json(["message" => "User does not have enough coins to join the season"], 402);
+            return response()->json(["message" => "User does not have enough coins to join the season"], 402);
         }
-
+    
         DB::beginTransaction();
-        $user->current_point = $user->current_point - $season->season_price;
+        
+        $user->current_point -= $season->season_price;
         $user->save();
-
-        SeasonPlayer::create($request->validated());
+    
+        $user->seasonPlayers()->create($request->validated());
+    
         DB::commit();
-
-        return response()
-            ->json(["message" => "User joined the season"], 200);
+    
+        return response()->json(["message" => "User joined the season"], 200);
     }
 }
