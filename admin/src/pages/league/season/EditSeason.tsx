@@ -1,11 +1,11 @@
-import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/Auth";
+import React, { useEffect } from "react";
 import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
-import { useAuth } from "../../../context/Auth";
 import { EthDateTime, limits } from "ethiopian-calendar-date-converter";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
@@ -22,7 +22,6 @@ const MenuProps = {
     },
   },
 };
-
 const DAYS = [
   "Monday",
   "Tuesday",
@@ -33,29 +32,89 @@ const DAYS = [
   "Sunday",
 ];
 
-interface Option {
-  value: string;
-  label: string;
-}
+const formatTime = (timeString: string) => {
+  const [time, period] = timeString.split(" ");
+  const [hours, minutes] = time.split(":");
 
-const CreateSeason = () => {
+  let formattedTime = `${hours}:${minutes}`;
+
+  // Adjust for AM/PM period
+  if (period === "PM") {
+    const formattedHours = parseInt(hours, 10) + 12;
+    formattedTime = `${formattedHours}:${minutes}`;
+  }
+  // Assign the formatted time to the input field
+
+  return formattedTime;
+};
+
+const parseDate = (dateString: string) => {
+  // Split the date string into day, month, and year components
+  var parts = dateString.split("-");
+  var day = parseInt(parts[0], 10);
+  var month = parseInt(parts[1], 10);
+  var year = parseInt(parts[2], 10);
+
+  const formattedDate = new Date(year, month - 1, day + 1);
+
+  console.log(dateString, formattedDate);
+  return formattedDate;
+};
+
+const formatDate = (dateString: string) => {
+  // Split the date string into day, month, and year components
+  const [day, month, year] = dateString.split("-");
+
+  // Create a new Date object with the components (Note: month is zero-based)
+  const dateObject = new Date(
+    parseInt(year),
+    parseInt(month) - 1,
+    parseInt(day) + 1
+  );
+
+  // Get the formatted date string in YYYY-MM-DD format
+  const formattedDate = dateObject.toISOString().split("T")[0];
+  // console.log(dateString, formattedDate);
+  return formattedDate;
+};
+
+const EditSeason = () => {
   const location = useLocation();
-  const leagueId = location.state?.leagueId;
+  const SEASON = location.state?.season;
   const { token } = useAuth();
   const navigate = useNavigate();
-  console.log(leagueId);
-  const [startingDate, setStartingDate] = useState("");
-  const [endingDate, setEndingDate] = useState("");
-  const [startingDateEt, setStartingDateEt] = useState("");
-  const [endingDateEt, setEndingDateEt] = useState("");
+
+  const [playingDates, setPlayingDates] = useState<string[]>(
+    SEASON.playing_day ? [...JSON.parse(SEASON.playing_day)] : []
+  );
+  const [datesError, setDatesError] = useState<string | null>(null);
+  // console.log(formatDate(JSON.parse(SEASON.starting_date).english));
+
+  const [startingDateStr, setStartingDateStr] = useState(
+    parseDate(JSON.parse(SEASON.starting_date).english)
+      .toISOString()
+      .slice(0, 10)
+  );
+  const [endingDateStr, setEndingDateStr] = useState(
+    parseDate(JSON.parse(SEASON.ending_date).english).toISOString().slice(0, 10)
+  );
+  const [startingDate, setStartingDate] = useState(
+    formatDate(JSON.parse(SEASON.starting_date).english)
+  );
+  const [endingDate, setEndingDate] = useState(
+    JSON.parse(SEASON.ending_date).english
+  );
+  const [startingDateEt, setStartingDateEt] = useState(
+    JSON.parse(SEASON.starting_date).amharic
+  );
+  const [endingDateEt, setEndingDateEt] = useState(
+    JSON.parse(SEASON.ending_date).amharic
+  );
 
   const [startingDateError, setStartingDateError] = useState<string | null>(
     null
   );
   const [endingDateError, setEndingDateError] = useState<string | null>(null);
-
-  const [playingDates, setPlayingDates] = useState<string[]>([]);
-  const [datesError, setDatesError] = useState<string | null>(null);
 
   const headers = {
     "Content-Type": "multipart/form-data",
@@ -91,12 +150,8 @@ const CreateSeason = () => {
     // starting_date_et: Yup.string().required(
     //   "Ethiopian starting date is required"
     // ),
-    // ending_date_et: Yup.string().required("Ethiopian ending date is required"),
+    ending_date_et: Yup.string().required("Ethiopian ending date is required"),
 
-    starting_time_et: Yup.string().required(
-      "Ethiopian starting time is required"
-    ),
-    ending_time_et: Yup.string().required("Ethiopian ending time is required"),
     playing_day: Yup.array()
       .of(
         Yup.string().oneOf([
@@ -115,21 +170,41 @@ const CreateSeason = () => {
   });
 
   const initialValues = {
-    name: "",
-    nameAm: "",
-    number_of_player: null,
-    starting_time: "",
-    ending_time: "",
-    starting_time_et: "",
-    ending_time_et: "",
+    name: SEASON.season_name.english
+      ? SEASON.season_name.english
+      : JSON.parse(SEASON.season_name).english,
+    nameAm: SEASON.season_name.amharic
+      ? SEASON.season_name.amharic
+      : JSON.parse(SEASON.season_name).amharic,
+    number_of_player: parseInt(SEASON.number_of_player),
+    starting_time: SEASON.starting_time.english
+      ? formatTime(SEASON.starting_time.english)
+      : formatTime(JSON.parse(SEASON.starting_time).english),
+    ending_time: SEASON.ending_time.english
+      ? formatTime(SEASON.ending_time.english)
+      : formatTime(JSON.parse(SEASON.ending_time).english),
+    starting_time_et: SEASON.starting_time.amharic
+      ? formatTime(SEASON.starting_time.amharic)
+      : formatTime(JSON.parse(SEASON.starting_time).amharic),
+    ending_time_et: SEASON.ending_time.amharic
+      ? formatTime(SEASON.ending_time.amharic)
+      : formatTime(JSON.parse(SEASON.ending_time).amharic),
+    // starting_date: parseDate(JSON.parse(SEASON.starting_date).english)
+    //   .toISOString()
+    //   .slice(0, 10),
+    ending_date: parseDate(JSON.parse(SEASON.ending_date).english)
+      .toISOString()
+      .slice(0, 10),
+    starting_date_et: formatDate(JSON.parse(SEASON.starting_date).amharic),
+    ending_date_et: formatDate(JSON.parse(SEASON.ending_date).amharic),
     coin_amount: 0,
-    season_price: null,
+    season_price: parseInt(SEASON.season_price),
   };
 
-  const createSeasonHistoryMutation = useMutation(
+  const updateSeasonHistoryMutation = useMutation(
     async (newData: any) =>
       await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}admin/seasons`,
+        `${process.env.REACT_APP_BACKEND_URL}admin/seasons/${SEASON.id}`,
         newData,
         {
           headers,
@@ -139,46 +214,42 @@ const CreateSeason = () => {
       retry: false,
     }
   );
-  const createSeasonSubmitHandler = async (values: any) => {
+  const updateSeasonSubmitHandler = async (values: any) => {
     if (
       playingDates.length === 0 ||
       startingDateEt === "" ||
       endingDateEt === ""
     ) {
       playingDates.length === 0 && setDatesError("Pick atleast one date");
-
       startingDateEt === "" &&
         setStartingDateError("Starting date is required.");
-
       endingDateEt === "" && setEndingDateError("Ending date is required.");
-
       return;
     }
-
     setDatesError(null);
     setStartingDateError(null);
     setEndingDateError(null);
-
-    // console.log(
-    //   "VALUES -",
-    //   values,
-    //   "\nSTAAR -",
-    //   startingDate,
-    //   "\nSTAAREt -",
-    //   startingDateEt,
-    //   "\nEND -",
-    //   endingDate,
-    //   "\nENDet -",
-    //   endingDateEt,
-    //   "\nDAY -",
-    //   playingDates
-    // );
+    console.log(
+      // "VALUES -",
+      // values,
+      // "\nSTAAR -",
+      // startingDate,
+      // "\nSTAAREt -",
+      // startingDateEt,
+      // "\nEND -",
+      // endingDate,
+      // "\nENDet -",
+      // endingDateEt,
+      // "\nDAY -",
+      // playingDates
+      SEASON
+    );
     try {
       values.status = 1;
-
-      createSeasonHistoryMutation.mutate(
+      updateSeasonHistoryMutation.mutate(
         {
-          league_id: leagueId,
+          _method: "PATCH",
+          league_id: SEASON.league_id,
           season_name: JSON.stringify({
             english: values.name,
             amharic: values.nameAm,
@@ -206,7 +277,7 @@ const CreateSeason = () => {
         },
         {
           onSuccess: (responseData: any) => {
-            navigate(-1);
+            navigate(-2);
           },
           onError: (err: any) => {
             alert(err?.response?.data?.data);
@@ -219,7 +290,6 @@ const CreateSeason = () => {
   };
 
   const handleDateChange = (event: SelectChangeEvent<typeof playingDates>) => {
-    console.log(event.target);
     const {
       target: { value },
     } = event;
@@ -230,11 +300,11 @@ const CreateSeason = () => {
   };
 
   return (
-    <div className="bg-white p-3 rounded-md">
+    <article className="bg-white p-3 rounded-md">
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={createSeasonSubmitHandler}
+        onSubmit={updateSeasonSubmitHandler}
       >
         {({
           values,
@@ -286,8 +356,8 @@ const CreateSeason = () => {
                   </span>
                   <Field
                     as={"input"}
-                    name="starting_date"
                     type="date"
+                    value={startingDateStr}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       let date = e.target.value.split("-");
                       let dateEt = EthDateTime.fromEuropeanDate(
@@ -298,6 +368,8 @@ const CreateSeason = () => {
                       );
                       setStartingDate(`${date[2]}-${date[1]}-${date[0]}`);
                       setStartingDateError(null);
+
+                      setStartingDateStr(e.target.value);
                     }}
                     className="w-full p-[6px]  focus:ring-2 ring-blue-500 rounded-sm border border-gray-300 focus:outline-none ring-0"
                   />
@@ -314,7 +386,7 @@ const CreateSeason = () => {
                   </span>
                   <Field
                     as={"input"}
-                    name="ending_date"
+                    value={endingDateStr}
                     type="date"
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       let date = e.target.value.split("-");
@@ -326,6 +398,7 @@ const CreateSeason = () => {
                       );
                       setEndingDate(`${date[2]}-${date[1]}-${date[0]}`);
                       setEndingDateError(null);
+                      setEndingDateStr(e.target.value);
                     }}
                     className="w-full p-[6px]  focus:ring-2 ring-blue-500 rounded-sm border border-gray-300 focus:outline-none ring-0"
                   />
@@ -565,18 +638,18 @@ const CreateSeason = () => {
             <div className="w-2/5 flex items-end justify-end self-end ">
               <button
                 type="submit"
-                disabled={createSeasonHistoryMutation.isLoading}
+                disabled={updateSeasonHistoryMutation.isLoading}
                 className="bg-main-bg p-2 rounded-sm font-medium hover:opacity-80 text-white w-fit px-10"
               >
                 {" "}
-                {createSeasonHistoryMutation.isLoading ? "Loading" : "create"}
+                {updateSeasonHistoryMutation.isLoading ? "Loading" : "update"}
               </button>
             </div>
           </Form>
         )}
       </Formik>
-    </div>
+    </article>
   );
 };
 
-export default CreateSeason;
+export default EditSeason;

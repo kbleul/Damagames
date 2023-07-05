@@ -17,7 +17,6 @@ import { Switch } from "@headlessui/react";
 
 import Box from "@mui/material/Box";
 import Collapse from "@mui/material/Collapse";
-import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import { AiOutlineArrowDown, AiOutlineArrowUp } from "react-icons/ai";
 
@@ -96,6 +95,55 @@ const Season = () => {
     try {
       deleteLeaguHistoryMutation.mutate(
         { id },
+        {
+          onSuccess: (responseData: any) => {
+            navigate(-1);
+          },
+          onError: (err: any) => {
+            alert(err?.response?.data?.data);
+          },
+        }
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const updateSeasonHistoryMutation = useMutation(
+    async (newData: any) =>
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}admin/seasons/${newData.id}`,
+        newData,
+        {
+          headers,
+        }
+      ),
+    {
+      retry: false,
+    }
+  );
+  const updateSeasonSubmitHandler = async (values: any) => {
+    console.log(values);
+    try {
+      values.status = 1;
+      updateSeasonHistoryMutation.mutate(
+        {
+          _method: "PATCH",
+          id: values.id,
+          league_id: values.league_id,
+          season_name: JSON.stringify({
+            english: values.name,
+            amharic: values.nameAm,
+          }),
+          starting_date: values.starting_date,
+          ending_date: values.ending_date,
+          starting_time: values.starting_time,
+          ending_time: values.ending_time,
+          number_of_player: values.number_of_player,
+          playing_day: values.playing_day,
+          season_price: values.season_price,
+          is_active: !values.is_active,
+        },
         {
           onSuccess: (responseData: any) => {
             navigate(-1);
@@ -193,6 +241,22 @@ const Season = () => {
           </TableCell>
           <TableCell align="center">
             <Switch
+              onChange={() => {
+                updateSeasonSubmitHandler(row);
+              }}
+              checked={row.is_active}
+              className={`${row.is_active ? "bg-red-400" : "bg-[#aeaeae]"}
+  relative inline-flex h-[16px] w-[31.5px] shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
+            >
+              <span
+                aria-hidden="true"
+                className={`${row.is_active ? "translate-x-4" : "translate-x-0"}
+    pointer-events-none inline-block h-[12px] w-[12px] transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
+              />
+            </Switch>
+          </TableCell>
+          <TableCell align="center">
+            <Switch
               checked={row.is_game_time}
               className={`${row.is_game_time ? "bg-green-400" : "bg-[#aeaeae]"}
   relative inline-flex h-[16px] w-[31.5px] shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
@@ -210,8 +274,8 @@ const Season = () => {
           <TableCell>
             <button
               onClick={() =>
-                navigate(`/league/edit/${row.id}`, {
-                  state: { league: row },
+                navigate(`/season/edit`, {
+                  state: { season: row },
                 })
               }
               className="bg-main-bg rounded-sm hover:opacity-80
@@ -324,7 +388,11 @@ const Season = () => {
         <div className="flex items-center justify-between pb-3 w-full">
           <h3 className="font-semibold text-lg">Seasons</h3>
           <button
-            onClick={() => navigate("/season")}
+            onClick={() =>
+              navigate("/season/create", {
+                state: { leagueId: id },
+              })
+            }
             className="bg-main-bg p-2 rounded-sm font-medium hover:opacity-80 text-white"
           >
             Add Season
@@ -361,9 +429,9 @@ const Season = () => {
                 <TableCell width={100} align="center">
                   <span className="font-bold text-md">Current Players</span>
                 </TableCell>
-                {/* <TableCell width={100} align="center">
+                <TableCell width={100} align="center">
                   <span className="font-bold text-md">Status</span>
-                </TableCell> */}
+                </TableCell>
 
                 <TableCell align="center">
                   <span className="font-bold text-md">Active Now</span>

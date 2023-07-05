@@ -292,11 +292,9 @@ const League = () => {
             </button>
 
             <button
-              disabled={row.seasons.length === 0}
               onClick={() => {
-                console.log(row.seasons);
-                navigate(`/season/${row.id}`, {
-                  state: { seasons: row.seasons },
+                navigate(`/season/create`, {
+                  state: { leagueId: row.id },
                 });
               }}
               className="ml-2 bg-red-700 rounded-sm hover:opacity-80 text-center px-5 p-1 mt-2 font-medium text-sm text-white"
@@ -315,7 +313,7 @@ const League = () => {
               className={
                 row.seasons.length === 0
                   ? "hidden"
-                  : "ml-2 border border-red-700 text-black font-bold rounded-sm hover:opacity-80 text-center px-5 p-1 mt-2 font-medium text-sm text-white"
+                  : "ml-2 border border-red-700 text-black font-bold rounded-sm hover:opacity-80 text-center px-5 p-1 mt-2  text-sm"
               }
             >
               Seasons -{row.seasons.length}

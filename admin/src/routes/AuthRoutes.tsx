@@ -17,6 +17,7 @@ import LeagueCreate from "../pages/league/LeagueCreate";
 import EditLeague from "../pages/league/EditLeague";
 import Season from "../pages/league/season/season";
 import CreateSeason from "../pages/league/season/createSeason";
+import EditSeason from "../pages/league/season/EditSeason";
 
 interface Props {}
 const AuthRoutes: React.FC<Props> = () => {
@@ -99,8 +100,9 @@ const AuthRoutes: React.FC<Props> = () => {
             <Route path="/league/create" element={<LeagueCreate />} />
             <Route path="/league/edit/:id" element={<EditLeague />} />
 
-            <Route path="/season" element={<CreateSeason />} />
             <Route path="/season/:id" element={<Season />} />
+            <Route path="/season/create" element={<CreateSeason />} />
+            <Route path="/season/edit" element={<EditSeason />} />
           </Routes>
         </div>
       </div>
