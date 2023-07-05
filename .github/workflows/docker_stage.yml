@@ -24,8 +24,10 @@ jobs:
           #if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
 
       - name: Create docker context
-        run: docker context create test --docker "host=ssh://${{ vars.REMOTE_USER }}@${{ vars.REMOTE_HOST }}"
+        run: sudo docker context create test --docker "host=ssh://${{ vars.REMOTE_USER }}@${{ vars.REMOTE_HOST }}"
 
+      - name: Log available Docker contexts
+        run: sudo docker context ls
       # - name: Remove old php container to force build
       #   run: docker-compose --context prod -f docker-compose.prod.yml rm -s -f
 
@@ -34,7 +36,7 @@ jobs:
 
       - name: Deploy Docker Containers
         run: |
-          docker-compose --context test -f docker-compose.stage.yml up --build --remove-orphans -d
+          sudo docker-compose --context test -f docker-compose.stage.yml up --build --remove-orphans -d
         env:
           DOCKER_HOST: ssh://${{ vars.REMOTE_USER }}@${{ vars.REMOTE_HOST }}
           REMOTE_HOST: ${{ vars.REMOTE_HOST }}

@@ -103,6 +103,11 @@ const AuthRoutes: React.FC<Props> = () => {
             <Route path="/season/:id" element={<Season />} />
             <Route path="/season/create" element={<CreateSeason />} />
             <Route path="/season/edit" element={<EditSeason />} />
+
+            {/* <Route path="/awards/:id" element={<CreateSeason />} />
+            <Route path="/awards/create/:id" element={<Season />} />
+            <Route path="/awards/edit/:id" element={<EditSeason />} /> */}
+
           </Routes>
         </div>
       </div>

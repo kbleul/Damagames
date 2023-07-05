@@ -294,15 +294,24 @@ const Season = () => {
             >
               Delete
             </button>
+
+            <button
+              onClick={() => {
+                row.prizes.length === 0
+                  ? navigate(`/awards/create/${row.id}`)
+                  : navigate(`/awards/${row.id}`);
+              }}
+              className="border-2 border-red-600 text-red-600 rounded-sm hover:opacity-80
+                text-center ml-2 px-5 p-1 mt-2 font-medium text-sm text-white"
+            >
+              Awards
+            </button>
           </TableCell>
         </TableRow>
         <TableRow>
           <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
             <Collapse in={open} timeout="auto" unmountOnExit>
               <Box sx={{ margin: 1 }}>
-                {/* <Typography variant="h6" gutterBottom component="div">
-                  match_history
-                </Typography> */}
                 <Table size="small" aria-label="purchases">
                   <TableHead>
                     <TableRow>
