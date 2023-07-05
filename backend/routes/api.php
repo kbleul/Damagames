@@ -1,22 +1,24 @@
 <?php
 
-use App\Events\TestEvent;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AuthPlayerController;
 use App\Http\Controllers\BadgeController;
 use App\Http\Controllers\ComputerGameController;
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\LeagueController;
 use App\Http\Controllers\PlayersController;
+use App\Http\Controllers\PrizeController;
 use App\Http\Controllers\PusherAuthController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\ScoreController;
+use App\Http\Controllers\SeasonController;
+use App\Http\Controllers\SeasonPlayerController;
 use App\Http\Controllers\SecurityQuestionController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\TelebirrController;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,7 +30,7 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider within a group which
 | is assigned the "api" middleware group. Enjoy building your API!
 |
-*/
+ */
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -47,6 +49,7 @@ Route::middleware('response')->group(function () {
     Route::get('top-four', [ScoreController::class, 'top_four'])->middleware('response');
     Route::get('scores-by-point', [ScoreController::class, 'scores_by_point'])->middleware('response');
     Route::post('draw/{game}', [ScoreController::class, 'draw']);
+    Route::post('player-season/{userId}', [SeasonPlayerController::class, 'player_seasons']);
 
     Route::post('register', [AuthController::class, 'register_new']);
     Route::post('register/{user}', [AuthController::class, 'register']);
@@ -71,6 +74,14 @@ Route::middleware('response')->group(function () {
     Route::post('play-with-computer-na-done/{computerGameNa}', [ComputerGameController::class, 'update_na']);
 
     Route::get('get-badges', [BadgeController::class, 'index']);
+
+    //leagues
+    Route::get('get-league', [LeagueController::class, 'index']);
+    Route::get('show-league/{league}', [LeagueController::class, 'show']);
+    Route::get('get-season', [SeasonController::class, 'index']);
+    Route::get('show-season/{season}', [SeasonController::class, 'show']);
+    Route::get('standings/{season}', [LeagueController::class, 'standings']);
+    Route::get('histories/{season}', [LeagueController::class, 'histories']);
 });
 
 Route::resource('security-questions', SecurityQuestionController::class);
@@ -105,6 +116,7 @@ Route::middleware('response', 'auth:sanctum')->group(function () {
 
     // TELEBIRR
     Route::post('telebirr/pay', [TelebirrController::class, 'telebirr']);
+    Route::post('join-season', [SeasonPlayerController::class, 'join_season']);
 });
 
 Route::middleware(['response', 'auth:sanctum', 'admin'])->prefix('admin')->group(function () {
@@ -119,6 +131,8 @@ Route::middleware(['response', 'auth:sanctum', 'admin'])->prefix('admin')->group
     Route::get('coin-settings', [AdminController::class, 'coin_settings']);
     Route::patch('coin-setting-update/{coinSetting}', [AdminController::class, 'coin_setting']);
 
-
     Route::resource('badges', BadgeController::class);
+    Route::resource('leagues', LeagueController::class);
+    Route::resource('seasons', SeasonController::class);
+    Route::resource('prizes', PrizeController::class);
 });

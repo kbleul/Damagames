@@ -9,15 +9,12 @@ use App\Models\AvatarHistory;
 use App\Models\CoinSetting;
 use App\Models\ComputerGame;
 use App\Models\ComputerGameNa;
-use App\Models\Game;
 use App\Models\Score;
 use App\Models\Store;
 use App\Models\User;
 use Carbon\Carbon;
-use GrahamCampbell\ResultType\Success;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Http\UploadedFile;
 
 class AdminController extends Controller
 {
@@ -51,7 +48,7 @@ class AdminController extends Controller
     public function getRanking($id)
     {
         $collection = collect(User::orderByDesc('current_point')
-            ->get());
+                ->get());
 
         $data = $collection->where('id', $id);
 
@@ -80,14 +77,13 @@ class AdminController extends Controller
             ],
         ]);
 
-
         if ($request->type === "Avatar") {
             foreach ($request->history as $key => $value) {
                 $avatarHistory = AvatarHistory::create([
                     'store_id' => $item->id,
                     'history' => [
                         'english' => $value['historyEnglish'],
-                        'amharic' => $value['historyAmharic']
+                        'amharic' => $value['historyAmharic'],
                     ],
                     'order' => $key + 1,
                 ]);
@@ -173,16 +169,17 @@ class AdminController extends Controller
                 'nickname' => $request->nickname ?? $store->nickname,
                 'price' => $request->price ?? $store->price,
                 'discount' => $request->discount ?? $store->discount,
-                'type' => $request->type ?? $store->type
+                'type' => $request->type ?? $store->type,
             ]);
 
             if ($store->type === "Avatar") {
-                foreach ($request->history as $key =>  $value) {
+                $store->history()->forceDelete();
+                foreach ($request->history as $key => $value) {
                     $avatarHistory = AvatarHistory::create([
                         'store_id' => $store->id,
                         'history' => [
                             'english' => $value['historyEnglish'],
-                            'amharic' => $value['historyAmharic']
+                            'amharic' => $value['historyAmharic'],
                         ],
                         'order' => $key + 1,
                     ]);
@@ -241,7 +238,6 @@ class AdminController extends Controller
                 $store->addMediaFromRequest('board_pawn_king1_turn')->toMediaCollection('board_pawn_king1_turn');
             }
 
-
             if ($request->hasFile('board_pawn_king2_turn') && $request->file('board_pawn_king2_turn')->isValid()) {
                 $store->clearMediaCollection('board_pawn_king2_turn');
                 $store->addMediaFromRequest('board_pawn_king2_turn')->toMediaCollection('board_pawn_king2_turn');
@@ -265,13 +261,13 @@ class AdminController extends Controller
             $store->update([
                 'status' => 0,
             ]);
-            return  "Active";
+            return "Active";
         } else {
             $store->update([
                 'status' => 1,
             ]);
 
-            return  "Hidden";
+            return "Hidden";
         }
     }
 
@@ -280,16 +276,15 @@ class AdminController extends Controller
         return $store;
     }
 
-
     public function store_items()
     {
         $avatars = Store::where('type', "Avatar")->orderBy('price', 'ASC')->get();
         $boards = Store::where('type', "Board")->orderBy('price', 'ASC')->get();
         $crowns = Store::where('type', "Crown")->orderBy('price', 'ASC')->get();
         return [
-            'avatars' =>  $avatars,
-            'boards' =>   $boards,
-            'crowns' =>  $crowns,
+            'avatars' => $avatars,
+            'boards' => $boards,
+            'crowns' => $crowns,
         ];
     }
 
@@ -301,10 +296,10 @@ class AdminController extends Controller
     public function coin_setting(Request $request, CoinSetting $coinSetting)
     {
         return $coinSetting->update([
-            'newUserCoins' =>  $request->newUserCoins ?? $coinSetting->drawCoins,
+            'newUserCoins' => $request->newUserCoins ?? $coinSetting->drawCoins,
             'winnerCoins' => $request->winnerCoins ?? $coinSetting->winnerCoins,
             'looserCoins' => $request->looserCoins ?? $coinSetting->looserCoins,
-            'drawCoins' => $request->drawCoins ?? $coinSetting->drawCoins
+            'drawCoins' => $request->drawCoins ?? $coinSetting->drawCoins,
         ]);
     }
 }

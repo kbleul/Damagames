@@ -4,14 +4,16 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Models\Score;
+use App\Models\SeasonPlayer;
 use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -44,7 +46,7 @@ class User extends Authenticatable
     public function getRankAttribute()
     {
         $collection = collect(User::orderByDesc('current_point')
-            ->get());
+                ->get());
 
         $data = $collection->where('id', $this->id);
 
@@ -98,21 +100,21 @@ class User extends Authenticatable
             }])
             ->get()
             ->sum('scores_count');
-        $match_history =  [
+        $match_history = [
             'played' => $completed + $incompleted,
             'started' => $completed + $incompleted,
             'completed' => $completed,
             'incompleted' => $incompleted,
             'playWithComputer' => ComputerGame::where('player', $this->id)->count(),
-            'playWithComputerWins' => ComputerGame::where('player', $this->id,)->where('is_user_win', true)->count(),
+            'playWithComputerWins' => ComputerGame::where('player', $this->id, )->where('is_user_win', true)->count(),
             'playWithComputerLoses' => ComputerGame::where('player', $this->id)->where('is_user_win', false)->count(),
             'wins' => $wins,
-            'draw' =>  $draw,
+            'draw' => $draw,
             'losses' => $completed - ($wins + $draw),
             'coins' => $coin->current_point,
         ];
 
-        return  $match_history;
+        return $match_history;
     }
 
     /**
@@ -149,4 +151,22 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Role::class, 'role_users');
     }
+<<<<<<< HEAD
+=======
+
+    public function seasonPlayers(): HasMany
+    {
+        return $this->hasMany(SeasonPlayer::class);
+    }
+
+    public function winnerScore(): HasMany
+    {
+        return $this->hasMany(Score::class, 'winner');
+    }
+
+    public function loserScore(): HasMany
+    {
+        return $this->hasMany(Score::class, 'loser');
+    }
+>>>>>>> 9c6555b4a3a1e5de9a95a759f4dca2ea70409bae
 }

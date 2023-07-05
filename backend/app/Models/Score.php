@@ -16,6 +16,7 @@ class Score extends Model
 
     protected $hidden = [
         'game_id',
+        'season_id',
         'status',
         'created_at',
         'updated_at',
@@ -39,5 +40,15 @@ class Score extends Model
     public function winner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'winner', 'id');
+    }
+
+    public function winnerScore(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'winner');
+    }
+
+    public function loserScore()
+    {
+        return $this->belongsTo(User::class, 'loser');
     }
 }

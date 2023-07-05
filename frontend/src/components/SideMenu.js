@@ -18,8 +18,6 @@ const SideMenu = ({ showMenu, setShowMenu, isprofile, badges }) => {
 
   const LANG = { "AMH": "amharic", "ENG": "english" }
 
-
-
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",

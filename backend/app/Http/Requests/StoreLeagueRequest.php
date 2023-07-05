@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreScoreRequest extends FormRequest
+class StoreLeagueRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,11 @@ class StoreScoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'game_id' => 'required|exists:games,id',
-            'winner' => 'required|exists:users,id',
-            'season_id' => 'nullable|exists:seasons,id',
+            'league_name' => 'required|json|unique:leagues',
+            'league_price' => 'required|numeric',
+            'status' => 'nullable|boolean',
+            'min_join_point' => 'integer',
+            'description' => 'nullable|json',
         ];
     }
 }
