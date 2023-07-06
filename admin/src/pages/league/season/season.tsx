@@ -298,8 +298,12 @@ const Season = () => {
             <button
               onClick={() => {
                 row.prizes.length === 0
-                  ? navigate(`/awards/create/${row.id}`)
-                  : navigate(`/awards/${row.id}`);
+                  ? navigate(`/awards/create/${row.id}`, {
+                      state: { awards: row.prizes },
+                    })
+                  : navigate(`/awards/${row.id}`, {
+                      state: { awards: row.prizes },
+                    });
               }}
               className="border-2 border-red-600 text-red-600 rounded-sm hover:opacity-80
                 text-center ml-2 px-5 p-1 mt-2 font-medium text-sm text-white"
@@ -333,10 +337,11 @@ const Season = () => {
                         scope="row"
                         align="center"
                       >
-                        {row.prizes.map((prize: priceProps) => (
+                        {row.prizes.map((prize: any) => (
                           <span className="block" key={prize.id}>
-                            {prize.level}- {prize.prize_name.english} /{" "}
-                            {prize.prize_name.amharic}{" "}
+                            {prize.level}-{" "}
+                            {JSON.parse(prize.prize_name).english} /{" "}
+                            {JSON.parse(prize.prize_name).amharic}{" "}
                           </span>
                         ))}
                       </TableCell>
