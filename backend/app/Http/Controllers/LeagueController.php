@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateLeagueRequest;
 use App\Models\League;
 use App\Models\Score;
 use App\Models\Season;
+use App\Models\SeasonPlayer;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -52,12 +53,14 @@ class LeagueController extends Controller
             return abort(400, 'Season not found');
         }
 
-        $userIds = Score::where('season_id', $season->id)
-            ->select('winner')
-            ->union(Score::where('season_id', $season->id)->select('loser'))
-            ->pluck('winner')
-            ->unique()
-            ->toArray();
+        // $userIds = Score::where('season_id', $season->id)
+        //     ->select('winner')
+        //     ->union(Score::where('season_id', $season->id)->select('loser'))
+        //     ->pluck('winner')
+        //     ->unique()
+        //     ->toArray();
+
+        $userIds = SeasonPlayer::where('season_id', $season->id)->pluck('user_id');
 
         $gamePoint = User::all();
 
