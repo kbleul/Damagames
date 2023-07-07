@@ -116,12 +116,20 @@ const LeagueHistory = ({ isInviteModalOpen, setIsInviteModalOpen, setInviteData 
             <Nav active={active} setActive={setActive} isInSeason={isInSeason} setIsGameTime={setIsGameTime} />
 
             {active === LEAGUE_CATAGORIES[0] && leagues && <article>{
-                leagues.map((player, index) => (
-                    <PlayerCard key={player.userData.id} index={index} player={player} badges={badges} />
-                ))}
-            </article>}
+                leagues.length === 0 ? <section className="w-full h-[60vh] flex items-center justify-center">
+                    <p className="text-orange-600 ">No one has joined yet. Be the first one.</p>
+                </section> : <section>
+                    {leagues.map((player, index) => (
+                        <PlayerCard key={player.userData.id} index={index} player={player} badges={badges} />
+                    ))}
 
-            {active === LEAGUE_CATAGORIES[0] && isLoading &&
+                </section>}
+
+            </article>
+            }
+
+            {
+                active === LEAGUE_CATAGORIES[0] && isLoading &&
                 <section className="w-full h-[60vh] flex items-center justify-center ">
                     <Circles
                         height="50"
@@ -133,23 +141,28 @@ const LeagueHistory = ({ isInviteModalOpen, setIsInviteModalOpen, setInviteData 
                         wrapperClassName=""
                         visible={true}
                     />
-                </section>}
+                </section>
+            }
 
-            {active === LEAGUE_CATAGORIES[0] && error && <section className="w-full h-[60vh] flex items-center justify-center">
-                <p className="text-orange-600 ">{error}</p>
-            </section>}
+            {
+                active === LEAGUE_CATAGORIES[0] && error && <section className="w-full h-[60vh] flex items-center justify-center">
+                    <p className="text-orange-600 ">{error}</p>
+                </section>
+            }
 
 
-            {user && active === LEAGUE_CATAGORIES[1] &&
+            {
+                user && active === LEAGUE_CATAGORIES[1] &&
                 <ActivePlayers isGameTime={isGameTime}
                     isInviteModalOpen={isInviteModalOpen}
                     setIsInviteModalOpen={setIsInviteModalOpen}
-                    setInviteData={setInviteData} />}
+                    setInviteData={setInviteData} />
+            }
 
             {active === LEAGUE_CATAGORIES[2] && <Matches seasonId={id} />}
 
 
-        </article>
+        </article >
     )
 }
 

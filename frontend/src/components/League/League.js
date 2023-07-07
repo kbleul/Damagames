@@ -45,9 +45,29 @@ const League = () => {
             refetchOnWindowFocus: false,
             retry: false,
             onSuccess: (res) => {
-                console.log(res?.data?.data)
+                const tempLeague = [...res?.data?.data]
+                const activeLeague = []
+                const inActiveLeague = []
+
+                const leagueIds = []
+
+
+                tempLeague.forEach(league => {
+                    let hasActive = league.seasons.find(season => season.is_active === true)
+                    hasActive && activeLeague.push(league)
+                    hasActive && leagueIds.push(league.id)
+                    !hasActive && inActiveLeague.push(league)
+                })
+
+                console.log(activeLeague, inActiveLeague)
+                res?.data?.data.forEach(league => {
+                    !leagueIds.includes(league.id) && activeLeague.push(league)
+                })
+
+
+
                 setError(null)
-                setLeagues([...res?.data?.data])
+                setLeagues([...activeLeague, ...inActiveLeague])
                 setIsLoading(false)
             },
             onError: (err) => {

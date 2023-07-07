@@ -6,71 +6,7 @@ import { LEAGUE_CATAGORIES } from '../../../utils/data'
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 
-const Nav = ({ active, setActive, isInSeason, setIsGameTime }) => {
-
-    const [leagueTable, setLeagueTable] = useState(null)
-    const [error, setError] = useState(null)
-    const [isLoading, setIsLoading] = useState(true)
-
-
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-    };
-
-    const tableMutation = useMutation(
-        async (newData) =>
-            await axios.get(
-                `${process.env.REACT_APP_BACKEND_URL}standings/5bf01639-84bd-4af8-b01b-ad1d84318be3`,
-                newData,
-                {
-                    headers,
-                }
-            ),
-        {
-            retry: false,
-        }
-    );
-
-    const tableMutationSubmitHandler = async (values) => {
-        try {
-            tableMutation.mutate(
-                {},
-                {
-                    onSuccess: (responseData) => {
-                        console.log(responseData.data.data)
-                        let tempStanding = []
-                        responseData.data.data?.users.forEach(item => {
-                            item.userData.seasonPoint = item.points
-                            tempStanding.push(item.userData)
-                        })
-
-                        setLeagueTable([...tempStanding])
-
-                        tempStanding = []
-
-                        setError(null)
-                        setIsLoading(false)
-                        setIsGameTime(responseData.data.data?.is_game_time)
-                    },
-                    onError: (err) => {
-                        setError(err.message || err)
-                        setIsLoading(false)
-                    },
-                }
-            );
-        } catch (err) { }
-    };
-
-
-
-    useEffect(() => {
-        tableMutationSubmitHandler()
-    }, [])
-
-    // useEffect(() => {
-    //     active === LEAGUE_CATAGORIES[0] && leagueTable && leagueTable.length > 0 && setActivePlayers([...leagueTable])
-    // }, [active, leagueTable])
+const Nav = ({ active, setActive, isInSeason }) => {
 
 
     const className = !isInSeason ?

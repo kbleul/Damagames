@@ -1,6 +1,10 @@
 import { Dialog, Transition } from "@headlessui/react";
-import React, { Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import { ImCancelCircle } from "react-icons/im"
+import { useAuth } from "../../../context/auth";
+
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
 const PAYMENTOPTIONS = [
     {
@@ -17,84 +21,190 @@ const PAYMENTOPTIONS = [
     }
 ]
 
-const PaymentOptions = ({ isPaymentModalOpen, setIsPaymentModalOpen, setIsPaymentPromptModalOpen, selectedMethod, setSelectedMethod }) => {
+const PaymentOptions = ({ isPaymentModalOpen, setIsPaymentModalOpen, setIsPaymentPromptModalOpen, selectedMethod, setSelectedMethod, seasons }) => {
+    const { user, token, login } = useAuth()
+
+    const activeSeason = seasons.find(season => season.is_active === true)
 
 
-    return (
+    const [loading, setLoading] = useState(false)
+    const [err, setErr] = useState(null)
+
+
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+
+    const joinSeasonMutation = useMutation(
+        async (newData) =>
+            await axios.post(
+                `${process.env.REACT_APP_BACKEND_URL}join-season`,
+                newData,
+                {
+                    headers,
+                }
+            ),
+        {
+            retry: false,
+        }
+    );
+
+    const joinSeasonSubmitHandler = async (values) => {
+        try {
+            console.log(values);
+            joinSeasonMutation.mutate(
+                {
+                    season_id: activeSeason.id,
+                    user_id: user.id,
+                },
+                {
+                    onSuccess: (responseData) => {
+                        localStorage.setItem("setIsReloading", true)
+                        login(token, {
+                            ...user,
+                            coin: parseInt(user.coin) - parseInt(activeSeason.season_price),
+                            current_point: parseInt(user.coin) - parseInt(activeSeason.season_price),
+                            seasons: [...user.seasons, activeSeason]
+                        })
+                        // setChanged((prev) => ++prev);
+                        setIsPaymentModalOpen(false);
+                        setLoading(false)
+                        setErr(null)
+                    },
+                    onError: (err) => {
+                        setLoading(false)
+                        setErr(err?.response?.data?.data)
+                    },
+                }
+            );
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+
+
+    return (<>{user &&
         <Transition appear show={isPaymentModalOpen} as={Fragment}>
-            <Dialog
-                as="div"
-                className="relative z-10"
-                onClose={() => setIsPaymentModalOpen(true)}
-            >
-                <Transition.Child
-                    as={Fragment}
-                    enter="ease-out duration-300"
-                    enterFrom="opacity-0"
-                    enterTo="opacity-100"
-                    leave="ease-in duration-200"
-                    leaveFrom="opacity-100"
-                    leaveTo="opacity-0"
+            {err ?
+                <Dialog
+                    as="div"
+                    className="relative z-10"
+                    onClose={() => setIsPaymentModalOpen(true)}
                 >
-                    <div className="fixed inset-0 bg-black bg-opacity-25" />
-                </Transition.Child>
+                    <Transition.Child
+                        as={Fragment}
+                        enter="ease-out duration-300"
+                        enterFrom="opacity-0"
+                        enterTo="opacity-100"
+                        leave="ease-in duration-200"
+                        leaveFrom="opacity-100"
+                        leaveTo="opacity-0"
+                    >
+                        <div className="fixed inset-0 bg-black bg-opacity-25" />
+                    </Transition.Child>
 
-                <div className="fixed inset-0 overflow-y-auto">
-                    <div className="flex min-h-full items-center justify-center p-4 text-center">
-                        <Transition.Child
-                            as={Fragment}
-                            enter="ease-out duration-300"
-                            enterFrom="opacity-0 scale-95"
-                            enterTo="opacity-100 scale-100"
-                            leave="ease-in duration-200"
-                            leaveFrom="opacity-100 scale-100"
-                            leaveTo="opacity-0 scale-95"
-                        >
-                            <Dialog.Panel
-                                className="relative w-full max-w-md transform overflow-hidden 
-          rounded-2xl bg-dark-bg p-6 text-left align-middle shadow-xl transition-all flex flex-col justify-center items-center border border-orange-color"
+                    <div className="fixed inset-0 overflow-y-auto">
+                        <div className="flex min-h-full items-center justify-center p-4 text-center">
+                            <Transition.Child
+                                as={Fragment}
+                                enter="ease-out duration-300"
+                                enterFrom="opacity-0 scale-95"
+                                enterTo="opacity-100 scale-100"
+                                leave="ease-in duration-200"
+                                leaveFrom="opacity-100 scale-100"
+                                leaveTo="opacity-0 scale-95"
                             >
+                                <Dialog.Panel
+                                    className="relative w-full max-w-md transform overflow-hidden 
+          rounded-2xl bg-dark-bg p-6 text-left align-middle shadow-xl transition-all flex flex-col justify-center items-center border border-orange-color"
+                                >
 
-                                <ImCancelCircle
-                                    onClick={() => {
-                                        setIsPaymentModalOpen(false)
-                                        setSelectedMethod(null)
-                                    }} className="w-6 h-6 absolute top-2 right-2 text-orange-600 cursor-pointer" />
-                                <h2 className="text-orange-600 font-bold text-xl text-center w-full">Subscribe to join league</h2>
+                                    <ImCancelCircle
+                                        onClick={() => {
+                                            setIsPaymentModalOpen(false)
+                                            setSelectedMethod(null)
+                                        }} className="w-6 h-6 absolute top-2 right-2 text-orange-600 cursor-pointer" />
+                                    <h2 className="text-orange-600 font-bold text-sm text-center w-full">You already subscribed to this season.</h2>
 
-                                <div className=" w-full flex flex-col items-center ">
-                                    {PAYMENTOPTIONS.map(payment => (
-                                        <div key={payment.name} onClick={() => {
-                                            selectedMethod !== payment.name && setSelectedMethod(payment.name)
-                                        }} className="cursor-pointer flex text-white items-center gap-x-2 w-4/5 pl-[10%] py-1" >
-                                            {selectedMethod && selectedMethod === payment.name &&
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-green-300 justify-self-start" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 23c6.075 0 11-4.925 11-11S18.075 1 12 1S1 5.925 1 12s4.925 11 11 11Zm0-10a1 1 0 1 0 0-2a1 1 0 0 0 0 2Zm0 2a3 3 0 1 0 0-6a3 3 0 0 0 0 6Zm0 2a5 5 0 1 0 0-10a5 5 0 0 0 0 10Z" /></svg>
-                                            }
-                                            {(!selectedMethod || selectedMethod !== payment.name) &&
-                                                < svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-green-300 justify-self-start" viewBox="0 0 24 24"><path fill="currentColor" d="M12 21a9 9 0 1 1 9-9a9 9 0 0 1-9 9Zm0-16.5a7.5 7.5 0 1 0 7.5 7.5A7.5 7.5 0 0 0 12 4.5Z" /></svg>
-                                            }
-                                            <p className="w-4/5 justify-self-start ">{payment.name}</p>
-                                        </div>
-                                    ))}
-                                </div>
+                                </Dialog.Panel>
 
-                                <button onClick={() => {
-                                    if (selectedMethod) {
-                                        setIsPaymentModalOpen(false);
-                                        setIsPaymentPromptModalOpen(true)
-                                    }
-                                }}
-                                    className={selectedMethod ?
-                                        "w-[70%] bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-black" :
-                                        "opacity-80 w-[70%] bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-black"}>Subscribe
-                                </button>
-                            </Dialog.Panel>
-
-                        </Transition.Child>
+                            </Transition.Child>
+                        </div>
                     </div>
-                </div>
-            </Dialog>
+                </Dialog>
+
+                :
+                <Dialog
+                    as="div"
+                    className="relative z-10"
+                    onClose={() => setIsPaymentModalOpen(true)}
+                >
+                    <Transition.Child
+                        as={Fragment}
+                        enter="ease-out duration-300"
+                        enterFrom="opacity-0"
+                        enterTo="opacity-100"
+                        leave="ease-in duration-200"
+                        leaveFrom="opacity-100"
+                        leaveTo="opacity-0"
+                    >
+                        <div className="fixed inset-0 bg-black bg-opacity-25" />
+                    </Transition.Child>
+
+                    <div className="fixed inset-0 overflow-y-auto">
+                        <div className="flex min-h-full items-center justify-center p-4 text-center">
+                            <Transition.Child
+                                as={Fragment}
+                                enter="ease-out duration-300"
+                                enterFrom="opacity-0 scale-95"
+                                enterTo="opacity-100 scale-100"
+                                leave="ease-in duration-200"
+                                leaveFrom="opacity-100 scale-100"
+                                leaveTo="opacity-0 scale-95"
+                            >
+                                <Dialog.Panel
+                                    className="relative w-full max-w-md transform overflow-hidden 
+          rounded-2xl bg-dark-bg p-6 text-left align-middle shadow-xl transition-all flex flex-col justify-center items-center border border-orange-color"
+                                >
+
+                                    <ImCancelCircle
+                                        onClick={() => {
+                                            setIsPaymentModalOpen(false)
+                                            setSelectedMethod(null)
+                                        }} className="w-6 h-6 absolute top-2 right-2 text-orange-600 cursor-pointer" />
+                                    <h2 className="text-orange-600 font-bold text-xl text-center w-full">Subscribe to join league</h2>
+
+                                    <div className=" w-full flex flex-col items-center text-white text-sm gap-y-4 py-4">
+                                        <p>Your coins - {user.coin} coins</p>
+                                        <p>Season Price - {activeSeason?.season_price} coins</p>
+                                    </div>
+
+                                    <button onClick={() => {
+                                        if (parseInt(user.coin) >= parseInt(activeSeason.season_price)) {
+                                            setLoading(true)
+                                            joinSeasonSubmitHandler()
+                                        } else {
+                                            setIsPaymentModalOpen(false);
+                                            setIsPaymentPromptModalOpen(true)
+                                        }
+                                    }}
+                                        className={selectedMethod ?
+                                            "w-[70%] bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-black" :
+                                            "opacity-80 w-[70%] bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-black"}>
+                                        Subscribe
+                                    </button>
+                                </Dialog.Panel>
+
+                            </Transition.Child>
+                        </div>
+                    </div>
+                </Dialog>}
         </Transition >
+    }
+    </>
     )
 }
 

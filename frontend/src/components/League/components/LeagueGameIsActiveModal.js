@@ -22,16 +22,16 @@ const LeagueGameIsActiveModal = ({ activeSeasons, setActiveSeasons }) => {
         <article className="absolute top-[20vh] w-full h-[100vh] bg-transparent z-70">
 
 
-            <section className="z-[100] relative w-4/5 ml-[10%] h-[40vh] border border-orange-600 rounded-xl bg-black flex flex-col items-center justify-center">
+            <section className="z-[100] relative w-4/5 ml-[10%] h-[50vh] border border-orange-600 rounded-xl bg-black flex flex-col items-center justify-center overflow-y-scroll">
 
                 <ImCancelCircle
                     onClick={() => {
                         setActiveSeasons(null)
                     }} className="w-6 h-6 absolute top-2 right-2 text-orange-600 cursor-pointer" />
-                <p className="text-white text-sm py-4">This league games are currently active. </p>
-                <p className="text-white text-sm py-4">Go to the season to start playing</p>
+                <p className="text-white text-sm ">This league games are currently active. </p>
+                <p className="text-white text-sm ">Go to the season to start playing</p>
 
-                <div className="w-4/5 ">
+                <div className="w-4/5 h-[40vh]">
                     {activeSeasons.map(season =>
                         <div style={{
                             background: `linear-gradient(90deg, #FF4C01 0%, rgba(0, 0, 0, 0) 139.19%)`,

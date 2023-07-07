@@ -57,7 +57,8 @@ const Login = () => {
             const newUser = {
               ...responseData?.data?.data?.user,
               default_board: responseData?.data?.data?.default_board,
-              default_crown: responseData?.data?.data?.default_crown
+              default_crown: responseData?.data?.data?.default_crown,
+              seasons: [...responseData?.data?.data?.seasons]
             }
             console.log(newUser)
             login(

@@ -24,7 +24,7 @@ const ActivePlayers = ({ isGameTime, isInviteModalOpen, setIsInviteModalOpen, se
     const [rejectedInviteData, setRejectedInviteData] = useState(null)
 
     const [activePlayers, setActivePlayers] = useState(null)
-    const [isLoading, setIsLoading] = useState(isGameTime ? true : false)
+    const [isLoading, setIsLoading] = useState(isGameTime)
     const [error, setError] = useState(null)
 
     const [inviteErr, setInviteErr] = useState(null)

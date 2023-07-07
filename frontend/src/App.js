@@ -175,7 +175,10 @@ const App = () => {
 
   useEffect(() => {
     console.log("first")
-    user && fetchSeasons()
+    !localStorage.getItem("setIsReloading") &&
+      user && fetchSeasons()
+
+    localStorage.removeItem("setIsReloading")
 
     return () => localStorage.removeItem("dama-user-seasons")
   }, [user])

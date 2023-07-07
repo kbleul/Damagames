@@ -7,6 +7,7 @@ import PaymentOptions from "./PaymentOptions";
 import PaymentPrompt from "./PaymentPrompt";
 import { useNavigate } from "react-router-dom";
 import { assignBadgeToUser, convertDateType, convertTimeType } from "../../../utils/utilFunc";
+import LoginPromptModal from "../../Store/LoginPromptModal";
 
 
 const LANG = { "AMH": "amharic", "ENG": "english" }
@@ -19,6 +20,10 @@ const LeagueDetails = ({ selectedLeague }) => {
 
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
     const [isPaymentPromptModalOpen, setIsPaymentPromptModalOpen] = useState(false)
+    const [isShowModalOpen, set_isShowModalOpen] = useState(false)
+
+
+
     const [selectedMethod, setSelectedMethod] = useState(null)
 
     const [activeSeason, setActiveSeason] = useState(null)
@@ -60,7 +65,7 @@ const LeagueDetails = ({ selectedLeague }) => {
                 {selectedLeague?.seasons.map(season => (
                     season.is_active ?
                         <ActiveSeason key={season.id} season={season}
-                            setIsPaymentModalOpen={setIsPaymentModalOpen} setIsPaymentPromptModalOpen={setIsPaymentPromptModalOpen}
+                            setIsPaymentModalOpen={setIsPaymentModalOpen} setIsPaymentPromptModalOpen={setIsPaymentPromptModalOpen} set_isShowModalOpen={set_isShowModalOpen}
                         /> :
                         <SeasonCard key={season.id} season={season} badges={badges} />
 
@@ -89,6 +94,7 @@ const LeagueDetails = ({ selectedLeague }) => {
                 setIsPaymentModalOpen={setIsPaymentModalOpen}
                 setIsPaymentPromptModalOpen={setIsPaymentPromptModalOpen}
                 selectedMethod={selectedMethod} setSelectedMethod={setSelectedMethod}
+                seasons={selectedLeague.seasons}
             />
             <PaymentPrompt
                 isPaymentPromptModalOpen={isPaymentPromptModalOpen}
@@ -96,15 +102,18 @@ const LeagueDetails = ({ selectedLeague }) => {
                 setIsPaymentModalOpen={setIsPaymentModalOpen}
             />
 
+            <LoginPromptModal isShowModalOpen={isShowModalOpen} set_isShowModalOpen={set_isShowModalOpen} />
+
         </article >
     )
 }
 
 
-const ActiveSeason = ({ season, setIsPaymentModalOpen }) => {
-    const { lang } = useAuth();
-    console.log(JSON.parse(season.starting_time))
+const ActiveSeason = ({ season, setIsPaymentModalOpen, set_isShowModalOpen }) => {
+    const { lang, user } = useAuth();
 
+
+    let isUserInSeason = user ? user.seasons.find(userSeason => userSeason?.id === season?.id) : null;
     const totalPlayer = season.number_of_player || 20
 
     const formattedStaringDate = convertDateType(JSON.parse(season?.starting_date)[LANG[lang]], lang)
@@ -126,7 +135,7 @@ const ActiveSeason = ({ season, setIsPaymentModalOpen }) => {
         <section>
 
             <section className="flex items-center justify-evenly gap-x-1">
-                <div className="border bg-[#22474f] rounded-2xl w-1/2 py-3">
+                <div className="border bg-[#22474f] rounded-2xl w-1/2 py-3 h-16">
                     <div className="w-full flex items-center justify-start ml-1 px-2">
                         <p className="w-2 h-2 bg-orange-color rounded-full mr-1"></p>
                         <h3 className="w-full text-left text-[#FF4C01] font-bold text-sm">No. of players </h3>
@@ -134,7 +143,7 @@ const ActiveSeason = ({ season, setIsPaymentModalOpen }) => {
                     <p className="text-xs w-full text-center  text-gray-300">{totalPlayer} players</p>
                 </div>
 
-                <div className="border bg-[#22474f] rounded-2xl w-1/2 py-2">
+                <div className="border bg-[#22474f] rounded-2xl w-1/2 py-2 h-16">
                     <div className="w-full flex items-center justify-start ml-3">
                         <p className="w-2 h-2 bg-orange-color rounded-full mr-1"></p>
                         <h3 className=" text-left text-[#FF4C01] font-bold text-sm">Awards</h3>
@@ -158,10 +167,17 @@ const ActiveSeason = ({ season, setIsPaymentModalOpen }) => {
         <section className="mt-4">
             <p className="text-sm capitalize">{formattedStaringDate} - {formattedEndDate}</p>
             <p className="text-sm text-xs capitalize">{formattedGameTime.starting + " - " + formattedGameTime.ending}</p>
-            {season.is_active && season.number_of_player !== season.player_count &&
-                <button onClick={() => setIsPaymentModalOpen(true)}
+            {user && season.is_active && season.number_of_player !== season.player_count &&
+                <button disabled={user && isUserInSeason ? true : false} onClick={() => setIsPaymentModalOpen(true)}
+                    className="w-3/5 bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-sm text-black">{isUserInSeason ? "Joined" : "Join Season"}
+                </button>}
+
+            {!user &&
+                <button onClick={() => set_isShowModalOpen(true)}
                     className="w-3/5 bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-sm text-black">Join Season
                 </button>}
+
+
         </section>
     </article>
     )
@@ -208,7 +224,7 @@ const SeasonCard = ({ season, badges }) => {
 
         </section>
         <section className="w-1/2 ">
-            <div className="flex items-center justify-between mx-2">
+            <div className="flex items-center justify-between mx-2 h-16">
                 <h3 className="w-1/2 font-bold text-left">Status</h3>
                 <p className="w-1/2 text-xs text-gray-200 text-right">Completed</p>
             </div>
@@ -221,7 +237,7 @@ const SeasonCard = ({ season, badges }) => {
                 <p className="text-xs w-full text-left ml-6 text-gray-300">{season.number_of_player || 25} players</p>
             </div>
 
-            <div className="border bg-[#22474f] my-2  rounded-2xl py-2">
+            <div className="border bg-[#22474f] my-2  rounded-2xl py-2 h-16">
                 <div className="w-full flex items-center justify-start ml-3">
                     <p className="w-2 h-2 bg-orange-color rounded-full mr-1"></p>
                     <h3 className="w-full text-left text-[#FF4C01] font-bold text-sm">Awards</h3>

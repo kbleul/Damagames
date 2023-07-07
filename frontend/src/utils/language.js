@@ -275,7 +275,7 @@ export const Localization = {
     },
     "You need to login to buy items.": {
         AMH: "ለመግዛት በመለያ መግባት አለብዎት.",
-        ENG: "You need to login to buy items."
+        ENG: "You need to login to buy items or join leagues."
     },
     "Buy Now": {
         AMH: "ግዛ",
