@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 
 
 const PlayLeagueInvite = ({ setIsInviteModalOpen, inviteData }) => {
-    const { user, lang } = useAuth()
+    const { user, token, lang } = useAuth()
     const navigate = useNavigate()
 
     const [inviteErr, setInviteErr] = useState(null)
@@ -21,12 +21,13 @@ const PlayLeagueInvite = ({ setIsInviteModalOpen, inviteData }) => {
     const headers = {
         "Content-Type": "application/json",
         Accept: "application/json",
+        Authorization: `Bearer ${token}`,
     };
 
     const joinViaCodeMutation = useMutation(
         async (newData) =>
             await axios.post(
-                `${process.env.REACT_APP_BACKEND_URL}join-game-via-code`,
+                `${process.env.REACT_APP_BACKEND_URL}auth-join-game/${inviteData.gameId}`,
                 newData,
                 {
                     headers,
@@ -41,7 +42,7 @@ const PlayLeagueInvite = ({ setIsInviteModalOpen, inviteData }) => {
         console.log(values)
         try {
             joinViaCodeMutation.mutate(
-                { code: values },
+                {},
                 {
                     onSuccess: (responseData) => {
                         const { id: userId, username, profile_image, game_point, default_board, default_crown } = user
@@ -142,7 +143,7 @@ const PlayLeagueInvite = ({ setIsInviteModalOpen, inviteData }) => {
                         </button>
                         <button onClick={() => {
                             setIsLoading(true);
-                            joinViaCodeMutationSubmitHandler(inviteData.gameCode)
+                            joinViaCodeMutationSubmitHandler(inviteData.gameId)
                         }}
                             className={"w-[30%] mb-2 bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-xs text-black flex items-center justify-center"
                             }>

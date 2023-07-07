@@ -159,7 +159,7 @@ const App = () => {
             const seasons = responseData?.data?.data
 
             console.log(seasons)
-            setActiveSeasons([...seasons])
+            seasons.length > 0 && setActiveSeasons([...seasons])
             seasons.forEach((season) => {
               season.is_game_time && checkInUser(season.id)
             })
