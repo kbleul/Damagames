@@ -57,8 +57,17 @@ class AuthPlayerController extends Controller
             ], 201);
     }
 
-    public function join_game(Game $game)
+    public function join_game(Game $game, Request $request)
     {
+        if($request->is_league == 1 && $game->status == 0){
+            return response()
+            ->json([
+                'game' => $game->id,
+                'status' => $game->status,
+                'playerOne' => $game->creator,
+                'is_league' =>  $request->is_league,
+            ], 201);  
+        }
 
         if ($game->status !== 3) {
             return response()
