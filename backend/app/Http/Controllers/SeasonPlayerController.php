@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreSeasonPlayerRequest;
+use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Score;
 use App\Models\Season;
 use App\Models\SeasonPlayer;
-use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\StoreSeasonPlayerRequest;
 
 class SeasonPlayerController extends Controller
 {
@@ -15,7 +16,10 @@ class SeasonPlayerController extends Controller
     {
         $seasonId = SeasonPlayer::where('user_id', $userId)->pluck('season_id')->unique();
 
-        return Season::whereIn('id', $seasonId)->get()->filter(function ($season) {
+        return Season::whereIn('id', $seasonId)->get()->filter(function ($season) use($userId){
+              $wplayer = Score::where('season_id', $season->id)->where('winner' ,$userId)->pluck('loser');  
+              $lplayer = Score::where('season_id', $season->id)->where('loser' ,$userId)->pluck('winner');  
+              $season->have_played=$wplayer->merge($lplayer);
             return Carbon::parse(is_array($season->ending_date)?$season->ending_date["english"]: json_decode($season->ending_date, true)["english"]) >= now();
         })->flatten(1);
     }
