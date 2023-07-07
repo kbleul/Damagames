@@ -21,7 +21,7 @@ class Season extends Model
 
     protected $hidden = ['seasonPlayers', 'deleted_at', 'created_at', 'updated_at'];
 
-    protected $appends = ['player_count', 'is_game_time', 'prizes', 'top3Player'];
+    protected $appends = ['is_active_season','player_count', 'is_game_time', 'prizes', 'top3Player'];
 
     protected $casts = [
         'season_name' => 'json',
@@ -36,6 +36,17 @@ class Season extends Model
     public function league(): BelongsTo
     {
         return $this->belongsTo(League::class);
+    }
+
+    public function getIsActiveSeasonAttribute()
+    {
+        $startDate = Carbon::parse(is_array($this->starting_date)?$this->starting_date["english"]:json_decode($this->starting_date, true)["english"]);
+        $endDate = Carbon::parse(is_array($this->ending_date)?$this->ending_date["english"]:json_decode($this->ending_date, true)["english"]);
+        if(Carbon::now()->isBetween($startDate,$endDate) && $this->is_active){
+            return true;
+        }
+
+        return false;
     }
 
     public function seasonPlayers(): HasMany
