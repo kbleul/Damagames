@@ -151,8 +151,6 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Role::class, 'role_users');
     }
-<<<<<<< HEAD
-=======
 
     public function seasonPlayers(): HasMany
     {
@@ -168,5 +166,4 @@ class User extends Authenticatable
     {
         return $this->hasMany(Score::class, 'loser');
     }
->>>>>>> 9c6555b4a3a1e5de9a95a759f4dca2ea70409bae
 }
