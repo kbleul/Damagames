@@ -42,7 +42,7 @@ class Season extends Model
     {
         $startDate = Carbon::parse(is_array($this->starting_date)?$this->starting_date["english"]:json_decode($this->starting_date, true)["english"]);
         $endDate = Carbon::parse(is_array($this->ending_date)?$this->ending_date["english"]:json_decode($this->ending_date, true)["english"]);
-        if(Carbon::now()->isBetween($startDate,$endDate) && $this->is_active){
+        if(Carbon::now()->isBetween($startDate,$endDate) && $this->is_active && $this->seasonPlayers->count() >= $this->min_no_of_player){
             return true;
         }
 
