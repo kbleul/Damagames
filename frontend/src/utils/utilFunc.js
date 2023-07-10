@@ -1,4 +1,4 @@
-import { SORTBY } from "./data"
+import { SORTBY, CACHED_DATA, ET_MONTHS } from "./data"
 
 export const sortScoreBoard = (by, arr) => {
     switch (by) {
@@ -30,12 +30,10 @@ export const sortBadges = (arr) => {
 */
 export const assignBadgeToUser = (userPoint, badges) => {
     const reversedBadges = sortBadges(badges);
-    console.log(userPoint, userPoint < reversedBadges[0].point, userPoint, reversedBadges[0].point);
 
     // Check first badge
     if (badges.length > 1 && userPoint < reversedBadges[0].point) {
         const firstBadge = reversedBadges[0];
-        console.log("reversedBadges");
 
         return {
             url: firstBadge.badge_image === "" ? null : firstBadge.badge_image,
@@ -60,7 +58,7 @@ export const assignBadgeToUser = (userPoint, badges) => {
     // Check the rest
     for (let i = 0; i <= reversedBadges.length - 1; i++) {
         if (userPoint >= reversedBadges[i].point && userPoint < reversedBadges[i + 1].point) {
-            const currentBadge = reversedBadges[i];
+            const currentBadge = reversedBadges[i + 1];
 
             return {
                 url: currentBadge.badge_image === "" ? null : currentBadge.badge_image,
@@ -73,6 +71,52 @@ export const assignBadgeToUser = (userPoint, badges) => {
     }
 };
 
+
+export const cacheApiResponse = (name, response) => {
+    localStorage.setItem(name, JSON.stringify(response));
+}
+
+export const clearCacheApiData = () => {
+    CACHED_DATA.forEach(item => {
+        localStorage.getItem(item) && localStorage.removeItem(item);
+    })
+}
+
+
+/* takes in date in 25/06/2014 formate
+     and returns date in June 25 || SENE 10 format
+     TYPE == lang   "ENG" || "AMH"
+    */
+export const convertDateType = (unformattedDate, lang) => {
+
+    if (lang === "ENG") {
+        const newDate = new Date(unformattedDate);
+
+        const options = { month: 'long', day: 'numeric' }
+
+        let formattedDate;
+
+        formattedDate = newDate.toLocaleDateString('en-US', options);
+
+        return formattedDate;
+    } else {
+        const datesArr = unformattedDate.split("-")
+        return ET_MONTHS[datesArr[1]] + " " + datesArr[2]
+    }
+
+};
+
+
+export const convertTimeType = (startingTime, endingTime) => {
+    console.log(startingTime, endingTime)
+    const startingArr = startingTime.split(":")
+    const endingArr = endingTime.split(":")
+
+    return {
+        starting: startingArr[0] + ":" + startingArr[1],
+        ending: endingArr[0] + ":" + endingArr[1]
+    }
+}
 
 
 

@@ -259,6 +259,7 @@ const NewGame = () => {
       console.log("");
     }
   };
+
   return (
     <div
       style={{

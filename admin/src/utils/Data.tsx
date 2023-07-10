@@ -6,6 +6,7 @@ import { GiDwarfFace } from "react-icons/gi";
 import { BiCategory } from "react-icons/bi";
 import { FaChessBoard } from "react-icons/fa";
 import { SlBadge } from "react-icons/sl";
+import { SiPremierleague } from "react-icons/si";
 
 export const sideBarLinks = [
   {
@@ -55,6 +56,16 @@ export const sideBarLinks = [
         name: "profile",
         link: "profile",
         icon: <FaUserCog size={20} className=" text-[#bdcadf]" />,
+      },
+    ],
+  },
+  {
+    title: "League",
+    links: [
+      {
+        name: "league",
+        link: "league",
+        icon: <SiPremierleague size={20} className=" text-[#bdcadf]" />,
       },
     ],
   },

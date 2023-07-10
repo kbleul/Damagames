@@ -74,7 +74,6 @@ const CreatePawn = () => {
       });
     } catch (err) {
       console.log(err);
-      //   setError("Oops! Some error occurred.");
     }
   };
 
@@ -171,7 +170,7 @@ const CreatePawn = () => {
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-              <div className="w-full pb-3">
+                <div className="w-full pb-3">
                   <p>pawn image</p>
                   <input
                     // as={"input"}
@@ -193,7 +192,7 @@ const CreatePawn = () => {
                     <p className="text-[13px] text-red-500">{}</p>
                   ) : null}
                 </div>
-             
+
                 {/* king image */}
                 <div className="w-full pb-3">
                   <p>king pawn one image</p>
@@ -310,5 +309,4 @@ const CreatePawn = () => {
   );
 };
 
-
-export default CreatePawn
+export default CreatePawn;

@@ -70,11 +70,9 @@ const AddStoreItemsForm = ({
         },
         onError: (err: any) => {
           setError("Oops! Some error occurred.");
-          console.log(err);
         },
       });
     } catch (err) {
-      console.log(err);
       setError("Oops! Some error occurred.");
     }
   };
@@ -103,42 +101,46 @@ const AddStoreItemsForm = ({
         formData.append("price", priceRef.current?.value);
       typeRef.current?.value && formData.append("type", typeRef.current?.value);
       fileRef?.current?.files &&
-        formData.append("item", storeData?.data?.data?.data?.item ? storeData?.data?.data?.data?.item : fileRef?.current?.files[0]);
+        formData.append(
+          "item",
+          storeData?.data?.data?.data?.item
+            ? storeData?.data?.data?.data?.item
+            : fileRef?.current?.files[0]
+        );
       editStoreItemMutation.mutate(formData, {
         onSuccess: (responseData: any) => {
           setIsUpdated((prev) => !prev);
-          setEditId(null)
+          setEditId(null);
           setIsModalOpen(false);
           setError("");
         },
         onError: (err: any) => {
           setError("Oops! Some error occurred.");
-          console.log(err);
         },
       });
     } catch (err) {
-      console.log(err);
       setError("Oops! Some error occurred.");
     }
   };
-
 
   //fetch if id is there
   const storeData = useQuery(
     ["singlestoreDataApi", editId],
     async () =>
-      await axios.get(`${process.env.REACT_APP_BACKEND_URL}admin/store-item-show/${editId}`, {
-        headers,
-      }),
+      await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}admin/store-item-show/${editId}`,
+        {
+          headers,
+        }
+      ),
     {
       keepPreviousData: true,
       refetchOnWindowFocus: false,
       retry: false,
       enabled: !!token,
-      onSuccess: (res) => {
-        
-      }}
-      );
+      onSuccess: (res) => {},
+    }
+  );
 
   return (
     <div className="w-full flex flex-col items-center justify-center">
@@ -220,7 +222,6 @@ const AddStoreItemsForm = ({
             accept="image/*"
             className="w-full p-2 rounded-sm border border-gray-300 focus:outline-none ring-0"
             required={editId ? false : true}
-    
           />
 
           <button

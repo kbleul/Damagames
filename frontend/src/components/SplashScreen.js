@@ -26,6 +26,7 @@ const SplashScreen = () => {
         wrapperClassName=""
         visible={true}
       />
+
     </div>
   );
 };

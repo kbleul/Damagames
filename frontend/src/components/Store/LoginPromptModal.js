@@ -12,7 +12,7 @@ const LoginPromptModal = ({ isShowModalOpen, set_isShowModalOpen, avatarId }) =>
 
     const navigate = useNavigate()
     const { lang } = useAuth();
-    console.log(avatarId)
+
     return (
         <>
             <Transition appear show={isShowModalOpen} as={Fragment}>

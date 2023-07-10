@@ -44,10 +44,8 @@ export default function ExitWarningModal({
         },
         {
           onSuccess: (responseData) => {
-            //console.log(responseData?.data)
           },
           onError: (err) => {
-            // console.log(err)
 
           },
         }
