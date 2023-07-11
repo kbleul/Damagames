@@ -79,7 +79,7 @@ class Season extends Model
         $currentDay = Carbon::now()->englishDayOfWeek;
         $days = json_decode($this->playing_day, true);
 
-        return (in_array($currentDay, $days) && $currentDate->between($startDate, $endDate) && $currentDate->between($startTime, $endTime));
+        return (in_array($currentDay, $days) && $currentDate->between($startDate, $endDate) && $currentDate->between($startTime, $endTime) && $this->is_active);
     }
 
     public function getTop3PlayerAttribute()
