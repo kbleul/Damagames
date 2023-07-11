@@ -42,6 +42,7 @@ class StoreSeasonRequest extends FormRequest
             'ending_time' => 'required|json',
             'playing_day' => 'required|json',
             'season_price'=>'required',
+            'min_no_of_player' => 'nullable|integer',
         ];
     }
 }
