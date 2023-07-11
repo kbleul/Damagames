@@ -52,11 +52,14 @@ const AvatarHistory = React.lazy(() => import("./components/Store/AvatarHistory"
 const App = () => {
 
   const { checked } = useHome();
-  const { user, token } = useAuth();
+  const { user, setUser, token, login } = useAuth();
   const navigate = useNavigate()
 
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false)
   const [activeSeasons, setActiveSeasons] = useState(null)
+
+  const [fetchedSeasons, setFetchedSeasons] = useState(false)
+
 
   const [inviteData, setInviteData] = useState(null)
 
@@ -161,10 +164,18 @@ const App = () => {
             console.log(seasons)
             seasons.length > 0 && setActiveSeasons([...seasons])
             seasons.forEach((season) => {
-              season.is_game_time && checkInUser(season.id)
+              season.is_active_season && checkInUser(season.id)
             })
+
+            // login(token, {
+            //   ...user,
+            //   seasons: [...seasons]
+            // })
+
             // 
             localStorage.setItem("dama-user-seasons", JSON.stringify(seasons));
+
+            setFetchedSeasons(prev => !prev)
           },
           onError: (err) => { },
           enabled: user ? true : false,
@@ -180,8 +191,30 @@ const App = () => {
 
     localStorage.removeItem("setIsReloading")
 
-    return () => localStorage.removeItem("dama-user-seasons")
+    return () => {
+      // localStorage.getItem("dama-user-seasons") && localStorage.setItem(
+      //   "dama_user_data",
+      //   JSON.stringify({
+      //     token,
+      //     user: { ...user, seasons: [...JSON.parse(localStorage.getItem("dama-user-seasons"))] },
+      //   })
+      // );
+      localStorage.removeItem("dama-user-seasons")
+    }
   }, [user])
+
+  useEffect(() => {
+    let userSeasons = localStorage.getItem("dama-user-seasons")
+    if (user && userSeasons) {
+      if (user.seasons) {
+        console.log("here", user.seasons.length, JSON.parse(userSeasons).length)
+
+        if (user.seasons.length !== JSON.parse(userSeasons).length) {
+          setUser({ ...user, seasons: [...JSON.parse(userSeasons)] })
+        }
+      }
+    }
+  }, [fetchedSeasons])
 
   const HomeComp = () => {
     return (

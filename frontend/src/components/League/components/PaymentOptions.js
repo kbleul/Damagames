@@ -21,7 +21,15 @@ const PAYMENTOPTIONS = [
     }
 ]
 
-const PaymentOptions = ({ isPaymentModalOpen, setIsPaymentModalOpen, setIsPaymentPromptModalOpen, selectedMethod, setSelectedMethod, seasons }) => {
+const PaymentOptions = ({
+    isPaymentModalOpen,
+    setIsPaymentModalOpen,
+    selectedMethod,
+    setSelectedMethod,
+    seasons,
+    isCoinModalOpen,
+    setIsCoinModalOpen
+}) => {
     const { user, token, login } = useAuth()
 
     const activeSeason = seasons.find(season => season.is_active === true)
@@ -53,7 +61,7 @@ const PaymentOptions = ({ isPaymentModalOpen, setIsPaymentModalOpen, setIsPaymen
 
     const joinSeasonSubmitHandler = async (values) => {
         try {
-            console.log(values);
+
             joinSeasonMutation.mutate(
                 {
                     season_id: activeSeason.id,
@@ -62,12 +70,22 @@ const PaymentOptions = ({ isPaymentModalOpen, setIsPaymentModalOpen, setIsPaymen
                 {
                     onSuccess: (responseData) => {
                         localStorage.setItem("setIsReloading", true)
+                        console.log(user.seasons)
+                        let newSeason = user.seasons ?
+                            [...user.seasons, activeSeason] : [activeSeason]
+
                         login(token, {
                             ...user,
                             coin: parseInt(user.coin) - parseInt(activeSeason.season_price),
                             current_point: parseInt(user.coin) - parseInt(activeSeason.season_price),
-                            seasons: [...user.seasons, activeSeason]
+                            seasons: [...newSeason]
                         })
+                        localStorage.setItem("dama-user-seasons",
+                            JSON.stringify(
+                                [...newSeason]
+                            ))
+                        console.log("yess", [...newSeason])
+
                         // setChanged((prev) => ++prev);
                         setIsPaymentModalOpen(false);
                         setLoading(false)
@@ -182,20 +200,35 @@ const PaymentOptions = ({ isPaymentModalOpen, setIsPaymentModalOpen, setIsPaymen
                                         <p>Season Price - {activeSeason?.season_price} coins</p>
                                     </div>
 
-                                    <button onClick={() => {
-                                        if (parseInt(user.coin) >= parseInt(activeSeason.season_price)) {
+
+
+
+                                    {parseInt(user.coin) >= parseInt(activeSeason?.season_price) ?
+                                        <button onClick={() => {
                                             setLoading(true)
                                             joinSeasonSubmitHandler()
-                                        } else {
-                                            setIsPaymentModalOpen(false);
-                                            setIsPaymentPromptModalOpen(true)
-                                        }
-                                    }}
-                                        className={selectedMethod ?
-                                            "w-[70%] bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-black" :
-                                            "opacity-80 w-[70%] bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-black"}>
-                                        Subscribe
-                                    </button>
+                                        }}
+                                            className={selectedMethod ?
+                                                "w-[70%] bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-black" :
+                                                "opacity-80 w-[70%] bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-black"}>
+                                            Subscribe
+                                        </button>
+                                        :
+                                        <div className="w-full flex flex-col items-center justify-center mt-6">
+
+                                            <p className="text-white">You don't have enough coins.</p>
+                                            <button onClick={() => {
+                                                setIsPaymentModalOpen(false);
+                                                setIsCoinModalOpen(true)
+
+                                            }}
+                                                className={selectedMethod ?
+                                                    "w-[70%] bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-black" :
+                                                    "opacity-80 w-[70%] bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-black"}>
+                                                Buy coins
+                                            </button>
+                                        </div>
+                                    }
                                 </Dialog.Panel>
 
                             </Transition.Child>

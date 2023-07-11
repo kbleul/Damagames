@@ -326,17 +326,18 @@ const League = () => {
 
   return (
     <div>
+      <div className="flex items-center justify-between pb-3 w-full">
+        <h3 className="font-semibold text-lg">Leagues</h3>
+        <button
+          onClick={() => navigate("/league/create")}
+          className="bg-main-bg p-2 rounded-sm font-medium hover:opacity-80 text-white"
+        >
+          Add League
+        </button>
+      </div>
+
       {totalPages ? (
         <div>
-          <div className="flex items-center justify-between pb-3 w-full">
-            <h3 className="font-semibold text-lg">Leagues</h3>
-            <button
-              onClick={() => navigate("/league/create")}
-              className="bg-main-bg p-2 rounded-sm font-medium hover:opacity-80 text-white"
-            >
-              Add League
-            </button>
-          </div>
           <TableContainer component={Paper}>
             <Table aria-label="collapsible table">
               <TableHead>

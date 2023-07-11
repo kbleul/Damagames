@@ -20,7 +20,7 @@ const ActivePlayers = ({ isGameTime, isInviteModalOpen, setIsInviteModalOpen, se
     const { id } = useParams()
     const navigate = useNavigate()
 
-
+    console.log(isGameTime)
     const [rejectedInviteData, setRejectedInviteData] = useState(null)
 
     const [activePlayers, setActivePlayers] = useState(null)

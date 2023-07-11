@@ -71,7 +71,7 @@ const Season = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const seasons = location.state?.seasons;
-
+  console.log(seasons);
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -306,7 +306,7 @@ const Season = () => {
                     });
               }}
               className="border-2 border-red-600 text-red-600 rounded-sm hover:opacity-80
-                text-center ml-2 px-5 p-1 mt-2 font-medium text-sm text-white"
+                text-center ml-2 px-5 p-1 mt-2 font-medium text-sm"
             >
               Awards
             </button>

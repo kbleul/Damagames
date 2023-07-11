@@ -69,7 +69,7 @@ const LeagueHistory = ({ isInviteModalOpen, setIsInviteModalOpen, setInviteData 
                 setIsLoading(false)
 
                 checkUserInSeason(res?.data?.data?.users)
-                setIsGameTime(res?.data?.data?.is_game_time)
+                setIsGameTime(res?.data?.data?.is_active_season)
             },
             onError: (err) => {
                 setError(err.message)
@@ -113,7 +113,7 @@ const LeagueHistory = ({ isInviteModalOpen, setIsInviteModalOpen, setInviteData 
                 <p className="text-2xl ml-[32%] md:ml-[40%] w-3/5  text-left px-1">League</p>
             </section>
 
-            <Nav active={active} setActive={setActive} isInSeason={isInSeason} setIsGameTime={setIsGameTime} />
+            <Nav active={active} setActive={setActive} isInSeason={isInSeason} />
 
             {active === LEAGUE_CATAGORIES[0] && leagues && <article>{
                 leagues.length === 0 ? <section className="w-full h-[60vh] flex items-center justify-center">

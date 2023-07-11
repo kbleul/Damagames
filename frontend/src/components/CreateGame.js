@@ -562,7 +562,7 @@ const CreateGame = () => {
         </section>
 
       </div>
-      <article className="w-full flex items-center justify-center mt-6 ">
+      <article className="w-full flex items-center justify-center mt-1 ">
         <article className="px-2 w-full max-w-[600px]">
           {!isLoading && allBadges && <section className="text-white text-left font-bold">
             <div className="flex">

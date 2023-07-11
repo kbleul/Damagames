@@ -19,7 +19,7 @@ import LeagueDetails from "./components/LeagueDetails";
 const League = () => {
 
     const LANG = { "AMH": "amharic", "ENG": "english" }
-    const { lang } = useAuth();
+    const { user, lang } = useAuth();
 
     const navigate = useNavigate()
 
@@ -33,6 +33,16 @@ const League = () => {
         "Content-Type": "application/json",
         Accept: "application/json",
     };
+
+
+    const getUserSeasonsId = (userSeasons) => {
+        let seasonIds = []
+        JSON.parse(userSeasons).forEach(season => {
+            seasonIds.push(season.id)
+        })
+
+        return seasonIds
+    }
 
     const LeaguesData = useQuery(
         ["getLeaguesDataApi"],
@@ -48,26 +58,40 @@ const League = () => {
                 const tempLeague = [...res?.data?.data]
                 const activeLeague = []
                 const inActiveLeague = []
+                const joinedLeagues = []
+
 
                 const leagueIds = []
 
 
                 tempLeague.forEach(league => {
                     let hasActive = league.seasons.find(season => season.is_active === true)
-                    hasActive && activeLeague.push(league)
-                    hasActive && leagueIds.push(league.id)
-                    !hasActive && inActiveLeague.push(league)
+
+
+                    if (hasActive) {
+                        const userSeasons = localStorage.getItem("dama-user-seasons")
+                        if (userSeasons) {
+                            getUserSeasonsId(userSeasons).includes(hasActive.id) ?
+                                joinedLeagues.push(league) :
+                                activeLeague.push(league)
+                        }
+                        else activeLeague.push(league)
+                    } else {
+                        inActiveLeague.push(league)
+                    }
+                    // hasActive ? leagueIds.push(league.id)
+                    //     : 
                 })
 
-                console.log(activeLeague, inActiveLeague)
-                res?.data?.data.forEach(league => {
-                    !leagueIds.includes(league.id) && activeLeague.push(league)
-                })
+                // console.log(activeLeague, inActiveLeague, joinedLeagues, tempLeague.length)
+                // res?.data?.data.forEach(league => {
+                //     !leagueIds.includes(league.id) && activeLeague.push(league)
+                // })
 
 
 
                 setError(null)
-                setLeagues([...activeLeague, ...inActiveLeague])
+                setLeagues([...activeLeague, ...joinedLeagues, ...inActiveLeague])
                 setIsLoading(false)
             },
             onError: (err) => {
@@ -114,6 +138,10 @@ const League = () => {
                 <p className="text-2xl ml-[32%] md:ml-[40%] w-3/5  text-left px-1">League</p>
             </section>
 
+            {leagues.length === 0 && <section className="h-[80vh] w-full flex flex-col items-center justify-center">
+                <p className="text-orange-500 fold-bold text-center">No leagues yet</p>
+
+            </section>}
             {!selectedLeague && <article>
                 {!error && !isLoading && <section>
                     {leagues.map(league => (

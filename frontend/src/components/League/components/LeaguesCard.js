@@ -1,11 +1,11 @@
 import { useState } from "react"
 import { AiFillStar } from "react-icons/ai"
 import PaymentOptions from "./PaymentOptions"
-import PaymentPrompt from "./PaymentPrompt"
 
 import leagueImg from "../../../assets/league_bg.png"
 import { useAuth } from "../../../context/auth"
 import LoginPromptModal from "../../Store/LoginPromptModal"
+import CoinModal from "../../Store/CoinModal"
 
 
 
@@ -16,15 +16,16 @@ const LeaguesCard = ({ league, setSelectedLeague }) => {
     const { user, lang } = useAuth();
 
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
-    const [isPaymentPromptModalOpen, setIsPaymentPromptModalOpen] = useState(false)
     const [isShowModalOpen, set_isShowModalOpen] = useState(false)
+    const [isCoinModalOpen, setIsCoinModalOpen] = useState(false)
 
     //payment choices
     const [selectedMethod, setSelectedMethod] = useState(null)
 
     const activeSeason = league.seasons.find(season => season.is_active === true)
 
-    let isUserInSeason = activeSeason && user ? user.seasons.find(userSeason => userSeason?.id === activeSeason?.id) : null;
+    let isUserInSeason = localStorage.getItem("dama-user-seasons") ?
+        (activeSeason ? JSON.parse(localStorage.getItem("dama-user-seasons")).find(userSeason => userSeason?.id === activeSeason?.id) : null) : null
 
     return (
         <article className="bg-[#2B5A64] relative border-2 overflow-hidden border-gray-200 rounded-2xl flex items-center justify-center mt-6 mb-2 mx-[5%] max-w-[500px] text-white text-center">
@@ -65,19 +66,16 @@ const LeaguesCard = ({ league, setSelectedLeague }) => {
             <PaymentOptions
                 isPaymentModalOpen={isPaymentModalOpen}
                 setIsPaymentModalOpen={setIsPaymentModalOpen}
-                setIsPaymentPromptModalOpen={setIsPaymentPromptModalOpen}
                 selectedMethod={selectedMethod}
                 setSelectedMethod={setSelectedMethod}
-                seasons={league.seasons} />
-            <PaymentPrompt
-                isPaymentPromptModalOpen={isPaymentPromptModalOpen}
-                setIsPaymentPromptModalOpen={setIsPaymentPromptModalOpen}
-                selectedMethod={selectedMethod}
-                setIsPaymentModalOpen={setIsPaymentModalOpen}
+                seasons={league.seasons}
+                isCoinModalOpen={isCoinModalOpen}
+                setIsCoinModalOpen={setIsCoinModalOpen}
             />
 
             <LoginPromptModal isShowModalOpen={isShowModalOpen} set_isShowModalOpen={set_isShowModalOpen} />
 
+            <CoinModal isCoinModalOpen={isCoinModalOpen} setIsCoinModalOpen={setIsCoinModalOpen} />
 
         </article >
     )

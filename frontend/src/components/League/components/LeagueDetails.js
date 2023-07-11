@@ -4,10 +4,11 @@ import Avatar from "../../../assets/Avatar.png"
 import leagueImg from "../../../assets/league_bg.png"
 import { useAuth } from "../../../context/auth";
 import PaymentOptions from "./PaymentOptions";
-import PaymentPrompt from "./PaymentPrompt";
+// import PaymentPrompt from "./PaymentPrompt";
 import { useNavigate } from "react-router-dom";
 import { assignBadgeToUser, convertDateType, convertTimeType } from "../../../utils/utilFunc";
 import LoginPromptModal from "../../Store/LoginPromptModal";
+import CoinModal from "../../Store/CoinModal";
 
 
 const LANG = { "AMH": "amharic", "ENG": "english" }
@@ -21,6 +22,7 @@ const LeagueDetails = ({ selectedLeague }) => {
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
     const [isPaymentPromptModalOpen, setIsPaymentPromptModalOpen] = useState(false)
     const [isShowModalOpen, set_isShowModalOpen] = useState(false)
+    const [isCoinModalOpen, setIsCoinModalOpen] = useState(false)
 
 
 
@@ -54,22 +56,30 @@ const LeagueDetails = ({ selectedLeague }) => {
                         <h5 className={activeSeason ? "font-bold pt-2" : "hidden"}>Join now</h5>
                         <p className={activeSeason ? "text-sm" : "pt-2 text-sm"}>New Seasons starts soon !</p>
 
-                        <section className="capitalize w-full text-left px-4 mt-3 font-bold">
-                            <p className="text-xl">{selectedLeague?.league_name[LANG[lang]]}</p>
-                            <h5 className="text-5xl">Season</h5>
-                        </section>
+
                     </article>
                 }
 
 
-                {selectedLeague?.seasons.map(season => (
-                    season.is_active ?
-                        <ActiveSeason key={season.id} season={season}
-                            setIsPaymentModalOpen={setIsPaymentModalOpen} setIsPaymentPromptModalOpen={setIsPaymentPromptModalOpen} set_isShowModalOpen={set_isShowModalOpen}
-                        /> :
-                        <SeasonCard key={season.id} season={season} badges={badges} />
-
+                {selectedLeague?.seasons.map((season) => (
+                    season.is_active ? (
+                        <section key={season.id}>
+                            <section className="capitalize w-full text-left px-4 mt-3 font-bold">
+                                <p className="text-xl">{JSON.parse(season.season_name)[LANG[lang]]}</p>
+                                <h5 className="text-5xl">Season</h5>
+                            </section>
+                            <ActiveSeason
+                                season={season}
+                                setIsPaymentModalOpen={setIsPaymentModalOpen}
+                                setIsPaymentPromptModalOpen={setIsPaymentPromptModalOpen}
+                                set_isShowModalOpen={set_isShowModalOpen}
+                            />
+                        </section>
+                    ) : (
+                        <SeasonCard season={season} badges={badges} />
+                    )
                 ))}
+
 
                 {(!selectedLeague.seasons || selectedLeague.seasons.length) < 1 ?
                     <article className="flex items-center justify-center text-orange-600 h-[60vh]">
@@ -95,14 +105,17 @@ const LeagueDetails = ({ selectedLeague }) => {
                 setIsPaymentPromptModalOpen={setIsPaymentPromptModalOpen}
                 selectedMethod={selectedMethod} setSelectedMethod={setSelectedMethod}
                 seasons={selectedLeague.seasons}
+                isCoinModalOpen={isCoinModalOpen}
+                setIsCoinModalOpen={setIsCoinModalOpen}
             />
-            <PaymentPrompt
+            {/* <PaymentPrompt
                 isPaymentPromptModalOpen={isPaymentPromptModalOpen}
                 setIsPaymentPromptModalOpen={setIsPaymentPromptModalOpen}
                 setIsPaymentModalOpen={setIsPaymentModalOpen}
-            />
+            /> */}
 
             <LoginPromptModal isShowModalOpen={isShowModalOpen} set_isShowModalOpen={set_isShowModalOpen} />
+            <CoinModal isCoinModalOpen={isCoinModalOpen} setIsCoinModalOpen={setIsCoinModalOpen} />
 
         </article >
     )
@@ -113,7 +126,7 @@ const ActiveSeason = ({ season, setIsPaymentModalOpen, set_isShowModalOpen }) =>
     const { lang, user } = useAuth();
 
 
-    let isUserInSeason = user ? user.seasons.find(userSeason => userSeason?.id === season?.id) : null;
+    let isUserInSeason = user && user.seasons ? user.seasons.find(userSeason => userSeason?.id === season?.id) : null;
     const totalPlayer = season.number_of_player || 20
 
     const formattedStaringDate = convertDateType(JSON.parse(season?.starting_date)[LANG[lang]], lang)
@@ -215,8 +228,8 @@ const SeasonCard = ({ season, badges }) => {
 
     return (<article className="text-white flex items-start justify-center my-8 px-2">
         <section className="w-1/2 ">
-            <h3 className="font-bold text-xl w-full text-left">Season</h3>
-            <p className="text-xs text-left pb-2">{season.season_name[LANG[lang]]} Season</p>
+            <p className="text-xs text-left ">{JSON.parse(season.season_name)[LANG[lang]]}</p>
+            <h3 className="font-bold text-xl w-full text-left pb-2">Season</h3>
 
             {season.top3Player.map(player => (
                 <Players key={player.userData.id} player={player} />
