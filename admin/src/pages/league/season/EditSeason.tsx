@@ -229,21 +229,7 @@ const EditSeason = () => {
     setDatesError(null);
     setStartingDateError(null);
     setEndingDateError(null);
-    console.log(
-      // "VALUES -",
-      // values,
-      // "\nSTAAR -",
-      // startingDate,
-      // "\nSTAAREt -",
-      // startingDateEt,
-      // "\nEND -",
-      // endingDate,
-      // "\nENDet -",
-      // endingDateEt,
-      // "\nDAY -",
-      // playingDates
-      SEASON
-    );
+    console.log(values);
     try {
       values.status = 1;
       updateSeasonHistoryMutation.mutate(
@@ -273,7 +259,7 @@ const EditSeason = () => {
           number_of_player: values.number_of_player,
           playing_day: JSON.stringify([...playingDates]),
           season_price: values.season_price,
-          is_active: 0,
+          is_active: values.status,
         },
         {
           onSuccess: (responseData: any) => {

@@ -80,6 +80,7 @@ const PaymentOptions = ({
                             current_point: parseInt(user.coin) - parseInt(activeSeason.season_price),
                             seasons: [...newSeason]
                         })
+
                         localStorage.setItem("dama-user-seasons",
                             JSON.stringify(
                                 [...newSeason]

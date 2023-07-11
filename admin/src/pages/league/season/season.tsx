@@ -131,10 +131,7 @@ const Season = () => {
           _method: "PATCH",
           id: values.id,
           league_id: values.league_id,
-          season_name: JSON.stringify({
-            english: values.name,
-            amharic: values.nameAm,
-          }),
+          season_name: values.season_name,
           starting_date: values.starting_date,
           ending_date: values.ending_date,
           starting_time: values.starting_time,

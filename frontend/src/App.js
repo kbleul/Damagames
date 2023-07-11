@@ -191,130 +191,119 @@ const App = () => {
 
     localStorage.removeItem("setIsReloading")
 
-    return () => {
-      // localStorage.getItem("dama-user-seasons") && localStorage.setItem(
-      //   "dama_user_data",
-      //   JSON.stringify({
-      //     token,
-      //     user: { ...user, seasons: [...JSON.parse(localStorage.getItem("dama-user-seasons"))] },
-      //   })
-      // );
-      localStorage.removeItem("dama-user-seasons")
-    }
-  }, [user])
 
-  useEffect(() => {
-    let userSeasons = localStorage.getItem("dama-user-seasons")
-    if (user && userSeasons) {
-      if (user.seasons) {
-        console.log("here", user.seasons.length, JSON.parse(userSeasons).length)
+    useEffect(() => {
+      let userSeasons = localStorage.getItem("dama-user-seasons")
+      if (user && userSeasons) {
+        if (user.seasons) {
+          console.log("here", user.seasons.length, JSON.parse(userSeasons).length)
 
-        if (user.seasons.length !== JSON.parse(userSeasons).length) {
-          setUser({ ...user, seasons: [...JSON.parse(userSeasons)] })
+          if (user.seasons.length !== JSON.parse(userSeasons).length) {
+            setUser({ ...user, seasons: [...JSON.parse(userSeasons)] })
+          }
         }
       }
-    }
-  }, [fetchedSeasons])
+    }, [fetchedSeasons])
 
-  const HomeComp = () => {
-    return (
-      <>
-        {isInviteModalOpen && <PlayLeagueInvite
-          isInviteModalOpen={isInviteModalOpen}
-          setIsInviteModalOpen={setIsInviteModalOpen}
-          inviteData={inviteData} />}
-
-        {activeSeasons && <LeagueGameIsActiveModal activeSeasons={activeSeasons} setActiveSeasons={setActiveSeasons} />}
-
-        <Routes>
-          <Route path="*" element={<Navigate to="/create-game" />} />
-          <Route path="/create-game" element={<CreateGame />} />
-          <Route path="/new-game" element={<NewGame />} />
-          <Route path="/join-game" element={<JoinGame />} />
-          <Route path="/join-game/:id" element={<JoinGame />} />
-          <Route path="/game" element={<Game />} />
-          <Route path="/game/:id" element={<Game />} />
-          <Route path="/already-joined" element={<AlreadyJoined />} />
-          <Route path="/score-board" element={<ScoreBoard />} />
-          <Route path="/player-board" element={<PlayerBoard />} />
-          <Route
-            path="/profile"
-            element={user && token ? <Profile /> : <Navigate to="/login" />}
-          />
-          <Route path="/join-public" element={<PublicGames />} />
-          <Route path="/new-game-public" element={<NewGamePublic />} />
-          <Route path="/store" element={<Store />} />
-          <Route path="/avatar-history/:id" element={<AvatarHistory />} />
-          <Route path="/payment/success" element={<Success />} />
-
-          <Route path="/league" element={<League />} />
-          <Route path="/league/:id" element={<LeagueHistory
+    const HomeComp = () => {
+      return (
+        <>
+          {isInviteModalOpen && <PlayLeagueInvite
             isInviteModalOpen={isInviteModalOpen}
             setIsInviteModalOpen={setIsInviteModalOpen}
-            setInviteData={setInviteData} />} />
-          <Route path="/league-game/:id" element={<LeagueGame />} />
+            inviteData={inviteData} />}
+
+          {activeSeasons && <LeagueGameIsActiveModal activeSeasons={activeSeasons} setActiveSeasons={setActiveSeasons} />}
+
+          <Routes>
+            <Route path="*" element={<Navigate to="/create-game" />} />
+            <Route path="/create-game" element={<CreateGame />} />
+            <Route path="/new-game" element={<NewGame />} />
+            <Route path="/join-game" element={<JoinGame />} />
+            <Route path="/join-game/:id" element={<JoinGame />} />
+            <Route path="/game" element={<Game />} />
+            <Route path="/game/:id" element={<Game />} />
+            <Route path="/already-joined" element={<AlreadyJoined />} />
+            <Route path="/score-board" element={<ScoreBoard />} />
+            <Route path="/player-board" element={<PlayerBoard />} />
+            <Route
+              path="/profile"
+              element={user && token ? <Profile /> : <Navigate to="/login" />}
+            />
+            <Route path="/join-public" element={<PublicGames />} />
+            <Route path="/new-game-public" element={<NewGamePublic />} />
+            <Route path="/store" element={<Store />} />
+            <Route path="/avatar-history/:id" element={<AvatarHistory />} />
+            <Route path="/payment/success" element={<Success />} />
+
+            <Route path="/league" element={<League />} />
+            <Route path="/league/:id" element={<LeagueHistory
+              isInviteModalOpen={isInviteModalOpen}
+              setIsInviteModalOpen={setIsInviteModalOpen}
+              setInviteData={setInviteData} />} />
+            <Route path="/league-game/:id" element={<LeagueGame />} />
 
 
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="*" element={<CreateGame />} />
-        </Routes>
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="*" element={<CreateGame />} />
+          </Routes>
+        </>
+      );
+    };
+
+    const AuthComp = () => {
+      return (
+        <>
+          <Routes>
+            <Route path="" element={<Navigate to="/create-game" />} />
+            <Route path="/create-game" element={<CreateGame />} />
+            <Route path="/new-game" element={<NewGame />} />
+            <Route path="/join-game" element={<JoinGame />} />
+            <Route path="/join-game/:id" element={<JoinGame />} />
+            <Route path="/game" element={<Game />} />
+            <Route path="/game/:id" element={<Game />} />
+            <Route path="/already-joined" element={<AlreadyJoined />} />
+            <Route path="/score-board" element={<ScoreBoard />} />
+            <Route path="/player-board" element={<PlayerBoard />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/join-public" element={<PublicGames />} />
+            <Route path="/new-game-public" element={<NewGamePublic />} />
+            <Route path="/store" element={<Store />} />
+            <Route path="/avatar-history/:id" element={<AvatarHistory />} />
+
+            <Route path="/league" element={<League />} />
+            <Route path="/league/:id" element={<LeagueHistory
+              isInviteModalOpen={isInviteModalOpen}
+              setIsInviteModalOpen={setIsInviteModalOpen}
+              setInviteData={setInviteData} />} />
+
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="*" element={<Navigate to="/create-game" />} />
+          </Routes>
+        </>
+      );
+    };
+    function RoutComp() {
+      if (token && user) {
+        return <HomeComp />;
+      } else {
+        return <AuthComp />;
+      }
+    }
+    return (
+      <>
+        {checked ? (
+          <Suspense fallback={<SplashScreen />}>
+            <ToastContainer />
+            <RoutComp />
+          </Suspense>
+        ) : (
+          <SplashScreen />
+        )}
       </>
     );
   };
 
-  const AuthComp = () => {
-    return (
-      <>
-        <Routes>
-          <Route path="" element={<Navigate to="/create-game" />} />
-          <Route path="/create-game" element={<CreateGame />} />
-          <Route path="/new-game" element={<NewGame />} />
-          <Route path="/join-game" element={<JoinGame />} />
-          <Route path="/join-game/:id" element={<JoinGame />} />
-          <Route path="/game" element={<Game />} />
-          <Route path="/game/:id" element={<Game />} />
-          <Route path="/already-joined" element={<AlreadyJoined />} />
-          <Route path="/score-board" element={<ScoreBoard />} />
-          <Route path="/player-board" element={<PlayerBoard />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/join-public" element={<PublicGames />} />
-          <Route path="/new-game-public" element={<NewGamePublic />} />
-          <Route path="/store" element={<Store />} />
-          <Route path="/avatar-history/:id" element={<AvatarHistory />} />
-
-          <Route path="/league" element={<League />} />
-          <Route path="/league/:id" element={<LeagueHistory
-            isInviteModalOpen={isInviteModalOpen}
-            setIsInviteModalOpen={setIsInviteModalOpen}
-            setInviteData={setInviteData} />} />
-
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="*" element={<Navigate to="/create-game" />} />
-        </Routes>
-      </>
-    );
-  };
-  function RoutComp() {
-    if (token && user) {
-      return <HomeComp />;
-    } else {
-      return <AuthComp />;
-    }
-  }
-  return (
-    <>
-      {checked ? (
-        <Suspense fallback={<SplashScreen />}>
-          <ToastContainer />
-          <RoutComp />
-        </Suspense>
-      ) : (
-        <SplashScreen />
-      )}
-    </>
-  );
-};
-
-export default App;
+  export default App;
