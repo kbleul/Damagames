@@ -138,7 +138,7 @@ const League = () => {
                 <p className="text-2xl ml-[32%] md:ml-[40%] w-3/5  text-left px-1">League</p>
             </section>
 
-            {leagues.length === 0 && <section className="h-[80vh] w-full flex flex-col items-center justify-center">
+            {!error && !isLoading && leagues.length === 0 && <section className="h-[80vh] w-full flex flex-col items-center justify-center">
                 <p className="text-orange-500 fold-bold text-center">No leagues yet</p>
 
             </section>}

@@ -57,6 +57,8 @@ const CreateSeason = () => {
   const [playingDates, setPlayingDates] = useState<string[]>([]);
   const [datesError, setDatesError] = useState<string | null>(null);
 
+  const [startingTime, setStartingTime] = useState("");
+
   const headers = {
     "Content-Type": "multipart/form-data",
     Accept: "multipart/form-data",
@@ -68,7 +70,7 @@ const CreateSeason = () => {
     nameAm: Yup.string().required("Amharic name is required"),
     number_of_player: Yup.number().required("Number of players is required"),
     // is_active: Yup.boolean().required("Please select an option for isActive"),
-    starting_time: Yup.date()
+    starting_time: Yup.string()
       .transform((value, originalValue) => {
         const time = originalValue.split(":");
         const date = new Date();
@@ -118,7 +120,7 @@ const CreateSeason = () => {
     name: "",
     nameAm: "",
     number_of_player: null,
-    starting_time: "",
+    // starting_time: "",
     ending_time: "",
     starting_time_et: "",
     ending_time_et: "",
@@ -159,20 +161,6 @@ const CreateSeason = () => {
     setStartingDateError(null);
     setEndingDateError(null);
 
-    // console.log(
-    //   "VALUES -",
-    //   values,
-    //   "\nSTAAR -",
-    //   startingDate,
-    //   "\nSTAAREt -",
-    //   startingDateEt,
-    //   "\nEND -",
-    //   endingDate,
-    //   "\nENDet -",
-    //   endingDateEt,
-    //   "\nDAY -",
-    //   playingDates
-    // );
     try {
       values.status = 1;
 
@@ -192,7 +180,7 @@ const CreateSeason = () => {
             amharic: endingDateEt,
           }),
           starting_time: JSON.stringify({
-            english: values.starting_time,
+            english: startingTime,
             amharic: values.starting_time_et,
           }),
           ending_time: JSON.stringify({
@@ -227,6 +215,31 @@ const CreateSeason = () => {
       // On autofill we get a stringified value.
       typeof value === "string" ? value.split(",") : value
     );
+  };
+
+  const handleEthiopianTimeChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const ethiopianTimeString = event.target.value;
+    // setEthiopianTime(ethiopianTimeString);
+
+    const ethiopianTimeParts = ethiopianTimeString.split(":");
+    const ethiopianDate = new Date();
+    ethiopianDate.setHours(Number(ethiopianTimeParts[0]));
+    ethiopianDate.setMinutes(Number(ethiopianTimeParts[1]));
+
+    const usTimezoneOffset = 7; // Example offset for US timezone (adjust as needed)
+    const usDate = new Date(
+      ethiopianDate.getTime() - usTimezoneOffset * 60 * 60 * 1000
+    );
+
+    const usTimeString = `${usDate
+      .getHours()
+      .toString()
+      .padStart(2, "0")}:${usDate.getMinutes().toString().padStart(2, "0")}`;
+    // setUsTime(usTimeString);
+    console.log(usTimeString);
+    setStartingTime(usTimeString);
   };
 
   return (
@@ -383,19 +396,20 @@ const CreateSeason = () => {
                   <span className="font-medium text-xs text-gray-color capitalize ">
                     Starting Time
                   </span>
-                  <Field
-                    as={"input"}
-                    name="starting_time"
-                    type="time"
+                  <input
+                    // name="starting_time"
+                    type="text"
+                    value={startingTime}
+                    disabled={true}
                     className="w-full p-[6px]  focus:ring-2 ring-blue-500 rounded-sm border border-gray-300 focus:outline-none ring-0"
                   />
-                  {errors.starting_time &&
+                  {/* {errors.starting_time &&
                   touched.starting_time &&
                   typeof errors.starting_time === "string" ? (
                     <p className="text-[13px] text-red-500">
                       {errors.starting_time}
                     </p>
-                  ) : null}
+                  ) : null} */}
                 </div>
 
                 <div className="w-2/5 flex flex-col items-start space-y-1">
@@ -427,6 +441,10 @@ const CreateSeason = () => {
                     as={"input"}
                     name="starting_time_et"
                     type="time"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      handleEthiopianTimeChange(e);
+                      handleChange(e);
+                    }}
                     className="w-full p-[6px]  focus:ring-2 ring-blue-500 rounded-sm border border-gray-300 focus:outline-none ring-0"
                   />
                   {errors.starting_time_et &&
