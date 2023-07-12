@@ -116,6 +116,13 @@ const EditSeason = () => {
   );
   const [endingDateError, setEndingDateError] = useState<string | null>(null);
 
+  const [startingTime, setStartingTime] = useState(
+    JSON.parse(SEASON.starting_time).english
+  );
+  const [endingTime, setEndingTime] = useState(
+    JSON.parse(SEASON.ending_time).english
+  );
+
   const headers = {
     "Content-Type": "multipart/form-data",
     Accept: "multipart/form-data",
@@ -218,7 +225,9 @@ const EditSeason = () => {
     if (
       playingDates.length === 0 ||
       startingDateEt === "" ||
-      endingDateEt === ""
+      endingDateEt === "" ||
+      startingTime === "" ||
+      endingTime === ""
     ) {
       playingDates.length === 0 && setDatesError("Pick atleast one date");
       startingDateEt === "" &&
@@ -249,11 +258,11 @@ const EditSeason = () => {
             amharic: endingDateEt,
           }),
           starting_time: JSON.stringify({
-            english: values.starting_time,
+            english: startingTime.split(" ")[0],
             amharic: values.starting_time_et,
           }),
           ending_time: JSON.stringify({
-            english: values.ending_time,
+            english: endingTime.split(" ")[0],
             amharic: values.ending_time_et,
           }),
           number_of_player: values.number_of_player,
@@ -283,6 +292,36 @@ const EditSeason = () => {
       // On autofill we get a stringified value.
       typeof value === "string" ? value.split(",") : value
     );
+  };
+
+  const handleEthiopianTimeChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    type: string
+  ) => {
+    const ethiopianTimeString = event.target.value;
+
+    const ethiopianTimeParts = ethiopianTimeString.split(":");
+    const ethiopianDate = new Date();
+    ethiopianDate.setHours(Number(ethiopianTimeParts[0]));
+    ethiopianDate.setMinutes(Number(ethiopianTimeParts[1]));
+
+    const usTimezoneOffset = 7; // Example offset for US timezone (adjust as needed)
+    const usDate = new Date(
+      ethiopianDate.getTime() - usTimezoneOffset * 60 * 60 * 1000
+    );
+
+    const usHours = usDate.getHours();
+    const usMinutes = usDate.getMinutes();
+    const usTimeString = `${(usHours % 12 === 0 ? 12 : usHours % 12)
+      .toString()
+      .padStart(2, "0")}:${usMinutes.toString().padStart(2, "0")} ${
+      usHours >= 12 ? "PM" : "AM"
+    }`;
+    // setUsTime(usTimeString);
+    console.log(usTimeString);
+    type === "start"
+      ? setStartingTime(usTimeString)
+      : setEndingTime(usTimeString);
   };
 
   return (
@@ -437,55 +476,19 @@ const EditSeason = () => {
 
             <article className="w-full border py-8">
               <h2 className="text-center w-full pb-4">Playing Time</h2>
-              <section className=" w-full flex items-center justify-evenly">
-                <div className="w-2/5 flex flex-col items-start space-y-1">
-                  <span className="font-medium text-xs text-gray-color capitalize ">
-                    Starting Time
-                  </span>
-                  <Field
-                    as={"input"}
-                    name="starting_time"
-                    type="time"
-                    className="w-full p-[6px]  focus:ring-2 ring-blue-500 rounded-sm border border-gray-300 focus:outline-none ring-0"
-                  />
-                  {errors.starting_time &&
-                  touched.starting_time &&
-                  typeof errors.starting_time === "string" ? (
-                    <p className="text-[13px] text-red-500">
-                      {errors.starting_time}
-                    </p>
-                  ) : null}
-                </div>
-
-                <div className="w-2/5 flex flex-col items-start space-y-1">
-                  <span className="font-medium text-xs text-gray-color capitalize ">
-                    Ending Time
-                  </span>
-                  <Field
-                    as={"input"}
-                    name="ending_time"
-                    type="time"
-                    className="w-full p-[6px]  focus:ring-2 ring-blue-500 rounded-sm border border-gray-300 focus:outline-none ring-0"
-                  />
-                  {errors.ending_time &&
-                  touched.ending_time &&
-                  typeof errors.ending_time === "string" ? (
-                    <p className="text-[13px] text-red-500">
-                      {errors.ending_time}
-                    </p>
-                  ) : null}
-                </div>
-              </section>
-
-              <section className=" w-full flex items-center justify-evenly pt-8">
+              <section className=" w-full flex items-center justify-evenly ">
                 <div className="w-2/5 flex flex-col items-start space-y-1 ">
                   <span className="font-medium text-xs text-gray-color capitalize ">
-                    From(Ethiopian Time)
+                    Starting Time(Ethiopian Time)
                   </span>
                   <Field
                     as={"input"}
                     name="starting_time_et"
                     type="time"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      handleEthiopianTimeChange(e, "start");
+                      handleChange(e);
+                    }}
                     className="w-full p-[6px]  focus:ring-2 ring-blue-500 rounded-sm border border-gray-300 focus:outline-none ring-0"
                   />
                   {errors.starting_time_et &&
@@ -498,12 +501,16 @@ const EditSeason = () => {
                 </div>
                 <div className="w-2/5 flex flex-col items-start space-y-1">
                   <span className="font-medium text-xs text-gray-color capitalize ">
-                    To(Ethiopian Time)
+                    Ending Time(Ethiopian Time)
                   </span>
                   <Field
                     as={"input"}
                     name="ending_time_et"
                     type="time"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      handleEthiopianTimeChange(e, "end");
+                      handleChange(e);
+                    }}
                     className="w-full p-[6px]  focus:ring-2 ring-blue-500 rounded-sm border border-gray-300 focus:outline-none ring-0"
                   />
                   {errors.ending_time_et &&
@@ -513,6 +520,41 @@ const EditSeason = () => {
                       {errors.ending_time_et}
                     </p>
                   ) : null}
+                </div>
+              </section>
+              <section className=" w-full flex items-center justify-evenly ">
+                <div className="w-2/5 flex flex-col items-start space-y-1">
+                  <span className="font-medium text-xs text-gray-color capitalize ">
+                    Starting Time(US)
+                  </span>
+                  <input
+                    type="text"
+                    value={startingTime}
+                    disabled={true}
+                    className="w-full p-[6px]  focus:ring-2 ring-blue-500 rounded-sm border border-gray-300 focus:outline-none ring-0"
+                  />
+                  {startingTime === "" && (
+                    <p className="text-sm text-red-500 mx-2 ">
+                      Starting date is required
+                    </p>
+                  )}
+                </div>
+
+                <div className="w-2/5 flex flex-col items-start space-y-1">
+                  <span className="font-medium text-xs text-gray-color capitalize ">
+                    Ending Time(US)
+                  </span>
+                  <input
+                    value={endingTime}
+                    type="text"
+                    disabled={true}
+                    className="w-full p-[6px]  focus:ring-2 ring-blue-500 rounded-sm border border-gray-300 focus:outline-none ring-0"
+                  />
+                  {endingTime === "" && (
+                    <p className="text-sm text-red-500 mx-2 ">
+                      Ending date is required
+                    </p>
+                  )}
                 </div>
               </section>
             </article>
