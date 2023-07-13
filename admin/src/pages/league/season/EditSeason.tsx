@@ -218,8 +218,7 @@ const EditSeason = () => {
     return (
       (hour < 11 ? "0" + hour : hour) +
       ":" +
-      (minute < 10 ? "0" + minute : minute) +
-      ":00"
+      (minute < 10 ? "0" + minute : minute)
     );
   }
 
