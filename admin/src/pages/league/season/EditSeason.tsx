@@ -44,7 +44,6 @@ const formatTime = (timeString: string) => {
     formattedTime = `${formattedHours}:${minutes}`;
   }
   // Assign the formatted time to the input field
-
   return formattedTime;
 };
 
@@ -57,11 +56,11 @@ const parseDate = (dateString: string) => {
 
   const formattedDate = new Date(year, month - 1, day + 1);
 
-  console.log(dateString, formattedDate);
   return formattedDate;
 };
 
 const formatDate = (dateString: string) => {
+  console.log("ee");
   // Split the date string into day, month, and year components
   const [day, month, year] = dateString.split("-");
 
@@ -74,7 +73,7 @@ const formatDate = (dateString: string) => {
 
   // Get the formatted date string in YYYY-MM-DD format
   const formattedDate = dateObject.toISOString().split("T")[0];
-  // console.log(dateString, formattedDate);
+  console.log(dateString, formattedDate);
   return formattedDate;
 };
 
@@ -83,26 +82,23 @@ const EditSeason = () => {
   const SEASON = location.state?.season;
   const { token } = useAuth();
   const navigate = useNavigate();
-
+  console.log(SEASON);
   const [playingDates, setPlayingDates] = useState<string[]>(
     SEASON.playing_day ? [...JSON.parse(SEASON.playing_day)] : []
   );
   const [datesError, setDatesError] = useState<string | null>(null);
-  // console.log(formatDate(JSON.parse(SEASON.starting_date).english));
 
   const [startingDateStr, setStartingDateStr] = useState(
-    parseDate(JSON.parse(SEASON.starting_date).english)
-      .toISOString()
-      .slice(0, 10)
+    JSON.parse(SEASON.starting_date).english
   );
   const [endingDateStr, setEndingDateStr] = useState(
-    parseDate(JSON.parse(SEASON.ending_date).english).toISOString().slice(0, 10)
+    JSON.parse(SEASON.ending_date).english
   );
   const [startingDate, setStartingDate] = useState(
     formatDate(JSON.parse(SEASON.starting_date).english)
   );
   const [endingDate, setEndingDate] = useState(
-    JSON.parse(SEASON.ending_date).english
+    formatDate(JSON.parse(SEASON.ending_date).english)
   );
   const [startingDateEt, setStartingDateEt] = useState(
     JSON.parse(SEASON.starting_date).amharic
@@ -157,8 +153,6 @@ const EditSeason = () => {
     // starting_date_et: Yup.string().required(
     //   "Ethiopian starting date is required"
     // ),
-    ending_date_et: Yup.string().required("Ethiopian ending date is required"),
-
     playing_day: Yup.array()
       .of(
         Yup.string().oneOf([
@@ -174,6 +168,9 @@ const EditSeason = () => {
       .min(1, "At least one valid day name is required in the array"),
     coin_amount: Yup.number().required("Point is required"),
     season_price: Yup.number().required("Season price is required"),
+    min_no_of_player: Yup.number().required(
+      "Minimum number of players is required"
+    ),
   });
 
   const initialValues = {
@@ -202,10 +199,9 @@ const EditSeason = () => {
     ending_date: parseDate(JSON.parse(SEASON.ending_date).english)
       .toISOString()
       .slice(0, 10),
-    starting_date_et: formatDate(JSON.parse(SEASON.starting_date).amharic),
-    ending_date_et: formatDate(JSON.parse(SEASON.ending_date).amharic),
     coin_amount: 0,
     season_price: parseInt(SEASON.season_price),
+    min_no_of_player: parseInt(SEASON.min_no_of_player),
   };
 
   const updateSeasonHistoryMutation = useMutation(
@@ -221,6 +217,7 @@ const EditSeason = () => {
       retry: false,
     }
   );
+
   const updateSeasonSubmitHandler = async (values: any) => {
     if (
       playingDates.length === 0 ||
@@ -269,6 +266,7 @@ const EditSeason = () => {
           playing_day: JSON.stringify([...playingDates]),
           season_price: values.season_price,
           is_active: values.status,
+          min_no_of_player: values.min_no_of_player,
         },
         {
           onSuccess: (responseData: any) => {
@@ -305,23 +303,21 @@ const EditSeason = () => {
     ethiopianDate.setHours(Number(ethiopianTimeParts[0]));
     ethiopianDate.setMinutes(Number(ethiopianTimeParts[1]));
 
-    const usTimezoneOffset = 7; // Example offset for US timezone (adjust as needed)
-    const usDate = new Date(
-      ethiopianDate.getTime() - usTimezoneOffset * 60 * 60 * 1000
+    const gmtOffset = 3; // Example offset for US timezone (adjust as needed)
+    const gmtDate = new Date(
+      ethiopianDate.getTime() - gmtOffset * 60 * 60 * 1000
     );
 
-    const usHours = usDate.getHours();
-    const usMinutes = usDate.getMinutes();
-    const usTimeString = `${(usHours % 12 === 0 ? 12 : usHours % 12)
+    const gmtHours = gmtDate.getHours();
+    const gmtMinutes = gmtDate.getMinutes();
+    const gmtTimeString = `${gmtHours.toString().padStart(2, "0")}:${gmtMinutes
       .toString()
-      .padStart(2, "0")}:${usMinutes.toString().padStart(2, "0")} ${
-      usHours >= 12 ? "PM" : "AM"
-    }`;
-    // setUsTime(usTimeString);
-    console.log(usTimeString);
+      .padStart(2, "0")}`;
+    // setUsTime(gmtTimeString );
+    console.log("acra", gmtTimeString);
     type === "start"
-      ? setStartingTime(usTimeString)
-      : setEndingTime(usTimeString);
+      ? setStartingTime(gmtTimeString)
+      : setEndingTime(gmtTimeString);
   };
 
   return (
@@ -522,7 +518,7 @@ const EditSeason = () => {
                   ) : null}
                 </div>
               </section>
-              <section className=" w-full flex items-center justify-evenly ">
+              <section className=" w-full flex items-center justify-evenly mt-6">
                 <div className="w-2/5 flex flex-col items-start space-y-1">
                   <span className="font-medium text-xs text-gray-color capitalize ">
                     Starting Time(US)
@@ -560,7 +556,7 @@ const EditSeason = () => {
             </article>
 
             <article className="w-full border py-8 flex items-center justify-evenly">
-              <div className="w-2/5 flex flex-col items-start space-y-1">
+              <div className="w-1/5 flex flex-col items-start space-y-1">
                 <span className="font-medium text-xs text-gray-color capitalize ">
                   Coins
                 </span>
@@ -578,9 +574,9 @@ const EditSeason = () => {
                 ) : null}
               </div>
 
-              <div className="w-2/5 flex flex-col items-start space-y-1">
+              <div className="w-1/5 flex flex-col items-start space-y-1">
                 <span className="font-medium text-xs text-gray-color capitalize ">
-                  Number of Players
+                  Total No. of Players
                 </span>
                 <Field
                   as={"input"}
@@ -592,6 +588,24 @@ const EditSeason = () => {
                 typeof errors.number_of_player === "string" ? (
                   <p className="text-[13px] text-red-500">
                     {errors.number_of_player}
+                  </p>
+                ) : null}
+              </div>
+
+              <div className="w-1/5 flex flex-col items-start space-y-1">
+                <span className="font-medium text-xs text-gray-color capitalize ">
+                  Minimum No. of Players
+                </span>
+                <Field
+                  as={"input"}
+                  name="min_no_of_player"
+                  className="w-full p-[6px]  focus:ring-2 ring-blue-500 rounded-sm border border-gray-300 focus:outline-none ring-0"
+                />
+                {errors.min_no_of_player &&
+                touched.min_no_of_player &&
+                typeof errors.min_no_of_player === "string" ? (
+                  <p className="text-[13px] text-red-500">
+                    {errors.min_no_of_player}
                   </p>
                 ) : null}
               </div>

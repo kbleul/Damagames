@@ -69,7 +69,8 @@ const LeagueHistory = ({ isInviteModalOpen, setIsInviteModalOpen, setInviteData 
                 setIsLoading(false)
 
                 checkUserInSeason(res?.data?.data?.users)
-                setIsGameTime(res?.data?.data?.is_active_season)
+                setIsGameTime((res?.data?.data?.is_active_season
+                    && res?.data?.data?.is_game_time) ? true : false)
             },
             onError: (err) => {
                 setError(err.message)

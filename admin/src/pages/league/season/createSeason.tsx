@@ -58,6 +58,7 @@ const CreateSeason = () => {
   const [datesError, setDatesError] = useState<string | null>(null);
 
   const [startingTime, setStartingTime] = useState("");
+  const [endingTime, setEndingTime] = useState("");
 
   const headers = {
     "Content-Type": "multipart/form-data",
@@ -69,32 +70,6 @@ const CreateSeason = () => {
     name: Yup.string().required("English name is required"),
     nameAm: Yup.string().required("Amharic name is required"),
     number_of_player: Yup.number().required("Number of players is required"),
-    // is_active: Yup.boolean().required("Please select an option for isActive"),
-    starting_time: Yup.string()
-      .transform((value, originalValue) => {
-        const time = originalValue.split(":");
-        const date = new Date();
-        date.setHours(Number(time[0]));
-        date.setMinutes(Number(time[1]));
-        date.setSeconds(0);
-        return date;
-      })
-      .required("Starting time is required"),
-    ending_time: Yup.date()
-      .transform((value, originalValue) => {
-        const time = originalValue.split(":");
-        const date = new Date();
-        date.setHours(Number(time[0]));
-        date.setMinutes(Number(time[1]));
-        date.setSeconds(0);
-        return date;
-      })
-      .required("Ending time is required"),
-    // starting_date_et: Yup.string().required(
-    //   "Ethiopian starting date is required"
-    // ),
-    // ending_date_et: Yup.string().required("Ethiopian ending date is required"),
-
     starting_time_et: Yup.string().required(
       "Ethiopian starting time is required"
     ),
@@ -114,19 +89,45 @@ const CreateSeason = () => {
       .min(1, "At least one valid day name is required in the array"),
     coin_amount: Yup.number().required("Point is required"),
     season_price: Yup.number().required("Season price is required"),
+    min_no_of_player: Yup.number().required(
+      "Minimum number of players is required"
+    ),
   });
 
   const initialValues = {
     name: "",
     nameAm: "",
     number_of_player: null,
-    // starting_time: "",
-    ending_time: "",
     starting_time_et: "",
     ending_time_et: "",
     coin_amount: 0,
     season_price: null,
+    min_no_of_player: 5,
   };
+
+  function convertTime(timeString: string) {
+    var time = timeString.split(":");
+    var hour = parseInt(time[0]);
+    var minute = parseInt(time[1]);
+
+    if (hour > 12) {
+      hour -= 12;
+    } else if (hour === 0) {
+      hour = 12;
+    }
+
+    return (
+      (hour < 11 ? "0" + hour : hour) +
+      ":" +
+      (minute < 10 ? "0" + minute : minute) +
+      ":00"
+    );
+  }
+
+  function convertDate(date: string) {
+    const dateArr = date.split("-");
+    return dateArr[2] + "-" + dateArr[1] + "-" + dateArr[0];
+  }
 
   const createSeasonHistoryMutation = useMutation(
     async (newData: any) =>
@@ -157,13 +158,60 @@ const CreateSeason = () => {
       return;
     }
 
+    if (parseInt(values.number_of_player) < parseInt(values.min_no_of_player)) {
+      alert(
+        "Total number of player has to be less than minimum number of players"
+      );
+
+      return;
+    }
     setDatesError(null);
     setStartingDateError(null);
     setEndingDateError(null);
 
+    // console.log(values.ending_time_et, convertTime(values.ending_time_et));
+    const startingTimeEt = convertTime(values.starting_time_et);
+    const endingTimeEt = convertTime(values.ending_time_et);
+
+    const startingDateEng = convertDate(startingDate);
+    const endingDateEng = convertDate(endingDate);
+    const startingDateET = convertDate(startingDateEt);
+    const endingDateET = convertDate(endingDateEt);
+
+    console.log(
+      JSON.stringify({
+        english: values.name,
+        amharic: values.nameAm,
+      }),
+      "\nstarting",
+      JSON.stringify({
+        english: startingDateEng,
+        amharic: startingDateET,
+      }),
+      "\nending",
+      JSON.stringify({
+        english: endingDateEng,
+        amharic: endingDateET,
+      }),
+      "\nstartingET",
+      JSON.stringify({
+        english: startingTime,
+        amharic: startingTimeEt,
+      }),
+      "\nendingET",
+      JSON.stringify({
+        english: endingTime,
+        amharic: endingTimeEt,
+      }),
+      values.number_of_player,
+      JSON.stringify([...playingDates]),
+      values.season_price,
+      0,
+      values.min_no_of_player
+    );
+
     try {
       values.status = 1;
-
       createSeasonHistoryMutation.mutate(
         {
           league_id: leagueId,
@@ -172,25 +220,26 @@ const CreateSeason = () => {
             amharic: values.nameAm,
           }),
           starting_date: JSON.stringify({
-            english: startingDate,
-            amharic: startingDateEt,
+            english: startingDateEng,
+            amharic: startingDateET,
           }),
           ending_date: JSON.stringify({
-            english: endingDate,
-            amharic: endingDateEt,
+            english: endingDateEng,
+            amharic: endingDateET,
           }),
           starting_time: JSON.stringify({
-            english: startingTime,
-            amharic: values.starting_time_et,
+            english: startingTime + ":00",
+            amharic: startingTimeEt,
           }),
           ending_time: JSON.stringify({
-            english: values.ending_time,
-            amharic: values.ending_time_et,
+            english: endingTime + ":00",
+            amharic: endingTimeEt,
           }),
           number_of_player: values.number_of_player,
           playing_day: JSON.stringify([...playingDates]),
           season_price: values.season_price,
           is_active: 0,
+          min_no_of_player: values.min_no_of_player,
         },
         {
           onSuccess: (responseData: any) => {
@@ -218,35 +267,38 @@ const CreateSeason = () => {
   };
 
   const handleEthiopianTimeChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
+    type: string
   ) => {
     const ethiopianTimeString = event.target.value;
-    // setEthiopianTime(ethiopianTimeString);
 
     const ethiopianTimeParts = ethiopianTimeString.split(":");
     const ethiopianDate = new Date();
     ethiopianDate.setHours(Number(ethiopianTimeParts[0]));
     ethiopianDate.setMinutes(Number(ethiopianTimeParts[1]));
 
-    const usTimezoneOffset = 7; // Example offset for US timezone (adjust as needed)
-    const usDate = new Date(
-      ethiopianDate.getTime() - usTimezoneOffset * 60 * 60 * 1000
+    const gmtOffset = 3; // Example offset for US timezone (adjust as needed)
+    const gmtDate = new Date(
+      ethiopianDate.getTime() - gmtOffset * 60 * 60 * 1000
     );
 
-    const usTimeString = `${usDate
-      .getHours()
+    const gmtHours = gmtDate.getHours();
+    const gmtMinutes = gmtDate.getMinutes();
+    const gmtTimeString = `${gmtHours.toString().padStart(2, "0")}:${gmtMinutes
       .toString()
-      .padStart(2, "0")}:${usDate.getMinutes().toString().padStart(2, "0")}`;
-    // setUsTime(usTimeString);
-    console.log(usTimeString);
-    setStartingTime(usTimeString);
+      .padStart(2, "0")}`;
+    // setUsTime(gmtTimeString );
+    console.log("acra", gmtTimeString);
+    type === "start"
+      ? setStartingTime(gmtTimeString)
+      : setEndingTime(gmtTimeString);
   };
 
   return (
     <div className="bg-white p-3 rounded-md">
       <Formik
         initialValues={initialValues}
-        validationSchema={validationSchema}
+        // validationSchema={validationSchema}
         onSubmit={createSeasonSubmitHandler}
       >
         {({
@@ -391,58 +443,18 @@ const CreateSeason = () => {
 
             <article className="w-full border py-8">
               <h2 className="text-center w-full pb-4">Playing Time</h2>
+
               <section className=" w-full flex items-center justify-evenly">
-                <div className="w-2/5 flex flex-col items-start space-y-1">
-                  <span className="font-medium text-xs text-gray-color capitalize ">
-                    Starting Time
-                  </span>
-                  <input
-                    // name="starting_time"
-                    type="text"
-                    value={startingTime}
-                    disabled={true}
-                    className="w-full p-[6px]  focus:ring-2 ring-blue-500 rounded-sm border border-gray-300 focus:outline-none ring-0"
-                  />
-                  {/* {errors.starting_time &&
-                  touched.starting_time &&
-                  typeof errors.starting_time === "string" ? (
-                    <p className="text-[13px] text-red-500">
-                      {errors.starting_time}
-                    </p>
-                  ) : null} */}
-                </div>
-
-                <div className="w-2/5 flex flex-col items-start space-y-1">
-                  <span className="font-medium text-xs text-gray-color capitalize ">
-                    Ending Time
-                  </span>
-                  <Field
-                    as={"input"}
-                    name="ending_time"
-                    type="time"
-                    className="w-full p-[6px]  focus:ring-2 ring-blue-500 rounded-sm border border-gray-300 focus:outline-none ring-0"
-                  />
-                  {errors.ending_time &&
-                  touched.ending_time &&
-                  typeof errors.ending_time === "string" ? (
-                    <p className="text-[13px] text-red-500">
-                      {errors.ending_time}
-                    </p>
-                  ) : null}
-                </div>
-              </section>
-
-              <section className=" w-full flex items-center justify-evenly pt-8">
                 <div className="w-2/5 flex flex-col items-start space-y-1 ">
                   <span className="font-medium text-xs text-gray-color capitalize ">
-                    From(Ethiopian Time)
+                    Starting Time(Ethiopian Time)
                   </span>
                   <Field
                     as={"input"}
                     name="starting_time_et"
                     type="time"
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      handleEthiopianTimeChange(e);
+                      handleEthiopianTimeChange(e, "start");
                       handleChange(e);
                     }}
                     className="w-full p-[6px]  focus:ring-2 ring-blue-500 rounded-sm border border-gray-300 focus:outline-none ring-0"
@@ -457,12 +469,16 @@ const CreateSeason = () => {
                 </div>
                 <div className="w-2/5 flex flex-col items-start space-y-1">
                   <span className="font-medium text-xs text-gray-color capitalize ">
-                    To(Ethiopian Time)
+                    Ending Time(Ethiopian Time)
                   </span>
                   <Field
                     as={"input"}
                     name="ending_time_et"
                     type="time"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      handleEthiopianTimeChange(e, "end");
+                      handleChange(e);
+                    }}
                     className="w-full p-[6px]  focus:ring-2 ring-blue-500 rounded-sm border border-gray-300 focus:outline-none ring-0"
                   />
                   {errors.ending_time_et &&
@@ -474,10 +490,47 @@ const CreateSeason = () => {
                   ) : null}
                 </div>
               </section>
+              <section className=" w-full flex items-center justify-evenly pt-8">
+                <div className="w-2/5 flex flex-col items-start space-y-1">
+                  <span className="font-medium text-xs text-gray-color capitalize ">
+                    Starting Time
+                  </span>
+                  <input
+                    // name="starting_time"
+                    type="text"
+                    value={startingTime}
+                    disabled={true}
+                    className="w-full p-[6px]  focus:ring-2 ring-blue-500 rounded-sm border border-gray-300 focus:outline-none ring-0"
+                  />
+                  {startingTime === "" && (
+                    <p className="text-sm text-red-500 mx-2 ">
+                      Starting time is required
+                    </p>
+                  )}
+                </div>
+
+                <div className="w-2/5 flex flex-col items-start space-y-1">
+                  <span className="font-medium text-xs text-gray-color capitalize ">
+                    Ending Time
+                  </span>
+                  <input
+                    // name="starting_time"
+                    type="text"
+                    value={endingTime}
+                    disabled={true}
+                    className="w-full p-[6px]  focus:ring-2 ring-blue-500 rounded-sm border border-gray-300 focus:outline-none ring-0"
+                  />
+                  {endingTime === "" && (
+                    <p className="text-sm text-red-500 mx-2 ">
+                      Ending time is required
+                    </p>
+                  )}
+                </div>
+              </section>
             </article>
 
             <article className="w-full border py-8 flex items-center justify-evenly">
-              <div className="w-2/5 flex flex-col items-start space-y-1">
+              <div className="w-1/5 flex flex-col items-start space-y-1">
                 <span className="font-medium text-xs text-gray-color capitalize ">
                   Coins
                 </span>
@@ -495,9 +548,9 @@ const CreateSeason = () => {
                 ) : null}
               </div>
 
-              <div className="w-2/5 flex flex-col items-start space-y-1">
+              <div className="w-1/5 flex flex-col items-start space-y-1">
                 <span className="font-medium text-xs text-gray-color capitalize ">
-                  Number of Players
+                  Total no. of Players
                 </span>
                 <Field
                   as={"input"}
@@ -509,6 +562,24 @@ const CreateSeason = () => {
                 typeof errors.number_of_player === "string" ? (
                   <p className="text-[13px] text-red-500">
                     {errors.number_of_player}
+                  </p>
+                ) : null}
+              </div>
+
+              <div className="w-1/5 flex flex-col items-start space-y-1">
+                <span className="font-medium text-xs text-gray-color capitalize ">
+                  Minimum no. of players
+                </span>
+                <Field
+                  as={"input"}
+                  name="min_no_of_player"
+                  className="w-full p-[6px]  focus:ring-2 ring-blue-500 rounded-sm border border-gray-300 focus:outline-none ring-0"
+                />
+                {errors.min_no_of_player &&
+                touched.min_no_of_player &&
+                typeof errors.min_no_of_player === "string" ? (
+                  <p className="text-[13px] text-red-500">
+                    {errors.min_no_of_player}
                   </p>
                 ) : null}
               </div>

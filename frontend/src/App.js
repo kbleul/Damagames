@@ -164,7 +164,7 @@ const App = () => {
             console.log(seasons)
             seasons.length > 0 && setActiveSeasons([...seasons])
             seasons.forEach((season) => {
-              season.is_active_season && checkInUser(season.id)
+              season.is_active_season && season.is_game_time && checkInUser(season.id)
             })
 
             // login(token, {

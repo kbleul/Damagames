@@ -933,13 +933,13 @@ const LeagueGame = () => {
         if (winnerPlayer) {
             if (winnerPlayer === "player1pieces" || winnerPlayer === "player1moves") {
                 if (playerOneIp) {
-                    nameMutationSubmitHandler(firstPlayer);
+                    winnerMutationSubmitHandler(firstPlayer);
                 }
                 return;
             }
             if (winnerPlayer === "player2pieces" || winnerPlayer === "player2moves") {
                 if (playerTwoIp) {
-                    nameMutationSubmitHandler(secondPlayer);
+                    winnerMutationSubmitHandler(secondPlayer);
                 }
                 return;
             }
@@ -965,7 +965,7 @@ const LeagueGame = () => {
         }
     );
 
-    const nameMutationSubmitHandler = async (values) => {
+    const winnerMutationSubmitHandler = async (values) => {
         try {
             winnerMutation.mutate(
                 {
