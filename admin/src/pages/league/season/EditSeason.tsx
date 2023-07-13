@@ -204,6 +204,30 @@ const EditSeason = () => {
     min_no_of_player: parseInt(SEASON.min_no_of_player),
   };
 
+  function convertTime(timeString: string) {
+    var time = timeString.split(":");
+    var hour = parseInt(time[0]);
+    var minute = parseInt(time[1]);
+
+    if (hour > 12) {
+      hour -= 12;
+    } else if (hour === 0) {
+      hour = 12;
+    }
+
+    return (
+      (hour < 11 ? "0" + hour : hour) +
+      ":" +
+      (minute < 10 ? "0" + minute : minute) +
+      ":00"
+    );
+  }
+
+  function convertDate(date: string) {
+    const dateArr = date.split("-");
+    return dateArr[2] + "-" + dateArr[1] + "-" + dateArr[0];
+  }
+
   const updateSeasonHistoryMutation = useMutation(
     async (newData: any) =>
       await axios.post(
@@ -232,10 +256,27 @@ const EditSeason = () => {
       endingDateEt === "" && setEndingDateError("Ending date is required.");
       return;
     }
+
+    if (parseInt(values.number_of_player) < parseInt(values.min_no_of_player)) {
+      alert(
+        "Total number of player has to be less than minimum number of players"
+      );
+
+      return;
+    }
+
     setDatesError(null);
     setStartingDateError(null);
     setEndingDateError(null);
-    console.log(values);
+
+    const startingTimeEt = convertTime(values.starting_time_et);
+    const endingTimeEt = convertTime(values.ending_time_et);
+
+    const startingDateEng = convertDate(startingDate);
+    const endingDateEng = convertDate(endingDate);
+    const startingDateET = convertDate(startingDateEt);
+    const endingDateET = convertDate(endingDateEt);
+
     try {
       values.status = 1;
       updateSeasonHistoryMutation.mutate(
@@ -247,20 +288,20 @@ const EditSeason = () => {
             amharic: values.nameAm,
           }),
           starting_date: JSON.stringify({
-            english: startingDate,
+            english: startingDateEng,
             amharic: startingDateEt,
           }),
           ending_date: JSON.stringify({
-            english: endingDate,
+            english: endingDateEng,
             amharic: endingDateEt,
           }),
           starting_time: JSON.stringify({
-            english: startingTime.split(" ")[0],
-            amharic: values.starting_time_et,
+            english: startingTime + ":00",
+            amharic: startingTimeEt,
           }),
           ending_time: JSON.stringify({
-            english: endingTime.split(" ")[0],
-            amharic: values.ending_time_et,
+            english: endingTime + ":00",
+            amharic: endingTimeEt,
           }),
           number_of_player: values.number_of_player,
           playing_day: JSON.stringify([...playingDates]),
