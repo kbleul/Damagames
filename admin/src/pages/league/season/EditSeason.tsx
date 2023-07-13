@@ -289,18 +289,18 @@ const EditSeason = () => {
           }),
           starting_date: JSON.stringify({
             english: startingDateEng,
-            amharic: startingDateEt,
+            amharic: startingDateET,
           }),
           ending_date: JSON.stringify({
             english: endingDateEng,
-            amharic: endingDateEt,
+            amharic: endingDateET,
           }),
           starting_time: JSON.stringify({
-            english: startingTime + ":00",
+            english: startingTime,
             amharic: startingTimeEt,
           }),
           ending_time: JSON.stringify({
-            english: endingTime + ":00",
+            english: endingTime,
             amharic: endingTimeEt,
           }),
           number_of_player: values.number_of_player,

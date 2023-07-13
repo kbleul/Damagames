@@ -49,16 +49,16 @@ export const sideBarLinks = [
       },
     ],
   },
-  {
-    title: "User",
-    links: [
-      {
-        name: "profile",
-        link: "profile",
-        icon: <FaUserCog size={20} className=" text-[#bdcadf]" />,
-      },
-    ],
-  },
+  // {
+  //   title: "User",
+  //   links: [
+  //     {
+  //       name: "profile",
+  //       link: "profile",
+  //       icon: <FaUserCog size={20} className=" text-[#bdcadf]" />,
+  //     },
+  //   ],
+  // },
   {
     title: "League",
     links: [
