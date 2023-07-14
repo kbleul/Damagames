@@ -231,7 +231,6 @@ const EditSeason = () => {
 
     const newDate = dateArr[2] + "-" + dateArr[1] + "-" + dateArr[0];
 
-    console.log("date", date, newDate, dateArr[0].length);
     return newDate;
   }
 
