@@ -324,6 +324,7 @@ const League = () => {
     );
   }
 
+  // console.log(leagueData.data.data)
   return (
     <div>
       <div className="flex items-center justify-between pb-3 w-full">
@@ -405,6 +406,12 @@ const League = () => {
       ) : (
         <div className="flex items-center justify-center">
           <PulseLoader color="#FF4C01" />
+        </div>
+      )}
+
+      {leagueData.isFetched && leagues.length === 0 && (
+        <div className="mt-24 text-orange-500 w-full flex items-center justify-center">
+          <p>No leagues yet</p>
         </div>
       )}
     </div>

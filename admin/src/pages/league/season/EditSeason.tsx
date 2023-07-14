@@ -60,9 +60,8 @@ const parseDate = (dateString: string) => {
 };
 
 const formatDate = (dateString: string) => {
-  console.log("ee");
   // Split the date string into day, month, and year components
-  const [day, month, year] = dateString.split("-");
+  const [year, month, day] = dateString.split("-");
 
   // Create a new Date object with the components (Note: month is zero-based)
   const dateObject = new Date(
@@ -73,7 +72,9 @@ const formatDate = (dateString: string) => {
 
   // Get the formatted date string in YYYY-MM-DD format
   const formattedDate = dateObject.toISOString().split("T")[0];
-  console.log(dateString, formattedDate);
+
+  console.log("format", dateString, formattedDate);
+
   return formattedDate;
 };
 
@@ -216,15 +217,22 @@ const EditSeason = () => {
     }
 
     return (
-      (hour < 11 ? "0" + hour : hour) +
+      (hour < 10 ? "0" + hour : hour) +
       ":" +
-      (minute < 10 ? "0" + minute : minute)
+      (minute < 10 ? "0" + minute : minute) +
+      (time.length === 2 && +":00")
     );
   }
 
   function convertDate(date: string) {
     const dateArr = date.split("-");
-    return dateArr[2] + "-" + dateArr[1] + "-" + dateArr[0];
+
+    if (dateArr[0].length === 4) return date;
+
+    const newDate = dateArr[2] + "-" + dateArr[1] + "-" + dateArr[0];
+
+    console.log("date", date, newDate, dateArr[0].length);
+    return newDate;
   }
 
   const updateSeasonHistoryMutation = useMutation(
@@ -353,8 +361,6 @@ const EditSeason = () => {
     const gmtTimeString = `${gmtHours.toString().padStart(2, "0")}:${gmtMinutes
       .toString()
       .padStart(2, "0")}`;
-    // setUsTime(gmtTimeString );
-    console.log("acra", gmtTimeString);
     type === "start"
       ? setStartingTime(gmtTimeString)
       : setEndingTime(gmtTimeString);

@@ -117,7 +117,7 @@ const CreateSeason = () => {
     }
 
     return (
-      (hour < 11 ? "0" + hour : hour) +
+      (hour < 10 ? "0" + hour : hour) +
       ":" +
       (minute < 10 ? "0" + minute : minute) +
       ":00"
