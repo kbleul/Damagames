@@ -73,8 +73,6 @@ const formatDate = (dateString: string) => {
   // Get the formatted date string in YYYY-MM-DD format
   const formattedDate = dateObject.toISOString().split("T")[0];
 
-  console.log("format", dateString, formattedDate);
-
   return formattedDate;
 };
 
@@ -278,7 +276,6 @@ const EditSeason = () => {
     const startingTimeEt = convertTime(values.starting_time_et);
     const endingTimeEt = convertTime(values.ending_time_et);
 
-    console.log("covertedTime", startingTimeEt, endingTimeEt);
     const startingDateEng = convertDate(startingDate);
     const endingDateEng = convertDate(endingDate);
     const startingDateET = convertDate(startingDateEt);
@@ -361,6 +358,8 @@ const EditSeason = () => {
     const gmtTimeString = `${gmtHours.toString().padStart(2, "0")}:${gmtMinutes
       .toString()
       .padStart(2, "0")}`;
+
+    console.log(ethiopianTimeString, gmtTimeString);
     type === "start"
       ? setStartingTime(gmtTimeString)
       : setEndingTime(gmtTimeString);

@@ -178,38 +178,6 @@ const CreateSeason = () => {
     const startingDateET = convertDate(startingDateEt);
     const endingDateET = convertDate(endingDateEt);
 
-    console.log(
-      JSON.stringify({
-        english: values.name,
-        amharic: values.nameAm,
-      }),
-      "\nstarting",
-      JSON.stringify({
-        english: startingDateEng,
-        amharic: startingDateET,
-      }),
-      "\nending",
-      JSON.stringify({
-        english: endingDateEng,
-        amharic: endingDateET,
-      }),
-      "\nstartingET",
-      JSON.stringify({
-        english: startingTime,
-        amharic: startingTimeEt,
-      }),
-      "\nendingET",
-      JSON.stringify({
-        english: endingTime,
-        amharic: endingTimeEt,
-      }),
-      values.number_of_player,
-      JSON.stringify([...playingDates]),
-      values.season_price,
-      0,
-      values.min_no_of_player
-    );
-
     try {
       values.status = 1;
       createSeasonHistoryMutation.mutate(

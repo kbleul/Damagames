@@ -43,22 +43,22 @@ const PlayLeagueInvite = ({ setIsInviteModalOpen, inviteData }) => {
         console.log(values)
         try {
             joinViaCodeMutation.mutate(
-                {},
+                { is_league: true },
                 {
                     onSuccess: (responseData) => {
                         const { id: userId, username, profile_image, game_point, default_board, default_crown } = user
 
-                        // socket.on("leauge-game-started", data => {
-                        //     if (data.gameId && data.seasonId) {
-                        //         setIsInviteModalOpen(false)
-                        //         navigate(`/league-game/${data.gameId}`)
-                        //         localStorage.setItem("seasonId", data.seasonId)
-                        //         console.log("League game started", data)
-                        //         localStorage.setItem("gamePlayers", JSON.stringify({
-                        //             p1: data.playerOne, p2: data.playerTwo
-                        //         }))
-                        //     }
-                        // })
+                        socket.on("leauge-game-started", data => {
+                            if (data.gameId && data.seasonId) {
+                                setIsInviteModalOpen(false)
+                                navigate(`/league-game/${data.gameId}`)
+                                localStorage.setItem("seasonId", data.seasonId)
+                                console.log("League game started", data)
+                                localStorage.setItem("gamePlayers", JSON.stringify({
+                                    p1: data.playerOne, p2: data.playerTwo
+                                }))
+                            }
+                        })
 
                         socket.emit("join-room-league", {
                             gameId: inviteData.gameId,
