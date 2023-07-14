@@ -220,7 +220,7 @@ const EditSeason = () => {
       (hour < 10 ? "0" + hour : hour) +
       ":" +
       (minute < 10 ? "0" + minute : minute) +
-      (time.length === 2 && +":00")
+      (time.length === 2 ? ":00" : "")
     );
   }
 
@@ -279,6 +279,7 @@ const EditSeason = () => {
     const startingTimeEt = convertTime(values.starting_time_et);
     const endingTimeEt = convertTime(values.ending_time_et);
 
+    console.log("covertedTime", startingTimeEt, endingTimeEt);
     const startingDateEng = convertDate(startingDate);
     const endingDateEng = convertDate(endingDate);
     const startingDateET = convertDate(startingDateEt);
