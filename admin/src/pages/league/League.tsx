@@ -126,7 +126,6 @@ const League = () => {
 
   const updateLeagueSubmitHandler = async (values: any) => {
     try {
-      console.log(values);
       updateLeaguHistoryMutation.mutate(
         {
           _method: "patch",
@@ -190,7 +189,6 @@ const League = () => {
 
   function Row(props: { row: ReturnType<any> }) {
     const { row } = props;
-    // console.log(JSON.parse(row.league_name));
 
     let desEn = row.description.english
       ? row.description.english === ""
@@ -305,7 +303,6 @@ const League = () => {
             <button
               disabled={row.seasons.length === 0}
               onClick={() => {
-                console.log(row.seasons);
                 navigate(`/season/${row.id}`, {
                   state: { seasons: row.seasons },
                 });
@@ -324,7 +321,6 @@ const League = () => {
     );
   }
 
-  // console.log(leagueData.data.data)
   return (
     <div>
       <div className="flex items-center justify-between pb-3 w-full">
