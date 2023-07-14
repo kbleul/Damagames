@@ -28,6 +28,10 @@ class SeasonPlayerController extends Controller
         if ($user->seasonPlayers()->where('season_id', $request->season_id)->exists()) {
             return response()->json(["message" => "User already joined this season"], 409);
         }
+
+        if ($season->seasonPlayers()->count() >= $season->number_of_player) {
+            return response()->json(["message" => "This league reach maximum number of player"], 409);
+        }
     
         if (!$user || !$season || $user->current_point < $season->season_price) {
             return response()->json(["message" => "User does not have enough coins to join the season"], 402);
