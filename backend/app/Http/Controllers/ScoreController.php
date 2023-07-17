@@ -55,41 +55,41 @@ class ScoreController extends GameController
      */
     public function store(StoreScoreRequest $request)
     {
-        $game = Game::find($request->game_id);
+        return Game::find($request->game_id);
 
-        if ($game->playerOne == $request->winner) {
-            $winner = $game->playerOne;
-            $loser = $game->playerTwo;
-        } else {
-            $loser = $game->playerOne;
-            $winner = $game->playerTwo;
-        }
+        // if ($game->playerOne == $request->winner) {
+        //     $winner = $game->playerOne;
+        //     $loser = $game->playerTwo;
+        // } else {
+        //     $loser = $game->playerOne;
+        //     $winner = $game->playerTwo;
+        // }
 
-        $bet = Bet::where('game_id', $game->id)->first();
+        // $bet = Bet::where('game_id', $game->id)->first();
 
-        if (!empty($bet)) {
-            $coin = $bet->coin;
-        } else {
-            $coin = 0;
-        }
+        // if (!empty($bet)) {
+        //     $coin = $bet->coin;
+        // } else {
+        //     $coin = 0;
+        // }
 
-        $Winer = User::find($winner);
-        $losser = User::find($loser);
+        // $Winer = User::find($winner);
+        // $losser = User::find($loser);
 
-        $Winer->update([
-            'current_point' => ($Winer->current_point + CoinSetting::first()->winnerCoins) + $coin,
-        ]);
+        // $Winer->update([
+        //     'current_point' => ($Winer->current_point + CoinSetting::first()->winnerCoins) + $coin,
+        // ]);
 
-        $losser->update([
-            'current_point' =>  $losser->current_point - CoinSetting::first()->looserCoins - $coin,
-        ]);
+        // $losser->update([
+        //     'current_point' =>  $losser->current_point - CoinSetting::first()->looserCoins - $coin,
+        // ]);
 
-        return Score::create([
-            'game_id' => $request->game_id,
-            'season_id' => $request->season_id ?? null,
-            'winner' => $winner,
-            'loser' => $loser,
-        ]);
+        // return Score::create([
+        //     'game_id' => $request->game_id,
+        //     'season_id' => $request->season_id ?? null,
+        //     'winner' => $winner,
+        //     'loser' => $winner,
+        // ]);
     }
 
     /**
