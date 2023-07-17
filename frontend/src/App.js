@@ -161,11 +161,19 @@ const App = () => {
           onSuccess: (responseData) => {
             const seasons = responseData?.data?.data
 
+            let activeSeasons = []
+
             console.log(seasons)
             seasons.length > 0 && setActiveSeasons([...seasons])
             seasons.forEach((season) => {
-              season.is_active_season && season.is_game_time && checkInUser(season.id)
+              if (season.is_active_season && season.is_game_time) {
+                checkInUser(season.id)
+                activeSeasons.push(season)
+              }
             })
+
+            activeSeasons.length > 0 && setActiveSeasons([...activeSeasons])
+            activeSeasons = null
 
             // login(token, {
             //   ...user,

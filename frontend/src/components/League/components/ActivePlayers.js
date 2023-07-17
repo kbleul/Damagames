@@ -158,6 +158,8 @@ const ActivePlayers = ({ isGameTime, isInviteModalOpen, setIsInviteModalOpen, se
 
 const ActivePlayersCard = ({ player, badges, seasonId, setInviteErr, rejectedInviteData }) => {
 
+    const navigate = useNavigate()
+
     const { user, token, lang } = useAuth();
     const [isLoading, setIsLoading] = useState(false)
 
@@ -209,6 +211,18 @@ const ActivePlayersCard = ({ player, badges, seasonId, setInviteErr, rejectedInv
                         const { id: userId, username, profile_image, game_point, default_board, default_crown } = user
 
                         const { receiverId } = values
+
+
+                        socket.on("leauge-game-started", data => {
+                            if (data.gameId && data.seasonId) {
+                                navigate(`/league-game/${data.gameId}`)
+                                localStorage.setItem("seasonId", data.seasonId)
+                                console.log("League game started", data)
+                                localStorage.setItem("gamePlayers", JSON.stringify({
+                                    p1: data.playerOne, p2: data.playerTwo
+                                }))
+                            }
+                        })
 
                         socket.emit("join-room-league", {
                             gameId: game,
