@@ -126,7 +126,7 @@ const LeagueGame = () => {
         if (!id) navigate("/create-game");
         localStorage.setItem("dama-sound", true);
 
-        playerOneIp && startGameMutationSubmitHandler()
+        playerTwoIp && startGameMutationSubmitHandler()
 
         return () => {
             localStorage.getItem("seasonId") && localStorage.removeItem("seasonId")

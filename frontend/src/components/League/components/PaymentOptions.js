@@ -5,6 +5,8 @@ import { useAuth } from "../../../context/auth";
 
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import socket from "../../../utils/socket.io";
+
 
 const PAYMENTOPTIONS = [
     {
@@ -69,6 +71,9 @@ const PaymentOptions = ({
                 },
                 {
                     onSuccess: (responseData) => {
+
+                        const { id: userId, username, profile_image, game_point, default_board, default_crown } = user
+
                         localStorage.setItem("setIsReloading", true)
                         console.log(user.seasons)
                         let newSeason = user.seasons ?
@@ -80,6 +85,11 @@ const PaymentOptions = ({
                             current_point: parseInt(user.coin) - parseInt(activeSeason.season_price),
                             seasons: [...newSeason]
                         })
+
+                        socket.emit("checkInLeague", {
+                            seasonId: activeSeason.id,
+                            userData: { id: userId, username, profile_image, game_point, default_board, default_crown }
+                        });
 
                         localStorage.setItem("dama-user-seasons",
                             JSON.stringify(

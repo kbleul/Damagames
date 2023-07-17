@@ -1,13 +1,13 @@
 
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import leagueImgMain from "../../assets/leagueBg.jpg"
 import PlayerCard from "./components/PlayerCard"
 import Nav from "./components/Nav"
 import { useNavigate, useParams } from "react-router-dom"
 import { LEAGUE_CATAGORIES } from "../../utils/data"
 import Matches from "./components/Matches"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 
 import { Circles } from "react-loader-spinner";
@@ -16,6 +16,8 @@ import ActivePlayers from "./components/ActivePlayers"
 
 
 const LeagueHistory = ({ isInviteModalOpen, setIsInviteModalOpen, setInviteData }) => {
+
+    const queryClient = useQueryClient();
 
     const navigate = useNavigate()
     const { id } = useParams()
@@ -51,6 +53,19 @@ const LeagueHistory = ({ isInviteModalOpen, setIsInviteModalOpen, setInviteData 
         Accept: "application/json",
     };
 
+    const onSuccess = data => {
+        setError(null)
+        setLeagues([...data.users])
+        setIsLoading(false)
+
+        checkUserInSeason(data?.users)
+        setIsGameTime(data?.is_game_time ? true : false)
+    }
+
+    const OnError = (err) => {
+        setError(err.message)
+        setIsLoading(false)
+    }
 
     const SeasonData = useQuery(
         ["getSeasonDataApi"],
@@ -59,24 +74,23 @@ const LeagueHistory = ({ isInviteModalOpen, setIsInviteModalOpen, setInviteData 
                 headers,
             }),
         {
-            keepPreviousData: true,
+            keepPreviousData: false,
             refetchOnWindowFocus: false,
-            retry: false,
-            onSuccess: (res) => {
-                console.log(res?.data?.data)
-                setError(null)
-                setLeagues([...res?.data?.data?.users])
-                setIsLoading(false)
-
-                checkUserInSeason(res?.data?.data?.users)
-                setIsGameTime(res?.data?.data?.is_game_time ? true : false)
-            },
-            onError: (err) => {
-                setError(err.message)
-                setIsLoading(false)
-            }
+            retry: true,
+            onSuccess: (res) => onSuccess(res?.data?.data),
+            onError: (err) => OnError(err)
         }
     );
+
+    useEffect(() => {
+        if (active === LEAGUE_CATAGORIES[0]) {
+            queryClient.refetchQueries('getSeasonDataApi').then((res) => {
+                onSuccess(res?.data?.data);
+            }).catch((error) => {
+                OnError(error);
+            });;
+        }
+    }, [active, queryClient, onSuccess, OnError]);
 
 
     return (
