@@ -24,6 +24,8 @@ const ActivePlayers = ({ isGameTime, isInviteModalOpen, setIsInviteModalOpen, se
     const [rejectedInviteData, setRejectedInviteData] = useState(null)
 
     const [activePlayers, setActivePlayers] = useState(null)
+    const [playedActivePlayers, setPlayedActivePlayers] = useState(null)
+
     const [isLoading, setIsLoading] = useState(isGameTime)
     const [error, setError] = useState(null)
 
@@ -40,12 +42,38 @@ const ActivePlayers = ({ isGameTime, isInviteModalOpen, setIsInviteModalOpen, se
                 console.log(data)
                 if (data.error) {
                     setActivePlayers(null);
+                    setPlayedActivePlayers(null)
                     setError("Error fetching active players")
                     return
                 }
 
-                setActivePlayers([...data.activePlayers]);
-                setError(null)
+                let playerSeasons = JSON.parse(localStorage.getItem("dama-user-seasons")).find(season => season.id == id) || null
+                if (!playerSeasons) {
+                    setActivePlayers([...data.activePlayers]);
+                    setPlayedActivePlayers(null)
+                    setError(null)
+                } else {
+                    let played = []
+                    let notPlayed = []
+                    data.activePlayers.forEach(player => {
+                        if (player.id !== user.id) {
+                            playerSeasons.have_played.includes(player.id) ?
+                                played.push(player) : notPlayed.push(player)
+                            // played.push(player)
+                            // notPlayed.push(player)
+                        }
+                    })
+
+                    setActivePlayers([...notPlayed])
+                    setPlayedActivePlayers([...played])
+
+                    console.log("played", notPlayed, played)
+
+                    playerSeasons = played = notPlayed = null
+                }
+
+
+
             });
 
             socket.on('get-reject-league-invite', data => {
@@ -91,6 +119,7 @@ const ActivePlayers = ({ isGameTime, isInviteModalOpen, setIsInviteModalOpen, se
                     userData: { id: userId, username, profile_image, game_point, default_board, default_crown }
                 });
 
+
                 setTimeout(() => {
                     socket.emit("getActiveSeasonPlayers", { seasonId: id });
                 }, 500);
@@ -110,7 +139,7 @@ const ActivePlayers = ({ isGameTime, isInviteModalOpen, setIsInviteModalOpen, se
 
             <article>
 
-                {activePlayers && !isLoading && !inviteErr && !error &&
+                {activePlayers && !isLoading && !inviteErr && !error && !playedActivePlayers &&
                     (activePlayers.length === 0 || (activePlayers.length === 1 && activePlayers[0].id === user?.id))
                     && <section className="h-[70vh] w-full flex flex-col items-center justify-center">
                         <svg className="text-gray-100 w-20 h-36" viewBox="0 0 188 195" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -149,6 +178,15 @@ const ActivePlayers = ({ isGameTime, isInviteModalOpen, setIsInviteModalOpen, se
                         {activePlayers.map((player) =>
                             user.id !== player.id && <ActivePlayersCard key={player.id} player={player} badges={badges} seasonId={id} setInviteErr={setInviteErr} rejectedInviteData={rejectedInviteData} />)}
                     </section>}
+
+
+                {!error && !inviteErr && !isLoading && playedActivePlayers && playedActivePlayers.length > 0 && <section>
+                    <p className=" text-left text-gray-300 w-[95%] ml-[5%] mb-4 font-bold text-sm border-b">Already Played</p>
+                    <section>
+                        {playedActivePlayers.map((player) =>
+                            user.id !== player.id && <ActivePlayersCard key={player.id} player={player} badges={badges} seasonId={id} setInviteErr={setInviteErr} rejectedInviteData={rejectedInviteData} hasPlayed={true} />)}
+                    </section>
+                </section>}
             </article>}
 
         <RejectInviteModal rejectedInviteData={rejectedInviteData} setRejectedInviteData={setRejectedInviteData} />
@@ -156,7 +194,7 @@ const ActivePlayers = ({ isGameTime, isInviteModalOpen, setIsInviteModalOpen, se
     )
 }
 
-const ActivePlayersCard = ({ player, badges, seasonId, setInviteErr, rejectedInviteData }) => {
+const ActivePlayersCard = ({ player, badges, seasonId, setInviteErr, rejectedInviteData, hasPlayed }) => {
 
     const navigate = useNavigate()
 
@@ -244,7 +282,7 @@ const ActivePlayersCard = ({ player, badges, seasonId, setInviteErr, rejectedInv
         rejectedInviteData && setIsLoading(false)
     }, [rejectedInviteData])
 
-    return (<article className="flex items-start justify-center  my-8 pr-2">
+    return (<article className="flex items-start justify-center  mb-8 pr-2">
         <section className="border-2 border-gray-200 rounded-2xl flex max-w-[550px] w-[94%] py-1 px-2" style={{
             background: `linear-gradient(120deg, rgb(39, 138, 134) 1%, rgba(11, 42, 43, 0.32) 10%, rgb(22, 85, 82) 98%) repeat scroll 0% 0%`,
         }}>
@@ -272,7 +310,7 @@ const ActivePlayersCard = ({ player, badges, seasonId, setInviteErr, rejectedInv
 
             <div className='w-[30%] flex flex-col items-center justify-center text-white  text-xs'>
                 <p className="w-full pb-2">Pts 20 </p>
-                <button onClick={() => createGameMutationSubmitHandler({ receiverId: player?.id })}
+                {!hasPlayed && <button onClick={() => createGameMutationSubmitHandler({ receiverId: player?.id })}
                     className="w-4/5 ml-[10%] rounded-full py-1 text-white bg-orange-600 flex items-center justify-center">{isLoading ?
                         <Oval
                             height={15}
@@ -286,7 +324,7 @@ const ActivePlayersCard = ({ player, badges, seasonId, setInviteErr, rejectedInv
                             strokeWidth={2}
                             strokeWidthSecondary={2}
 
-                        /> : "Play"}</button>
+                        /> : "Play"}</button>}
             </div>
 
 

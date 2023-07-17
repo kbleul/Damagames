@@ -101,7 +101,7 @@ const Matches = ({ seasonId }) => {
 
 
 const MatchesCard = ({ match, badges }) => {
-
+    console.log(match)
     const { lang, user } = useAuth();
 
     const className = (user && user.id === match.winner_score.id) ?

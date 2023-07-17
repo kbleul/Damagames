@@ -126,7 +126,7 @@ const LeagueGame = () => {
         if (!id) navigate("/create-game");
         localStorage.setItem("dama-sound", true);
 
-        startGameMutationSubmitHandler()
+        playerOneIp && startGameMutationSubmitHandler()
 
         return () => {
             localStorage.getItem("seasonId") && localStorage.removeItem("seasonId")
@@ -930,20 +930,19 @@ const LeagueGame = () => {
 
 
     useEffect(() => {
-        if (winnerPlayer) {
+        console.log({ winnerPlayer })
+        if (winnerPlayer && playerOneIp) {
+
             if (winnerPlayer === "player1pieces" || winnerPlayer === "player1moves") {
-                if (playerOneIp) {
-                    winnerMutationSubmitHandler(firstPlayer);
-                }
+                winnerMutationSubmitHandler(playerOneData);
                 return;
             }
-            if (winnerPlayer === "player2pieces" || winnerPlayer === "player2moves") {
-                if (playerTwoIp) {
-                    winnerMutationSubmitHandler(secondPlayer);
-                }
+            else if (winnerPlayer === "player2pieces" || winnerPlayer === "player2moves") {
+                winnerMutationSubmitHandler(playerTwoData);
                 return;
             }
         }
+
 
         return () => {
             reCheckInPlayer()
@@ -966,6 +965,7 @@ const LeagueGame = () => {
     );
 
     const winnerMutationSubmitHandler = async (values) => {
+        console.log(values, gameId, seasonId)
         try {
             winnerMutation.mutate(
                 {

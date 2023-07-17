@@ -18,7 +18,7 @@ export const sortScoreBoard = (by, arr) => {
 
 
 export const sortBadges = (arr) => {
-    return arr.sort((a, b) => b.point - a.point).reverse()
+    return arr ? arr.sort((a, b) => b.point - a.point).reverse() : []
 }
 
 
