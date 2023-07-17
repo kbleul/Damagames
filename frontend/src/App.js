@@ -164,7 +164,6 @@ const App = () => {
             let activeSeasons = []
 
             console.log(seasons)
-            seasons.length > 0 && setActiveSeasons([...seasons])
             seasons.forEach((season) => {
               if (season.is_active_season && season.is_game_time) {
                 checkInUser(season.id)

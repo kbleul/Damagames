@@ -5,6 +5,7 @@ import Avatar from "../../../assets/Avatar.png"
 import { AiOutlineCheck } from "react-icons/ai"
 import { AiOutlineClose } from "react-icons/ai"
 import { FaEquals } from "react-icons/fa"
+import { Circles } from "react-loader-spinner";
 
 
 import { useQuery } from '@tanstack/react-query'
@@ -80,6 +81,20 @@ const Matches = ({ seasonId }) => {
 
                     <p className="text-orange-500 fold-bold text-center">No matches yet !</p>
                 </article>}
+
+            {isLoading &&
+                <section className="w-full h-[60vh] flex items-center justify-center ">
+                    <Circles
+                        height="50"
+                        width="70"
+                        radius="9"
+                        color="#FF4C01"
+                        ariaLabel="three-dots-loading"
+                        wrapperStyle={{}}
+                        wrapperClassName=""
+                        visible={true}
+                    />
+                </section>}
         </article>
     )
 }

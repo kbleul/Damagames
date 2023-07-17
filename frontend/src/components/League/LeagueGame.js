@@ -971,7 +971,7 @@ const LeagueGame = () => {
                 {
                     winner: values.id,
                     game_id: gameId,
-                    seasonId
+                    season_id: seasonId
                 },
                 {
                     onSuccess: (responseData) => { },
