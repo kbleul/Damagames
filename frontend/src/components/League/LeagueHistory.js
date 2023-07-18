@@ -82,15 +82,15 @@ const LeagueHistory = ({ isInviteModalOpen, setIsInviteModalOpen, setInviteData 
         }
     );
 
-    useEffect(() => {
-        if (active === LEAGUE_CATAGORIES[0]) {
-            queryClient.refetchQueries('getSeasonDataApi').then((res) => {
-                onSuccess(res?.data?.data);
-            }).catch((error) => {
-                OnError(error);
-            });;
-        }
-    }, [active, queryClient, onSuccess, OnError]);
+    // useEffect(() => {
+    //     if (active === LEAGUE_CATAGORIES[0]) {
+    //         queryClient.refetchQueries('getSeasonDataApi').then((res) => {
+    //             onSuccess(res?.data?.data);
+    //         }).catch((error) => {
+    //             OnError(error);
+    //         });;
+    //     }
+    // }, [active, queryClient, onSuccess, OnError]);
 
 
     return (
