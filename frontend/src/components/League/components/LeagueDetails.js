@@ -147,26 +147,26 @@ const ActiveSeason = ({ season, setIsPaymentModalOpen, set_isShowModalOpen }) =>
         </section>
         <section>
 
-            <section className="flex items-center justify-evenly gap-x-1">
-                <div className="border bg-[#22474f] rounded-2xl w-1/2 py-3 h-16">
+            <section className="flex items-center justify-center gap-x-1">
+                <div className="border bg-[#22474f] rounded-2xl w-1/2 py-3 h-24 flex flex-col justify-center">
                     <div className="w-full flex items-center justify-start ml-1 px-2">
                         <p className="w-2 h-2 bg-orange-color rounded-full mr-1"></p>
                         <h3 className="w-full text-left text-[#FF4C01] font-bold text-sm">No. of players </h3>
                     </div>
-                    <p className="text-xs w-full text-center  text-gray-300">{totalPlayer} players</p>
+                    <p className="text-xs w-full pl-6 text-left text-gray-300">{totalPlayer} players</p>
                 </div>
 
-                <div className="border bg-[#22474f] rounded-2xl w-1/2 py-2 h-16">
+                <div className="border bg-[#22474f] rounded-2xl w-1/2 py-2 h-24">
                     <div className="w-full flex items-center justify-start ml-3">
                         <p className="w-2 h-2 bg-orange-color rounded-full mr-1"></p>
                         <h3 className=" text-left text-[#FF4C01] font-bold text-sm">Awards</h3>
                     </div>
 
-                    <section className="flex items-center justify-center gap-x-2 px-2">
+                    <section className="flex flex-col items-start justify-start gap-x-2 pl-6">
                         {season.prizes.map((price, index) =>
-                            <div key={price.id} className="flex items-start justify-center gap-x-1 text-xs">
-                                <p className="text-xs">{++index}</p>
-                                <img className="w-3/5 max-w-[3rem]  h-6 rounded-md" src={price.image} alt="" />
+                            <div key={price.id} className="flex items-start justify-start gap-x-1 text-xs pb-1">
+                                <p className="text-xs">{++index} - </p>
+                                <p className="">{JSON.parse(price?.prize_name).english} </p>
                             </div>
                         )}
 
@@ -182,7 +182,7 @@ const ActiveSeason = ({ season, setIsPaymentModalOpen, set_isShowModalOpen }) =>
             <p className="text-sm text-xs capitalize">{formattedGameTime.starting + " - " + formattedGameTime.ending}</p>
             {user && season.is_active && season.number_of_player !== season.player_count &&
                 <button disabled={user && isUserInSeason ? true : false} onClick={() => setIsPaymentModalOpen(true)}
-                    className="w-3/5 bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-sm text-black">{isUserInSeason ? "Joined" : "Join Season"}
+                    className={isUserInSeason ? "w-3/5 bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-sm text-white" : "w-3/5 bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-sm text-black"}>{isUserInSeason ? "Joined" : "Join Season"}
                 </button>}
 
             {!user &&

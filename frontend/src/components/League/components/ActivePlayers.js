@@ -50,20 +50,32 @@ const ActivePlayers = ({ isGameTime, isInviteModalOpen, setIsInviteModalOpen, se
                     }
 
                     let playerSeasons = JSON.parse(localStorage.getItem("dama-user-seasons")).find(season => season.id == id) || null
+
+                    console.log({ playerSeasons })
+
                     if (!playerSeasons) {
                         console.log("ahahahahah")
-                        setActivePlayers([...data.activePlayers]);
+                        setActivePlayers([...data.activePlayers.filter(item => item.id !== user.id)]);
                         setPlayedActivePlayers(null)
                         setError(null)
-                    } else {
+                    }
+
+                    else if (!playerSeasons.have_played) {
+                        console.log("first")
+                        setActivePlayers([...data.activePlayers.filter(item => item.id !== user.id)]);
+                        return
+                    }
+
+                    else {
                         let played = []
                         let notPlayed = []
                         data.activePlayers.forEach(player => {
+                            console.log("123456789", playerSeasons, playerSeasons.have_played)
+
+
                             if (player.id !== user.id) {
                                 playerSeasons.have_played.includes(player.id) ?
                                     played.push(player) : notPlayed.push(player)
-                                // played.push(player)
-                                // notPlayed.push(player)
                             }
                         })
 

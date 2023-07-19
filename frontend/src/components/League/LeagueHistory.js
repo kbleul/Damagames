@@ -17,8 +17,6 @@ import ActivePlayers from "./components/ActivePlayers"
 
 const LeagueHistory = ({ isInviteModalOpen, setIsInviteModalOpen, setInviteData }) => {
 
-    const queryClient = useQueryClient();
-
     const navigate = useNavigate()
     const { id } = useParams()
     const { token, user } = useAuth();
@@ -82,16 +80,6 @@ const LeagueHistory = ({ isInviteModalOpen, setIsInviteModalOpen, setInviteData 
         }
     );
 
-    // useEffect(() => {
-    //     if (active === LEAGUE_CATAGORIES[0]) {
-    //         queryClient.refetchQueries('getSeasonDataApi').then((res) => {
-    //             onSuccess(res?.data?.data);
-    //         }).catch((error) => {
-    //             OnError(error);
-    //         });;
-    //     }
-    // }, [active, queryClient, onSuccess, OnError]);
-
 
     return (
         <article style={{
@@ -104,7 +92,7 @@ const LeagueHistory = ({ isInviteModalOpen, setIsInviteModalOpen, setInviteData 
 
             <button
                 className="z-50 bg-orange-color rounded-full w-8 h-8 flex justify-center items-center mr-2 mt-2 absolute top-0 left-2 md:right-4"
-                onClick={() => navigate("/create-game")}
+                onClick={() => navigate("/league")}
             >
                 <svg
                     width="18"

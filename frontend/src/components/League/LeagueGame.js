@@ -929,6 +929,10 @@ const LeagueGame = () => {
     }
 
 
+
+
+
+
     useEffect(() => {
         console.log({ winnerPlayer })
         if (winnerPlayer && playerOneIp) {
@@ -941,6 +945,7 @@ const LeagueGame = () => {
                 winnerMutationSubmitHandler(playerTwoData);
                 return;
             }
+
         }
 
 
@@ -1350,6 +1355,9 @@ const LeagueGame = () => {
                 isExitModalOpen={isExitModalOpen}
                 set_isExitModalOpen={setIsExitModalOpen}
                 gameState={gameState}
+                isLeague={true}
+                seasonId={seasonId ? seasonId : null}
+                playerData={playerOneData.id === user.id ? playerTwoData.id : playerOneData.id}
             />
 
             <WinnerModal
@@ -1360,6 +1368,7 @@ const LeagueGame = () => {
                 rejectGameRequest={rejectGameRequest}
                 gameState={gameState}
                 isLeague={true}
+                seasonId={seasonId ? seasonId : null}
             />
 
             <DrawGameModal

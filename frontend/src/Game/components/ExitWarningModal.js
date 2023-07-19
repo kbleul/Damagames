@@ -12,11 +12,14 @@ export default function ExitWarningModal({
   isExitModalOpen,
   set_isExitModalOpen,
   gameState,
-  beforeGame
+  beforeGame,
+  isLeague,
+  seasonId,
+  playerData
 }) {
   const navigate = useNavigate();
   const gameId = localStorage.getItem("gameId");
-  const { lang } = useAuth();
+  const { user, lang } = useAuth();
 
   const headers = {
     "Content-Type": "application/json",
@@ -37,19 +40,99 @@ export default function ExitWarningModal({
     }
   );
 
-  const exitGameMutationSubmitHandler = async (values) => {
+
+  const fetchSeasonsMutation = useMutation(
+    async (newData) =>
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}player-season/${user.id}`, newData, {
+        headers,
+      }),
+    {
+      retry: true,
+    }
+  );
+
+  const fetchSeasons = async (values) => {
+    console.log("ASD")
+
     try {
-      exitGameMutation.mutate(
-        {
-        },
+      fetchSeasonsMutation.mutate(
+        {},
         {
           onSuccess: (responseData) => {
+            const seasons = responseData?.data?.data
+            console.log({ seasons })
+            localStorage.setItem("dama-user-seasons", JSON.stringify(seasons));
+            navigate(`/league/${seasonId}`);
           },
           onError: (err) => {
-
+            console.log("dsdffref")
+            navigate(`/league/${seasonId}`);
           },
-        }
+          enabled: user ? true : false,
+        },
       );
+    } catch (err) {
+      console.log("dsdffref")
+      navigate(`/league/${seasonId}`);
+    }
+  };
+
+
+  const exitLeagueGameMutation = useMutation(
+    async (newData) =>
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}scores`,
+        newData,
+        {
+          headers,
+        }
+      ),
+    {
+      retry: false,
+    }
+  );
+
+  const exitGameMutationSubmitHandler = async (values) => {
+    try {
+      if (isLeague) {
+        try {
+          exitLeagueGameMutation.mutate(
+            {
+              winner: playerData,
+              game_id: gameId,
+              season_id: seasonId
+            },
+            {
+              onSuccess: (responseData) => {
+                fetchSeasons()
+              },
+              onError: (err) => {
+                fetchSeasons()
+              },
+            }
+          )
+        } catch (err) {
+          fetchSeasons()
+
+        }
+
+
+      }
+
+      else {
+        exitGameMutation.mutate(
+          {
+          },
+          {
+            onSuccess: (responseData) => {
+            },
+            onError: (err) => {
+
+            },
+          }
+        );
+      }
+
     } catch (err) { }
   };
 
@@ -65,7 +148,7 @@ export default function ExitWarningModal({
       localStorage.getItem(data) && localStorage.removeItem(data);
     });
 
-    navigate("/create-game");
+    !isLeague && navigate("/create-game");
   };
   return (
     <>
@@ -118,6 +201,12 @@ export default function ExitWarningModal({
                       </p>
                     </div>
                   }
+
+                  {isLeague && <div className="mt-2">
+                    <p className="text-sm text-gray-500 text-center ">
+                      {Localization["Are you sure_league"][lang]}
+                    </p>
+                  </div>}
 
                   <div className="mt-4 flex w-full items-center space-x-5 justify-center">
                     <button

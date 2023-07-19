@@ -180,6 +180,7 @@ const App = () => {
             // })
 
             // 
+            console.log({ seasons })
             localStorage.setItem("dama-user-seasons", JSON.stringify(seasons));
 
             setFetchedSeasons(prev => !prev)

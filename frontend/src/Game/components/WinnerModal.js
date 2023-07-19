@@ -1,4 +1,4 @@
-import React, { Component, Fragment, useEffect } from "react";
+import React, { Component, Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import wancha from "../../assets/wancha.svg";
@@ -15,13 +15,16 @@ const WinnerModal = ({
   rejectGameRequest,
   gameState,
   setNewGameWithComputer,
-  isLeague
+  isLeague,
+  seasonId
 }) => {
   const { user, token, setUser, lang } = useAuth();
   const navigate = useNavigate();
+
+  const [season_id, setSeason_id] = useState(null)
   const playerOneIp = localStorage.getItem("playerOneIp");
   const playerTwoIp = localStorage.getItem("playerTwoIp");
-
+  console.log({ seasonId })
 
   const headers = {
     "Content-Type": "application/json",
@@ -137,7 +140,7 @@ const WinnerModal = ({
         headers,
       }),
     {
-      retry: false,
+      retry: true,
     }
   );
 
@@ -180,6 +183,46 @@ const WinnerModal = ({
     } catch (err) { }
   };
 
+
+
+  const fetchSeasonsMutation = useMutation(
+    async (newData) =>
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}player-season/${user.id}`, newData, {
+        headers,
+      }),
+    {
+      retry: true,
+    }
+  );
+
+  const fetchSeasons = async (values) => {
+    console.log("ASD")
+
+    try {
+      fetchSeasonsMutation.mutate(
+        {},
+        {
+          onSuccess: (responseData) => {
+            const seasons = responseData?.data?.data
+            console.log({ seasons })
+            localStorage.setItem("dama-user-seasons", JSON.stringify(seasons));
+            navigate(`/league/${season_id}`);
+          },
+          onError: (err) => {
+            console.log("dsdffref")
+            navigate(`/league/${season_id}`);
+          },
+          enabled: user ? true : false,
+        },
+      );
+    } catch (err) {
+      console.log("dsdffref")
+      navigate(`/league/${season_id}`);
+    }
+  };
+
+
+
   useEffect(() => {
     if (isWinnerModalOpen && gameState.players === 1) {
       if (user && token) {
@@ -192,7 +235,13 @@ const WinnerModal = ({
         else { finishGameAI_NoAuth(false) }
       }
     }
+    !season_id && setSeason_id(seasonId)
 
+
+    if (isWinnerModalOpen && isLeague) {
+
+      setTimeout(fetchSeasons, 2500)
+    }
   }, [isWinnerModalOpen])
 
 
@@ -293,7 +342,7 @@ const WinnerModal = ({
                     >
                       {Localization["Rematch"][lang]}
                     </button>}
-                    <button
+                    {!isLeague && <button
                       type="button"
                       className="w-[60%] p-2 bg-sky-700 rounded-md cursor-pointer select-none
                     active:translate-y-2  active:[box-shadow:0_0px_0_0_#026ca4,0_0px_0_0_#026ca4]
@@ -308,7 +357,23 @@ const WinnerModal = ({
                       }}
                     >{Localization["New Game"][lang]}
 
-                    </button>
+                    </button>}
+
+                    {isLeague && <button
+                      type="button"
+                      className="w-[60%] p-2 bg-sky-700 rounded-md cursor-pointer select-none
+                    active:translate-y-2  active:[box-shadow:0_0px_0_0_#026ca4,0_0px_0_0_#026ca4]
+                    active:border-b-[0px]
+                    transition-all duration-150 [box-shadow:0_5px_0_0_#026ca4,0_5px_0_0_#026ca4]
+                    border-b-[1px] border-gray-300/50 font-semibold text-white
+                  "
+                      onClick={() => {
+                        checkWinner();
+                        navigate(`/league/${season_id}`);
+                      }}
+                    >{Localization["View Table"][lang]}
+
+                    </button>}
                   </div>
                 </Dialog.Panel>
 

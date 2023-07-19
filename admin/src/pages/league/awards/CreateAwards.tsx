@@ -98,11 +98,16 @@ const CreateAwards = () => {
 
   return (
     <article>
-      <section className="  w-4/5 ml-[10%] my-4">
+      <section className="mb-8  w-4/5 ml-[10%] my-4 border rounded-xl overflow-hidden">
+        {AWARDS && AWARDS.length > 0 && (
+          <h2 className="w-full text-center p-4 text-3xl  font-serif text-black bg-gray-100">
+            Awards
+          </h2>
+        )}
         {AWARDS.map((award: any) => (
           <section
             key={award.id}
-            className="flex items-center justify-start w-full py-2 px-2 border-b border-b-gray-200"
+            className="flex items-center justify-start w-full py-2 px-2 mx-1 border-b border-b-gray-200"
           >
             <p className="w-1/5">{award.level}</p>
             <p className="w-1/5">{JSON.parse(award.prize_name).english}</p>

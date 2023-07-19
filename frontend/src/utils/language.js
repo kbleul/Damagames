@@ -149,6 +149,10 @@ export const Localization = {
         AMH: "እርግጠኛ ኖት መውጣት ይፈልጋሉ ?",
         ENG: "Are you sure you want to leave ?"
     },
+    "Are you sure_league": {
+        AMH: "ይህን የሊግ ጨዋታ ይሸነፋሉ ",
+        ENG: "You will lose this league game."
+    },
     "Are you sure": {
         AMH: "እርግጠኛ ኖት መውጣት ይፈልጋሉ ? አሁን ከሄዱ ጓደኛዎ ይህን ጨዋታ መቀላቀል አይችሉም !",
         ENG: "Are you sure you want to leave ? Your friend won't be able to join this game if you leave now !"
@@ -700,6 +704,10 @@ export const Localization = {
     "League": {
         AMH: "ሊግ",
         ENG: "League"
+    },
+    "View Table": {
+        AMH: "ሰንጠረዥን ይመልከቱ",
+        ENG: "View Table"
     },
 
 
