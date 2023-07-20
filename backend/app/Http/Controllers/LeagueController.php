@@ -20,6 +20,14 @@ class LeagueController extends Controller
 
     public function store(StoreLeagueRequest $request)
     {
+        $leagueName = League::whereJsonContains('league_name->english', json_decode($request->league_name)->english)
+            ->orWhereJsonContains('league_name->amharic', json_decode($request->league_name)->amharic)
+            ->first();
+
+        if ($leagueName !== null) {
+            return abort(404, "Amharic or English Name Already Exist!");
+        }
+
         DB::beginTransaction();
         $league = League::create($request->validated());
         DB::commit();
@@ -35,6 +43,14 @@ class LeagueController extends Controller
 
     public function update(UpdateLeagueRequest $request, League $league)
     {
+        $leagueName = League::where('id', '!=', $league->id)->whereJsonContains('league_name->english', json_decode($request->league_name)->english)
+            ->orWhereJsonContains('league_name->amharic', json_decode($request->league_name)->amharic)
+            ->first();
+
+        if ($leagueName !== null) {
+            return abort(404, "Amharic or English Name Already Exist!");
+        }
+        
         $league->update($request->validated());
 
         return response()
