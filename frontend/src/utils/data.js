@@ -39,6 +39,15 @@ export const CACHED_DATA = [
   "MyStoreItems"
 ];
 
+export const ET_DAYS = {
+  "Monday": "ሰኞ",
+  "Tuesday": "ማክሰኞ",
+  "Wednesday": "እሮብ",
+  "Thursday": "ሐሙስ",
+  "Friday": "አርብ",
+  "Saturday": "ቅዳሜ",
+  "Sunday": "እሁድ"
+}
 
 export const ET_MONTHS = {
   "01": "መስከረም",

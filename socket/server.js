@@ -304,7 +304,7 @@ io.on("connection", (socket) => {
       } else {
         //player two has disconnected error
         io.to(socket.id).emit("play-league-invite-error", {
-          AMH: "amrna error",
+          AMH: "ጓደኛዎ ጨዋታውን ለቆ ወቷል። ከሌላ ሰው ጋር ለመጫወት ይሞክሩ።",
           ENG: "Player has left the game. Try playing with someone else."
         })
       }
@@ -313,8 +313,8 @@ io.on("connection", (socket) => {
       // checkInLeague({ seasonId, userData: sender })
       //send player two had disconnected message
       io.to(socket.id).emit("play-league-invite-error", {
-        AMH: "amrna error",
-        ENG: "Couldn't connect to season. Try again in a minute"
+        AMH: "ከዚህ የሊግ ጨዋታ ጋር መገናኘት አልተቻለም። ከትንሽ ደቂቃ በኋላ እንደገና ይሞክሩ።",
+        ENG: "Couldn't connect to this season. Try again in a minute"
       })
 
     }
@@ -332,8 +332,14 @@ io.on("connection", (socket) => {
 
       if (receiver) {
         io.to(receiver[0].socketId).emit("get-reject-league-invite", {
-          messageHeading: "Request rejected by " + sender.username,
-          messagePara: "Try playing with someone else"
+          messageHeading: {
+            "ENG": "Request rejected by " + sender.username,
+            "AMH": `የእንጫዎት ጥያቄዎ  በ${sender.username} ተቀባይነት አላገኘም።`
+          },
+          messagePara: {
+            "ENG": "Try playing with someone else",
+            "AMH": "ከሌላ ሰው ጋር ለመጫወት ይሞክሩ"
+          }
         })
       }
 

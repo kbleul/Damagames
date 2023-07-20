@@ -5,9 +5,13 @@
 import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment } from "react";
 import { ImCancelCircle } from "react-icons/im"
+import { useAuth } from "../../../context/auth";
+import { Localization } from "../../../utils/language";
 
 
 const RejectInviteModal = ({ rejectedInviteData, setRejectedInviteData }) => {
+    const { lang } = useAuth();
+
     return (
         <Transition appear show={rejectedInviteData ? true : false} as={Fragment}>
             <Dialog
@@ -47,14 +51,14 @@ const RejectInviteModal = ({ rejectedInviteData, setRejectedInviteData }) => {
                                     onClick={() => {
                                         setRejectedInviteData(null)
                                     }} className="w-6 h-6 absolute top-2 right-2 text-orange-600 cursor-pointer" />
-                                <h2 className="text-orange-600 font-bold  text-center w-full pt-6">{rejectedInviteData?.messageHeading}</h2>
+                                <h2 className="text-orange-600 font-bold  text-center w-full pt-6">{rejectedInviteData?.messageHeading[lang]}</h2>
                                 <div className=" w-full flex flex-col items-center text-white">
 
-                                    <p className="text-sm">{rejectedInviteData?.messagePara}</p>
+                                    <p className="text-sm">{rejectedInviteData?.messagePara[lang]}</p>
                                 </div>
 
                                 <button onClick={() => setRejectedInviteData(null)}
-                                    className="mt-8 w-2/5 max-w-[200px] bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-black">Ok
+                                    className="mt-8 w-2/5 max-w-[200px] bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-black">{Localization["Ok"][lang]}
                                 </button>
                             </Dialog.Panel>
 

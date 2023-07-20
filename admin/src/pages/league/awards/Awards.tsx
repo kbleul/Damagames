@@ -77,7 +77,7 @@ const Awards = () => {
           }}
         >
           <TableCell component="th" scope="row">
-            <span className="cursor-pointer">{row.level}</span>
+            <span className="cursor-pointer">{row.index}</span>
           </TableCell>
           <TableCell component="th" scope="row">
             <span className="cursor-pointer">
@@ -146,34 +146,6 @@ const Awards = () => {
             >
               Delete
             </button>
-
-            {/* <button
-              onClick={() => {
-                navigate(`/season/create`, {
-                  state: { leagueId: row.id },
-                });
-              }}
-              className="ml-2 bg-red-700 rounded-sm hover:opacity-80 text-center px-5 p-1 mt-2 font-medium text-sm text-white"
-            >
-              + Add Season
-            </button>
-
-            <button
-              disabled={row.seasons.length === 0}
-              onClick={() => {
-                console.log(row.seasons);
-                navigate(`/season/${row.id}`, {
-                  state: { seasons: row.seasons },
-                });
-              }}
-              className={
-                row.seasons.length === 0
-                  ? "hidden"
-                  : "ml-2 border border-red-700 text-black font-bold rounded-sm hover:opacity-80 text-center px-5 p-1 mt-2  text-sm"
-              }
-            >
-              Seasons -{row.seasons.length}
-            </button> */}
           </TableCell>
         </TableRow>
       </React.Fragment>
@@ -223,8 +195,8 @@ const Awards = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {awards?.map((award: any) => (
-                <Row key={award.id} row={award} />
+              {awards?.map((award: any, index) => (
+                <Row key={award.id} row={{ ...award, index: ++index }} />
               ))}
             </TableBody>
           </Table>

@@ -298,12 +298,13 @@ const Profile = () => {
         }}
       >
 
-        <h3 className="w-full text-white text-2xl text-center font-bold pt-4">Leagues joined</h3>
+        <h3 className="w-full text-white text-2xl text-center font-bold pt-4">{Localization["Leagues joined"][lang]}</h3>
 
         <section className="flex gap-x-8 text-white overflow-x-scroll px-2 h-[60%]">
           {user.seasons.map(season => (
-            <div className="flex items-center justify-center text-xl gap-x-1">
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 10 12" fill="none">
+
+            <button onClick={() => navigate(`/league/${season.id}`)} className="w-full flex items-center justify-center text-xl gap-x-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 10 12" fill="none">
                 <mask id="mask0_3490_6881" maskUnits="userSpaceOnUse" x="0" y="0" width="10" height="12">
                   <path d="M9.47404 0.0795288H0.526367V11.302H9.47404V0.0795288Z" fill="white" />
                 </mask>
@@ -326,10 +327,11 @@ const Profile = () => {
                   <path d="M5.25365 4.40929C5.25365 4.40929 5.26579 4.42142 5.27185 4.42749C5.2673 4.43052 5.26275 4.43811 5.25972 4.43659C5.25062 4.43507 5.24152 4.43052 5.23242 4.42597C5.24 4.41991 5.24607 4.41384 5.25365 4.40778V4.40929Z" fill="#545454" />
                 </g>
               </svg>
-              <p key={season.id}>{JSON.parse(season?.season_name)?.english}</p>
-            </div>
+              <p key={season.id}>{JSON.parse(season?.season_name)[lang === "ENG" ? "english" : "amharic"]}</p>
+            </button>
 
           ))}
+
         </section>
 
 

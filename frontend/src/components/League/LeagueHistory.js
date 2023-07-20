@@ -7,19 +7,20 @@ import Nav from "./components/Nav"
 import { useNavigate, useParams } from "react-router-dom"
 import { LEAGUE_CATAGORIES } from "../../utils/data"
 import Matches from "./components/Matches"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 
 import { Circles } from "react-loader-spinner";
 import { useAuth } from "../../context/auth"
 import ActivePlayers from "./components/ActivePlayers"
+import { Localization } from "../../utils/language"
 
 
 const LeagueHistory = ({ isInviteModalOpen, setIsInviteModalOpen, setInviteData }) => {
 
     const navigate = useNavigate()
     const { id } = useParams()
-    const { token, user } = useAuth();
+    const { token, user, lang } = useAuth();
 
     const [active, setActive] = useState(LEAGUE_CATAGORIES[0])
 
@@ -111,15 +112,16 @@ const LeagueHistory = ({ isInviteModalOpen, setIsInviteModalOpen, setInviteData 
             </button>
 
             <section className="text-white pt-2">
-                <h2 className="text-6xl font-bold ml-[32%] md:ml-[40%] w-3/5  text-left ">Dama</h2>
-                <p className="text-2xl ml-[32%] md:ml-[40%] w-3/5  text-left px-1">League</p>
+                <h2 className="text-6xl font-bold ml-[32%] md:ml-[40%] w-3/5  text-left ">{Localization["Dama"][lang]}</h2>
+                <p className={lang === "ENG" ?
+                    "text-2xl ml-[32%] md:ml-[40%] w-3/5  text-left px-1" : "text-2xl ml-[32%] md:ml-[40%] w-3/5  text-left px-1 font-bold"}>{Localization["League"][lang]}</p>
             </section>
 
             <Nav active={active} setActive={setActive} isInSeason={isInSeason} />
 
             {active === LEAGUE_CATAGORIES[0] && leagues && <article>{
                 leagues.length === 0 ? <section className="w-full h-[60vh] flex items-center justify-center">
-                    <p className="text-orange-600 ">No one has joined yet. Be the first one.</p>
+                    <p className="text-orange-600 ">{Localization["No one has joined yet."][lang]}</p>
                 </section> : <section>
                     {leagues.map((player, index) => (
                         <PlayerCard key={player.userData.id} index={index} player={player} badges={badges} />

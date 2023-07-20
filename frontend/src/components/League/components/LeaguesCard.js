@@ -6,6 +6,7 @@ import leagueImg from "../../../assets/league_bg.png"
 import { useAuth } from "../../../context/auth"
 import LoginPromptModal from "../../Store/LoginPromptModal"
 import CoinModal from "../../Store/CoinModal"
+import { Localization } from "../../../utils/language"
 
 
 
@@ -41,23 +42,23 @@ const LeaguesCard = ({ league, setSelectedLeague }) => {
 
                 <div>
                     <p className="text-xs ">{league.description[[LANG[lang]]]}</p>
-                    <p className="text-xs">{league.seasons.length} Seasons</p>
+                    <p className="text-xs">{league.seasons.length} {Localization["Seasons"][lang]}</p>
                 </div>
 
                 <div className="w-full flex justify-evenly items-center">
                     <button onClick={() => setSelectedLeague(league)}
-                        className="w-2/5 flex items-center justify-center gap-x-1 border-2 border-orange-500 rounded-full my-2 py-2 font-semibold text-sm text-orange-500">View Details
+                        className="w-2/5 flex items-center justify-center gap-x-1 border-2 border-orange-500 rounded-full my-2 py-2 font-semibold text-sm text-orange-500">{Localization["View Details"][lang]}
                     </button>
                     {activeSeason ? <button disabled={isUserInSeason ? true : false} onClick={() =>
                         user ? setIsPaymentModalOpen(true) : set_isShowModalOpen(true)}
                         className={isUserInSeason ? "px-4 text-center flex items-center justify-center gap-x-1  bg-gradient-to-b from-orange-500 to-orange-700 opacity-80 rounded-2xl  my-2 py-1 font-semibold text-xs text-white absolute top-0 right-1" :
                             "w-2/5 flex items-center gap-x-1 bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-sm text-black"}>
-                        <p className={isUserInSeason ? "w-full " : "w-4/5 text-right "}>{isUserInSeason ? "Joined" : "Join League"}</p>
+                        <p className={isUserInSeason ? "w-full " : "w-4/5 text-right "}>{isUserInSeason ? `${Localization["Joined"][lang]}` : `${Localization["Join League"][lang]}`}</p>
                         {!isUserInSeason && <p><AiFillStar className="text-white" /></p>}
                     </button> :
                         <button
                             className="px-4 text-center flex items-center justify-center gap-x-1  bg-gradient-to-b bg-gray-400   opacity-80 rounded-2xl  my-2 py-1 font-semibold text-xs text-white absolute top-0 right-1">
-                            Closed
+                            {Localization["Closed"][lang]}
                         </button>
                     }
                 </div>

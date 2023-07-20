@@ -709,9 +709,146 @@ export const Localization = {
         AMH: "ሰንጠረዥን ይመልከቱ",
         ENG: "View Table"
     },
-
-
-
+    "No leagues yet": {
+        AMH: "እስካሁን ምንም ሊጎች የሉም። አዲስ ሊጎች በቅርቡ ይመጣሉ!",
+        ENG: "No leagues yet. New leagues comming soon!"
+    },
+    "No one has joined yet.": {
+        AMH: "እስካሁን ማንም የተቀላቀለ የለም። የመጀመሪያው ይሁኑ።",
+        ENG: "No one has joined yet. Be the first one."
+    },
+    "Error fetching active players": {
+        AMH: "ኦንላይን ያሉ ተጫዋቾችን ማምጣት አልተሳካም!",
+        ENG: "Error fetching active players!"
+    },
+    "Nobody is online right now.": {
+        AMH: "አሁን ማንም ኦንላይን ላይ የለም።",
+        ENG: "Nobody is online right now!"
+    },
+    "New Seasons starts soon !": {
+        AMH: "አዲስ የሊግ ሲዝን በቅርቡ ይጀምራሉ!",
+        ENG: "New Seasons starts soon!"
+    },
+    "Season": {
+        AMH: "ሲዝን",
+        ENG: "Season"
+    },
+    "No seasons yet !": {
+        AMH: "እስካሁን ምንም ሲዝኖች የሉም!",
+        ENG: "No seasons yet!"
+    },
+    "View League Details": {
+        AMH: "የሊግ ዝርዝሮችን ይመልከቱ",
+        ENG: "View League Details"
+    },
+    "joined players": {
+        AMH: "የተቀላቀሉ ተጫዋቾች",
+        ENG: "joined players"
+    },
+    "Ok": {
+        AMH: "እሺ",
+        ENG: "Ok"
+    },
+    "is asking you to play.": {
+        AMH: "የሊግ ጨዋታ እንድትጫወት እየጠየቀህ ነው።",
+        ENG: "is asking you to play a league game."
+    },
+    "Pts": {
+        AMH: "ነጥብ",
+        ENG: "Pts"
+    },
+    "You already subscribed to this season.": {
+        AMH: "እዚ ሲዝን ውስጥ አሉ።",
+        ENG: "You already subscribed to this season."
+    },
+    "Subscribe to join league": {
+        AMH: "ሊግ ለመቀላቀል ይመዝገቡ",
+        ENG: "Subscribe to join league"
+    },
+    "Season Price": {
+        AMH: "የሲዝን ዋጋ",
+        ENG: "Season Price"
+    },
+    "Subscribe": {
+        AMH: "ግባ",
+        ENG: "Subscribe"
+    },
+    "No matches yet !": {
+        AMH: "እስካሁን ምንም ጨዋታዎች የሉም!",
+        ENG: "No matches yet !"
+    },
+    "VS": {
+        AMH: "ከ",
+        ENG: "VS"
+    },
+    "Seasons": {
+        AMH: "ሲዝኖች",
+        ENG: "Seasons"
+    },
+    "Closed": {
+        AMH: "ዝግ",
+        ENG: "Closed"
+    },
+    "View Details": {
+        AMH: "ዝርዝሩን ይመልከቱ",
+        ENG: "View Details"
+    },
+    "Joined": {
+        AMH: "ተቀላቅለዋል",
+        ENG: "Joined"
+    },
+    "Join League": {
+        AMH: "ሊጉን ይቀላቀሉ",
+        ENG: "Join League"
+    },
+    "Join Season": {
+        AMH: "ሊጉን ይቀላቀሉ",
+        ENG: "Join Season"
+    },
+    "This league games": {
+        AMH: "እነዚ ሊግ ጨዋታዎች በአሁኑ ጊዜ ክፍት ናቸው።",
+        ENG: "This league games are currently active."
+    },
+    "Go to the season": {
+        AMH: "መጫወት ለመጀመር ወደ የውጽጽር ሲዝኑ ይሂዱ",
+        ENG: "Go to the season to start playing"
+    },
+    "spots left": {
+        AMH: "ቦታዎች ይቀራሉ",
+        ENG: "spots left"
+    },
+    "No. of players": {
+        AMH: "የተጫዋቾች ብዛት",
+        ENG: "No. of players"
+    },
+    "players": {
+        AMH: "ተጫዋቾች",
+        ENG: "players"
+    },
+    "Awards": {
+        AMH: "ሽልማቶች",
+        ENG: "Awards"
+    },
+    "Completed": {
+        AMH: "ተጠናቋል",
+        ENG: "Completed"
+    },
+    "It's currently not game time.": {
+        AMH: "አሁን የጨዋታ ሰአት አይደለም።",
+        ENG: "It's currently not game time."
+    },
+    "Game time": {
+        AMH: "የጨዋታ ሰአት ",
+        ENG: "Game time"
+    },
+    "Already Played": {
+        AMH: "የተጫወቷቸዉ",
+        ENG: "Already Played"
+    },
+    "Leagues joined": {
+        AMH: "የተቀላቀሉዋቸው ሊጎች",
+        ENG: "Leagues joined"
+    },
 
 
 

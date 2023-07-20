@@ -6,22 +6,8 @@ import { useAuth } from "../../../context/auth";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import socket from "../../../utils/socket.io";
+import { Localization } from "../../../utils/language";
 
-
-const PAYMENTOPTIONS = [
-    {
-        name: "Per league / 5 birr",
-        amount: 5
-    },
-    {
-        name: "Weekly / 15 birr",
-        amount: 15
-    },
-    {
-        name: "Monthly / 20 birr",
-        amount: 20
-    }
-]
 
 const PaymentOptions = ({
     isPaymentModalOpen,
@@ -32,7 +18,7 @@ const PaymentOptions = ({
     isCoinModalOpen,
     setIsCoinModalOpen
 }) => {
-    const { user, token, login } = useAuth()
+    const { user, token, login, lang } = useAuth()
 
     const activeSeason = seasons.find(season => season.is_active === true)
 
@@ -156,7 +142,7 @@ const PaymentOptions = ({
                                             setIsPaymentModalOpen(false)
                                             setSelectedMethod(null)
                                         }} className="w-6 h-6 absolute top-2 right-2 text-orange-600 cursor-pointer" />
-                                    <h2 className="text-orange-600 font-bold text-sm text-center w-full">You already subscribed to this season.</h2>
+                                    <h2 className="text-orange-600 font-bold text-sm text-center w-full">{Localization["You already subscribed to this season."][lang]}</h2>
 
                                 </Dialog.Panel>
 
@@ -204,11 +190,11 @@ const PaymentOptions = ({
                                             setIsPaymentModalOpen(false)
                                             setSelectedMethod(null)
                                         }} className="w-6 h-6 absolute top-2 right-2 text-orange-600 cursor-pointer" />
-                                    <h2 className="text-orange-600 font-bold text-xl text-center w-full">Subscribe to join league</h2>
+                                    <h2 className="text-orange-600 font-bold text-xl text-center w-full">{Localization["Subscribe to join league"][lang]}</h2>
 
                                     <div className=" w-full flex flex-col items-center text-white text-sm gap-y-4 py-4">
-                                        <p>Your coins - {user.coin} coins</p>
-                                        <p>Season Price - {activeSeason?.season_price} coins</p>
+                                        <p>{Localization["Your coins"][lang]} - {user.coin}{Localization["coins"][lang]}</p>
+                                        <p>{Localization["Season Price"][lang]} - {activeSeason?.season_price} {user.coin}{Localization["coins"][lang]}</p>
                                     </div>
 
 
@@ -222,12 +208,12 @@ const PaymentOptions = ({
                                             className={selectedMethod ?
                                                 "w-[70%] bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-black" :
                                                 "opacity-80 w-[70%] bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-black"}>
-                                            Subscribe
+                                            {Localization["Subscribe"][lang]}
                                         </button>
                                         :
                                         <div className="w-full flex flex-col items-center justify-center mt-6">
 
-                                            <p className="text-white">You don't have enough coins.</p>
+                                            <p className="text-white">{Localization["You don't have sufficient coins"][lang]}</p>
                                             <button onClick={() => {
                                                 setIsPaymentModalOpen(false);
                                                 setIsCoinModalOpen(true)
@@ -236,7 +222,7 @@ const PaymentOptions = ({
                                                 className={selectedMethod ?
                                                     "w-[70%] bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-black" :
                                                     "opacity-80 w-[70%] bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-black"}>
-                                                Buy coins
+                                                {Localization["Buy Coins"][lang]}
                                             </button>
                                         </div>
                                     }

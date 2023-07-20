@@ -253,7 +253,7 @@ const Store = () => {
           </section>
         </article> </>}
 
-      {viewAll && <div className="sticky top-0 w-full max-w-2xl mx-auto flex flex-col items-center justify-center px-2 py-10 sm:px-0 h-full">
+      {viewAll && <div className="border sticky top-0 w-full max-w-2xl mx-auto flex flex-col items-center justify-center px-2 py-10 sm:px-0 h-full">
         <Tab.Group>
           <Tab.Panels className="mt-2  ">
             <Tab.Panel>
@@ -319,8 +319,8 @@ const Avatar = ({
         setSelectedItem(avatar);
       }}
     >
-      <section className="w-[20%] border rounded-lg mr-2">
-        <img src={avatar.item} alt="" />
+      <section className="w-[20%] h-16 border rounded-lg mr-2">
+        <img className="w-full h-full" src={avatar.item} alt="" />
       </section>
       <section className="w-[60%] text-sm md:text-lg text-left mr-4 py-2 text-white border-r-2 border-orange-color">
         <p className="">{avatar.item_name[LANG[lang]]}</p>

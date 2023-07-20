@@ -9,6 +9,7 @@ import { ImCancelCircle } from "react-icons/im"
 
 import { Oval } from "react-loader-spinner";
 import { useNavigate } from "react-router-dom";
+import { Localization } from "../../../utils/language";
 
 
 const PlayLeagueInvite = ({ setIsInviteModalOpen, inviteData }) => {
@@ -114,12 +115,6 @@ const PlayLeagueInvite = ({ setIsInviteModalOpen, inviteData }) => {
     return (
         <article className="absolute w-full h-[100vh] bg-transparent z-70">
 
-
-            {/* <ImCancelCircle
-                onClick={() => {
-                    setActiveSeasons(null)
-                }} className="w-6 h-6 absolute top-2 right-2 text-orange-600 cursor-pointer" /> */}
-
             {inviteErr ? <section className="h-[80vh] w-full flex flex-col items-center justify-center">
                 <p className="text-orange-500 fold-bold text-center">{inviteErr}</p>
             </section> :
@@ -139,13 +134,13 @@ const PlayLeagueInvite = ({ setIsInviteModalOpen, inviteData }) => {
                         </div>
 
                     </div>
-                    <p className="text-white text-sm py-4"><span className="text-orange-600">{inviteData?.sender?.username}</span> is asking you to play.</p>
+                    <p className="text-white text-sm py-4"><span className="text-orange-600">{inviteData?.sender?.username}</span> {Localization["is asking you to play."][lang]}</p>
 
                     <div className="w-full flex items-center justify-center gap-x-[5%]">
                         <button onClick={() => {
                             setIsInviteModalOpen(false);
                             handleRejectInvite(inviteData.sender.id, inviteData.seasonId)
-                        }} className="w-[30%] mb-2 bg-transparent border border-orange-600 text-white rounded-full my-2 py-2 font-semibold text-xs">Reject
+                        }} className="w-[30%] mb-2 bg-transparent border border-orange-600 text-white rounded-full my-2 py-2 font-semibold text-xs">{Localization["Reject"][lang]}
                         </button>
                         <button onClick={() => {
                             setIsLoading(true);
@@ -166,7 +161,7 @@ const PlayLeagueInvite = ({ setIsInviteModalOpen, inviteData }) => {
                                     strokeWidth={2}
                                     strokeWidthSecondary={2}
 
-                                /> : "Accept"
+                                /> : `${Localization["Accept"][lang]}`
                             }
                         </button>
                     </div>

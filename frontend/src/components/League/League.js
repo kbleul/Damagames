@@ -12,6 +12,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useAuth } from "../../context/auth";
 import LeagueDetails from "./components/LeagueDetails";
+import { Localization } from "../../utils/language";
 
 
 
@@ -60,10 +61,6 @@ const League = () => {
                 const inActiveLeague = []
                 const joinedLeagues = []
 
-
-                const leagueIds = []
-
-
                 tempLeague.forEach(league => {
                     let hasActive = league.seasons.find(season => season.is_active === true)
 
@@ -79,16 +76,7 @@ const League = () => {
                     } else {
                         inActiveLeague.push(league)
                     }
-                    // hasActive ? leagueIds.push(league.id)
-                    //     : 
                 })
-
-                // console.log(activeLeague, inActiveLeague, joinedLeagues, tempLeague.length)
-                // res?.data?.data.forEach(league => {
-                //     !leagueIds.includes(league.id) && activeLeague.push(league)
-                // })
-
-
 
                 setError(null)
                 setLeagues([...activeLeague, ...joinedLeagues, ...inActiveLeague])
@@ -134,42 +122,47 @@ const League = () => {
             </button>
 
             <section className="text-white pt-2">
-                <h2 className="text-6xl font-bold ml-[32%] md:ml-[40%] w-3/5  text-left ">Dama</h2>
-                <p className="text-2xl ml-[32%] md:ml-[40%] w-3/5  text-left px-1">League</p>
+                <h2 className="text-6xl font-bold ml-[32%] md:ml-[40%] w-3/5  text-left ">{Localization["Dama"][lang]}</h2>
+                <p className={lang === "ENG" ?
+                    "text-2xl ml-[32%] md:ml-[40%] w-3/5  text-left px-1" : "text-2xl ml-[32%] md:ml-[40%] w-3/5  text-left px-1 font-bold"}>{Localization["League"][lang]}</p>
             </section>
 
-            {!error && !isLoading && leagues.length === 0 && <section className="h-[80vh] w-full flex flex-col items-center justify-center">
-                <p className="text-orange-500 fold-bold text-center">No leagues yet</p>
+            {
+                !error && !isLoading && leagues.length === 0 && <section className="h-[80vh] w-full flex flex-col items-center justify-center">
+                    <p className="text-orange-500 fold-bold text-center">{Localization["No leagues yet"][lang]}</p>
 
-            </section>}
-            {!selectedLeague && <article>
-                {!error && !isLoading && <section>
-                    {leagues.map(league => (
-                        <LeaguesCard key={league.id} league={league} setSelectedLeague={setSelectedLeague} />
-                    ))}
-                </section>}
+                </section>
+            }
+            {
+                !selectedLeague && <article>
+                    {!error && !isLoading && <section>
+                        {leagues.map(league => (
+                            <LeaguesCard key={league.id} league={league} setSelectedLeague={setSelectedLeague} />
+                        ))}
+                    </section>}
 
-                {isLoading && <section className="w-full h-[60vh] flex items-center justify-center ">
-                    <Circles
-                        height="50"
-                        width="70"
-                        radius="9"
-                        color="#FF4C01"
-                        ariaLabel="three-dots-loading"
-                        wrapperStyle={{}}
-                        wrapperClassName=""
-                        visible={true}
-                    />
-                </section>}
+                    {isLoading && <section className="w-full h-[60vh] flex items-center justify-center ">
+                        <Circles
+                            height="50"
+                            width="70"
+                            radius="9"
+                            color="#FF4C01"
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{}}
+                            wrapperClassName=""
+                            visible={true}
+                        />
+                    </section>}
 
-                {error && <section className="w-full h-[60vh] flex items-center justify-center">
-                    <p className="text-orange-600 ">{error}</p>
-                </section>}
-            </article>}
+                    {error && <section className="w-full h-[60vh] flex items-center justify-center">
+                        <p className="text-orange-600 ">{error}</p>
+                    </section>}
+                </article>
+            }
 
             {selectedLeague && <LeagueDetails selectedLeague={selectedLeague} />}
 
-        </article>
+        </article >
     )
 }
 

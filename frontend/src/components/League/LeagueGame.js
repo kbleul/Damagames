@@ -770,10 +770,7 @@ const LeagueGame = () => {
             setMsgSender(data.sender);
             setLatestMessage(data.message);
         });
-        //if the matchHistory player not in the game
-        //   socket.emit("sendMessage", {
-        //     status: "started",
-        //   });
+
     }, []);
 
     useEffect(() => {

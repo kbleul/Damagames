@@ -151,7 +151,7 @@ const SideMenu = ({ showMenu, setShowMenu, isprofile, badges }) => {
                 </div>
               </section>
 
-              <div onClick={() => setShowMenu((prev) => !prev)} className="w-[4%] md:w-[10%] mr-4">
+              <div onClick={() => setShowMenu((prev) => !prev)} className="w-[4%] md:w-[10%] mr-6">
                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 32 32"><path fill="none" stroke="currentColor" stroke-width="2" d="M16 24a1 1 0 1 0 0-2a1 1 0 0 0 0 2Zm0-7a1 1 0 1 0 0-2a1 1 0 0 0 0 2Zm0-7a1 1 0 1 0 0-2a1 1 0 0 0 0 2Z" /></svg>
               </div>
             </article>

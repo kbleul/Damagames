@@ -1,6 +1,7 @@
 
 import Avatar from "../../../assets/Avatar.png";
 import { useAuth } from "../../../context/auth";
+import { Localization } from "../../../utils/language";
 import { assignBadgeToUser } from "../../../utils/utilFunc";
 
 const LANG = { "AMH": "amharic", "ENG": "english" }
@@ -16,8 +17,8 @@ const PlayerCard = ({ index, player, badges }) => {
     }
 
     const className = (user && user.id === player.userData.id) ?
-        "border-2 border-orange-600 rounded-2xl flex max-w-[550px] w-[94%] py-1 px-2"
-        : "border-2 border-gray-200 rounded-2xl flex max-w-[550px] w-[94%] py-1 px-2"
+        "border-2 border-orange-600 rounded-2xl flex items-center justify-center max-w-[550px] w-[94%] py-1 px-2"
+        : "border-2 border-gray-200 rounded-2xl flex items-center justify-center max-w-[550px] w-[94%] py-1 px-2"
 
     return (<article className="flex items-start justify-center  my-8 pr-2">
         <p className="w-[6%] pt-2 text-xs text-gray-300">{++index}</p>
@@ -39,15 +40,10 @@ const PlayerCard = ({ index, player, badges }) => {
                 <div className=" flex items-center justify-between gap-4 px-2 ">
                     <p className="text-gray-300 font-bold text-xs">{badge ? badge[LANG[lang]] : ""}</p>
                 </div>
-
-                <section className="text-white flex items-center justify-end gap-x-[20%] text-xs w-full capitalize">
-                    <p>win - 10</p>
-                    <p>loss - 2</p>
-                </section>
             </section>
 
             <div className='w-[30%] flex flex-col items-center justify-center text-white  text-xs'>
-                <p className="w-full pb-2">Pts {player?.points}</p>
+                <p className="w-full">{Localization["Pts"][lang]} {player?.points}</p>
             </div>
 
 

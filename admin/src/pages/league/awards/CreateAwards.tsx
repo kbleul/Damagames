@@ -104,16 +104,16 @@ const CreateAwards = () => {
             Awards
           </h2>
         )}
-        {AWARDS.map((award: any) => (
+        {AWARDS.map((award: any, index: number) => (
           <section
             key={award.id}
             className="flex items-center justify-start w-full py-2 px-2 mx-1 border-b border-b-gray-200"
           >
-            <p className="w-1/5">{award.level}</p>
+            <p className="w-1/5">{++index}</p>
             <p className="w-1/5">{JSON.parse(award.prize_name).english}</p>
             <p className="w-1/5">{JSON.parse(award.prize_name).amharic}</p>
             <p className="w-1/5">{JSON.parse(award.description).english}</p>
-            <p className="w-1/5">{JSON.parse(award.description).english}</p>
+            <p className="w-1/5">{JSON.parse(award.description).amharic}</p>
             {award.image ? (
               <img className="w-8 h-8" src={award.image} alt="" />
             ) : (

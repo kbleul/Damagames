@@ -1,12 +1,28 @@
 
-import React, { useEffect, useState } from 'react'
 import { VscListSelection } from "react-icons/vsc"
 
 import { LEAGUE_CATAGORIES } from '../../../utils/data'
-import { useMutation } from '@tanstack/react-query'
-import axios from 'axios'
+import { useAuth } from '../../../context/auth'
+
+const navLocalization = {
+    [LEAGUE_CATAGORIES[0]]: {
+        "ENG": LEAGUE_CATAGORIES[0],
+        "AMH": "ደረጃ"
+    },
+    [LEAGUE_CATAGORIES[1]]: {
+        "ENG": LEAGUE_CATAGORIES[1],
+        "AMH": "ተጫዋቾች"
+    },
+    [LEAGUE_CATAGORIES[2]]: {
+        "ENG": LEAGUE_CATAGORIES[2],
+        "AMH": "ጨዋታዎች"
+    },
+
+}
 
 const Nav = ({ active, setActive, isInSeason }) => {
+
+    const { lang } = useAuth()
 
 
     const className = !isInSeason ?
@@ -27,7 +43,7 @@ const Nav = ({ active, setActive, isInSeason }) => {
                 }
             }}>
             <VscListSelection className="w-4 h-5" />
-            <p className="text-xs">{LEAGUE_CATAGORIES[0]}</p>
+            <p className="text-xs">{navLocalization[LEAGUE_CATAGORIES[0]][lang]}</p>
         </div>
 
         {isInSeason && <div className={active === LEAGUE_CATAGORIES[1] ?
@@ -39,7 +55,7 @@ const Nav = ({ active, setActive, isInSeason }) => {
                 }
             }}>
             <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-5" viewBox="0 0 24 24"><path fill="currentColor" d="m21.1 12.5l1.4 1.41l-6.53 6.59L12.5 17l1.4-1.41l2.07 2.08l5.13-5.17M10 17l3 3H3v-2c0-2.21 3.58-4 8-4l1.89.11L10 17m1-13a4 4 0 0 1 4 4a4 4 0 0 1-4 4a4 4 0 0 1-4-4a4 4 0 0 1 4-4Z" /></svg>
-            <p className="text-xs">{LEAGUE_CATAGORIES[1]} Users</p>
+            <p className="text-xs">{navLocalization[LEAGUE_CATAGORIES[1]][lang]} {lang === "ENG" && "Users"}</p>
         </div>}
 
         <div className={active === LEAGUE_CATAGORIES[2] ? className : className_active}
@@ -59,7 +75,7 @@ const Nav = ({ active, setActive, isInSeason }) => {
                     </clipPath>
                 </defs>
             </svg>
-            <p className="text-xs">{LEAGUE_CATAGORIES[2]}</p>
+            <p className="text-xs">{navLocalization[LEAGUE_CATAGORIES[2]][lang]}</p>
         </div>
     </section>)
 }

@@ -4,6 +4,7 @@ import React from 'react'
 import { useAuth } from '../../../context/auth';
 import { useNavigate } from 'react-router-dom';
 import { ImCancelCircle } from "react-icons/im"
+import { Localization } from '../../../utils/language';
 
 const LeagueGameIsActiveModal = ({ activeSeasons, setActiveSeasons }) => {
 
@@ -18,6 +19,7 @@ const LeagueGameIsActiveModal = ({ activeSeasons, setActiveSeasons }) => {
         newTime = newTime[0] + ":" + newTime[1]
         return newTime
     }
+
     return (
         <article className="absolute top-[20vh] w-full h-[80vh] bg-transparent z-70 ">
 
@@ -28,8 +30,8 @@ const LeagueGameIsActiveModal = ({ activeSeasons, setActiveSeasons }) => {
                     onClick={() => {
                         setActiveSeasons(null)
                     }} className="w-6 h-6 absolute top-2 right-2 text-orange-600 cursor-pointer" />
-                <p className="text-white pt-16 pb-4 font-bold px-2">This league games are currently active. </p>
-                <p className="text-orange-600 text-sm pb-8 px-2">Go to the season to start playing</p>
+                <p className="text-white pt-16 pb-4 font-bold px-2">{Localization["This league games"][lang]}</p>
+                <p className="text-orange-600 text-sm pb-8 px-2">{Localization["Go to the season"][lang]}</p>
 
                 <div className="w-4/5 h-[40vh] pb-8 ">
                     {activeSeasons.map(season =>
@@ -45,7 +47,7 @@ const LeagueGameIsActiveModal = ({ activeSeasons, setActiveSeasons }) => {
                                 <button onClick={() => {
                                     setActiveSeasons(null)
                                     navigate(`/league/${season.id}`)
-                                }} className=" max-w-[100px] px-6 mb-2 bg-transparent border border-orange-600 text-white rounded-full my-2 py-2 font-semibold text-xs">Play
+                                }} className=" max-w-[100px] px-6 mb-2 bg-transparent border border-orange-600 text-white rounded-full my-2 py-2 font-semibold text-xs">{Localization["Play"][lang]}
                                 </button>
                             </div>
                         </div>
