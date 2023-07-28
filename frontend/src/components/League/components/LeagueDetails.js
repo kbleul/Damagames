@@ -174,7 +174,7 @@ const ActiveSeason = ({ season, setIsPaymentModalOpen, set_isShowModalOpen }) =>
 
         <section className="mt-4">
             <p className="text-sm capitalize">{formattedStaringDate} - {formattedEndDate}</p>
-            <p className="text-sm text-xs capitalize">{formattedGameTime.starting + " - " + formattedGameTime.ending}</p>
+            <p className="text-sm capitalize">{formattedGameTime.starting + " - " + formattedGameTime.ending}</p>
             {user && season.is_active && season.number_of_player !== season.player_count &&
                 <button disabled={user && isUserInSeason ? true : false} onClick={() => setIsPaymentModalOpen(true)}
                     className={isUserInSeason ? "w-3/5 bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-sm text-gray-200" : "w-3/5 bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-sm text-black"}>{isUserInSeason ?
