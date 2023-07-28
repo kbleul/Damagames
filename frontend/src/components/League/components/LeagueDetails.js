@@ -161,7 +161,7 @@ const ActiveSeason = ({ season, setIsPaymentModalOpen, set_isShowModalOpen }) =>
                         {season.prizes.map((price, index) =>
                             <div key={price.id} className="flex items-start justify-start gap-x-1 text-xs pb-1">
                                 <p className="text-xs">{++index} - </p>
-                                <p className="">{JSON.parse(price?.prize_name)[LANG[lang]].english}</p>
+                                <p className="">{JSON.parse(price?.prize_name)[LANG[lang]]}</p>
                             </div>
                         )}
 

@@ -14,7 +14,6 @@ import socket from "../../utils/socket.io";
 import { TurnContext } from "../../context/TurnContext"
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
-import RematchModal from "../../Game/components/RematchModal";
 import useSound from "use-sound";
 import axios from "axios";
 import { useMutation, useQuery } from "@tanstack/react-query";

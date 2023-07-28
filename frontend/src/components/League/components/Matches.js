@@ -128,16 +128,16 @@ const MatchesCard = ({ match, badges }) => {
 
 
         <section className='w-1/5 flex items-center justify-center gap-x-1'>
-            {match.draw === "0" &&
+            {match.draw == "0" &&
                 <div>{match.winner_score.id === match.winner ? <AiOutlineCheck className='text-green-300 w-4 h-4' /> : <AiOutlineClose className='text-red-500 w-4 h-4' />}</div>
             }
-            {match.draw === "0" && <p className='text-xs font-bold'>{Localization["VS"][lang]}</p>}
+            {match.draw == "0" && <p className='text-xs font-bold'>{Localization["VS"][lang]}</p>}
 
-            {match.draw === "0" &&
+            {match.draw == "0" &&
                 <div>{match.loser_score.id === match.winner ? <AiOutlineCheck className='text-green-300 w-4 h-4' /> : <AiOutlineClose className='text-red-500 w-4 h-4' />}</div>
             }
 
-            {match.draw !== "0" && <div className='w-full flex flex-col items-center justify-center'>
+            {match.draw != "0" && <div className='w-full flex flex-col items-center justify-center'>
                 <p className='text-xs font-bold'>{Localization["VS"][lang]}</p>
 
                 <FaEquals className='text-white w-4 h-4' />
