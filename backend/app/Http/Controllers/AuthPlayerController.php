@@ -59,14 +59,18 @@ class AuthPlayerController extends Controller
 
     public function join_game(Game $game, Request $request)
     {
-        if($request->is_league == 1 && $game->status == 0){
+        if ($game->creator->id == auth()->id()) {
+            abort(403, "You can't join a game you created");
+        }
+
+        if ($request->is_league == 1 && $game->status == 0) {
             return response()
-            ->json([
-                'game' => $game->id,
-                'status' => $game->status,
-                'playerOne' => $game->creator,
-                'is_league' =>  $request->is_league,
-            ], 201);  
+                ->json([
+                    'game' => $game->id,
+                    'status' => $game->status,
+                    'playerOne' => $game->creator,
+                    'is_league' =>  $request->is_league,
+                ], 201);
         }
 
         if ($game->status !== 3) {
@@ -99,6 +103,10 @@ class AuthPlayerController extends Controller
     {
         $game = Game::where('code', $request->code)->where('status', 0)->first();
 
+        if ($game->creator->id == auth()->id()) {
+            abort(403, "You can't join a game you created");
+        }
+
         if (!$game) {
             abort(400, "This link is expired or it is not correct!");
         }
@@ -126,7 +134,10 @@ class AuthPlayerController extends Controller
 
     public function start_game(Game $game)
     {
-
+        if ($game->creator->id == auth()->id()) {
+            abort(403, "You can't start a game you created");
+        }
+        
         $game->update([
             'status' => 1,
         ]);
