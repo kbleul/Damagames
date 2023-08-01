@@ -3,7 +3,6 @@
 
 import { useNavigate } from "react-router-dom"
 import leagueImgMain from "../../assets/leagueBg.jpg"
-import leagueImg from "../../assets/league_bg.png"
 import LeaguesCard from "./components/LeaguesCard"
 
 import { Circles } from "react-loader-spinner";

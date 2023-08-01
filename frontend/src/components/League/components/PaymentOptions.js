@@ -194,7 +194,7 @@ const PaymentOptions = ({
 
                                     <div className=" w-full flex flex-col items-center text-white text-sm gap-y-4 py-4">
                                         <p>{Localization["Your coins"][lang]} - {user.coin}{Localization["coins"][lang]}</p>
-                                        <p>{Localization["Season Price"][lang]} - {activeSeason?.season_price} {user.coin}{Localization["coins"][lang]}</p>
+                                        <p>{Localization["Season Price"][lang]} - {activeSeason?.season_price} {Localization["coins"][lang]}</p>
                                     </div>
 
 

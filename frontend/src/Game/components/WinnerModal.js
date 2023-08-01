@@ -206,11 +206,15 @@ const WinnerModal = ({
             const seasons = responseData?.data?.data
             console.log({ seasons })
             localStorage.setItem("dama-user-seasons", JSON.stringify(seasons));
-            navigate(`/league/${season_id}`);
+            setTimeout(() => {
+              navigate(`/league/${season_id}`)
+            }, 3500)
           },
           onError: (err) => {
             console.log("dsdffref")
-            navigate(`/league/${season_id}`);
+            setTimeout(() => {
+              navigate(`/league/${season_id}`)
+            }, 3500)
           },
           enabled: user ? true : false,
         },

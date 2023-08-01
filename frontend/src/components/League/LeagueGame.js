@@ -84,8 +84,10 @@ const LeagueGame = () => {
 
 
 
-    const playerOneData = JSON.parse(localStorage.getItem("gamePlayers")).p1
-    const playerTwoData = JSON.parse(localStorage.getItem("gamePlayers")).p2
+    const playerOneData = localStorage.getItem("gamePlayers") ? JSON.parse(localStorage.getItem("gamePlayers")).p1 : null
+    const playerTwoData = localStorage.getItem("gamePlayers") ? JSON.parse(localStorage.getItem("gamePlayers")).p2 : null
+
+    if (!playerOneData) { navigate(`create-game`) }
 
     const header = {
         "Content-Type": "application/json",

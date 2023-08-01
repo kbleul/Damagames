@@ -53,6 +53,7 @@ const LeagueHistory = ({ isInviteModalOpen, setIsInviteModalOpen, setInviteData 
     };
 
     const onSuccess = data => {
+        console.log({ data })
         setError(null)
         setLeagues([...data.users])
         setIsLoading(false)

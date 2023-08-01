@@ -45,6 +45,7 @@ const ActivePlayers = ({ isGameTime, isInviteModalOpen, setIsInviteModalOpen, se
 
         if (isGameTime) {
             socket.on("activeSeasonPlayers", (data) => {
+
                 setIsLoading(false)
 
                 if (!activePlayers && !playedActivePlayers) {
@@ -56,6 +57,10 @@ const ActivePlayers = ({ isGameTime, isInviteModalOpen, setIsInviteModalOpen, se
                         return
                     }
 
+                    playerSeasons = JSON.parse(localStorage.getItem("dama-user-seasons")).find(season => season.id == id) || null
+
+                    console.log("activee12", playerSeasons, data)
+
                     if (!playerSeasons) {
                         setActivePlayers([...data.activePlayers.filter(item => item.id !== user.id)]);
                         setPlayedActivePlayers(null)
@@ -65,13 +70,11 @@ const ActivePlayers = ({ isGameTime, isInviteModalOpen, setIsInviteModalOpen, se
 
 
                     else if (!playerSeasons.have_played) {
-                        console.log("activeeee11", playerSeasons)
                         setActivePlayers([...data.activePlayers.filter(item => item.id !== user.id)]);
                         return
                     }
 
                     else {
-                        console.log("activee12", playerSeasons)
 
                         let played = []
                         let notPlayed = []

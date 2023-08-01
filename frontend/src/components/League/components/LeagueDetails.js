@@ -171,7 +171,6 @@ const ActiveSeason = ({ season, setIsPaymentModalOpen, set_isShowModalOpen }) =>
             </section>
 
         </section>
-
         <section className="mt-4">
             <p className="text-sm capitalize">{formattedStaringDate} - {formattedEndDate}</p>
             <p className="text-sm capitalize">{formattedGameTime.starting + " - " + formattedGameTime.ending}</p>
