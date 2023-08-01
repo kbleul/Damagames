@@ -22,6 +22,8 @@ const Board = (props) => {
 
   let tracker = props.tracker;
 
+  console.log({ tracker })
+
   const [MyTurn, setMyTurn] = useContext(TurnContext);
 
   let isFirstMove = props["isFirstMove"]
@@ -74,25 +76,6 @@ const Board = (props) => {
         }
       }
 
-    }
-
-    else {
-      if (propsMain.numberOfPlayers == 1) {
-
-        if (propsMain["currentPlayer"] && props["squareClasses"].includes("player1")) {
-          squareClasses = props["squareClasses"] + " myturn";
-        }
-
-        else if (!propsMain["currentPlayer"] && props["squareClasses"].includes("player2")) {
-          squareClasses = props["squareClasses"] + " myturn";
-        }
-
-        else {
-          squareClasses = props["squareClasses"]
-        }
-
-
-      }
     }
 
     let movesData = [[]]

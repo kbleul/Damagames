@@ -238,6 +238,18 @@ const ActivePlayersCard = ({ player, badges, seasonId, rejectedInviteData, hasPl
     const createGameMutationSubmitHandler = async (values) => {
         setIsLoading(true)
         try {
+
+            localStorage.getItem("seasonId") && localStorage.removeItem("seasonId")
+            localStorage.getItem("gameId") && localStorage.removeItem("gameId")
+            localStorage.getItem("gamePlayers") && localStorage.removeItem("gamePlayers")
+
+            localStorage.getItem("playerOne") && localStorage.removeItem("playerOne")
+            localStorage.getItem("playerTwo") && localStorage.removeItem("playerTwo")
+
+            localStorage.getItem("playerOneIp") && localStorage.removeItem("playerOneIp")
+            localStorage.getItem("playerTwoIp") && localStorage.removeItem("playerTwoIp")
+
+
             createGameMutation.mutate(
                 { has_bet: false },
                 {

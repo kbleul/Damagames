@@ -247,7 +247,6 @@ io.on("connection", (socket) => {
     season ?
       io.emit("activeSeasonPlayers", { activePlayers: season })
       : io.emit("activeSeasonPlayers", { error: "Season not found" })
-
   })
 
 

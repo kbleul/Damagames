@@ -43,6 +43,18 @@ const PlayLeagueInvite = ({ setIsInviteModalOpen, inviteData }) => {
     const joinViaCodeMutationSubmitHandler = async (values) => {
         console.log(values)
         try {
+
+            localStorage.getItem("seasonId") && localStorage.removeItem("seasonId")
+            localStorage.getItem("gameId") && localStorage.removeItem("gameId")
+            localStorage.getItem("gamePlayers") && localStorage.removeItem("gamePlayers")
+
+            localStorage.getItem("playerOne") && localStorage.removeItem("playerOne")
+            localStorage.getItem("playerTwo") && localStorage.removeItem("playerTwo")
+
+            localStorage.getItem("playerOneIp") && localStorage.removeItem("playerOneIp")
+            localStorage.getItem("playerTwoIp") && localStorage.removeItem("playerTwoIp")
+
+
             joinViaCodeMutation.mutate(
                 { is_league: true },
                 {
@@ -58,6 +70,7 @@ const PlayLeagueInvite = ({ setIsInviteModalOpen, inviteData }) => {
                                 localStorage.setItem("gamePlayers", JSON.stringify({
                                     p1: data.playerOne, p2: data.playerTwo
                                 }))
+                                localStorage.setItem("playerTwo", JSON.stringify({ playerTwo: data.playerTwo }))
                             }
                         })
 

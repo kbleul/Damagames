@@ -16,7 +16,7 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import useSound from "use-sound";
 import axios from "axios";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import DrawGameModal from "../../Game/components/DrawGameModal.js";
 import winSound from "../../assets/sounds/win.mp3";
 import loseSound from "../../assets/sounds/lose.mp3";
@@ -25,7 +25,6 @@ import strikeSound from "../../assets/sounds/strike.mp3";
 
 import { BsFillChatFill } from "react-icons/bs";
 import { FaTimes, FaTelegramPlane } from "react-icons/fa";
-import { getSmartMove } from "../../Game/components/Opponent.js";
 import { ThreeDots } from "react-loader-spinner";
 import UserLeavesModal from "../../Game/components/UserLeavesModal.js";
 import { clearCookie } from "../../utils/data";
@@ -133,6 +132,12 @@ const LeagueGame = () => {
             localStorage.getItem("seasonId") && localStorage.removeItem("seasonId")
             localStorage.getItem("gameId") && localStorage.removeItem("gameId")
             localStorage.getItem("gamePlayers") && localStorage.removeItem("gamePlayers")
+
+            localStorage.getItem("playerOne") && localStorage.removeItem("playerOne")
+            localStorage.getItem("playerTwo") && localStorage.removeItem("playerTwo")
+
+            localStorage.getItem("playerOneIp") && localStorage.removeItem("playerOneIp")
+            localStorage.getItem("playerTwoIp") && localStorage.removeItem("playerTwoIp")
         }
     }, []);
 
