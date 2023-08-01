@@ -133,11 +133,7 @@ class AuthPlayerController extends Controller
     }
 
     public function start_game(Game $game)
-    {
-        if ($game->creator->id == auth()->id()) {
-            abort(403, "You can't start a game you created");
-        }
-        
+    {        
         $game->update([
             'status' => 1,
         ]);
