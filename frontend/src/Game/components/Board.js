@@ -3,7 +3,7 @@ import * as utils from "./utils.js";
 import { TurnContext } from "../../context/TurnContext";
 import { useAuth } from "../../context/auth.js";
 
-import { getMoves, movePiece } from "./ReactCheckers.js";
+import { getMoves } from "./ReactCheckers.js";
 
 const columns = {
   a: 0,
@@ -22,9 +22,8 @@ const Board = (props) => {
 
   let tracker = props.tracker;
 
-  console.log({ tracker })
 
-  const [MyTurn, setMyTurn] = useContext(TurnContext);
+  const [MyTurn] = useContext(TurnContext);
 
   let isFirstMove = props["isFirstMove"]
   let propsMain = props
@@ -116,15 +115,18 @@ const Board = (props) => {
       }
     }
 
+
     return (
       <div>
-        <button
+        <button style={{
+          backgroundColor: tracker && (squareClasses.includes(tracker.moved) || squareClasses.includes(tracker.to)) && "#858484"
+        }}
           className={
-            tracker &&
-              (squareClasses.includes(tracker.moved) ||
-                squareClasses.includes(tracker.to))
-              ? "square " + squareClasses + " tracker"
-              : "square " + squareClasses
+            // tracker &&
+            //   (squareClasses.includes(tracker.moved) ||
+            //     squareClasses.includes(tracker.to))
+            "square " + squareClasses
+            // : "square " + squareClasses
           }
           onClick={onClick}
         />

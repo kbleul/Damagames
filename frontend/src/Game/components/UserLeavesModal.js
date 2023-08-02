@@ -13,6 +13,7 @@ export default function UserLeavesModal({
   const { lang } = useAuth();
   const navigate = useNavigate();
   const gameId = localStorage.getItem("gameId");
+
   const handleExit = () => {
     socket.emit("leave", gameId);
     clearCookie.forEach((data) => {
@@ -20,6 +21,7 @@ export default function UserLeavesModal({
     });
     navigate("/create-game");
   };
+
   return (
     <>
       <Transition appear show={isLeaveModalOpen} as={Fragment}>

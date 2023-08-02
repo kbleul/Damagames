@@ -663,6 +663,32 @@ const LeagueGame = () => {
 
 
 
+    const fetchSeasonsMutation = useMutation(
+        async (newData) =>
+            await axios.post(`${process.env.REACT_APP_BACKEND_URL}player-season/${user.id}`, newData, {
+                headers,
+            }),
+        {
+            retry: true,
+        }
+    );
+
+
+    const fetchSeasons = async (values) => {
+        fetchSeasonsMutation.mutate(
+            {},
+            {
+                onSuccess: (responseData) => {
+                    const seasons = responseData?.data?.data
+                    localStorage.setItem("dama-user-seasons", JSON.stringify(seasons));
+                },
+                onError: (err) => { },
+                enabled: user ? true : false,
+            },
+        );
+
+    };
+
 
     useEffect(() => {
 
@@ -756,6 +782,7 @@ const LeagueGame = () => {
                 clearCookie.forEach((data) => {
                     localStorage.getItem(data) && localStorage.removeItem(data);
                 });
+
                 navigate("/create-game");
             }, 5000);
         });
@@ -937,7 +964,6 @@ const LeagueGame = () => {
 
 
     useEffect(() => {
-        console.log({ winnerPlayer })
         if (winnerPlayer && playerOneIp) {
 
             if (winnerPlayer === "player1pieces" || winnerPlayer === "player1moves") {
@@ -953,7 +979,7 @@ const LeagueGame = () => {
 
 
         return () => {
-            reCheckInPlayer()
+            fetchSeasons()
         }
     }, [winnerPlayer]);
 
@@ -973,7 +999,6 @@ const LeagueGame = () => {
     );
 
     const winnerMutationSubmitHandler = async (values) => {
-        console.log(values, gameId, seasonId)
         try {
             winnerMutation.mutate(
                 {

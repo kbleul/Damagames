@@ -46,11 +46,29 @@ const removePublicGame = (code, type) => {
 };
 
 
+
+const sendActivePlayers = (seasonId) => {
+  const season = leagueActivePlayers.get(seasonId)
+
+  season ?
+    io.emit("activeSeasonPlayers", { activePlayers: season, seasonId })
+    : io.emit("activeSeasonPlayers", { error: "Season not found", seasonId })
+}
+
 /*
   Remove player from leagueActivePlayers using by == "socketId" || "userId" by default
   check if user exists and remove if exists
   */
 const removeLeagueActivePlayer = (id, by = "userId") => {
+
+  let userSeasons = []
+  leagueActivePlayers.forEach((value, key, map) => {
+
+    const isUserFound = leagueActivePlayers.get(key).find(player =>
+      by === "socketId" ? player.socketId === id : player.id === id)
+
+    isUserFound && userSeasons.push(key)
+  })
 
   leagueActivePlayers.forEach((value, key, map) => {
 
@@ -66,7 +84,15 @@ const removeLeagueActivePlayer = (id, by = "userId") => {
       else map.set(key, updatedSeason);
     }
   })
+
+  console.log({ userSeasons })
+  if (userSeasons.length > 0) {
+    userSeasons.forEach(seasonId => { sendActivePlayers(seasonId) })
+  }
+
 }
+
+
 
 const getLeagueActivePlayer = (seasonId, userId) => {
   if (leagueActivePlayers.size === 0) return
@@ -205,7 +231,6 @@ io.on("connection", (socket) => {
 
 
   socket.on("checkInLeague", (data) => {
-    console.log("checkInLeague1")
 
     const seasonId = data.seasonId;
     const userData = data.userData;
@@ -214,7 +239,7 @@ io.on("connection", (socket) => {
 
     if (!season) {
       leagueActivePlayers.set(seasonId, [{ ...userData, socketId: socket.id }]);
-      console.log("checkInLeague", seasonId, userData.id, leagueActivePlayers)
+      // console.log("checkInLeague", seasonId, userData.id, leagueActivePlayers)
 
       return;
     }
@@ -229,7 +254,8 @@ io.on("connection", (socket) => {
       season[userIndex] = { ...season[userIndex], socketId: socket.id };
     }
 
-    console.log("checkInLeague", seasonId, userData.id, leagueActivePlayers)
+    sendActivePlayers(seasonId)
+    // console.log("checkInLeague", seasonId, userData.id, leagueActivePlayers)
 
   });
 
@@ -241,13 +267,7 @@ io.on("connection", (socket) => {
     seasonExits && leagueActivePlayers.delete(data.seasonId)
   })
 
-  socket.on("getActiveSeasonPlayers", (data) => {
-    const season = leagueActivePlayers.get(data.seasonId)
-
-    season ?
-      io.emit("activeSeasonPlayers", { activePlayers: season })
-      : io.emit("activeSeasonPlayers", { error: "Season not found" })
-  })
+  socket.on("getActiveSeasonPlayers", (data) => { sendActivePlayers(data.seasonId) })
 
 
   socket.on("join-room-league", async (data) => {
@@ -309,7 +329,6 @@ io.on("connection", (socket) => {
       }
 
     } else {
-      // checkInLeague({ seasonId, userData: sender })
       //send player two had disconnected message
       io.to(socket.id).emit("play-league-invite-error", {
         AMH: "ከዚህ የሊግ ጨዋታ ጋር መገናኘት አልተቻለም። ከትንሽ ደቂቃ በኋላ እንደገና ይሞክሩ።",

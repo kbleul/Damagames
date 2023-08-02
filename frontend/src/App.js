@@ -132,9 +132,6 @@ const App = () => {
       userData: { id, username, profile_image, game_point, default_board, default_crown }
     });
 
-    // socket.emit("clearSeason", {
-    //   seasonId: "1234s"
-    // });
   }
 
   const headers = {

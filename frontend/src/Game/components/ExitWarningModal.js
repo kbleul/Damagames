@@ -52,7 +52,6 @@ export default function ExitWarningModal({
   );
 
   const fetchSeasons = async (values) => {
-    console.log("ASD")
 
     try {
       fetchSeasonsMutation.mutate(
@@ -62,11 +61,11 @@ export default function ExitWarningModal({
             const seasons = responseData?.data?.data
             console.log({ seasons })
             localStorage.setItem("dama-user-seasons", JSON.stringify(seasons));
-            navigate(`/league/${seasonId}`);
+            navigate(`/league`);
           },
           onError: (err) => {
             console.log("dsdffref")
-            navigate(`/league/${seasonId}`);
+            navigate(`/league`);
           },
           enabled: user ? true : false,
         },
@@ -83,9 +82,7 @@ export default function ExitWarningModal({
       await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}scores`,
         newData,
-        {
-          headers,
-        }
+        { headers }
       ),
     {
       retry: false,
@@ -104,7 +101,9 @@ export default function ExitWarningModal({
             },
             {
               onSuccess: (responseData) => {
-                fetchSeasons()
+                console.log("exit game")
+                navigate("/")
+                //fetchSeasons()
               },
               onError: (err) => {
                 fetchSeasons()

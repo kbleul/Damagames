@@ -1,6 +1,6 @@
-import React, { Component, Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import wancha from "../../assets/wancha.svg";
 import { useAuth } from "../../context/auth";
 import { useMutation } from "@tanstack/react-query";
@@ -24,7 +24,6 @@ const WinnerModal = ({
   const [season_id, setSeason_id] = useState(null)
   const playerOneIp = localStorage.getItem("playerOneIp");
   const playerTwoIp = localStorage.getItem("playerTwoIp");
-  console.log({ seasonId })
 
   const headers = {
     "Content-Type": "application/json",
@@ -196,7 +195,6 @@ const WinnerModal = ({
   );
 
   const fetchSeasons = async (values) => {
-    console.log("ASD")
 
     try {
       fetchSeasonsMutation.mutate(
@@ -204,23 +202,20 @@ const WinnerModal = ({
         {
           onSuccess: (responseData) => {
             const seasons = responseData?.data?.data
-            console.log({ seasons })
             localStorage.setItem("dama-user-seasons", JSON.stringify(seasons));
             setTimeout(() => {
               navigate(`/league/${season_id}`)
-            }, 3500)
+            }, 2500)
           },
           onError: (err) => {
-            console.log("dsdffref")
             setTimeout(() => {
               navigate(`/league/${season_id}`)
-            }, 3500)
+            }, 2500)
           },
           enabled: user ? true : false,
         },
       );
     } catch (err) {
-      console.log("dsdffref")
       navigate(`/league/${season_id}`);
     }
   };

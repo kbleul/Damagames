@@ -47,49 +47,49 @@ const ActivePlayers = ({ isGameTime, isInviteModalOpen, setIsInviteModalOpen, se
             socket.on("activeSeasonPlayers", (data) => {
 
                 setIsLoading(false)
+                if (data.seasonId === id) {
 
-                if (!activePlayers && !playedActivePlayers) {
+                    if (!activePlayers && !playedActivePlayers) {
 
-                    if (data.error) {
-                        setActivePlayers(null);
-                        setPlayedActivePlayers(null)
-                        setError(Localization["Error fetching active players"][lang])
-                        return
-                    }
+                        if (data.error) {
+                            setActivePlayers(null);
+                            setPlayedActivePlayers(null)
+                            setError(Localization["Error fetching active players"][lang])
+                            return
+                        }
 
-                    playerSeasons = JSON.parse(localStorage.getItem("dama-user-seasons")).find(season => season.id == id) || null
+                        playerSeasons = JSON.parse(localStorage.getItem("dama-user-seasons")).find(season => season.id == id) || null
 
-                    console.log("activee12", playerSeasons, data)
-
-                    if (!playerSeasons) {
-                        setActivePlayers([...data.activePlayers.filter(item => item.id !== user.id)]);
-                        setPlayedActivePlayers(null)
-                        setError(null)
-                        return
-                    }
+                        if (!playerSeasons) {
+                            setActivePlayers([...data.activePlayers.filter(item => item.id !== user.id)]);
+                            setPlayedActivePlayers(null)
+                            setError(null)
+                            return
+                        }
 
 
-                    else if (!playerSeasons.have_played) {
-                        setActivePlayers([...data.activePlayers.filter(item => item.id !== user.id)]);
-                        return
-                    }
+                        else if (!playerSeasons.have_played) {
+                            setActivePlayers([...data.activePlayers.filter(item => item.id !== user.id)]);
+                            return
+                        }
 
-                    else {
+                        else {
 
-                        let played = []
-                        let notPlayed = []
-                        data.activePlayers.forEach(player => {
+                            let played = []
+                            let notPlayed = []
+                            data.activePlayers.forEach(player => {
 
-                            if (player.id !== user.id) {
-                                playerSeasons.have_played.includes(player.id) ?
-                                    played.push(player) : notPlayed.push(player)
-                            }
-                        })
+                                if (player.id !== user.id) {
+                                    playerSeasons.have_played.includes(player.id) ?
+                                        played.push(player) : notPlayed.push(player)
+                                }
+                            })
 
-                        setActivePlayers([...notPlayed])
-                        setPlayedActivePlayers([...played])
+                            setActivePlayers([...notPlayed])
+                            setPlayedActivePlayers([...played])
 
-                        playerSeasons = played = notPlayed = null
+                            playerSeasons = played = notPlayed = null
+                        }
                     }
                 }
 
@@ -274,7 +274,6 @@ const ActivePlayersCard = ({ player, badges, seasonId, rejectedInviteData, hasPl
                             if (data.gameId && data.seasonId) {
                                 navigate(`/league-game/${data.gameId}`)
                                 localStorage.setItem("seasonId", data.seasonId)
-                                //    console.log("League game started", data)
                                 localStorage.setItem("gamePlayers", JSON.stringify({
                                     p1: data.playerOne, p2: data.playerTwo
                                 }))
