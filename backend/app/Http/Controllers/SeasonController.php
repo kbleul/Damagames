@@ -36,7 +36,7 @@ class SeasonController extends Controller
     public function update(UpdateSeasonRequest $request, Season $season)
     {
         if($request->validated('is_active') == 1){
-            $activeSeason = Season::where('league_id', $request->validated('league_id'))->whereNot('id', $season->id)->where('is_active', 1)->first();
+            $activeSeason = Season::where('league_id', $request->validated('league_id'))->where('id', '<>', $season->id)->where('is_active', 1)->first();
             if(isset($activeSeason)){
                 $activeSeason->is_active = 0;
                 $activeSeason->save();
