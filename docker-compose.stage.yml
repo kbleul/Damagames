@@ -116,6 +116,7 @@ services:
   sockets:
     build:
       context: ./socket
+    restart: always
     environment:
       - APP_ENV
       - CONTAINER_ROLE=sockets
