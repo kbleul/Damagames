@@ -41,41 +41,6 @@ export default function ExitWarningModal({
   );
 
 
-  const fetchSeasonsMutation = useMutation(
-    async (newData) =>
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}player-season/${user.id}`, newData, {
-        headers,
-      }),
-    {
-      retry: true,
-    }
-  );
-
-  const fetchSeasons = async (values) => {
-
-    try {
-      fetchSeasonsMutation.mutate(
-        {},
-        {
-          onSuccess: (responseData) => {
-            const seasons = responseData?.data?.data
-            console.log({ seasons })
-            localStorage.setItem("dama-user-seasons", JSON.stringify(seasons));
-            navigate(`/league`);
-          },
-          onError: (err) => {
-            console.log("dsdffref")
-            navigate(`/league`);
-          },
-          enabled: user ? true : false,
-        },
-      );
-    } catch (err) {
-      console.log("dsdffref")
-      navigate(`/league/${seasonId}`);
-    }
-  };
-
 
   const exitLeagueGameMutation = useMutation(
     async (newData) =>
@@ -100,20 +65,11 @@ export default function ExitWarningModal({
               season_id: seasonId
             },
             {
-              onSuccess: (responseData) => {
-                console.log("exit game")
-                navigate("/")
-                //fetchSeasons()
-              },
-              onError: (err) => {
-                fetchSeasons()
-              },
+              onSuccess: (responseData) => { navigate(`/league/${seasonId}`) },
+              onError: (err) => { navigate(`/league/${seasonId}`) },
             }
           )
-        } catch (err) {
-          fetchSeasons()
-
-        }
+        } catch (err) { navigate(`/league/${seasonId}`) }
 
 
       }
@@ -149,6 +105,8 @@ export default function ExitWarningModal({
 
     !isLeague && navigate("/create-game");
   };
+
+
   return (
     <>
       <Transition appear show={isExitModalOpen} as={Fragment}>

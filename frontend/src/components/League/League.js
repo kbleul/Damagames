@@ -78,7 +78,7 @@ const League = () => {
                 })
 
                 setError(null)
-                setLeagues([...activeLeague, ...joinedLeagues, ...inActiveLeague])
+                setLeagues([...joinedLeagues, ...activeLeague, ...inActiveLeague])
                 setIsLoading(false)
             },
             onError: (err) => {

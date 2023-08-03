@@ -5,7 +5,6 @@ import socket from "../../../utils/socket.io";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import { useEffect, useState } from "react";
-import { ImCancelCircle } from "react-icons/im"
 
 import { Oval } from "react-loader-spinner";
 import { useNavigate } from "react-router-dom";
@@ -128,12 +127,12 @@ const PlayLeagueInvite = ({ setIsInviteModalOpen, inviteData }) => {
     return (
         <article className="absolute w-full h-[100vh] bg-transparent z-70">
 
-            {inviteErr ? <section className="h-[80vh] w-full flex flex-col items-center justify-center">
+            {inviteErr ? <section className="px-4 h-[80vh] w-full flex flex-col items-center justify-center">
                 <p className="text-orange-500 fold-bold text-center">{inviteErr}</p>
             </section> :
 
 
-                <section className="z-[100] absolute top-[22vh] w-4/5 ml-[10%] h-[30vh] border border-orange-600 rounded-xl bg-black flex flex-col items-center justify-center">
+                <section className="px-4 z-[100] absolute top-[22vh] w-4/5 ml-[10%] h-[30vh] border border-orange-600 rounded-xl bg-black flex flex-col items-center justify-center">
                     <div className="w-full flex items-center justify-center text-white gap-x-4">
                         <div className="flex flex-col items-center justify-center">
                             <img className="w-10 h-10 rounded-full border border-gray-500" src={inviteData?.sender?.profile_image ? inviteData?.sender?.profile_image : Avatar} alt="" />

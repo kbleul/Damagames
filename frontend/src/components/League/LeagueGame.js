@@ -679,6 +679,7 @@ const LeagueGame = () => {
             {},
             {
                 onSuccess: (responseData) => {
+                    console.log("wax ")
                     const seasons = responseData?.data?.data
                     localStorage.setItem("dama-user-seasons", JSON.stringify(seasons));
                 },

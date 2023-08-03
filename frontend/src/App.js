@@ -78,24 +78,12 @@ const App = () => {
       localStorage.getItem("gamePlayers") && localStorage.removeItem("gamePlayers")
     };
 
-
-    //
   }, []);
 
 
   useEffect(() => {
     socket.on("connect", () => {
       console.log("Connected to Socket.io server ");
-
-      // socket.on("play-league-invite", data => {
-      //   console.log(user)
-      //   if (user && user.id !== data.sender.id && !isInviteModalOpen) {
-      //     setInviteData(data)
-      //     setIsInviteModalOpen(true)
-      //   }
-      // })
-
-
     });
 
   });
@@ -160,7 +148,7 @@ const App = () => {
 
             let activeSeasons = []
 
-            console.log(seasons)
+            console.log({ "wax": seasons })
             seasons.forEach((season) => {
               if (season.is_active_season && season.is_game_time) {
                 checkInUser(season.id)

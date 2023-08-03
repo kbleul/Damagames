@@ -135,7 +135,7 @@ export const Localization = {
     },
     "you are about to": {
         AMH: "ይህን ጨዋታ ለቀዉ ሊሄዱ ነው ።",
-        ENG: "You are about to leave this game !"
+        ENG: "You are about to forfit this game !"
     },
     "Yes": {
         AMH: "አዎ",
