@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import SideMenu from "./SideMenu";
 import { useNavigate } from "react-router-dom";
 import background from "../assets/backdrop.jpg";
-import avatar from "../assets/logo.png";
+// import avatar from "../assets/logo.png";
 import { useAuth } from "../context/auth";
 import { Link } from "react-router-dom";
 import { Localization } from "../utils/language"
@@ -367,9 +367,9 @@ const CreateGame = () => {
 
       <div onClick={() => { setShowMenu(false); setShowLangMenu(false); }}
         className={user ? "max-w-xs p-3 mx-auto flex flex-col items-center justify-center gap-y-2 min-h-[48vh] space-y-2" : "max-w-xs p-3 mx-auto flex flex-col items-center justify-center gap-y-2 min-h-[70vh] space-y-2 mt-16"}>
-        {!user && !token && <div className="h-[180px] w-[200px] bg-inherit mt-18 mb-8 ">
+        {/* {!user && !token && <div className="h-[180px] w-[200px] bg-inherit mt-18 mb-8 ">
           <img src={avatar} className="h-[180px] w-[200px]" alt="avatar" loading="lazy" />
-        </div>}
+        </div>} */}
         <button
           onClick={() => {
             user && token ? createGameAI() : createGameAI_NoAuth()
