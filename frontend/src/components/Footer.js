@@ -6,7 +6,7 @@ export const Footer = () => {
 
     return (
         <div className="w-full bg-inherit text-white text-center mt-16">
-            <a onClick={() => navigate("/privacy-policy")} className="text-xs text-gray-200 cursor-pointer">Privacy Policy | {VERSION}</a>
+            <button onClick={() => navigate("/privacy-policy")} className="text-xs text-gray-200 cursor-pointer">Privacy Policy | {VERSION}</button>
         </div>
     )
 }

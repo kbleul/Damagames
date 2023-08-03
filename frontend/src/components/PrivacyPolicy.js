@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react'
 import background from "../assets/backdrop.jpg";
-import { useNavigate } from "react-router-dom";
 import PrivatePolicyModal from "../Game/components/PrivatePolicyModal";
 
 const PrivacyPolicy = () => {

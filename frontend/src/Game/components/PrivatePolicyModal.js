@@ -11,9 +11,8 @@ const PrivatePolicyModal = ({
 }) => {
     const navigate = useNavigate();
 
-    const handleAccept = () => {
-        navigate("/create-game");
-    };
+    const handleAccept = () => { navigate("/create-game"); };
+
     return (
         <>
             <Transition appear show={isPrivacyModalOpen} as={Fragment}>
