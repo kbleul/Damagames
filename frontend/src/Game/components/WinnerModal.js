@@ -138,9 +138,7 @@ const WinnerModal = ({
       await axios.post(`${process.env.REACT_APP_BACKEND_URL}play-with-computer-done/${localStorage.getItem("gameId")}`, newData, {
         headers,
       }),
-    {
-      retry: true,
-    }
+    { retry: true, }
   );
 
   const finishGameAI = async (values) => {
@@ -148,9 +146,7 @@ const WinnerModal = ({
       finishGameMutation.mutate(
         { is_user_win: values },
         {
-          onSuccess: (responseData) => {
-            localStorage.removeItem("gameId")
-          },
+          onSuccess: (responseData) => { localStorage.removeItem("gameId") },
           onError: (err) => { },
         }
       );
@@ -163,9 +159,7 @@ const WinnerModal = ({
       await axios.post(`${process.env.REACT_APP_BACKEND_URL}play-with-computer-na-done/${localStorage.getItem("gameId")}`, newData, {
         headers: header,
       }),
-    {
-      retry: false,
-    }
+    { retry: false, }
   );
 
   const finishGameAI_NoAuth = async (values) => {
@@ -173,9 +167,7 @@ const WinnerModal = ({
       finishGameMutation_NoAuth.mutate(
         { is_user_win: values },
         {
-          onSuccess: (responseData) => {
-            localStorage.removeItem("gameId")
-          },
+          onSuccess: (responseData) => { localStorage.removeItem("gameId") },
           onError: (err) => { },
         }
       );
@@ -189,9 +181,7 @@ const WinnerModal = ({
       await axios.post(`${process.env.REACT_APP_BACKEND_URL}player-season/${user.id}`, newData, {
         headers,
       }),
-    {
-      retry: true,
-    }
+    { retry: true, }
   );
 
   const fetchSeasons = async (values) => {
@@ -204,21 +194,15 @@ const WinnerModal = ({
             console.log("wax 3")
             const seasons = responseData?.data?.data
             localStorage.setItem("dama-user-seasons", JSON.stringify(seasons));
-            setTimeout(() => {
-              navigate(`/league/${season_id}`)
-            }, 2500)
+            setTimeout(() => { navigate(`/league/${season_id}`) }, 2500)
           },
           onError: (err) => {
-            setTimeout(() => {
-              navigate(`/league/${season_id}`)
-            }, 2500)
+            setTimeout(() => { navigate(`/league/${season_id}`) }, 2500)
           },
           enabled: user ? true : false,
         },
       );
-    } catch (err) {
-      navigate(`/league/${season_id}`);
-    }
+    } catch (err) { navigate(`/league/${season_id}`); }
   };
 
 
@@ -249,11 +233,17 @@ const WinnerModal = ({
     return ((token && userCoin)
       ? <div className="text-white flex flex-col items-center justify-center gap-3 text-sm">
         <h2 className="text-2xl">{Localization["Congratulations"][lang]}</h2>
-        <p>{Localization["Previous"][lang]} = {userCoin} {Localization["coins"][lang]}</p>
-        <p>{Localization["Total"][lang]} = {userCoin + 50} {Localization["coins"][lang]}</p>
+
+        {isLeague ?
+          <h2 className="text-2xl">{Localization["You Lost !"][lang]}</h2>
+          : <div>
+            <p>{Localization["Previous"][lang]} = {userCoin} {Localization["coins"][lang]}</p>
+            <p>{Localization["Total"][lang]} = {userCoin + 50} {Localization["coins"][lang]}</p>
+          </div>}
+
       </div> : <div className="text-white">{Localization["Congratulations"][lang]}</div>)
   }
-
+  // 191921
   const LostMsg = () => {
     return (token && userCoin ? <div className="text-white flex flex-col items-center justify-center gap-3 text-sm">
       <h2 className="text-2xl">{Localization["You Lost !"][lang]}</h2>

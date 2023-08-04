@@ -33,8 +33,8 @@ const Nav = ({ active, setActive, isInSeason }) => {
         "w-1/2 flex items-center justify-center gap-x-1 py-3 cursor-pointer" :
         "w-1/3 flex items-center justify-center gap-x-1 py-3 cursor-pointer"
 
-    return (<section className={isInSeason ? "relative mt-6 w-[94%] ml-[3%] max-w-[600px] border border-orange-600 rounded-full text-orange-color bg-black flex items-center justify-center  mb-8"
-        : "relative mt-6 w-4/5 ml-[10%] max-w-[600px] border border-orange-600 rounded-full text-orange-color bg-black flex items-center justify-center mb-8"}>
+    return (<section className={isInSeason ? "relative mt-6 w-[94%] ml-[3%] max-w-[600px] border border-orange-600 rounded-full text-orange-color bg-[#191921] flex items-center justify-center  mb-8"
+        : "relative mt-6 w-4/5 ml-[10%] max-w-[600px] border border-orange-600 rounded-full text-orange-color bg-[#191921] flex items-center justify-center mb-8"}>
 
         <div className={active === LEAGUE_CATAGORIES[0] ? className : className_active}
             onClick={() => {

@@ -27,7 +27,7 @@ const PlayerCard = ({ index, player, badges }) => {
         }}>
 
             <div className="p-2 border w-[18%] rounded-lg max-w-[5rem] h-14 flex justify-center ">
-                <img
+                <img className="w-10 h-10"
                     src={
                         player?.userData?.profile_image ? player?.userData?.profile_image : Avatar
                     }

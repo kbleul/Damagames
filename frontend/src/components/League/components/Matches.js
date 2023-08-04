@@ -118,7 +118,7 @@ const MatchesCard = ({ match, badges }) => {
             background: `linear-gradient(120deg, rgb(39, 138, 134) 1%, rgba(11, 42, 43, 0.32) 10%, rgb(22, 85, 82) 98%) repeat scroll 0% 0%`,
         }}>
             <div className='w-1/4 max-w-[5rem] flex justify-center overflow-hidden pl-1'>
-                <img className='w-[94%] ml-[3%] rounded-md' src={match.winner_score.profile_image ? match.winner_score.profile_image : Avatar} alt="" />
+                <img className='w-8 h-8 ml-[3%] rounded-md' src={match.winner_score.profile_image ? match.winner_score.profile_image : Avatar} alt="" />
             </div>
             <div className='w-4/5 flex flex-col items-start pl-1'>
                 <p className='font-bold text-sm'>{match.winner_score.username}</p>
@@ -150,7 +150,7 @@ const MatchesCard = ({ match, badges }) => {
             background: `linear-gradient(120deg, rgb(39, 138, 134) 1%, rgba(11, 42, 43, 0.32) 10%, rgb(22, 85, 82) 98%) repeat scroll 0% 0%`,
         }}>
             <div className='w-1/4 max-w-[5rem] flex justify-center overflow-hidden pl-1'>
-                <img className='w-[94%] ml-[3%] rounded-md' src={match.loser_score.profile_image ? match.loser_score.profile_image : Avatar} alt="" />
+                <img className='w-8 h-8 ml-[3%] rounded-md' src={match.loser_score.profile_image ? match.loser_score.profile_image : Avatar} alt="" />
             </div>
             <div className='w-4/5 flex flex-col items-start pl-1'>
                 <p className='font-bold text-sm'>{match.loser_score.username}</p>

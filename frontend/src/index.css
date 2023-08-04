@@ -44,7 +44,7 @@
 .score-box-bottom {
   border-width: 6px;
   border-top-style: solid;
-  border-image: linear-gradient(to right, black, #b03806) 1;
+  border-image: linear-gradient(to right, #191921, #b03806) 1;
   border-left: none;
   border-right: none;
   border-bottom: none;
@@ -64,8 +64,6 @@
 .history-sec h3 {
   color: #222222;
 }
-
-
 
 .history-sec p {
   color: #8b8b8a;

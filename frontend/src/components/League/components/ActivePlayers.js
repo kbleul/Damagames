@@ -306,7 +306,7 @@ const ActivePlayersCard = ({ player, badges, seasonId, rejectedInviteData, hasPl
         }}>
 
             <div className="p-2 border w-[18%] rounded-lg max-w-[5rem] h-16 flex justify-center ">
-                <img
+                <img className="w-12 h-12"
                     src={
                         player?.profile_image ? player?.profile_image : Avatar
                     }

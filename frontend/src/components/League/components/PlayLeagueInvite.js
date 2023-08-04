@@ -162,9 +162,9 @@ const PlayLeagueInvite = ({ setIsInviteModalOpen, inviteData }) => {
                             }>
                             {isLoading ?
                                 <Oval
-                                    height={10}
-                                    width={10}
-                                    color="#FF4C01"
+                                    height={13}
+                                    width={13}
+                                    color="#000"
                                     wrapperStyle={{}}
                                     wrapperClass=""
                                     visible={true}
