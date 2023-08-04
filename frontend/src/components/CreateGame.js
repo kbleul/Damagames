@@ -28,7 +28,7 @@ import { sortScoreBoard, cacheApiResponse } from "../utils/utilFunc";
 
 const CreateGame = () => {
   const navigate = useNavigate();
-  const { user, token, lang, setLanguage } = useAuth();
+  const { user, token, lang, setLanguage, logout } = useAuth();
   const [showMenu, setShowMenu] = useState(false);
   const [showTourPrompt, setShowTourPrompt] = useState(false);
   const [showLangPrompt, setShowLangPrompt] = useState(false);
@@ -51,6 +51,7 @@ const CreateGame = () => {
       navigate(`/${url}`);
     }, 300);
   }
+
   const startTour = () => {
     setShowTourPrompt(false)
     setTourItems({
@@ -121,7 +122,11 @@ const CreateGame = () => {
             localStorage.setItem("gameId", responseData?.data?.data?.id)
             handleSecond(`game/${1}`)
           },
-          onError: (err) => { },
+          onError: (err) => {
+            if (err?.response?.status === 401) {
+              logout();
+            }
+          },
         }
       );
     } catch (err) { }
@@ -147,7 +152,11 @@ const CreateGame = () => {
             localStorage.setItem("gameId", responseData?.data?.data?.id)
             handleSecond(`game/${1}`)
           },
-          onError: (err) => { },
+          onError: (err) => {
+            if (err?.response?.status === 401) {
+              logout();
+            }
+          },
         }
       );
     } catch (err) { }
@@ -183,6 +192,9 @@ const CreateGame = () => {
         sortedArr = []
         setIsLoading(false)
       },
+      onError: (err) => {
+        if (err?.response?.status === 401) { logout(); }
+      },
       enabled: localStorage.getItem("TopFour") ? false : true,
     }
   );
@@ -209,6 +221,9 @@ const CreateGame = () => {
 
         tempArr = []
       },
+      onError: err => {
+        if (err?.response?.status === 401) { logout(); }
+      },
       enabled: (!isLoading && !localStorage.getItem("BadgesAll")) ? true : false,
     }
   );
@@ -223,7 +238,6 @@ const CreateGame = () => {
       setAllBadges(JSON.parse(localStorage.getItem("BadgesAll")))
       setIsLoading(false)
     }
-
 
   }, [])
 

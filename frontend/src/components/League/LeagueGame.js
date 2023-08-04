@@ -12,7 +12,7 @@ import WinnerModal from "../../Game/components/WinnerModal";
 import ExitWarningModal from "../../Game/components/ExitWarningModal";
 import socket from "../../utils/socket.io";
 import { TurnContext } from "../../context/TurnContext"
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import useSound from "use-sound";
 import axios from "axios";
@@ -36,7 +36,7 @@ import { Localization } from "../../utils/language";
 const LeagueGame = () => {
     const { id } = useParams();
     const seasonId = localStorage.getItem("seasonId")
-    const { user, token, lang } = useAuth();
+    const { user, token, lang, logout } = useAuth();
 
     const navigate = useNavigate();
     const [playMove] = useSound(moveSound);
@@ -46,8 +46,7 @@ const LeagueGame = () => {
 
     const [soundOn, setSoundOn] = useState(
         localStorage.getItem("dama-sound")
-            ? localStorage.getItem("dama-sound")
-            : true
+            ? localStorage.getItem("dama-sound") : true
     );
 
     const [MyTurn, setMyTurn] = useContext(TurnContext);
@@ -114,7 +113,9 @@ const LeagueGame = () => {
                 {},
                 {
                     onSuccess: (responseData) => { },
-                    onError: (err) => { },
+                    onError: (err) => {
+                        if (err?.response?.status === 401) { logout(); }
+                    },
                 }
             );
         } catch (err) { }
@@ -420,11 +421,7 @@ const LeagueGame = () => {
     const playerOneIp = localStorage.getItem("playerOneIp");
     const playerTwoIp = localStorage.getItem("p1");
     const btCoin = localStorage.getItem("bt_coin_amount");
-    const temp = JSON.parse(localStorage.getItem("p2Info"));
-    const p2Info = temp?.username
-        ? JSON.parse(localStorage.getItem("p2Info"))
-        : JSON.parse(JSON.parse(localStorage.getItem("p2Info")));
-    const p1Info = localStorage.getItem("p1");
+
     let gameStatus;
     switch (gameState.winner) {
         case "player1pieces":
@@ -683,7 +680,9 @@ const LeagueGame = () => {
                     const seasons = responseData?.data?.data
                     localStorage.setItem("dama-user-seasons", JSON.stringify(seasons));
                 },
-                onError: (err) => { },
+                onError: (err) => {
+                    if (err?.response?.status === 401) { logout(); }
+                },
                 enabled: user ? true : false,
             },
         );
@@ -1009,7 +1008,9 @@ const LeagueGame = () => {
                 },
                 {
                     onSuccess: (responseData) => { },
-                    onError: (err) => { },
+                    onError: (err) => {
+                        if (err?.response?.status === 401) { logout(); }
+                    },
                 }
             );
         } catch (err) { }

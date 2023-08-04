@@ -18,7 +18,7 @@ const WinnerModal = ({
   isLeague,
   seasonId
 }) => {
-  const { user, token, setUser, lang } = useAuth();
+  const { user, token, setUser, lang, logout } = useAuth();
   const navigate = useNavigate();
 
   const [season_id, setSeason_id] = useState(null)
@@ -70,6 +70,7 @@ const WinnerModal = ({
             setIsWinnerModalOpen(false);
           },
           onError: (err) => {
+            if (err?.response?.status === 401) { logout(); }
           },
         }
       ) :
@@ -82,6 +83,7 @@ const WinnerModal = ({
               setIsWinnerModalOpen(false);
             },
             onError: (err) => {
+              if (err?.response?.status === 401) { logout(); }
             },
           }
         )
@@ -147,7 +149,9 @@ const WinnerModal = ({
         { is_user_win: values },
         {
           onSuccess: (responseData) => { localStorage.removeItem("gameId") },
-          onError: (err) => { },
+          onError: (err) => {
+            if (err?.response?.status === 401) { logout(); }
+          },
         }
       );
     } catch (err) { }
@@ -168,7 +172,9 @@ const WinnerModal = ({
         { is_user_win: values },
         {
           onSuccess: (responseData) => { localStorage.removeItem("gameId") },
-          onError: (err) => { },
+          onError: (err) => {
+            if (err?.response?.status === 401) { logout(); }
+          },
         }
       );
     } catch (err) { }
@@ -198,6 +204,7 @@ const WinnerModal = ({
           },
           onError: (err) => {
             setTimeout(() => { navigate(`/league/${season_id}`) }, 2500)
+            if (err?.response?.status === 401) { logout(); }
           },
           enabled: user ? true : false,
         },

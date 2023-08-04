@@ -21,7 +21,7 @@ import ExitWarningModal from "../Game/components/ExitWarningModal";
 import { Localization } from "../utils/language";
 
 const NewGame = () => {
-  const { user, token, lang } = useAuth();
+  const { user, token, lang, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const [isCreated, setIsCreated] = useState(false);
@@ -34,10 +34,6 @@ const NewGame = () => {
   const [codeCopied, setCodeCopied] = useState(false);
   const [name, setName] = useState("");
   const [coinAmount, setCoinAmount] = useState(0);
-  // const playerCoins =
-  //   user && token
-  //     ? JSON.parse(localStorage.getItem("dama_user_data"))?.user?.coin
-  //     : null;
 
   //coins input
   const [showInput, setShowInput] = useState(false);
@@ -56,9 +52,7 @@ const NewGame = () => {
       setIsCopied(false);
       setCodeCopied(false);
     }, 2000);
-    // if (codeCopied || isCopied) {
-    //   setOpen(true);
-    // }
+
   }, [isCopied, codeCopied]);
 
   const headers = {
@@ -206,6 +200,7 @@ const NewGame = () => {
           },
           onError: (err) => {
             setCoinError(err.response.data.data);
+            if (err?.response?.status === 401) { logout(); }
           },
         }
       );

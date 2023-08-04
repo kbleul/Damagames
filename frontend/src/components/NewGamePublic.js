@@ -21,18 +21,16 @@ const ACTION = {
 };
 
 const NewGamePublic = () => {
-  const { user, token, lang } = useAuth();
+  const { user, token, lang, logout } = useAuth();
   const navigate = useNavigate();
 
   //"menu" || "creating" || "created"
   const [action, setAction] = useState(ACTION.MENU);
   const [name, setName] = useState("");
-  const [isCopied, setIsCopied] = useState(false);
   const [isCreated, setIsCreated] = useState(false);
 
   const [value, setValue] = useState("");
   const [code, setCode] = useState("");
-  const [codeCopied, setCodeCopied] = useState(false);
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
 
   const headers = {
@@ -82,7 +80,9 @@ const NewGamePublic = () => {
 
             localStorage.setItem("playerOneIp", responseData?.data?.data?.ip);
           },
-          onError: (err) => { },
+          onError: (err) => {
+            if (err?.response?.status === 401) { logout(); }
+          },
         }
       );
     } catch (err) { }

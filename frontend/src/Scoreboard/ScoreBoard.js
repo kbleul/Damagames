@@ -7,10 +7,12 @@ import { useEffect, useState } from "react";
 
 import { SORTBY } from "../utils/data"
 import { sortScoreBoard } from "../utils/utilFunc"
+import { useAuth } from "../context/auth";
 
 
 const ScoreBoard = () => {
 
+  const { logout } = useAuth()
   const navigate = useNavigate();
   const [sortedScore, setSortedScore] = useState([])
   const [sortBy, setSortBy] = useState(SORTBY.COIN)
@@ -38,6 +40,9 @@ const ScoreBoard = () => {
         setSortedScore(sortedScore)
         localStorage.setItem("Scores", JSON.stringify(sortedScore))
       },
+      onError: err => {
+        if (err?.response?.status === 401) { logout(); }
+      }
     }
   );
 
@@ -59,6 +64,9 @@ const ScoreBoard = () => {
         localStorage.setItem("BadgesAll", JSON.stringify(tempArr))
 
         tempArr = []
+      },
+      onError: err => {
+        if (err?.response?.status === 401) { logout(); }
       },
       enabled: (!scoreBoardData.isLoading && !localStorage.getItem("BadgesAll")) ? true : false
     }

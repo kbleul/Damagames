@@ -94,9 +94,7 @@ const PaymentOptions = ({
                     },
                 }
             );
-        } catch (err) {
-            console.log(err);
-        }
+        } catch (err) { console.log(err); }
     };
 
 

@@ -12,7 +12,7 @@ import { Localization } from "../utils/language";
 
 
 const PubicGames = () => {
-  const { user, token, lang } = useAuth();
+  const { user, token, lang, logout } = useAuth();
   const [isMessageSent, setIsMessageSent] = useState(false);
   const [isMessageListened, setIsMessageListened] = useState(false);
   const [socketLoading, setsocketLoading] = useState(false);

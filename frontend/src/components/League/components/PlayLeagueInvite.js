@@ -40,7 +40,7 @@ const PlayLeagueInvite = ({ setIsInviteModalOpen, inviteData }) => {
     );
 
     const joinViaCodeMutationSubmitHandler = async (values) => {
-        console.log(values)
+
         try {
 
             localStorage.getItem("seasonId") && localStorage.removeItem("seasonId")
@@ -107,9 +107,7 @@ const PlayLeagueInvite = ({ setIsInviteModalOpen, inviteData }) => {
 
 
     useEffect(() => {
-        socket.on("play-league-invite-error", data => {
-            setInviteErr(data[lang])
-        })
+        socket.on("play-league-invite-error", data => { setInviteErr(data[lang]) })
     }, [])
 
 

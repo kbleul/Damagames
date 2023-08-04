@@ -52,14 +52,13 @@ const AvatarHistory = React.lazy(() => import("./components/Store/AvatarHistory"
 const App = () => {
 
   const { checked } = useHome();
-  const { user, setUser, token, login } = useAuth();
+  const { user, setUser, token, logout } = useAuth();
   const navigate = useNavigate()
 
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false)
   const [activeSeasons, setActiveSeasons] = useState(null)
 
   const [fetchedSeasons, setFetchedSeasons] = useState(false)
-
 
   const [inviteData, setInviteData] = useState(null)
 
@@ -159,18 +158,14 @@ const App = () => {
             activeSeasons.length > 0 && setActiveSeasons([...activeSeasons])
             activeSeasons = null
 
-            // login(token, {
-            //   ...user,
-            //   seasons: [...seasons]
-            // })
-
-            // 
             console.log({ seasons })
             localStorage.setItem("dama-user-seasons", JSON.stringify(seasons));
 
             setFetchedSeasons(prev => !prev)
           },
-          onError: (err) => { },
+          onError: (err) => {
+            if (err?.response?.status === 401) { logout(); }
+          },
           enabled: user ? true : false,
         },
       );

@@ -19,7 +19,7 @@ export default function ExitWarningModal({
 }) {
   const navigate = useNavigate();
   const gameId = localStorage.getItem("gameId");
-  const { user, lang } = useAuth();
+  const { lang, logout } = useAuth();
 
   const headers = {
     "Content-Type": "application/json",
@@ -66,7 +66,10 @@ export default function ExitWarningModal({
             },
             {
               onSuccess: (responseData) => { navigate(`/league/${seasonId}`) },
-              onError: (err) => { navigate(`/league/${seasonId}`) },
+              onError: (err) => {
+                if (err?.response?.status === 401) { logout(); }
+                else navigate(`/league/${seasonId}`)
+              },
             }
           )
         } catch (err) { navigate(`/league/${seasonId}`) }
@@ -82,7 +85,7 @@ export default function ExitWarningModal({
             onSuccess: (responseData) => {
             },
             onError: (err) => {
-
+              if (err?.response?.status === 401) { logout(); }
             },
           }
         );

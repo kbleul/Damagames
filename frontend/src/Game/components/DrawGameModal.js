@@ -15,7 +15,7 @@ const DrawGameModal = ({
   gameId,
   seasonId
 }) => {
-  const { lang } = useAuth();
+  const { lang, logout } = useAuth();
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -45,6 +45,7 @@ const DrawGameModal = ({
           onSuccess: (responseData) => {
           },
           onError: (err) => {
+            if (err?.response?.status === 401) { logout(); }
           },
 
         }

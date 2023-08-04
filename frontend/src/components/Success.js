@@ -8,7 +8,7 @@ import { useAuth } from "../context/auth";
 import { Localization } from "../utils/language";
 const Success = () => {
   const navigate = useNavigate();
-  const { user, token, setUser, lang } = useAuth();
+  const { user, token, setUser, lang, logout } = useAuth();
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -44,8 +44,13 @@ const Success = () => {
           current_point: res?.data?.data?.current_point,
         });
       },
+      onError: err => {
+        if (err?.response?.status === 401) { logout(); }
+      }
     }
   );
+
+
   return (
     <div className="flex flex-col space-y-2 items-center justify-center max-w-xl mx-auto p-3">
       <img src={money} alt="" />
