@@ -9,6 +9,7 @@ COPY .env.example .env
 RUN sed -i "s|v1.0.0|${RELEASE_VERSION}|g" src/components/Footer.js
 RUN yarn
 RUN yarn build
+RUN yarn purgecss
 # production environment
 FROM nginx:stable-alpine
 COPY --from=builder /app/build /usr/share/nginx/html
