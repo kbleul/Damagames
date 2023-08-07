@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\Score;
+use App\Models\League;
+use App\Models\Season;
+use App\Models\CoinSetting;
+use App\Models\SeasonPlayer;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreLeagueRequest;
 use App\Http\Requests\UpdateLeagueRequest;
-use App\Models\League;
-use App\Models\Score;
-use App\Models\Season;
-use App\Models\SeasonPlayer;
-use App\Models\User;
-use Illuminate\Support\Facades\DB;
 
 class LeagueController extends Controller
 {
@@ -50,7 +51,7 @@ class LeagueController extends Controller
         if ($leagueName !== null) {
             return abort(404, "Amharic or English Name Already Exist!");
         }
-        
+
         $league->update($request->validated());
 
         return response()
@@ -99,7 +100,13 @@ class LeagueController extends Controller
         }
 
         usort($standings, function ($a, $b) {
-            return $b['points'] - $a['points'];
+            $pointsDiff = $b['points'] - $a['points'];
+            if ($pointsDiff !== 0) {
+                return $pointsDiff;
+            }
+
+            $nameDiff = strcmp($a['userData']->username, $b['userData']->username);
+            return $nameDiff;
         });
 
         return ['is_game_time' => $season->is_game_time, 'users' => $standings];
