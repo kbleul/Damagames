@@ -130,9 +130,6 @@ const NewGamePublic = () => {
             );
             localStorage.setItem("playerOneIp", responseData?.data?.data?.ip);
 
-            let now = new Date();
-            let time =
-              now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
             socket.emit("postPublicGame", {
               code: responseData?.data?.data?.code,
               link:
@@ -160,21 +157,6 @@ const NewGamePublic = () => {
       }
       setIsCreated(true)
       nameMutationSubmitHandler();
-    }
-  };
-
-  const shareLink = async () => {
-    const tempurl = value.split("/").splice(-1)[0];
-    if (navigator.share) {
-      try {
-        await navigator
-          .share({
-            url: `join-game/${tempurl}`,
-          })
-          .then(() => console.log(""));
-      } catch (error) {
-      }
-    } else {
     }
   };
 
@@ -276,8 +258,7 @@ const NewGamePublic = () => {
           >
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-md" />
             {nameMutation.isLoading || loggedInMutation.isLoading
-              ? Localization["Creating"][lang]
-              : Localization["Create"][lang]}
+              ? Localization["Creating"][lang] : Localization["Create"][lang]}
           </button>
         </div>
       )}

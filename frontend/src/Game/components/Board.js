@@ -119,7 +119,7 @@ const Board = (props) => {
     return (
       <div>
         <button style={{
-          backgroundColor: tracker && (squareClasses.includes(tracker.moved) || squareClasses.includes(tracker.to)) && "#858484"
+          backgroundColor: tracker && (squareClasses.includes(tracker.moved) || squareClasses.includes(tracker.to)) && "#6b5050"
         }}
           className={
             // tracker &&

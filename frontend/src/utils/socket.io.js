@@ -12,6 +12,6 @@ const socket = io(
         timeout: 20000,
     });
 
-// const socket = io("http://172.17.104.222:7744")
+//const socket = io("http://172.17.104.222:7744")
 
 export default socket;

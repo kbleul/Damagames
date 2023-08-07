@@ -317,6 +317,10 @@ export const Localization = {
         AMH: "0 ሳንቲም አሸንፈዋል።",
         ENG: "You won 0 coins."
     },
+    "You won 3 coins.": {
+        AMH: "3 ነጥቦች አሸንፈዋል።",
+        ENG: "You won 3 coins."
+    },
     "write your message...": {
         AMH: " መልእክቶን ይፃፉ",
         ENG: "write your message..."

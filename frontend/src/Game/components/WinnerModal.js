@@ -242,7 +242,8 @@ const WinnerModal = ({
         <h2 className="text-2xl">{Localization["Congratulations"][lang]}</h2>
 
         {isLeague ?
-          <h2 className="text-2xl">{Localization["You Lost !"][lang]}</h2>
+          <p>{Localization["You won 3 coins."][lang]}</p>
+
           : <div>
             <p>{Localization["Previous"][lang]} = {userCoin} {Localization["coins"][lang]}</p>
             <p>{Localization["Total"][lang]} = {userCoin + 50} {Localization["coins"][lang]}</p>
