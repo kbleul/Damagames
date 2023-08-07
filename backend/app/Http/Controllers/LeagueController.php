@@ -88,11 +88,11 @@ class LeagueController extends Controller
 
             foreach (Score::where('season_id', $seasonId)->get() as $score) {
                 if ($score->winner == $userId && $score->draw != 1) {
-                    $points += CoinSetting::first()->winnerCoins;
+                    $points += 3;
                 }
 
                 if ($score->draw == 1 && ($score->winner == $userId || $score->loser == $userId)) {
-                    $points += CoinSetting::first()->drawCoins;
+                    $points += 1;
                 }
             }
 
