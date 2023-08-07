@@ -14,8 +14,8 @@
     #     - name: Check Docker containers
     #       run: docker container ls -a
   
-    # build_arc_docs:
-    #   uses: ./.github/workflows/build_arc_docs.yml
+    build_arc_docs:
+      uses: ./.github/workflows/build_arc_docs.yml
       # needs: "check"
   
     # release:
@@ -25,7 +25,7 @@
     deploy_staging:
       uses: ./.github/workflows/docker_stage.yml
       secrets: inherit
-      # needs: "build_arc_docs"
+      needs: "build_arc_docs"
   
     deploy_production:
       if: ${{ !contains(github.ref, '-rc') }}
@@ -33,7 +33,7 @@
       secrets: inherit
       needs: "deploy_staging"
   
-    # e2e-test:
-    #   uses: ./.github/workflows/playwright.yml
-    #   secrets: inherit
-    #   needs: "deploy_staging"
+    e2e-test:
+      uses: ./.github/workflows/playwright.yml
+      secrets: inherit
+      needs: "deploy_staging"
