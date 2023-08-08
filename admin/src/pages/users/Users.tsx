@@ -26,7 +26,7 @@ interface UserProps {
 }
 const Users = () => {
   const [query, setQuery] = useState<string | number>("");
-  const { token, user } = useAuth();
+  const { token, logout } = useAuth();
   const [users, setUsers] = useState<Array<UserProps>>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const headers = {
@@ -57,6 +57,9 @@ const Users = () => {
             index: index + 1,
           }))
         );
+      },
+      onError: (err: any) => {
+        if (err?.response?.status === 401) {  logout(); }
       },
     }
   );

@@ -63,7 +63,7 @@ interface LeagueProps {
 
 const League = () => {
   const navigate = useNavigate();
-  const { token } = useAuth();
+  const { token, logout } = useAuth();
   const [changed, setChanged] = useState(0);
 
   const [leagues, setLeagues] = useState<Array<LeagueProps>>([]);
@@ -106,6 +106,9 @@ const League = () => {
         );
 
         setTotalPages(Math.ceil(res?.data?.data.length / itemsPerPage));
+      },
+      onError: (err: any) => {
+        if (err?.response?.status === 401) {  logout(); }
       },
     }
   );

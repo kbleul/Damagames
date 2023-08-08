@@ -24,6 +24,7 @@ const LeagueDetails = ({ selectedLeague }) => {
     const [isPaymentPromptModalOpen, setIsPaymentPromptModalOpen] = useState(false)
     const [isShowModalOpen, set_isShowModalOpen] = useState(false)
     const [isCoinModalOpen, setIsCoinModalOpen] = useState(false)
+    const [selectedLeagueSorted, setSelectedLeagueSorted] = useState(null)
 
 
 
@@ -36,7 +37,17 @@ const LeagueDetails = ({ selectedLeague }) => {
 
     useEffect(() => {
         let activeSeason = selectedLeague.seasons.find(season => season.is_active) || null
-        activeSeason && setActiveSeason(activeSeason.id)
+
+        if (activeSeason) {
+            let tempLeague = [activeSeason, ...selectedLeague.seasons.filter(season => season.id !== activeSeason.id)]
+            setSelectedLeagueSorted([...tempLeague])
+
+            tempLeague = null
+            setActiveSeason(activeSeason.id)
+        }
+        else {
+            setSelectedLeagueSorted([...selectedLeague.seasons])
+        }
     }, [])
 
 
@@ -59,8 +70,7 @@ const LeagueDetails = ({ selectedLeague }) => {
                     </article>
                 }
 
-
-                {selectedLeague?.seasons.map((season) => (
+                {selectedLeagueSorted && selectedLeagueSorted.length > 0 && selectedLeagueSorted.map((season) => (
                     season.is_active ? (
                         <section key={season.id}>
                             <section className="capitalize w-full text-left px-4 mt-3 font-bold">
@@ -87,7 +97,9 @@ const LeagueDetails = ({ selectedLeague }) => {
                     :
                     <button onClick={() => {
                         let activeSeason = selectedLeague.seasons.find(season => season.is_active) || null
-                        activeSeason && navigate(`/league/${activeSeason.id}`)
+                        activeSeason && navigate(`/league/${activeSeason.id}`, {
+                            state: { season_name: activeSeason.season_name },
+                        })
                     }}
                         className={activeSeason ?
                             "w-3/5 mb-8 bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-sm text-black"
@@ -151,7 +163,7 @@ const ActiveSeason = ({ season, setIsPaymentModalOpen, set_isShowModalOpen }) =>
                     <p className="text-xs w-full pl-6 text-left text-gray-300">{totalPlayer} {Localization["players"][lang]}</p>
                 </div>
 
-                <div className="border bg-[#22474f] rounded-2xl w-1/2 py-2 h-24">
+                {season.prizes && season.prizes.length > 0 && <div className="border bg-[#22474f] rounded-2xl w-1/2 py-2 h-24">
                     <div className="w-full flex items-center justify-start ml-3">
                         <p className="w-2 h-2 bg-orange-color rounded-full mr-1"></p>
                         <h3 className=" text-left text-[#FF4C01] font-bold text-sm">{Localization["Awards"][lang]}</h3>
@@ -167,18 +179,35 @@ const ActiveSeason = ({ season, setIsPaymentModalOpen, set_isShowModalOpen }) =>
 
                     </section>
 
-                </div>
+
+                </div>}
             </section>
 
         </section>
         <section className="mt-4">
             <p className="text-sm capitalize">{formattedStaringDate} - {formattedEndDate}</p>
             <p className="text-sm capitalize">{formattedGameTime.starting + " - " + formattedGameTime.ending}</p>
-            {user && season.is_active && season.number_of_player !== season.player_count &&
+            {user && season.is_active && season.number_of_player !== season.player_count && <>
+                {isUserInSeason ?
+                    <div className="px-4 text-center flex items-center justify-center gap-x-1  bg-gradient-to-b from-orange-500 to-orange-700 opacity-80  my-2 py-1 font-semibold text-xs text-white absolute top-[10%] right-0" >
+                        <p className={isUserInSeason ? "w-full " : "w-4/5 text-right "}>{Localization["Joined"][lang]}</p>
+                    </div> :
+                    <button onClick={() => setIsPaymentModalOpen(true)}
+                        className={isUserInSeason ? "w-3/5 bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-sm text-gray-200" : "w-3/5 bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-sm text-black"}>
+                        {Localization["Join Season"][lang]}</button>
+                }
+            </>
+                /*{ <button disabled={isUserInSeason ? true : false} onClick={() =>
+                    user ? setIsPaymentModalOpen(true) : set_isShowModalOpen(true)}
+                    className="px-4 text-center flex items-center justify-center gap-x-1  bg-gradient-to-b from-orange-500 to-orange-700 opacity-80  my-2 py-1 font-semibold text-xs text-white absolute top-[10%] right-0" >
+                    <p className={isUserInSeason ? "w-full " : "w-4/5 text-right "}>{Localization["Joined"][lang]}</p>
+
+                </button>}
+
+                {user && season.is_active && season.number_of_player !== season.player_count &&
                 <button disabled={user && isUserInSeason ? true : false} onClick={() => setIsPaymentModalOpen(true)}
                     className={isUserInSeason ? "w-3/5 bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-sm text-gray-200" : "w-3/5 bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-sm text-black"}>{isUserInSeason ?
-                        Localization["Joined"][lang] : Localization["Join Season"][lang]}
-                </button>}
+                        Localization["Joined"][lang] : Localization["Join Season"][lang]}</button>} */}
 
             {!user &&
                 <button onClick={() => set_isShowModalOpen(true)}
@@ -245,7 +274,7 @@ const SeasonCard = ({ season, badges }) => {
                 <p className="text-xs w-full text-left ml-6 text-gray-300">{season.number_of_player || 25} {Localization["players"][lang]}</p>
             </div>
 
-            <div className="border bg-[#22474f] my-2  rounded-2xl py-2 h-16">
+            {season.prizes && season.prizes.length > 0 && <div className="border bg-[#22474f] my-2  rounded-2xl py-2 h-16">
                 <div className="w-full flex items-center justify-start ml-3">
                     <p className="w-2 h-2 bg-orange-color rounded-full mr-1"></p>
                     <h3 className="w-full text-left text-[#FF4C01] font-bold text-sm">{Localization["Awards"][lang]}</h3>
@@ -262,7 +291,7 @@ const SeasonCard = ({ season, badges }) => {
 
                 </section>
 
-            </div>
+            </div>}
 
         </section>
 

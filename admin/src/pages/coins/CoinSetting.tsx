@@ -25,7 +25,7 @@ const CoinSetting = () => {
   const [coins, setCoins] = useState<Array<CoinsProps>>([]);
   const [isEditCoinModalOpen, setIsEditCoinModalOpen] =
     useState<boolean>(false);
-  const { token } = useAuth();
+  const { token, logout } = useAuth();
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -52,6 +52,9 @@ const CoinSetting = () => {
             index: index + 1,
           }))
         );
+      },
+      onError: (err: any) => {
+        if (err?.response?.status === 401) {  logout(); }
       },
     }
   );

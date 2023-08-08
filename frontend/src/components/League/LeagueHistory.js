@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import leagueImgMain from "../../assets/leagueBg.jpg"
 import PlayerCard from "./components/PlayerCard"
 import Nav from "./components/Nav"
-import { useNavigate, useParams } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { LEAGUE_CATAGORIES } from "../../utils/data"
 import Matches from "./components/Matches"
 import { useQuery } from "@tanstack/react-query"
@@ -15,12 +15,18 @@ import { useAuth } from "../../context/auth"
 import ActivePlayers from "./components/ActivePlayers"
 import { Localization } from "../../utils/language"
 
+const LANG = { "AMH": "amharic", "ENG": "english" }
 
 const LeagueHistory = ({ isInviteModalOpen, setIsInviteModalOpen, setInviteData }) => {
 
     const navigate = useNavigate()
+
+
     const { id } = useParams()
     const { token, user, lang } = useAuth();
+
+    const location = useLocation();
+    const season_name = location.state ? JSON.parse(location.state?.season_name)[LANG[lang]] : null;
 
     const [active, setActive] = useState(LEAGUE_CATAGORIES[0])
 
@@ -32,7 +38,7 @@ const LeagueHistory = ({ isInviteModalOpen, setIsInviteModalOpen, setInviteData 
     const [isInSeason, setIsInSeason] = useState(false)
     const [isGameTime, setIsGameTime] = useState(false)
 
-
+    console.log(season_name)
 
     const badges = localStorage.getItem("BadgesAll") ? JSON.parse(localStorage.getItem("BadgesAll")) : null
 
@@ -112,10 +118,14 @@ const LeagueHistory = ({ isInviteModalOpen, setIsInviteModalOpen, setInviteData 
                 </svg>
             </button>
 
-            <section className="text-white pt-2">
-                <h2 className="text-6xl font-bold ml-[32%] md:ml-[40%] w-3/5  text-left ">{Localization["Dama"][lang]}</h2>
-                <p className={lang === "ENG" ?
-                    "text-2xl ml-[32%] md:ml-[40%] w-3/5  text-left px-1" : "text-2xl ml-[32%] md:ml-[40%] w-3/5  text-left px-1 font-bold"}>{Localization["League"][lang]}</p>
+            <section className="text-white pt-2 flex flex-col items-center">
+                <h2 id="title" className="capitalize text-4xl font-bold text-center">
+                    {season_name ? season_name : Localization["Dama"][lang]}
+                </h2>
+                <p id="description" className={lang === "ENG" ?
+                    "text-xl text-left " : "text-xl text-left font-bold "}>
+                    {Localization["League"][lang]}
+                </p>
             </section>
 
             <Nav active={active} setActive={setActive} isInSeason={isInSeason} />

@@ -46,7 +46,9 @@ const LeagueGameIsActiveModal = ({ activeSeasons, setActiveSeasons }) => {
                             <div className='w-2/5'>
                                 <button onClick={() => {
                                     setActiveSeasons(null)
-                                    navigate(`/league/${season.id}`)
+                                    navigate(`/league/${season.id}`, {
+                                        state: { season_name: season.season_name },
+                                    })
                                 }} className=" max-w-[100px] px-6 mb-2 bg-transparent border border-orange-600 text-white rounded-full my-2 py-2 font-semibold text-xs">{Localization["Play"][lang]}
                                 </button>
                             </div>

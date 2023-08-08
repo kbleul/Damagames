@@ -11,7 +11,7 @@ import { AiFillFilePdf } from "react-icons/ai";
 import { RiGamepadFill } from "react-icons/ri";
 import { FaUser } from "react-icons/fa";
 const Dashboard = () => {
-  const { token, user } = useAuth();
+  const { token, logout } = useAuth();
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -29,6 +29,11 @@ const Dashboard = () => {
       retry: false,
       enabled: !!token,
       onSuccess: (res) => {},
+      onError: (err: any) => {
+        if (err?.response?.status === 401) {
+          logout();
+        }
+      },
     }
   );
 
@@ -56,7 +61,7 @@ const Dashboard = () => {
                   {dashboardData?.data?.data?.data?.users_subscribed}
                 </p>
                 <h1 className=" font-normal px-3 capitalize text-white bg-main-bg p-[2px] rounded-md text-sm">
-                verified users
+                  verified users
                 </h1>
               </div>
             </div>

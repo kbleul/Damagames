@@ -20,7 +20,7 @@ const Badges = () => {
   const [error, setError] = useState<String | null>(null);
   const [isUpdated, setIsUpdated] = useState<boolean>(false);
 
-  const { token } = useAuth();
+  const { token, logout } = useAuth();
   const navigate = useNavigate();
 
   const headers = {
@@ -48,6 +48,11 @@ const Badges = () => {
       },
       onError: (err: any) => {
         setBadges([]);
+        if (err?.response?.status === 401) {
+          logout();
+          return;
+        }
+
         setError(err.message);
       },
     }

@@ -19,7 +19,7 @@ interface AvatarProps {
 const Avatars = () => {
   let [categories] = useState(["Avatar", "Boards", "Crowns"]);
   const navigate = useNavigate();
-  const { token, user } = useAuth();
+  const { token, logout } = useAuth();
   const [avatars, setAvatars] = useState<Array<AvatarProps>>([]);
   const [boards, setBoards] = useState<Array<AvatarProps>>([]);
   const [crowns, setCrowns] = useState<Array<AvatarProps>>([]);
@@ -62,6 +62,11 @@ const Avatars = () => {
           }))
         );
       },
+      onError: (err: any) => {
+        if (err?.response?.status === 401) {
+          logout();
+        }
+      },
     }
   );
   function classNames(...classes: any) {
@@ -94,7 +99,7 @@ const Avatars = () => {
               <div className="flex items-center justify-between pb-3 w-full">
                 <h3 className="font-semibold text-lg">Avatars</h3>
                 <button
-                  onClick={() => navigate('/avater/create')}
+                  onClick={() => navigate("/avater/create")}
                   className="bg-main-bg p-2 rounded-sm font-medium hover:opacity-80 text-white"
                 >
                   Add Item
@@ -150,7 +155,7 @@ const Avatars = () => {
               <div className="flex items-center justify-between pb-3 w-full">
                 <h3 className="font-semibold text-lg">Crowns</h3>
                 <button
-                  onClick={() => navigate('/pawn/create')}
+                  onClick={() => navigate("/pawn/create")}
                   className="bg-main-bg p-2 rounded-sm font-medium hover:opacity-80 text-white"
                 >
                   Add Item

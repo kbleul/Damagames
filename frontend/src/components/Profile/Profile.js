@@ -303,7 +303,9 @@ const Profile = () => {
         <section className="flex gap-x-8 text-white overflow-x-scroll px-2 h-[60%]">
           {user.seasons.map(season => (
 
-            <button onClick={() => navigate(`/league/${season.id}`)} className="w-full flex items-center justify-center text-xl gap-x-1">
+            <button onClick={() => navigate(`/league/${season.id}`, {
+              state: { season_name: season.season_name },
+            })} className="w-full flex items-center justify-center text-xl gap-x-1">
               <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 10 12" fill="none">
                 <mask id="mask0_3490_6881" maskUnits="userSpaceOnUse" x="0" y="0" width="10" height="12">
                   <path d="M9.47404 0.0795288H0.526367V11.302H9.47404V0.0795288Z" fill="white" />

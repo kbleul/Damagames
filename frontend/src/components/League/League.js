@@ -120,10 +120,14 @@ const League = () => {
                 </svg>
             </button>
 
-            <section className="text-white pt-2">
-                <h2 className="text-6xl font-bold ml-[32%] md:ml-[40%] w-3/5  text-left ">{Localization["Dama"][lang]}</h2>
-                <p className={lang === "ENG" ?
-                    "text-2xl ml-[32%] md:ml-[40%] w-3/5  text-left px-1" : "text-2xl ml-[32%] md:ml-[40%] w-3/5  text-left px-1 font-bold"}>{Localization["League"][lang]}</p>
+            <section className="text-white pt-2 flex flex-col items-center">
+                <h2 id="title" className="capitalize text-4xl font-bold text-center">
+                    {selectedLeague ? JSON.parse(selectedLeague?.league_name)[LANG[lang]] : Localization["Dama"][lang]}</h2>
+
+                <p id="description" className={lang === "ENG" ?
+                    "text-xl text-left " : "text-xl text-left font-bold "}>
+                    {Localization["League"][lang]}
+                </p>
             </section>
 
             {
