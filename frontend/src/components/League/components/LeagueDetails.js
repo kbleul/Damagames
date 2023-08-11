@@ -169,7 +169,7 @@ const ActiveSeason = ({ season, setIsPaymentModalOpen, set_isShowModalOpen }) =>
                         <h3 className=" text-left text-[#FF4C01] font-bold text-sm">{Localization["Awards"][lang]}</h3>
                     </div>
 
-                    <section className="flex flex-col items-start justify-start gap-x-2 pl-6">
+                    <section className="flex flex-col items-start justify-start gap-x-2 px-1">
                         {season.prizes.map((price, index) =>
                             <div key={price.id} className="flex items-start justify-start gap-x-1 text-xs pb-1">
                                 <p className="text-xs">{++index} - </p>

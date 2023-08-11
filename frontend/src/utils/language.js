@@ -889,6 +889,10 @@ export const Localization = {
         AMH: "የደረጃ ሰንጠረዥ ዉስጥ በመግባት የእርስዎን ደረጃ ከሌሎች ጋር ያስተያዩ።",
         ENG: "Keep track of your progress and compare your skills with other players on the scoreboard."
     },
+    "Join the league to play": {
+        AMH: "የደረጃ ሰንጠረዥ ዉስጥ በመግባት የእርስዎን ደረጃ ከሌሎች ጋር ያስተያዩ።",
+        ENG: "Join the league to play against skilled gamers in exciting matches. Win amazing prizes as you showcase your gaming talents!Join league game to play exsiting games against skilled players and win different prices."
+    },
     "Customize your game with": {
         AMH: "መጫወቻዎችን ፣ ሰሌዳዎችን አና ዘውዶችን ከገበያ በመግዛት የግል መለያዎትን ያሳምሩ።",
         ENG: "Customize your game with unique pawns, boards, and crowns from the store."
