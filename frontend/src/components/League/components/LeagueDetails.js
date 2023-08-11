@@ -63,7 +63,7 @@ const LeagueDetails = ({ selectedLeague }) => {
             <section className="z-10 relative ">
 
 
-                {selectedLeague.seasons && selectedLeague.seasons.length > 0 &&
+                {selectedLeague.seasons && selectedLeague.seasons.length > 0 && !activeSeason &&
                     <article>
                         <h5 className={activeSeason ? "font-bold pt-2" : "hidden"}>{Localization["Join Now !!"][lang]}</h5>
                         <p className={activeSeason ? "text-sm" : "pt-2 text-sm"}>{Localization["New Seasons starts soon !"][lang]}</p>
@@ -197,17 +197,7 @@ const ActiveSeason = ({ season, setIsPaymentModalOpen, set_isShowModalOpen }) =>
                         {Localization["Join Season"][lang]}</button>
                 }
             </>
-                /*{ <button disabled={isUserInSeason ? true : false} onClick={() =>
-                    user ? setIsPaymentModalOpen(true) : set_isShowModalOpen(true)}
-                    className="px-4 text-center flex items-center justify-center gap-x-1  bg-gradient-to-b from-orange-500 to-orange-700 opacity-80  my-2 py-1 font-semibold text-xs text-white absolute top-[10%] right-0" >
-                    <p className={isUserInSeason ? "w-full " : "w-4/5 text-right "}>{Localization["Joined"][lang]}</p>
-
-                </button>}
-
-                {user && season.is_active && season.number_of_player !== season.player_count &&
-                <button disabled={user && isUserInSeason ? true : false} onClick={() => setIsPaymentModalOpen(true)}
-                    className={isUserInSeason ? "w-3/5 bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-sm text-gray-200" : "w-3/5 bg-gradient-to-b from-orange-500 to-orange-700 rounded-full my-2 py-2 font-semibold text-sm text-black"}>{isUserInSeason ?
-                        Localization["Joined"][lang] : Localization["Join Season"][lang]}</button>} */}
+            }
 
             {!user &&
                 <button onClick={() => set_isShowModalOpen(true)}
@@ -242,8 +232,8 @@ const SeasonCard = ({ season, badges }) => {
                         player?.userData?.profile_image : Avatar} alt="" />
             </div>
             <div className="w-[70%] overflow-hidden text-xs capitalize">
-                <p className=" w-full font-bold text-left">{player?.userData?.username}</p>
-                <p className=" w-full text-left">{badge ? badge[LANG[lang]] : ""}</p>
+                <p className="w-full font-bold text-left">{player?.userData?.username}</p>
+                <p className="w-full text-left">{badge ? badge[LANG[lang]] : ""}</p>
             </div>
 
         </section>)
