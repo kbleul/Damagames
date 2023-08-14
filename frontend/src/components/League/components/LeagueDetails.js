@@ -138,7 +138,9 @@ const ActiveSeason = ({ season, setIsPaymentModalOpen, set_isShowModalOpen }) =>
     const formattedStaringDate = convertDateType(JSON.parse(season?.starting_date)[LANG[lang]], lang)
     const formattedEndDate = convertDateType(JSON.parse(season?.ending_date)[LANG[lang]], lang)
 
-    const formattedGameTime = convertTimeType(JSON.parse(season.starting_time)[LANG[lang]], JSON.parse(season.ending_time)[LANG[lang]])
+    const formattedGameTime = convertTimeType(JSON.parse(season.starting_time)[LANG["ENG"]], JSON.parse(season.ending_time)[LANG["ENG"]], LANG["ENG"])
+    const formattedGameTimeET = convertTimeType(JSON.parse(season.starting_time)[LANG["AMH"]], JSON.parse(season.ending_time)[LANG["AMH"]], LANG["AMH"])
+
 
     return (<article className="border rounded-3xl  my-4 mx-2 px-2">
         <section className="py-4">
@@ -186,7 +188,13 @@ const ActiveSeason = ({ season, setIsPaymentModalOpen, set_isShowModalOpen }) =>
         </section>
         <section className="mt-4">
             <p className="text-sm capitalize">{formattedStaringDate} - {formattedEndDate}</p>
-            <p className="text-sm capitalize">{formattedGameTime.starting + " - " + formattedGameTime.ending}</p>
+            <p className="text-xs capitalize mt-2">{formattedGameTimeET.starting + " - " + formattedGameTimeET.ending} ማታ  <span className="uppercase">(et)</span></p>
+
+            <p className="text-xs capitalize ">Or </p>
+
+            <p className="text-xs capitalize mb-2">{formattedGameTime.starting + " - " + formattedGameTime.ending} <span className="uppercase">utc</span> </p>
+
+
             {user && season.is_active && season.number_of_player !== season.player_count && <>
                 {isUserInSeason ?
                     <div className="px-4 text-center flex items-center justify-center gap-x-1  bg-gradient-to-b from-orange-500 to-orange-700 opacity-80  my-2 py-1 font-semibold text-xs text-white absolute top-[10%] right-0" >
