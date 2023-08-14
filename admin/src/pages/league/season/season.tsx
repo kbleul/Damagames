@@ -307,6 +307,15 @@ const Season = () => {
             >
               Awards
             </button>
+            <button
+              onClick={() => {
+                navigate(`/season-users/${row.id}`);
+              }}
+              className="border-2 border-red-600 text-red-600 rounded-sm hover:opacity-80
+                text-center ml-2 px-5 p-1 mt-2 font-medium text-sm"
+            >
+              Users
+            </button>
           </TableCell>
         </TableRow>
         <TableRow>

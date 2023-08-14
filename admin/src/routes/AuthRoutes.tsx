@@ -21,6 +21,7 @@ import EditSeason from "../pages/league/season/EditSeason";
 import CreateAwards from "../pages/league/awards/CreateAwards";
 import Awards from "../pages/league/awards/Awards";
 import EditAward from "../pages/league/awards/EditAward";
+import SeasonUsers from "../pages/league/season/seasonUsers";
 
 interface Props {}
 const AuthRoutes: React.FC<Props> = () => {
@@ -110,6 +111,8 @@ const AuthRoutes: React.FC<Props> = () => {
             <Route path="/awards/:id" element={<Awards />} />
             <Route path="/awards/create/:id" element={<CreateAwards />} />
             <Route path="/awards/edit/:id" element={<EditAward />} />
+
+            <Route path="/season-users/:id" element={<SeasonUsers />} />
           </Routes>
         </div>
       </div>
