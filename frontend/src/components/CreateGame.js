@@ -85,6 +85,10 @@ const CreateGame = () => {
           content: Localization["Customize your game with"][lang],
         },
         {
+          target: '.eighth-step',
+          content: Localization["Join the league to play"][lang],
+        },
+        {
           target: '.fifth-step',
           content: Localization["Join the community of dama"][lang],
         }
@@ -490,7 +494,7 @@ const CreateGame = () => {
 
           <Link
             to="/league"
-            className="seventh-step flex flex-col justify-evenly items-center mt-4"
+            className="eighth-step flex flex-col justify-evenly items-center mt-4"
           >
             <div className="h-8 w-10 rounded-sm bg-orange-color px-2 fle
           x justify-center items-center pt-1">

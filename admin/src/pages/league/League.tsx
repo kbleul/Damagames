@@ -104,11 +104,14 @@ const League = () => {
             index: index + 1,
           }))
         );
-
+        console.log(res?.data?.data);
+        console.log(4);
         setTotalPages(Math.ceil(res?.data?.data.length / itemsPerPage));
       },
       onError: (err: any) => {
-        if (err?.response?.status === 401) {  logout(); }
+        if (err?.response?.status === 401) {
+          logout();
+        }
       },
     }
   );

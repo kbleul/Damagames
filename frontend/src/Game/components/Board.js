@@ -75,7 +75,22 @@ const Board = (props) => {
         }
       }
 
+
     }
+    else {
+      if (propsMain.numberOfPlayers == 1) {
+        if (propsMain["currentPlayer"] && props["squareClasses"].includes("player1")) {
+          squareClasses = props["squareClasses"] + " myturn";
+        }
+        else if (!propsMain["currentPlayer"] && props["squareClasses"].includes("player2")) {
+          squareClasses = props["squareClasses"] + " myturn";
+        }
+        else {
+          squareClasses = props["squareClasses"]
+        }
+      }
+    }
+
 
     let movesData = [[]]
 
