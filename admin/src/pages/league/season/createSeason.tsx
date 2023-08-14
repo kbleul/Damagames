@@ -43,7 +43,6 @@ const CreateSeason = () => {
   const leagueId = location.state?.leagueId;
   const { token } = useAuth();
   const navigate = useNavigate();
-  console.log(leagueId);
   const [startingDate, setStartingDate] = useState("");
   const [endingDate, setEndingDate] = useState("");
   const [startingDateEt, setStartingDateEt] = useState("");
@@ -106,9 +105,17 @@ const CreateSeason = () => {
   };
 
   function convertTime(timeString: string) {
+    console.log(timeString);
     var time = timeString.split(":");
     var hour = parseInt(time[0]);
     var minute = parseInt(time[1]);
+
+    //add am pm
+    let tag = " pm";
+    if (hour < 12) {
+      tag = " am";
+    }
+    console.log({ hour });
 
     if (hour > 12) {
       hour -= 12;
@@ -120,7 +127,8 @@ const CreateSeason = () => {
       (hour < 10 ? "0" + hour : hour) +
       ":" +
       (minute < 10 ? "0" + minute : minute) +
-      ":00"
+      ":00" +
+      tag
     );
   }
 

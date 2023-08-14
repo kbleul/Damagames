@@ -38,12 +38,14 @@ const formatTime = (timeString: string) => {
 
   let formattedTime = `${hours}:${minutes}`;
 
-  // Adjust for AM/PM period
-  if (period === "PM") {
+  // Adjust for am/pm period
+  if (period && period === "pm") {
     const formattedHours = parseInt(hours, 10) + 12;
     formattedTime = `${formattedHours}:${minutes}`;
+    console.log(formattedTime, period);
   }
   // Assign the formatted time to the input field
+
   return formattedTime;
 };
 
@@ -204,21 +206,32 @@ const EditSeason = () => {
   };
 
   function convertTime(timeString: string) {
-    var time = timeString.split(":");
-    var hour = parseInt(time[0]);
-    var minute = parseInt(time[1]);
+    let time = timeString.split(":");
+    let hour = parseInt(time[0]);
+    let minute = parseInt(time[1]);
 
+    // Adjust for am/pm period
+    let tag = " pm";
+    if (hour < 12) {
+      tag = " am";
+    }
+    console.log({ hour });
+
+    console.log(timeString);
     if (hour > 12) {
       hour -= 12;
     } else if (hour === 0) {
       hour = 12;
     }
+    console.log(hour);
 
+    hour = hour === 12 ? 0 : hour;
     return (
       (hour < 10 ? "0" + hour : hour) +
       ":" +
       (minute < 10 ? "0" + minute : minute) +
-      (time.length === 2 ? ":00" : "")
+      (time.length === 2 ? ":00" : "") +
+      tag
     );
   }
 
