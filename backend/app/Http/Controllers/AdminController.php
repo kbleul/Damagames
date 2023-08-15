@@ -125,7 +125,7 @@ class AdminController extends Controller
     private function sendSmsNotifiction($phoneNumbers, $message)
     {
         try {
-            $response = Http::withOptions(['verify' => false])->post(config('app.multi_user_otp_url'), [
+            $response = Http::post(config('app.multi_user_otp_url'), [
                 "username" => config('app.otp_username'),
                 "password" => config('app.otp_password'),
                 'to' => $phoneNumbers,
