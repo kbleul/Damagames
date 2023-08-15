@@ -121,6 +121,8 @@ Route::middleware('response', 'auth:sanctum')->group(function () {
 
 Route::middleware(['response', 'auth:sanctum', 'admin'])->prefix('admin')->group(function () {
     Route::get('dashboard', [AdminController::class, 'dashboard']);
+    Route::post('monthly-report', [AdminController::class, 'monthlyReport']);
+    Route::post('send-season-notification-sms', [AdminController::class, 'sendSeasonNotificationSms']);
     Route::get('users', [AdminController::class, 'users']);
     Route::post('create-store-items', [AdminController::class, 'create_store_items']);
     Route::get('store-items', [AdminController::class, 'store_items']);
