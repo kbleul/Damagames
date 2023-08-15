@@ -135,7 +135,12 @@ class AdminController extends Controller
             if ($response->ok()) {
                 return $response;
             } else {
-                throw new RequestException();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unsuccessful',
+                    'status' => 500,
+                    'data' => null
+                ], 500);
             }
         } catch (RequestException $e) {
             return response()->json([
