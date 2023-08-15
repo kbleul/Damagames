@@ -106,13 +106,11 @@ class AdminController extends Controller
     public function sendSeasonNotificationSms(SendSeasonNotificationSmsRequest $sendSeasonNotificationSmsRequest)
     {
         $playersId = SeasonPlayer::where('season_id', $sendSeasonNotificationSmsRequest->validated('season_id'))->pluck('user_id');
-        $users = User::whereIn('id', $playersId)->get();
+        $phoneNumbers = User::whereIn('id', $playersId)->pluck('phone');
 
         $message = $sendSeasonNotificationSmsRequest->validated('message');
 
-        foreach ($users as $user) {
-            $this->sendSmsNotifiction($user->phone, $message);
-        }
+        $this->sendSmsNotifiction($phoneNumbers, $message);
 
         $response = [
             'success' => true,
@@ -124,13 +122,13 @@ class AdminController extends Controller
         return response()->json($response, 200);
     }
 
-    private function sendSmsNotifiction($phone, $message)
+    private function sendSmsNotifiction($phoneNumbers, $message)
     {
         try {
-            $response = Http::post(config('app.otp_url'), [
+            $response = Http::post(config('app.multi_user_otp_url'), [
                 "username" => config('app.otp_username'),
                 "password" => config('app.otp_password'),
-                'to' => $phone,
+                'to' => $phoneNumbers,
                 'text' => $message,
             ]);
 
