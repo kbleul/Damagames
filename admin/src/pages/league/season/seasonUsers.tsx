@@ -4,6 +4,7 @@ import { useAuth } from "../../../context/Auth";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { PulseLoader } from "react-spinners";
+import SMSBox from "./components/SMSBox";
 
 type USER = {
   id: string;
@@ -15,6 +16,8 @@ type USER = {
 const SeasonUsers = () => {
   const id = useParams().id;
   const { token, logout } = useAuth();
+
+  const [showMsgBox, setShowMsgBox] = useState(false);
 
   const [error, setError] = useState<string | null>(null);
   const [users, setUsers] = useState<USER[] | null>(null);
@@ -65,39 +68,126 @@ const SeasonUsers = () => {
 
   return (
     <main>
-      {/* {seasonUsersData.isLoading ? (
-        <div className="flex items-center justify-center">
+      {seasonUsersData.isLoading ? (
+        <div className="flex items-center justify-center h-[40vh]">
           <PulseLoader color="#FF4C01" />
         </div>
-      ) : ( */}
-      <article>
-        {error ? (
-          <div className="w-full h-[40vh] flex items-center justify-center text-red-400">
-            <p>{error}</p>
-          </div>
-        ) : (
-          <section>
-            <h2 className="mt-2 mb-4 w-full text-center py-10 text-3xl font-semibold">
-              Season Users
-            </h2>
-            {users?.map((user: USER) => (
-              <div
-                key={user.id}
-                className="flex items-center justify-between border-b w-2/5 py-2 ml-[30%]  text-lg"
-              >
-                <img
-                  className="w-14 h-14 rounded-full"
-                  src={user.profile_image}
-                  alt=""
-                />
-                <p>{user.username}</p>
-                <p>{user.phone}</p>
-              </div>
-            ))}
-          </section>
-        )}
-      </article>
-      {/* )} */}
+      ) : (
+        <article>
+          {error ? (
+            <div className="w-full h-[40vh] flex items-center justify-center text-red-400">
+              <p>{error}</p>
+            </div>
+          ) : (
+            <section>
+              <h2 className="my-2 w-full text-center py-4 text-3xl font-semibold">
+                Season Users
+              </h2>
+
+              <section className="w-full flex items-start justify-center grow">
+                <div
+                  className={
+                    showMsgBox
+                      ? "w-[70%] flex flex-col items-center justify-center"
+                      : "w-[90%] flex flex-col items-center justify-center"
+                  }
+                >
+                  {users?.map((user: USER) => (
+                    <div
+                      key={user.id}
+                      className={
+                        showMsgBox
+                          ? "w-[90%] flex items-center justify-between border-b  py-2 text-lg"
+                          : "w-[70%] flex items-center justify-between border-b  py-2 text-lg"
+                      }
+                    >
+                      {user.profile_image ? (
+                        <img
+                          className="w-14 h-14 rounded-full"
+                          src={user.profile_image}
+                          alt=""
+                        />
+                      ) : (
+                        <p className="w-14 h-14 rounded-full bg-gray-100"></p>
+                      )}
+                      <p>{user.username}</p>
+                      <p>{user.phone}</p>
+                    </div>
+                  ))}
+                  {users?.map((user: USER) => (
+                    <div
+                      key={user.id}
+                      className={
+                        showMsgBox
+                          ? "w-[90%] flex items-center justify-between border-b  py-2 text-lg"
+                          : "w-[70%] flex items-center justify-between border-b  py-2 text-lg"
+                      }
+                    >
+                      {user.profile_image ? (
+                        <img
+                          className="w-14 h-14 rounded-full"
+                          src={user.profile_image}
+                          alt=""
+                        />
+                      ) : (
+                        <p className="w-14 h-14 rounded-full bg-gray-100"></p>
+                      )}
+                      <p>{user.username}</p>
+                      <p>{user.phone}</p>
+                    </div>
+                  ))}
+                  {users?.map((user: USER) => (
+                    <div
+                      key={user.id}
+                      className={
+                        showMsgBox
+                          ? "w-[90%] flex items-center justify-between border-b  py-2 text-lg"
+                          : "w-[70%] flex items-center justify-between border-b  py-2 text-lg"
+                      }
+                    >
+                      {user.profile_image ? (
+                        <img
+                          className="w-14 h-14 rounded-full"
+                          src={user.profile_image}
+                          alt=""
+                        />
+                      ) : (
+                        <p className="w-14 h-14 rounded-full bg-gray-100"></p>
+                      )}
+                      <p>{user.username}</p>
+                      <p>{user.phone}</p>
+                    </div>
+                  ))}
+                  {users?.map((user: USER) => (
+                    <div
+                      key={user.id}
+                      className={
+                        showMsgBox
+                          ? "w-[90%] flex items-center justify-between border-b  py-2 text-lg"
+                          : "w-[70%] flex items-center justify-between border-b  py-2 text-lg"
+                      }
+                    >
+                      {user.profile_image ? (
+                        <img
+                          className="w-14 h-14 rounded-full"
+                          src={user.profile_image}
+                          alt=""
+                        />
+                      ) : (
+                        <p className="w-14 h-14 rounded-full bg-gray-100"></p>
+                      )}
+                      <p>{user.username}</p>
+                      <p>{user.phone}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <SMSBox showMsgBox={showMsgBox} setShowMsgBox={setShowMsgBox} />
+              </section>
+            </section>
+          )}
+        </article>
+      )}
     </main>
   );
 };

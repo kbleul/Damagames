@@ -111,7 +111,7 @@ export const convertDateType = (unformattedDate, lang) => {
 };
 
 
-export const convertTimeType = (startingTime, endingTime) => {
+export const convertTimeType = (startingTime, endingTime, type) => {
     console.log(startingTime, endingTime)
     const startingArr = startingTime.split(":")
     const endingArr = endingTime.split(":")
