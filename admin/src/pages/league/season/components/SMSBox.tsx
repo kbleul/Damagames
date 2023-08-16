@@ -1,29 +1,70 @@
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 import React, { useState } from "react";
 import { MdCancel } from "react-icons/md";
 import { PulseLoader } from "react-spinners";
+import { useAuth } from "../../../../context/Auth";
 
 type SMSBoxProps = {
   showMsgBox: boolean;
   setShowMsgBox: React.Dispatch<React.SetStateAction<boolean>>;
+  seasonId?: string;
 };
-const SMSBox = ({ showMsgBox, setShowMsgBox }: SMSBoxProps) => {
+const SMSBox = ({ showMsgBox, setShowMsgBox, seasonId }: SMSBoxProps) => {
+  const { token } = useAuth();
+
   const [msg, setMsg] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const sendMsg = () => {
-    msg.length > 0 && setIsLoading(true);
-
-    setTimeout(() => {
-      if (msg.length > 0) {
-        alert("Message sent successfully !");
-        setMsg("");
-        showMsgBox && setShowMsgBox(false);
-        setIsLoading(false);
-      }
-    }, 3000);
+  const headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    Authorization: `Bearer ${token}`,
   };
+
+  const sendNotificationMutation = useMutation(
+    async (newData: any) =>
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}admin/send-season-notification-sms`,
+        newData,
+        {
+          headers,
+        }
+      ),
+    {
+      retry: false,
+    }
+  );
+  const sendNotificationHandler = async () => {
+    setIsLoading(true);
+    try {
+      sendNotificationMutation.mutate(
+        {
+          season_id: seasonId,
+          message: msg,
+        },
+        {
+          onSuccess: (responseData: any) => {
+            setIsLoading(false);
+            setMsg("");
+            setShowMsgBox(false);
+          },
+          onError: (err: any) => {
+            console.log(err?.message);
+            alert(err?.message);
+            setIsLoading(false);
+          },
+        }
+      );
+    } catch (err: any) {
+      console.log(err);
+      alert(err?.message);
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <article className={showMsgBox ? "w-[30%]" : "w-[10%]"}>
+    <article className={showMsgBox ? "w-[30%]" : "w-[12.5%]"}>
       {!showMsgBox ? (
         <section className="flex justify-center w-full">
           <button
@@ -36,7 +77,11 @@ const SMSBox = ({ showMsgBox, setShowMsgBox }: SMSBoxProps) => {
       ) : (
         <section className=" flex flex-col items-center justify-center py-8 relative">
           <MdCancel
-            onClick={() => setShowMsgBox(false)}
+            onClick={() => {
+              setIsLoading(false);
+              setMsg("");
+              setShowMsgBox(false);
+            }}
             className="w-8 h-8 absolute top-0 right-0 mb-2 text-gray-300 hover:text-black"
           />
           <textarea
@@ -72,11 +117,11 @@ const SMSBox = ({ showMsgBox, setShowMsgBox }: SMSBoxProps) => {
                 ? "bg-orange-600 opacity-80 rounded-full  text-center px-5 p-3 mt-5  font-medium text-white"
                 : "bg-orange-600 rounded-full hover:opacity-80 text-center px-5 p-3 mt-5  font-medium text-white"
             }
-            onClick={sendMsg}
+            onClick={sendNotificationHandler}
           >
             {isLoading ? (
-              <span className="px-8">
-                <PulseLoader color="#FFF" />
+              <span className="px-20">
+                <PulseLoader size={10} color="#FFF" />
               </span>
             ) : (
               "Send SMS Notification"

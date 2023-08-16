@@ -42,20 +42,19 @@ const SeasonUsers = () => {
       onSuccess: (res) => {
         const users = res?.data?.data?.users;
         const parsedUsers: USER[] = [];
-        console.log(users);
+
         if (users && users.length > 0) {
           users.forEach((tempUser: any) => {
             const { id, username, phone, profile_image } = tempUser?.userData;
             parsedUsers.push({ id, username, phone, profile_image });
           });
-          console.log(parsedUsers);
+
           parsedUsers.length > 0 && setUsers([...parsedUsers]);
         } else {
           setError("No users found");
         }
       },
       onError: (err: any) => {
-        console.log(err, id);
         if (err?.response?.status === 401) {
           logout();
         } else {
@@ -89,7 +88,7 @@ const SeasonUsers = () => {
                   className={
                     showMsgBox
                       ? "w-[70%] flex flex-col items-center justify-center"
-                      : "w-[90%] flex flex-col items-center justify-center"
+                      : "w-[85%] flex flex-col items-center justify-center"
                   }
                 >
                   {users?.map((user: USER) => (
@@ -182,7 +181,11 @@ const SeasonUsers = () => {
                   ))}
                 </div>
 
-                <SMSBox showMsgBox={showMsgBox} setShowMsgBox={setShowMsgBox} />
+                <SMSBox
+                  showMsgBox={showMsgBox}
+                  setShowMsgBox={setShowMsgBox}
+                  seasonId={id}
+                />
               </section>
             </section>
           )}
