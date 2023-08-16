@@ -6,7 +6,8 @@
   "author": "Markus Matiaschek <mmatiaschek@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "@playwright/test": "^1.30.0"
+    "@playwright/test": "^1.30.0",
+    "@types/node": "^16.7.13"
   },
   "scripts": {},
   "dependencies": {
