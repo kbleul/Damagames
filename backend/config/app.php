@@ -59,6 +59,7 @@ return [
     'asset_url' => env('ASSET_URL'),
 
     'otp_url' => "http://197.156.70.196:9095/api/send_sms",
+    'multi_user_otp_url' => "http://197.156.70.196:9095/api/send_list",
     'otp_username' => "Dama70314",
     'otp_password' => "B/Y.w9.Ec:W_3Qh]Og^'D=2vfO94VB",
 

@@ -2,35 +2,154 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreItemRequest;
-use App\Http\Requests\StoreItemStatusRequest;
-use App\Http\Requests\StoreItemUpdateRequest;
-use App\Models\AvatarHistory;
-use App\Models\CoinSetting;
-use App\Models\ComputerGame;
-use App\Models\ComputerGameNa;
+use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Score;
 use App\Models\Store;
-use App\Models\User;
-use Carbon\Carbon;
+use App\Models\CoinSetting;
+use App\Models\ComputerGame;
+use App\Models\SeasonPlayer;
 use Illuminate\Http\Request;
+use App\Models\AvatarHistory;
+use App\Models\ComputerGameNa;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use App\Http\Requests\StoreItemRequest;
+use Illuminate\Http\Client\RequestException;
+use App\Http\Requests\StoreItemStatusRequest;
+use App\Http\Requests\StoreItemUpdateRequest;
+use App\Http\Requests\SendSeasonNotificationSmsRequest;
 
 class AdminController extends Controller
 {
     public function dashboard()
     {
+        $totalGame = Score::count()
+            + ComputerGame::count()
+            + ComputerGameNa::count();
+        $yearlyPlayed = Score::whereBetween('created_at', [Carbon::now()->startOfYear(), Carbon::now()->endOfYear()])->count()
+            + ComputerGame::whereBetween('created_at', [Carbon::now()->startOfYear(), Carbon::now()->endOfYear()])->count()
+            + ComputerGameNa::whereBetween('created_at', [Carbon::now()->startOfYear(), Carbon::now()->endOfYear()])->count();
+
+        $dailyPlayed = Score::whereDate('created_at', Carbon::today())->count()
+            + ComputerGame::whereDate('created_at', Carbon::today())->count()
+            + ComputerGameNa::whereDate('created_at', Carbon::today())->count();
+
+        $weeklyPlayed = Score::whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count()
+            + ComputerGame::whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count()
+            + ComputerGameNa::whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count();
+
+        $monthlyPlayed = Score::whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->count()
+            + Score::whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->count()
+            + Score::whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->count();
+
         return [
             'users' => User::count(),
-            'users_subscribed' => User::where('phone_verified_at', '!==', null)->count(),
-            'auth_players_pwc' => ComputerGame::count(),
+            'users_subscribed' => User::whereNotNull('phone_verified_at')->count(),
+            'auth_players_pwc' =>  ComputerGame::count(),
             'non_auth_players_pwc' => ComputerGameNa::count(),
-            'total_games' => Score::count(),
-            'daily_played' => Score::whereDate('created_at', Carbon::today())->count(),
-            'weekly_played' => Score::whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count(),
-            'monthly_played' => Score::whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->count(),
-            'yearly_played' => Score::whereBetween('created_at', [Carbon::now()->startOfYear(), Carbon::now()->endOfYear()])->count(),
+            'human_vs_human' => Score::count(),
+            'total_games' => $totalGame,
+            'daily_played' => $dailyPlayed,
+            'weekly_played' => $weeklyPlayed,
+            'monthly_played' => $monthlyPlayed,
+            'yearly_played' => $yearlyPlayed,
         ];
+    }
+
+    public function monthlyReport(Request $request)
+    {
+        $input = $request->input('month_year');
+
+        if (is_null($input)) {
+            return $this->generateMonthlyReport(Carbon::now()->subMonth(), Carbon::now());
+        }
+
+        list($month, $year) = explode('-', $input);
+        $startDate = Carbon::createFromDate($year, $month, 1);
+        $endDate = $startDate->copy()->endOfMonth();
+
+        return $this->generateMonthlyReport($startDate, $endDate);
+    }
+
+    private function generateMonthlyReport(Carbon $startDate, Carbon $endDate)
+    {
+        $currentSubmonthReport = [];
+
+        $currentDate = $endDate->copy();
+
+        while ($currentDate >= $startDate) {
+            $date = $currentDate->format('Y-m-d');
+            $matchPlayed = Score::whereDate('created_at', $date)->count()
+                + ComputerGame::whereDate('created_at', $date)->count()
+                + ComputerGameNa::whereDate('created_at', $date)->count();
+            $subscriberCount = User::whereDate('created_at', $date)->count();
+            $verifiedSubscriberCount = User::whereNotNull('phone_verified_at')->whereDate('created_at', $date)->count();
+
+            $currentSubmonthReport[] = [
+                'date' => $date,
+                'match_played' => $matchPlayed,
+                'new_subscriber' => $subscriberCount,
+                'verified_subscriber' => $verifiedSubscriberCount,
+            ];
+
+            $currentDate->subDay();
+        }
+
+        usort($currentSubmonthReport, function ($a, $b) {
+            return strtotime($b['date']) - strtotime($a['date']);
+        });
+
+        return $currentSubmonthReport;
+    }
+
+    public function sendSeasonNotificationSms(SendSeasonNotificationSmsRequest $sendSeasonNotificationSmsRequest)
+    {
+        $playersId = SeasonPlayer::where('season_id', $sendSeasonNotificationSmsRequest->validated('season_id'))->pluck('user_id');
+        $phoneNumbers = User::whereIn('id', $playersId)->pluck('phone');
+
+        $message = $sendSeasonNotificationSmsRequest->validated('message');
+
+        $this->sendSmsNotifiction($phoneNumbers, $message);
+
+        $response = [
+            'success' => true,
+            'message' => 'Successful',
+            'status' => 200,
+            'data' => '',
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    private function sendSmsNotifiction($phoneNumbers, $message)
+    {
+        try {
+            $response = Http::post(config('app.multi_user_otp_url'), [
+                "username" => config('app.otp_username'),
+                "password" => config('app.otp_password'),
+                'to' => $phoneNumbers,
+                'text' => $message,
+            ]);
+
+            if ($response->ok()) {
+                return $response;
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unsuccessful',
+                    'status' => 500,
+                    'data' => null
+                ], 500);
+            }
+        } catch (RequestException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unsuccessful',
+                'status' => 500,
+                'data' => null
+            ], 500);
+        }
     }
 
     public function users(Request $request)
@@ -48,7 +167,7 @@ class AdminController extends Controller
     public function getRanking($id)
     {
         $collection = collect(User::orderByDesc('current_point')
-                ->get());
+            ->get());
 
         $data = $collection->where('id', $id);
 
