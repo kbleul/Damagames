@@ -27,6 +27,7 @@ const SeasonUsers = () => {
     Accept: "application/json",
     Authorization: `Bearer ${token}`,
   };
+  console.log("first");
 
   const seasonUsersData = useQuery(
     [],
@@ -115,7 +116,7 @@ const SeasonUsers = () => {
                   ))}
                 </div>
 
-                < 
+                <SMSBox
                   showMsgBox={showMsgBox}
                   setShowMsgBox={setShowMsgBox}
                   seasonId={id}
