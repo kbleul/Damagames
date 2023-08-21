@@ -155,7 +155,7 @@ const PrivacyPolicy = () => {
                 </div>
             </div>
         </div>
-
+        <button className='text-black text-xs' onClick={() => { throw Error("This is a test error for sentry") }}>send</button>
         <div id="footer">
             <div id="footer-text" className=' text-center w-full mt-8 text-xs'>
                 v1.0.0 |

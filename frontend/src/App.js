@@ -1,4 +1,7 @@
 import React, { useEffect, Suspense, useState } from "react";
+import * as Sentry from "@sentry/react";
+
+
 import { clearCacheApiData } from "./utils/utilFunc"
 import { useHome } from "./context/HomeContext";
 import { useAuth } from "./context/auth";
@@ -47,7 +50,6 @@ const Store = React.lazy(() => import("./components/Store/Store"));
 const PrivacyPolicy = React.lazy(() => import("./components/PrivacyPolicy"));
 const AvatarHistory = React.lazy(() => import("./components/Store/AvatarHistory"))
 
-import * as Sentry from "@sentry/react";
 
 
 const App = () => {
