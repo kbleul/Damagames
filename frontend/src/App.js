@@ -47,6 +47,7 @@ const Store = React.lazy(() => import("./components/Store/Store"));
 const PrivacyPolicy = React.lazy(() => import("./components/PrivacyPolicy"));
 const AvatarHistory = React.lazy(() => import("./components/Store/AvatarHistory"))
 
+import * as Sentry from "@sentry/react";
 
 
 const App = () => {
@@ -294,4 +295,5 @@ const App = () => {
   );
 };
 
-export default App;
+
+export default Sentry.withProfiler(App);
