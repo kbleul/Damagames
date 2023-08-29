@@ -19,7 +19,7 @@ import { Localization } from "../../utils/language";
 const League = () => {
 
     const LANG = { "AMH": "amharic", "ENG": "english" }
-    const { user, lang } = useAuth();
+    const { lang } = useAuth();
 
     const navigate = useNavigate()
 

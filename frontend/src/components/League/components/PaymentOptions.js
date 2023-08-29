@@ -61,7 +61,7 @@ const PaymentOptions = ({
                         const { id: userId, username, profile_image, game_point, default_board, default_crown } = user
 
                         localStorage.setItem("setIsReloading", true)
-                        console.log(user.seasons)
+
                         let newSeason = user.seasons ?
                             [...user.seasons, activeSeason] : [activeSeason]
 
@@ -81,7 +81,6 @@ const PaymentOptions = ({
                             JSON.stringify(
                                 [...newSeason]
                             ))
-                        console.log("yess", [...newSeason])
 
                         // setChanged((prev) => ++prev);
                         setIsPaymentModalOpen(false);

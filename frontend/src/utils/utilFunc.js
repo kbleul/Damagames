@@ -1,6 +1,9 @@
 import { SORTBY, CACHED_DATA, ET_MONTHS } from "./data"
 
 export const sortScoreBoard = (by, arr) => {
+
+    if (!arr || arr.length === 0) return []
+
     switch (by) {
 
         case SORTBY.COIN:
@@ -112,7 +115,6 @@ export const convertDateType = (unformattedDate, lang) => {
 
 
 export const convertTimeType = (startingTime, endingTime, type) => {
-    console.log(startingTime, endingTime)
     const startingArr = startingTime.split(":")
     const endingArr = endingTime.split(":")
 

@@ -65,7 +65,6 @@ const PlayLeagueInvite = ({ setIsInviteModalOpen, inviteData }) => {
                                 setIsInviteModalOpen(false)
                                 navigate(`/league-game/${data.gameId}`)
                                 localStorage.setItem("seasonId", data.seasonId)
-                                console.log("League game started", data)
                                 localStorage.setItem("gamePlayers", JSON.stringify({
                                     p1: data.playerOne, p2: data.playerTwo
                                 }))
@@ -88,8 +87,6 @@ const PlayLeagueInvite = ({ setIsInviteModalOpen, inviteData }) => {
                                 setIsLoading(false)
                             }
                         }, 2000)
-
-                        console.log("Invite accepted")
 
                         localStorage.setItem("gameId", responseData?.data?.data?.game);
                         localStorage.setItem("p1", responseData?.data?.data?.playerOne?.username);

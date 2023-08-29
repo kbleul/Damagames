@@ -197,7 +197,6 @@ const WinnerModal = ({
         {},
         {
           onSuccess: (responseData) => {
-            console.log("wax 3")
             const seasons = responseData?.data?.data
             localStorage.setItem("dama-user-seasons", JSON.stringify(seasons));
             setTimeout(() => { navigate(`/league/${season_id}`) }, 2500)

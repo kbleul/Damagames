@@ -74,7 +74,6 @@ const App = () => {
     return () => {
       // Remove event listener when component unmounts
       window.removeEventListener('beforeunload', clearCacheApiData);
-      console.log("triggered")
       localStorage.getItem("seasonId") && localStorage.removeItem("seasonId")
       localStorage.getItem("gameId") && localStorage.removeItem("gameId")
       localStorage.getItem("gamePlayers") && localStorage.removeItem("gamePlayers")
@@ -96,7 +95,6 @@ const App = () => {
     const { id, username, profile_image, game_point, default_board, default_crown } = user
 
     socket.on("play-league-invite", data => {
-      console.log(user)
       if (user && user.id !== data.sender.id && !isInviteModalOpen) {
         setActiveSeasons(null)
         setInviteData(data)
@@ -110,7 +108,6 @@ const App = () => {
         setIsInviteModalOpen(false)
         navigate(`/league-game/${data.gameId}`)
         localStorage.setItem("seasonId", data.seasonId)
-        console.log("League game started", data)
         localStorage.setItem("gamePlayers", JSON.stringify({
           p1: data.playerOne, p2: data.playerTwo
         }))
@@ -150,7 +147,6 @@ const App = () => {
 
             let activeSeasons = []
 
-            console.log({ "wax": seasons })
             seasons.forEach((season) => {
               if (season.is_active_season && season.is_game_time) {
                 checkInUser(season.id)
@@ -161,7 +157,6 @@ const App = () => {
             activeSeasons.length > 0 && setActiveSeasons([...activeSeasons])
             activeSeasons = null
 
-            console.log({ seasons })
             localStorage.setItem("dama-user-seasons", JSON.stringify(seasons));
 
             setFetchedSeasons(prev => !prev)
@@ -176,7 +171,6 @@ const App = () => {
   };
 
   useEffect(() => {
-    console.log("first")
     !localStorage.getItem("setIsReloading") &&
       user && fetchSeasons()
 
@@ -187,8 +181,6 @@ const App = () => {
     let userSeasons = localStorage.getItem("dama-user-seasons")
     if (user && userSeasons) {
       if (user.seasons) {
-        console.log("here", user.seasons.length, JSON.parse(userSeasons).length)
-
         if (user.seasons.length !== JSON.parse(userSeasons).length) {
           setUser({ ...user, seasons: [...JSON.parse(userSeasons)] })
         }

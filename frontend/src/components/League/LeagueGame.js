@@ -676,7 +676,6 @@ const LeagueGame = () => {
             {},
             {
                 onSuccess: (responseData) => {
-                    console.log("wax ")
                     const seasons = responseData?.data?.data
                     localStorage.setItem("dama-user-seasons", JSON.stringify(seasons));
                 },
@@ -1126,7 +1125,6 @@ const LeagueGame = () => {
             <section className="flex justify-evenly items-center w-full md:hidden">
                 <div className="">
                     <div
-                        onClick={() => this.openModal(true)}
                         className={
                             currentPlayer
                                 ? "flex flex-col items-center space-y-2 p-1 rounded-full border-4 border-orange-color w-16 h-16"

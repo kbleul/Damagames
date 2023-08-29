@@ -60,7 +60,7 @@ const Login = () => {
               default_crown: responseData?.data?.data?.default_crown,
               seasons: [...responseData?.data?.data?.seasons]
             }
-            console.log(newUser)
+
             login(
               responseData?.data?.data?.token,
               newUser

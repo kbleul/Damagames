@@ -38,7 +38,6 @@ const LeagueHistory = ({ isInviteModalOpen, setIsInviteModalOpen, setInviteData 
     const [isInSeason, setIsInSeason] = useState(false)
     const [isGameTime, setIsGameTime] = useState(false)
 
-    console.log(season_name)
 
     const badges = localStorage.getItem("BadgesAll") ? JSON.parse(localStorage.getItem("BadgesAll")) : null
 
@@ -59,7 +58,6 @@ const LeagueHistory = ({ isInviteModalOpen, setIsInviteModalOpen, setInviteData 
     };
 
     const onSuccess = data => {
-        console.log({ data })
         setError(null)
         setLeagues([...data.users])
         setIsLoading(false)
