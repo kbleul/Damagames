@@ -2,10 +2,14 @@ import React, { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
 import wancha from "../../assets/wancha.svg";
+import wancha_broken from "../../assets/wancha_broken.svg";
+
 import { useAuth } from "../../context/auth";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Localization } from "../../utils/language";
+import { motion } from "framer-motion";
+
 
 const WinnerModal = ({
   isWinnerModalOpen,
@@ -237,26 +241,85 @@ const WinnerModal = ({
 
   const CongraMsg = () => {
     return ((token && userCoin)
-      ? <div className="text-white flex flex-col items-center justify-center gap-3 text-sm">
-        <h2 className="text-2xl">{Localization["Congratulations"][lang]}</h2>
+      ?
+      <motion.div
 
-        {isLeague ?
-          <p>{Localization["You won 3 coins."][lang]}</p>
+        animate={{
+          scale: [1, 1.4, 1.4, 1, 1],
+        }}
+        transition={{
+          duration: .8,
+          ease: "easeInOut",
+          times: [0, 0.2, 0.5, 0.8, 1],
+          repeat: Infinity,
+          repeatDelay: 1
+        }}
+      >
+        <div className="text-white flex flex-col items-center justify-center gap-3 text-sm">
+          <h2 className="text-2xl">{Localization["Congratulations"][lang]}</h2>
 
-          : <div>
-            <p>{Localization["Previous"][lang]} = {userCoin} {Localization["coins"][lang]}</p>
-            <p>{Localization["Total"][lang]} = {userCoin + 50} {Localization["coins"][lang]}</p>
-          </div>}
+          {isLeague ?
+            <p>{Localization["You won 3 coins."][lang]}</p>
 
-      </div> : <div className="text-white">{Localization["Congratulations"][lang]}</div>)
+            : <div>
+              <p>{Localization["Previous"][lang]} = {userCoin} {Localization["coins"][lang]}</p>
+              <p>{Localization["Total"][lang]} = {userCoin + 50} {Localization["coins"][lang]}</p>
+            </div>}
+
+        </div>
+      </motion.div> :
+      <motion.div
+
+        animate={{
+          scale: [1, 1.4, 1.4, 1, 1],
+        }}
+        transition={{
+          duration: .8,
+          ease: "easeInOut",
+          times: [0, 0.2, 0.5, 0.8, 1],
+          repeat: Infinity,
+          repeatDelay: 1
+        }}
+      >
+        <div className="text-white">{Localization["Congratulations"][lang]} You won the game</div>
+      </motion.div>)
   }
   // 191921
   const LostMsg = () => {
-    return (token && userCoin ? <div className="text-white flex flex-col items-center justify-center gap-3 text-sm">
-      <h2 className="text-2xl">{Localization["You Lost !"][lang]}</h2>
-      <p>{Localization["You won 0 coins."][lang]}</p>
-      <p>{Localization["Total"][lang]} = {userCoin} {Localization["coins"][lang]}</p>
-    </div> : <div className="text-white">{Localization["You Lost !"][lang]} {Localization["You won 0 coins."][lang]}</div>)
+    return (token && userCoin ?
+      <motion.div
+
+        animate={{
+          scale: [1, 1.4, 1.4, 1, 1],
+        }}
+        transition={{
+          duration: .8,
+          ease: "easeInOut",
+          times: [0, 0.2, 0.5, 0.8, 1],
+          repeat: Infinity,
+          repeatDelay: 1
+        }}
+      ><div className="text-white flex flex-col items-center justify-center gap-3 text-sm">
+          <h2 className="text-2xl">{Localization["You Lost !"][lang]}</h2>
+          <p>{Localization["You won 0 coins."][lang]}</p>
+          <p>{Localization["Total"][lang]} = {userCoin} {Localization["coins"][lang]}</p>
+        </div>
+      </motion.div> :
+      <motion.div
+
+        animate={{
+          scale: [1, 1.4, 1.4, 1, 1],
+        }}
+        transition={{
+          duration: .8,
+          ease: "easeInOut",
+          times: [0, 0.2, 0.5, 0.8, 1],
+          repeat: Infinity,
+          repeatDelay: 1
+        }}
+      >
+        <div className="text-white">{Localization["You Lost !"][lang]} {Localization["You won 0 coins."][lang]}</div>
+      </motion.div>)
   }
 
 
@@ -265,7 +328,7 @@ const WinnerModal = ({
       <Transition appear show={isWinnerModalOpen} as={Fragment}>
         <Dialog
           as="div"
-          className="relative z-10"
+          className=" z-10"
           onClose={() => setIsWinnerModalOpen(true)}
         >
           <Transition.Child
@@ -281,7 +344,7 @@ const WinnerModal = ({
           </Transition.Child>
 
           <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
+            <div className="flex min-h-full items-center justify-center p-4 text-center ">
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -293,7 +356,7 @@ const WinnerModal = ({
               >
                 <Dialog.Panel
                   className="w-full max-w-md transform overflow-hidden 
-              rounded-2xl bg-dark-bg p-6 text-left align-middle shadow-xl transition-all"
+              rounded-2xl bg-dark-bg p-6 text-left align-middle shadow-xl transition-all border relative"
                 >
                   <div className="mt-2">
                     {gameState.players != 1 && (
@@ -304,11 +367,13 @@ const WinnerModal = ({
                             ? playerOneIp != null
                               ? <CongraMsg />
                               : <LostMsg />
+
                             : winnerPlayer === "player2pieces" ||
                               winnerPlayer === "player2moves"
                               ? playerTwoIp != null
                                 ? <CongraMsg />
                                 : <LostMsg />
+
                               : ""
                           : gameState?.winner == "player2pieces" ||
                             "player2moves"
@@ -321,10 +386,65 @@ const WinnerModal = ({
                         {gameState.winner === "player1pieces" ||
                           gameState.winner === "player1moves"
                           ? <CongraMsg />
-                          : <LostMsg />}
+                          : <LostMsg />
+                        }
                       </div>
                     )}
-                    <img src={wancha} alt="" className="absolute bottom-0 " />
+
+
+                    <motion.div
+                      animate={{
+                        scale: [1, 1.2, 1.2, 1, 1],
+                        rotate: [90, 0, 270, 180, 30, 0],
+                        borderRadius: ["20%", "20%", "50%", "50%", "20%"],
+                        repeatCount: 1
+                      }}
+                      transition={{
+                        duration: 3,
+                        ease: "easeInOut",
+                        times: [0, 0.2, 0.5, 0.8, 1],
+                        repeatDelay: 1
+                      }}
+
+                    >
+
+                      {gameState.players != 1 && (
+                        <>
+                          {gameState.players > 1
+                            ? winnerPlayer === "player1pieces" ||
+                              winnerPlayer === "player1moves"
+                              ? playerOneIp != null
+                                ? <img src={wancha} alt="" className="absolute bottom-0 h-20  " />
+
+                                : <img src={wancha_broken} alt="" className="absolute bottom-0 h-24  " />
+
+                              : winnerPlayer === "player2pieces" ||
+                                winnerPlayer === "player2moves"
+                                ? playerTwoIp != null
+                                  ? <img src={wancha} alt="" className="absolute bottom-0 h-20  " />
+
+                                  : <img src={wancha_broken} alt="" className="absolute bottom-0 h-24  " />
+
+                                : ""
+                            : gameState?.winner == "player2pieces" ||
+                              "player2moves"
+                              ? <img src={wancha_broken} alt="" className="absolute bottom-0 h-24  " />
+
+                              : <img src={wancha} alt="" className="absolute bottom-0 h-20  " />
+                          }
+                        </>
+                      )}
+                      {gameState.players == 1 && (
+                        <>
+                          {gameState.winner === "player1pieces" ||
+                            gameState.winner === "player1moves"
+                            ? <img src={wancha} alt="" className="absolute bottom-0 h-20  " />
+                            : <img src={wancha_broken} alt="" className="absolute bottom-0 h-24  " />
+                          }
+                        </>
+                      )}
+
+                    </motion.div>
                   </div>
                   {/* button */}
                   <div className="mt-4 flex flex-col items-center justify-center w-full space-y-4 pb-2">
