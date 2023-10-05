@@ -57,6 +57,39 @@ class AdminController extends Controller
         ];
     }
 
+    public function getIntervalGameReport(Request $request)
+    {
+        $startDate = $request->start_date;
+        $endDate = $request->end_date;
+
+        $computer_games_query = DB::table('computer_games')
+            ->select(DB::raw('DATE(created_at) as game_date'), DB::raw('COUNT(*) as total_games'), DB::raw('SUM(CASE WHEN is_user_win IS NOT NULL THEN 1 ELSE 0 END) as finished_games'));
+
+        if (!is_null($startDate) && !is_null($endDate)) {
+            $computer_games_query->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        $computer_game_nas_query = DB::table('computer_game_nas')
+            ->select(DB::raw('DATE(created_at) as game_date'), DB::raw('COUNT(*) as total_games'), DB::raw('SUM(CASE WHEN is_user_win IS NOT NULL THEN 1 ELSE 0 END) as finished_games'));
+
+        if (!is_null($startDate) && !is_null($endDate)) {
+            $computer_game_nas_query->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        return [
+            'computer_games' => $computer_games_query->groupBy('game_date')->get(),
+            'computer_game_nas' => $computer_game_nas_query->groupBy('game_date')->get(),
+            'games' => DB::table('games')
+            ->select(DB::raw('DATE(games.created_at) as game_date'), DB::raw('COUNT(CASE WHEN scores.game_id IS NOT NULL THEN 1 END) as finished_games'), DB::raw('COUNT(*) as total_games'))
+            ->leftJoin('scores', 'games.id', '=', 'scores.game_id')
+            ->whereBetween('games.created_at', [$startDate, $endDate])
+            ->groupBy('game_date')
+            ->get()                
+        ];
+    }
+
+        
+
     public function monthlyReport(Request $request)
     {
         $input = $request->input('month_year');
