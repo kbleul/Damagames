@@ -25,7 +25,6 @@ import { SORTBY, LANG } from "../utils/data"
 import TopFour from "./TopFour";
 import { sortScoreBoard, cacheApiResponse } from "../utils/utilFunc";
 
-
 const CreateGame = () => {
   const navigate = useNavigate();
   const { user, token, lang, setLanguage, logout } = useAuth();
@@ -299,6 +298,8 @@ const CreateGame = () => {
       {allBadges && allBadges.length > 0 && <SideMenu showMenu={showMenu} setShowMenu={setShowMenu} badges={allBadges} />}
 
       <article className="w-full flex justify-center absolute top-4">
+
+
         {!user && !token && (
           <section className=" w-[90%] flex items-center">
             {!user && !showLangPrompt && <div className="flex flex-col w-1/2 text-white ">

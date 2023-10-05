@@ -28,17 +28,6 @@ import UserLeavesModal from "./components/UserLeavesModal.js";
 import { clearCookie } from "../utils/data.js";
 import { useAuth } from "../context/auth.js";
 import NewGameRequestModal from "./components/NewGameRequestModal.js";
-//crowns
-//crowns
-// import yellowCoin from "../assets/yellow-coin.svg";
-// import yellowWhiteCoin from "../assets/yellow-coin-white.svg";
-// import redNegus from "../assets/redNegus.svg";
-// import yellowNegus from "../assets/YellowNegus.svg";
-// import yellowNegusWhite from "../assets/YellowNegus-white.svg";
-// import orangeCoin from "../assets/orange-coin.svg";
-// import orangeWhiteCoin from "../assets/orange-coin-white.svg";
-// import redNegusWhite from "../assets/redNegus-white.svg";
-// import { useHome } from "../context/HomeContext.js";
 
 import { Localization } from "../utils/language";
 
@@ -95,6 +84,8 @@ const Game = () => {
   const [showUndoWarning, setShowUndoWarning] = useState(false)
   const [showRedoPrompt, setShowRedoPrompt] = useState(false)
   const [showAllMoves, setShowAllMoves] = useState(true)
+  const [showPts, setShowPts] = useState(false)
+
 
   const undoAllowedAmount = 3
 
@@ -219,6 +210,7 @@ const Game = () => {
 
 
   function handleClick(coordinates) {
+    showPts && setShowPts(false)
 
     redoHistory.length > 0 && setRedoHistory([])
 
@@ -283,7 +275,7 @@ const Game = () => {
 
     // Moving a piece
     if (gameState.moves.length > 0) {
-      const postMoveState = movePiece(columns, coordinates, gameState);
+      const postMoveState = movePiece(columns, coordinates, gameState, setShowPts);
 
       if (postMoveState === null) {
         return;
@@ -367,8 +359,8 @@ const Game = () => {
           ? movePiece(columns, mergerObj.moves[0], {
             ...mergerObj,
             jumpKills: movesData[1],
-          })
-          : movePiece(columns, mergerObj.moves[0], mergerObj);
+          }, setShowPts)
+          : movePiece(columns, mergerObj.moves[0], mergerObj, setShowPts);
         if (postMoveState === null) {
           return;
         }
@@ -738,6 +730,7 @@ const Game = () => {
     Object.keys(boardState).forEach((key) => {
       if (boardState[key]?.player === "player1") {
         ++player1Counter;
+
       }
       if (boardState[key]?.player === "player2") {
         ++player2Counter;
@@ -1352,25 +1345,56 @@ const Game = () => {
       </section>
       <section className="flex justify-evenly items-center w-full md:hidden">
         <div className="">
-          <div
-            className={
-              currentPlayer
-                ? "flex flex-col items-center space-y-2 p-1 rounded-full border-4 border-orange-color w-16 h-16"
-                : "flex flex-col items-center space-y-2 p-1 rounded-full border-2 border-orange-color w-16"
-            }
+
+          {currentPlayer ? <motion.div
+            className="border-4 border-orange-color w-16 h-16"
+            animate={{
+              scale: [1, 1.4, 1.4, 1, 1],
+              borderWidth: [0, 0, 0, 0, 4],
+              borderRadius: ["50%", "50%", "0%", "0%", "50%"]
+            }}
+            transition={{
+              duration: .8,
+              ease: "easeInOut",
+              times: [0, 0.2, 0.5, 0.8, 1],
+              repeat: Infinity,
+              repeatDelay: 1
+            }}
           >
-            <img
-              src={
-                playerOneIp || (id == 1 && user?.profile_image)
-                  ? user?.profile_image
-                    ? user.profile_image
+            <div
+              className="flex flex-col items-center  rounded-full w-full h-full"
+            >
+              <img
+                src={
+                  playerOneIp || (id == 1 && user?.profile_image)
+                    ? user?.profile_image
+                      ? user.profile_image
+                      : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
                     : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
-                  : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
-              }
-              className="h-12 rounded-full"
-              alt=""
-            />
-          </div>
+                }
+                className="w-full h-full rounded-full"
+                alt=""
+              />
+            </div>
+          </motion.div> :
+            <div
+              className="flex flex-col items-center  rounded-full w-16 space-y-2 p-1 border-2 border-orange-color "
+            >
+              <img
+                src={
+                  playerOneIp || (id == 1 && user?.profile_image)
+                    ? user?.profile_image
+                      ? user.profile_image
+                      : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
+                    : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
+                }
+                className="w-full h-full rounded-full"
+                alt=""
+              />
+            </div>
+          }
+
+
           <h4 className="text-white capitalize  font-semibold text-xs">
             {id == 1
               ? user
@@ -1390,7 +1414,52 @@ const Game = () => {
         </div>
 
         <div className="">
-          <div
+
+          {!currentPlayer ? <motion.div
+            className="border-4 border-yellow-400 w-16 h-16"
+            animate={{
+              scale: [1, 1.4, 1.4, 1, 1],
+              borderWidth: [0, 0, 0, 0, 4],
+              borderRadius: ["50%", "50%", "0%", "0%", "50%"]
+            }}
+            transition={{
+              duration: .8,
+              ease: "easeInOut",
+              times: [0, 0.2, 0.5, 0.8, 1],
+              repeat: Infinity,
+              repeatDelay: 1
+            }}
+          >
+            <div
+              className="flex flex-col items-center  rounded-full w-full h-full"
+            >
+              <img
+                src={
+                  playerTwoIp && user?.profile_image
+                    ? user?.profile_image
+                    : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
+                }
+                className="w-full h-full rounded-full"
+                alt=""
+              />
+            </div>
+          </motion.div> :
+            <div
+              className="flex flex-col items-center  rounded-full w-16 space-y-2 p-1 border-2 border-yellow-400 "
+            >
+              <img
+                src={
+                  playerTwoIp && user?.profile_image
+                    ? user?.profile_image
+                    : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
+                }
+                className="w-full h-full rounded-full"
+                alt=""
+              />
+            </div>
+          }
+
+          {/* <div
             className={
               currentPlayer
                 ? "flex flex-col items-center space-y-2 p-1 rounded-full border-2 border-yellow-400 w-16"
@@ -1406,7 +1475,7 @@ const Game = () => {
               className="h-12 rounded-full"
               alt=""
             />
-          </div>
+          </div> */}
           <h4 className="text-white capitalize  font-semibold text-xs">
             {/* {secondPlayer?.name} */}
             {id == 1
@@ -1458,6 +1527,7 @@ const Game = () => {
           id != 1 ? "hidden" : "w-full h-4 flex justify-center items-center"
         }
       >
+
         {id == 1 && !currentPlayer ? (
           <ThreeDots
             height="20"
@@ -1470,9 +1540,25 @@ const Game = () => {
             visible={true}
           />
         ) : (
-          <h1 className="text-white font-normal">
-            {Localization["Your turn"][lang]}
-          </h1>
+          <motion.span
+            className="border border-gray-500 rounded-full px-2"
+            transition={{
+              x: {
+                duration: 3,
+                yoyo: Infinity,
+                ease: "easeOut",
+                repeat: Infinity
+              },
+            }}
+            animate={{
+              x: ["-1rem", "1rem", "-1rem"],
+            }}
+          >
+            <h1 className="text-white font-normal">
+              {Localization["Your turn"][lang]}
+            </h1>
+          </motion.span>
+
         )}
       </div>
 
@@ -1494,9 +1580,25 @@ const Game = () => {
               visible={true}
             />
           ) : (
-            <h1 className="text-white font-normal">
-              {Localization["Your turn"][lang]}
-            </h1>
+            <motion.span
+              className="border border-gray-500 rounded-full px-2"
+              transition={{
+                x: {
+                  duration: 3,
+                  yoyo: Infinity,
+                  ease: "easeOut",
+                  repeat: Infinity
+                },
+              }}
+              animate={{
+                x: ["-1rem", "1rem", "-1rem"],
+              }}
+            >
+              <h1 className="text-white font-normal">
+                {Localization["Your turn"][lang]}
+              </h1>
+            </motion.span>
+
           ))}
         {playerTwoIp &&
           (currentPlayer ? (
@@ -1511,49 +1613,240 @@ const Game = () => {
               visible={true}
             />
           ) : (
-            <h1 className="text-white font-normal">
-              {Localization["Your turn"][lang]}
-            </h1>
+            <motion.span
+              className="border border-gray-500 rounded-full px-2"
+              transition={{
+                x: {
+                  duration: 3,
+                  yoyo: Infinity,
+                  ease: "easeOut",
+                  repeat: Infinity
+                },
+              }}
+              animate={{
+                x: ["-1rem", "1rem", "-1rem"],
+              }}
+            >
+              <h1 className="text-white font-normal">
+                {Localization["Your turn"][lang]}
+              </h1>
+            </motion.span>
+
           ))}
       </div>
-      <div className={""}>
-        <div
-          className={`box ${!id
-            ? currentPlayer === true
-              ? currentPlayer === true && !firstPlayer
-                ? "pointer-events-none"
-                : ""
-              : currentPlayer === false
-                ? currentPlayer === false && !secondPlayer
+
+
+      <div className="relative flex items-center justify-center">
+        <motion.div
+          animate={{
+            scale: [1, 1.2, 1.2, 1.2, 1],
+            rotate: [0, 0, 270, 120, 0],
+            borderRadius: ["20%", "20%", "50%", "50%", "20%"],
+            repeatCount: 1
+          }}
+          transition={{
+            duration: 3.5,
+            ease: "easeInOut",
+            times: [0, 0.2, 0.5, 0.8, 1],
+            repeatDelay: 1
+          }}
+
+        >
+          <div
+            className={`box ${!id
+              ? currentPlayer === true
+                ? currentPlayer === true && !firstPlayer
                   ? "pointer-events-none"
                   : ""
-                : ""
-            : ""
-            }`}
-        >
-          <Board
-            boardState={
-              id === "1"
-                ? dict_reverse(boardState)
-                : !id
-                  ? localStorage.getItem("playerOne")
-                    ? dict_reverse(boardState)
+                : currentPlayer === false
+                  ? currentPlayer === false && !secondPlayer
+                    ? "pointer-events-none"
+                    : ""
+                  : ""
+              : ""
+              }`}
+          >
+            <Board
+              boardState={
+                id === "1"
+                  ? dict_reverse(boardState)
+                  : !id
+                    ? localStorage.getItem("playerOne")
+                      ? dict_reverse(boardState)
+                      : boardState
                     : boardState
-                  : boardState
-            }
-            currentPlayer={currentPlayer}
-            activePiece={gameState.activePiece}
-            moves={gameState.moves}
-            columns={columns}
-            onClick={(coordinates) => handleClick(coordinates)}
-            numberOfPlayers={gameState.players}
-            tracker={gameState.tracker ? gameState.tracker : null}
-            isFirstMove={firstMove}
-            setIsFirstMove={setFirstMove}
-            showAllMoves={showAllMoves}
-          />
-        </div>
+              }
+              currentPlayer={currentPlayer}
+              activePiece={gameState.activePiece}
+              moves={gameState.moves}
+              columns={columns}
+              onClick={(coordinates) => handleClick(coordinates)}
+              numberOfPlayers={gameState.players}
+              tracker={gameState.tracker ? gameState.tracker : null}
+              isFirstMove={firstMove}
+              setIsFirstMove={setFirstMove}
+              showAllMoves={showAllMoves}
+            />
+          </div>
+
+        </motion.div>
+
+
+        {showPts && id == 1 && !currentPlayer && (
+          <motion.span
+            style={{
+              display: "block",
+              backgroundColor: "white",
+              borderRadius: "5rem",
+              marginRight: "auto",
+              marginLeft: "auto",
+              position: "absolute",
+              top: "-10rem",
+            }}
+            initial={{ opacity: 0, y: "25rem" }}
+            animate={{
+              opacity: [1, 0.8, 0.4, 0],
+              y: 0,
+            }}
+            exit={{
+              opacity: 0,
+              y: "-2rem",
+            }}
+            transition={{
+              duration: 2.5,
+              ease: "easeInOut",
+              opacity: 0,
+
+            }}
+          >
+            <p className="text-sm bg-[#2c2c37] text-yellow-300 ">💪💪 ++</p>
+
+          </motion.span>
+
+        )}
+
+
+        {showPts && playerOneIp &&
+          (!currentPlayer && (
+            <motion.span
+              style={{
+                display: "block",
+                backgroundColor: "white",
+                borderRadius: "5rem",
+                marginRight: "auto",
+                marginLeft: "auto",
+                position: "absolute",
+                top: "-10rem",
+              }}
+              initial={{ opacity: 0, y: "25rem" }}
+              animate={{
+                opacity: [1, 0.8, 0.4, 0],
+                y: 0,
+              }}
+              exit={{
+                opacity: 0,
+                y: "-2rem",
+              }}
+              transition={{
+                duration: 2.5,
+                ease: "easeInOut",
+                opacity: 0,
+
+              }}
+            >
+              <p className="text-sm bg-[#2c2c37] text-yellow-300 ">💪💪 ++</p>
+
+            </motion.span>
+
+          ))}
+        {showPts && playerTwoIp &&
+          (currentPlayer && (
+            <motion.span
+              style={{
+                display: "block",
+                backgroundColor: "white",
+                borderRadius: "5rem",
+                marginRight: "auto",
+                marginLeft: "auto",
+                position: "absolute",
+                top: "-10rem",
+              }}
+              initial={{ opacity: 0, y: "25rem" }}
+              animate={{
+                opacity: [1, 0.8, 0.4, 0],
+                y: 0,
+              }}
+              exit={{
+                opacity: 0,
+                y: "-2rem",
+              }}
+              transition={{
+                duration: 2.5,
+                ease: "easeInOut",
+                opacity: 0,
+
+              }}
+            >
+              <p className="text-sm bg-[#2c2c37] text-yellow-300 ">💪💪 ++</p>
+
+            </motion.span>
+
+          ))}
+
+
+
+        {/* <motion.span
+          style={{
+            display: "block",
+            backgroundColor: "white",
+            borderRadius: "5rem",
+            marginRight: "auto",
+            marginLeft: "auto",
+            position: "absolute",
+            top: "-10rem",
+          }}     {showPts && id = 1 && !currentPlayer && (
+          <motion.span
+            style={{
+              display: "block",
+              backgroundColor: "white",
+              borderRadius: "5rem",
+              marginRight: "auto",
+              marginLeft: "auto",
+              position: "absolute",
+              top: "-10rem",
+            }}
+            initial={{ opacity: 0, y: "25rem" }}
+            animate={{
+              opacity: [1, 0.8, 0.4, 0],
+              y: 0,
+            }}
+            exit={{
+              opacity: 0,
+              y: "-2rem",
+            }}
+            transition={{
+              duration: 2.5,
+              ease: "easeInOut",
+              opacity: 0,
+
+            }}
+          >
+            <p className="text-sm bg-[#2c2c37] text-yellow-300 ">💪💪 ++</p>
+
+          </motion.span>
+
+        )}
+            duration: 2.5,
+            ease: "easeInOut",
+            opacity: 0,
+
+          }}
+        >
+          <p className="text-sm bg-[#2c2c37] text-yellow-300 ">💪💪 ++</p>
+        </motion.span>} */}
       </div>
+
+
 
       <div className="flex justify-evenly items-center w-full">
         {id != 1 && (
@@ -1598,7 +1891,8 @@ const Game = () => {
             </p>
           </div></>}
 
-        <div onClick={() => setShowAllMoves(prev => !prev)} className={redoHistory.length === 0 ? "flex flex-col opacity-80" : "flex flex-col cursor-pointer"}>
+        {/* setShowAllMoves(prev => !prev) */}
+        <div onClick={() => setShowPts(prev => !prev)} className={redoHistory.length === 0 ? "flex flex-col opacity-80" : "flex flex-col cursor-pointer"}>
           <div className="rounded-full flex flex-col items-center justify-center">
             {showAllMoves ? <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 24 24"><path fill="#ff4c01" d="M7 18q-2.5 0-4.25-1.75T1 12q0-2.5 1.75-4.25T7 6h10q2.5 0 4.25 1.75T23 12q0 2.5-1.75 4.25T17 18H7Zm10-3q1.25 0 2.125-.875T20 12q0-1.25-.875-2.125T17 9q-1.25 0-2.125.875T14 12q0 1.25.875 2.125T17 15Z" /></svg>
               : <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 24 24"><path fill="#ff4c01" d="M17 7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h10c2.76 0 5-2.24 5-5s-2.24-5-5-5zM7 15c-1.66 0-3-1.34-3-3s1.34-3 3-3s3 1.34 3 3s-1.34 3-3 3z" /></svg>
@@ -1704,6 +1998,7 @@ const Game = () => {
         gameState={gameState}
         setNewGameWithComputer={setNewGameWithComputer}
       />
+
       <RematchModal
         isRematchModalOpen={isRematchModalOpen}
         setIsRematchModalOpen={setIsRematchModalOpen}
@@ -1728,7 +2023,7 @@ const Game = () => {
         setIsNewGameModalOpen={setIsNewGameModalOpen}
       />
       <Toaster />
-    </div>
+    </div >
   </>
   );
 };

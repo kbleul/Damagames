@@ -94,7 +94,7 @@ export function getMoves(columns, boardState, coordinates, isKing = false, hasJu
 }
 
 //move piece
-export function movePiece(columns, coordinates, gameState) {
+export function movePiece(columns, coordinates, gameState, setShowPts = (value) => { }) {
 
   let currentState = Object.assign({}, gameState.history[gameState.stepNumber]);
   let boardState = Object.assign({}, currentState.boardState);
@@ -156,6 +156,8 @@ export function movePiece(columns, coordinates, gameState) {
     }
   }
 
+  console.log("hasjumped: " + hasJumped)
+
   if (hasJumped === true) {
     if (newMoves[0].length > 0) {
 
@@ -174,8 +176,8 @@ export function movePiece(columns, coordinates, gameState) {
   stateOut.hasJumped = hasJumped === true ? player : null;
   stateOut.winner = evaluateWinner(columns, boardState);
 
-
-
+  console.log("object, ", gameState.jumpKills)
+  gameState.jumpKills && setShowPts(true)
   return stateOut;
 }
 
