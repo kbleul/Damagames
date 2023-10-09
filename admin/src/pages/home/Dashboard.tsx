@@ -11,6 +11,7 @@ import { AiFillFilePdf } from "react-icons/ai";
 import { RiGamepadFill } from "react-icons/ri";
 import { FaUser } from "react-icons/fa";
 import MonthlyReport from "./component/MonthlyReport";
+import IntervalReport from "./component/IntervalReport";
 const Dashboard = () => {
   const { token, logout } = useAuth();
 
@@ -52,7 +53,7 @@ const Dashboard = () => {
         </button>
       </section>
       {!showReports && (
-        <div className="p-3 md:p-5">
+        <div className="p-3 md:p-5 min-h-[30vh]">
           {dashboardData.isFetched ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
               <div className="flex items-center justify-between p-5 bg-white  rounded-md shadow-md">
@@ -159,6 +160,7 @@ const Dashboard = () => {
         </div>
       )}
 
+      <IntervalReport />
       {showReports && <MonthlyReport />}
     </>
   );
