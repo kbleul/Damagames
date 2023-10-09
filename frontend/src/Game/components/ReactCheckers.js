@@ -156,7 +156,6 @@ export function movePiece(columns, coordinates, gameState, setShowPts = (value) 
     }
   }
 
-  console.log("hasjumped: " + hasJumped)
 
   if (hasJumped === true) {
     if (newMoves[0].length > 0) {
@@ -176,8 +175,7 @@ export function movePiece(columns, coordinates, gameState, setShowPts = (value) 
   stateOut.hasJumped = hasJumped === true ? player : null;
   stateOut.winner = evaluateWinner(columns, boardState);
 
-  console.log("object, ", gameState.jumpKills)
-  gameState.jumpKills && setShowPts(true)
+  // gameState.jumpKills && setShowPts(true)
   return stateOut;
 }
 

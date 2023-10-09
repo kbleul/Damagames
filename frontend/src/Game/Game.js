@@ -276,7 +276,7 @@ const Game = () => {
     // Moving a piece
     if (gameState.moves.length > 0) {
       const postMoveState = movePiece(columns, coordinates, gameState, setShowPts);
-
+      console.log(coordinates)
       if (postMoveState === null) {
         return;
       }
@@ -723,6 +723,20 @@ const Game = () => {
     setMessageInputOpen(true);
   };
 
+  const handleShowPts = (newPawnNumberP1, newPawnNumberP2, pawns) => {
+    if (id == 1 && newPawnNumberP1 !== pawns[0]) {
+      setShowPts(true)
+    }
+
+    if (id != 1) {
+      if (playerOneIp && !currentPlayer) {
+        newPawnNumberP1 !== pawns[0] && setShowPts(true)
+      }
+      if (playerTwoIp && currentPlayer) {
+        newPawnNumberP2 !== pawns[1] && setShowPts(true)
+      }
+    }
+  }
   const calcPawns = (boardState) => {
     let [prevP1, prevP2] = pawns;
     let player1Counter = 0;
@@ -740,6 +754,9 @@ const Game = () => {
       pawns[0] !== 12 - player2Counter ||
       pawns[1] !== player2Counter - prevP2
     ) {
+
+      // 12 - player2Counter !== pawns[0] && setShowPts(true)
+      handleShowPts(12 - player2Counter, 12 - player1Counter, pawns)
       setPawns([12 - player2Counter, 12 - player1Counter]);
     }
   };
