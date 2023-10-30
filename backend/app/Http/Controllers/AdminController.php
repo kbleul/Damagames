@@ -59,8 +59,8 @@ class AdminController extends Controller
 
     public function getIntervalGameReport(Request $request)
     {
-        $startDate = $request->start_date;
-        $endDate = $request->end_date;
+        $startDate = $request->start_date ?? Carbon::now();
+        $endDate = $request->end_date ?? Carbon::now()->subDays(30);
 
         $computer_games_query = DB::table('computer_games')
             ->select(DB::raw('DATE(created_at) as game_date'), DB::raw('COUNT(*) as total_games'), DB::raw('SUM(CASE WHEN is_user_win IS NOT NULL THEN 1 ELSE 0 END) as finished_games'));
