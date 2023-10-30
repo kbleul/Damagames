@@ -26,7 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('computer_games', function (Blueprint $table) {
-            $table->boolean('is_user_win')->nullable(false)->default(false)->change();
+            $table->boolean('is_user_win')->default(false)->change();
         });
     }
 };
