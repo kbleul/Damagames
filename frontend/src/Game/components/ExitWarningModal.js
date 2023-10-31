@@ -19,11 +19,17 @@ export default function ExitWarningModal({
 }) {
   const navigate = useNavigate();
   const gameId = localStorage.getItem("gameId");
-  const { user, lang, logout } = useAuth();
+  const { user, token, lang, logout } = useAuth();
 
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json"
+  };
+  const headersAuth = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    Authorization: `Bearer ${token}`,
+
   };
 
   const exitGameMutation = useMutation(
@@ -98,7 +104,7 @@ export default function ExitWarningModal({
     async (newData) =>
       await axios.post(user ? `${process.env.REACT_APP_BACKEND_URL}play-with-computer-done/${gameId}`
         : `${process.env.REACT_APP_BACKEND_URL}play-with-computer-na-done/${gameId}`, newData, {
-        headers,
+        headers: user ? headersAuth : headers,
       }),
     { retry: true, }
   );
