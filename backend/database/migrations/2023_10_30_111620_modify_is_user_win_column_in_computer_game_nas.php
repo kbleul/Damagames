@@ -13,8 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('computer_games', function (Blueprint $table) {
-            $table->boolean('is_user_win')->nullable()->default(null)->change();
+        Schema::table('computer_game_nas', function (Blueprint $table) {
+            $table->boolean('is_user_win')->nullable()->change();
         });
     }
 
@@ -25,7 +25,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('computer_games', function (Blueprint $table) {
+        Schema::table('computer_game_nas', function (Blueprint $table) {
             $table->boolean('is_user_win')->default(false)->change();
         });
     }
