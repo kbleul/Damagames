@@ -19,7 +19,7 @@ export default function ExitWarningModal({
 }) {
   const navigate = useNavigate();
   const gameId = localStorage.getItem("gameId");
-  const { lang, logout } = useAuth();
+  const { user, lang, logout } = useAuth();
 
   const headers = {
     "Content-Type": "application/json",
@@ -94,12 +94,39 @@ export default function ExitWarningModal({
     } catch (err) { }
   };
 
+  const finishGameMutation = useMutation(
+    async (newData) =>
+      await axios.post(user ? `${process.env.REACT_APP_BACKEND_URL}play-with-computer-done/${gameId}`
+        : `${process.env.REACT_APP_BACKEND_URL}play-with-computer-na-done/${gameId}`, newData, {
+        headers,
+      }),
+    { retry: true, }
+  );
+
+  const finishGameAI = async (values) => {
+    try {
+      finishGameMutation.mutate(
+        { is_user_win: values },
+        {
+          onSuccess: (responseData) => { },
+          onError: (err) => {
+            if (err?.response?.status === 401) { logout(); }
+          },
+        }
+      );
+    } catch (err) { }
+  };
 
   const handleExit = () => {
+
     //exit socket code here
     if (gameState?.players > 1 || beforeGame) {
       exitGameMutationSubmitHandler()
       socket.emit("sendExitGameRequest", { status: "Exit" });
+    }
+
+    else if (gameState?.players === 1) {
+      localStorage.getItem("gameId") && finishGameAI(false)
     }
     socket.emit('leave', gameId)
     clearCookie.forEach((data) => {
