@@ -9,8 +9,8 @@ import IntervalReportTable from "./IntervalReportTable";
 import IntervalDateSelector from "./IntervalDateSelector";
 
 const catagories = [
-  "With Computer Verified",
   "With Computer Unverified",
+  "With Computer Verified",
   "User Games",
 ];
 const IntervalReport = () => {
@@ -60,9 +60,13 @@ const IntervalReport = () => {
         {
           onSuccess: (responseData: any) => {
             console.log(responseData.data.data);
-            setUserGames(responseData.data.data.games);
-            setWithComputerVerified([...responseData.data.data.computer_games]);
-            setWithComputerunverified(responseData.data.data.computer_game_nas);
+            setUserGames(responseData.data.data.games.reverse());
+            setWithComputerVerified([
+              ...responseData.data.data.computer_games.reverse(),
+            ]);
+            setWithComputerunverified(
+              responseData.data.data.computer_game_nas.reverse()
+            );
           },
           onError: (err: any) => {
             alert(err?.response?.data?.data);
