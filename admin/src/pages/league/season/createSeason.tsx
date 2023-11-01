@@ -105,7 +105,6 @@ const CreateSeason = () => {
   };
 
   function convertTime(timeString: string) {
-    console.log(timeString);
     var time = timeString.split(":");
     var hour = parseInt(time[0]);
     var minute = parseInt(time[1]);
@@ -115,7 +114,6 @@ const CreateSeason = () => {
     if (hour < 12) {
       tag = " am";
     }
-    console.log({ hour });
 
     if (hour > 12) {
       hour -= 12;
@@ -177,7 +175,6 @@ const CreateSeason = () => {
     setStartingDateError(null);
     setEndingDateError(null);
 
-    // console.log(values.ending_time_et, convertTime(values.ending_time_et));
     const startingTimeEt = convertTime(values.starting_time_et);
     const endingTimeEt = convertTime(values.ending_time_et);
 
@@ -232,7 +229,6 @@ const CreateSeason = () => {
   };
 
   const handleDateChange = (event: SelectChangeEvent<typeof playingDates>) => {
-    console.log(event.target);
     const {
       target: { value },
     } = event;
@@ -264,7 +260,6 @@ const CreateSeason = () => {
       .toString()
       .padStart(2, "0")}`;
     // setUsTime(gmtTimeString );
-    console.log("acra", gmtTimeString);
     type === "start"
       ? setStartingTime(gmtTimeString)
       : setEndingTime(gmtTimeString);

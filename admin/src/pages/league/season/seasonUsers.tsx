@@ -27,7 +27,6 @@ const SeasonUsers = () => {
     Accept: "application/json",
     Authorization: `Bearer ${token}`,
   };
-  console.log("first");
 
   const seasonUsersData = useQuery(
     [],

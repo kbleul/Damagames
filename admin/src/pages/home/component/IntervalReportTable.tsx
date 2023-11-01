@@ -16,7 +16,6 @@ const IntervalReportTable = ({
   data: Array<object>;
   selectedCategory: string;
 }) => {
-  console.log("data", selectedCategory, data);
   const columns: GridColDef[] = [
     {
       field: "game_date",

@@ -51,7 +51,6 @@ const EditAward = () => {
   );
 
   const updateAwardsSubmitHandler = async (values: any) => {
-    console.log(id);
     try {
       updateAwardsMutation.mutate(
         {

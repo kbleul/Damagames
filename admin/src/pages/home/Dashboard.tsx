@@ -1,17 +1,13 @@
-import React, { useState } from "react";
-import { BsFillArrowRightSquareFill } from "react-icons/bs";
+import { useState } from "react";
 import { useAuth } from "../../context/Auth";
-import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { BiCategoryAlt } from "react-icons/bi";
-import { BsFillPatchQuestionFill } from "react-icons/bs";
 import axios from "axios";
 import { PulseLoader } from "react-spinners";
-import { AiFillFilePdf } from "react-icons/ai";
 import { RiGamepadFill } from "react-icons/ri";
 import { FaUser } from "react-icons/fa";
 import MonthlyReport from "./component/MonthlyReport";
 import IntervalReport from "./component/IntervalReport";
+import Users from "./component/Users";
 const Dashboard = () => {
   const { token, logout } = useAuth();
 
@@ -43,126 +39,20 @@ const Dashboard = () => {
   );
 
   return (
-    <>
-      <section className="flex justify-end items-center w-full px-4">
-        <button
-          onClick={() => setShowReports((prev) => !prev)}
-          className="bg-orange-600 rounded-md hover:opacity-80 text-center px-8 p-3 font-medium text-white"
-        >
-          {showReports ? "Hide" : "Show"} Monthly Report
-        </button>
+    <article className="mx-[5%] ">
+      <section>
+        <h2 className="text-2xl text-[#FF4C02] font-bold">Dashboard</h2>
+        <p className="text-[#A0AEC0]">
+          Welcome to Dama Admin Dashboard – Your Hub for the Game Insights and
+          Management.
+        </p>
       </section>
-      {!showReports && (
-        <div className="p-3 md:p-5 min-h-[30vh]">
-          {dashboardData.isFetched ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-              <div className="flex items-center justify-between p-5 bg-white  rounded-md shadow-md">
-                <FaUser size={70} className="text-main-color" />
-                <div className="flex flex-col items-center space-y-2">
-                  <p className="font-bold text-dark-color dark:text-white text-2xl">
-                    {dashboardData?.data?.data?.data?.users}
-                  </p>
-                  <h1 className=" font-normal px-3 capitalize text-white bg-main-bg p-[2px] rounded-md text-sm">
-                    Users
-                  </h1>
-                </div>
-              </div>
-              {/* verified users */}
-              <div className="flex items-center justify-between p-5 bg-white  rounded-md shadow-md">
-                <FaUser size={70} className="text-main-color" />
-                <div className="flex flex-col items-center space-y-2">
-                  <p className="font-bold text-dark-color dark:text-white text-2xl">
-                    {dashboardData?.data?.data?.data?.users_subscribed}
-                  </p>
-                  <h1 className=" font-normal px-3 capitalize text-white bg-main-bg p-[2px] rounded-md text-sm">
-                    verified users
-                  </h1>
-                </div>
-              </div>
-              {/* dayly played */}
-              <div className="flex items-center justify-between p-5 bg-white  rounded-md shadow-md">
-                <RiGamepadFill size={70} className="text-[#0891b2] " />
-                <div className="flex flex-col items-center space-y-2">
-                  <p className="font-bold text-dark-color dark:text-white text-2xl">
-                    {dashboardData?.data?.data?.data?.total_games}
-                  </p>
-                  <h1 className=" font-normal px-3 capitalize text-white bg-[#0891b2] p-[2px] rounded-md text-sm">
-                    Total Games
-                  </h1>
-                </div>
-              </div>
-              {/* weekly played */}
-              <div className="flex items-center justify-between p-5 bg-white  rounded-md shadow-md">
-                <RiGamepadFill size={70} className="text-[#10b981]" />
-                <div className="flex flex-col items-center space-y-2">
-                  <p className="font-bold text-dark-color dark:text-white text-2xl">
-                    {dashboardData?.data?.data?.data?.weekly_played}
-                  </p>
-                  <h1 className=" font-normal px-3 capitalize text-white bg-[#10b981] p-[2px] rounded-md text-sm">
-                    weekly played
-                  </h1>
-                </div>
-              </div>
-              {/* montly played */}
-              <div className="flex items-center justify-between p-5 bg-white  rounded-md shadow-md">
-                <RiGamepadFill size={70} className="text-[#333e4b]" />
-                <div className="flex flex-col items-center space-y-2">
-                  <p className="font-bold text-dark-color dark:text-white text-2xl">
-                    {dashboardData?.data?.data?.data?.monthly_played}
-                  </p>
-                  <h1 className=" font-normal px-3 capitalize text-white bg-[#333e4b] p-[2px] rounded-md text-sm">
-                    Monthly Played
-                  </h1>
-                </div>
-              </div>
-              {/* yearly played */}
-              <div className="flex items-center justify-between p-5 bg-white  rounded-md shadow-md">
-                <RiGamepadFill size={70} className="text-[#ffbc35]" />
-                <div className="flex flex-col items-center space-y-2">
-                  <p className="font-bold text-dark-color dark:text-white text-2xl">
-                    {dashboardData?.data?.data?.data?.yearly_played}
-                  </p>
-                  <h1 className=" font-normal px-3 capitalize text-white bg-[#ffbc35] p-[2px] rounded-md text-sm">
-                    Yearly Played
-                  </h1>
-                </div>
-              </div>
-              {/* un verifiedplay with computer */}
-              <div className="flex items-center justify-between p-5 bg-white  rounded-md shadow-md">
-                <RiGamepadFill size={70} className="text-[#ffbc35]" />
-                <div className="flex flex-col items-center space-y-2">
-                  <p className="font-bold text-dark-color dark:text-white text-2xl">
-                    {dashboardData?.data?.data?.data?.non_auth_players_pwc}
-                  </p>
-                  <h1 className=" font-normal px-3 capitalize text-white bg-[#ffbc35] p-[2px] rounded-md text-sm">
-                    non-verified PWC
-                  </h1>
-                </div>
-              </div>
-              {/* verified play with computer */}
-              <div className="flex items-center justify-between p-5 bg-white  rounded-md shadow-md">
-                <RiGamepadFill size={70} className="text-[#ffbc35]" />
-                <div className="flex flex-col items-center space-y-2">
-                  <p className="font-bold text-dark-color dark:text-white text-2xl">
-                    {dashboardData?.data?.data?.data?.auth_players_pwc}
-                  </p>
-                  <h1 className=" font-normal px-3 capitalize text-white bg-[#ffbc35] p-[2px] rounded-md text-sm">
-                    verified PWC
-                  </h1>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="flex items-center justify-center">
-              <PulseLoader color="#FF4C01" />
-            </div>
-          )}
-        </div>
-      )}
 
-      <IntervalReport />
-      {showReports && <MonthlyReport />}
-    </>
+      <Users
+        totalUsers={dashboardData?.data?.data?.data?.users}
+        subscribedUsers={dashboardData?.data?.data?.data?.users_subscribed}
+      />
+    </article>
   );
 };
 

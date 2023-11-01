@@ -71,7 +71,6 @@ const Season = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const seasons = location.state?.seasons;
-  console.log(seasons);
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -123,7 +122,6 @@ const Season = () => {
     }
   );
   const updateSeasonSubmitHandler = async (values: any) => {
-    console.log(values);
     try {
       values.status = 1;
       updateSeasonHistoryMutation.mutate(

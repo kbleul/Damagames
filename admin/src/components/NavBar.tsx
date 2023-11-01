@@ -16,30 +16,34 @@ const NavBar: React.FC<ChildProps> = ({
 }) => {
   const { user } = useAuth();
   return (
-    <div className=" w-full">
-      <div className="flex items-center justify-between space-x-2 p-5 bg-white  w-full">
+    <div className=" w-full shadow-lg">
+      <div className="flex items-center justify-between space-x-2 px-5 bg-white  w-full py-2 mb-6">
         <div>
           {!isSideBarOpen && isSmallScreen && (
             <FaBars onClick={() => setIsOpen(!isOpen)} />
           )}
         </div>
 
-        <div className="flex items-start space-x-2">
+        <div className="flex items-start space-x-2 pr-10">
+          <img
+            src={
+              user?.profileImageUrl
+                ? user?.profileImageUrl
+                : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
+            }
+            alt=""
+            className="h-14 w-102 rounded-full object-cover"
+          />
           {!isSmallScreen && (
-            <div className="flex flex-col items-end space-x-0">
-              <h1 className="font-medium text-dark-gray dark:text-white text-sm">
+            <div className="flex flex-col items-start justify-center  space-x-0 pt-2 ">
+              <h1 className="font-bold text-dark-gray dark:text-white text-sm">
                 {user?.username}
               </h1>
-              <p className="font-normal text-[13px] text-dark-gray dark:text-white">
+              <p className="font-bold text-[13px] text-gray-400 letter dark:text-white tracking-wider">
                 {user?.phone}
               </p>
             </div>
           )}
-          <img
-            src={user?.profileImageUrl ? user?.profileImageUrl : "https://t3.ftcdn.net/jpg/03/46/83/96/240_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"}
-            alt=""
-            className="h-10 w-10 rounded-full object-cover"
-          />
         </div>
       </div>
     </div>

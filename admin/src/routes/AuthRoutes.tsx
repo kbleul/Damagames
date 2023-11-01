@@ -53,8 +53,8 @@ const AuthRoutes: React.FC<Props> = () => {
   return (
     <div className="flex relative min-h-screen">
       <div
-        className={`bg-stone-900  h-screen pt-5 duration-300
-      ${isOpen ? "w-0 hidden" : isSideBarOpen ? "w-64" : "w-20"} p-5 fixed `}
+        className={`bg-stone-900  h-screen duration-300
+      ${isOpen ? "w-0 hidden" : isSideBarOpen ? "w-64" : "w-20"} px-5 fixed `}
       >
         <BsFillArrowLeftCircleFill
           onClick={() => setIsSideBarOpen(!isSideBarOpen)}
@@ -75,9 +75,9 @@ const AuthRoutes: React.FC<Props> = () => {
       <div
         className={` duration-300  ${
           isOpen ? "ml-0" : isSideBarOpen ? "ml-64" : " ml-20"
-        }  w-full  p-3  `}
+        }  w-full    `}
       >
-        <div className=" ">
+        <div className=" w-full">
           <NavBar
             setIsOpen={setIsOpen}
             isOpen={isOpen}

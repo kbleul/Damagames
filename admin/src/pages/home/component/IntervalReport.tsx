@@ -59,7 +59,6 @@ const IntervalReport = () => {
         },
         {
           onSuccess: (responseData: any) => {
-            console.log(responseData.data.data);
             setUserGames(responseData.data.data.games.reverse());
             setWithComputerVerified([
               ...responseData.data.data.computer_games.reverse(),

@@ -276,7 +276,6 @@ const Game = () => {
     // Moving a piece
     if (gameState.moves.length > 0) {
       const postMoveState = movePiece(columns, coordinates, gameState, setShowPts);
-      console.log(coordinates)
       if (postMoveState === null) {
         return;
       }

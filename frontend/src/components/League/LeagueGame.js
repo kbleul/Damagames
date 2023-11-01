@@ -946,7 +946,6 @@ const LeagueGame = () => {
 
 
     const reCheckInPlayer = () => {
-        console.log("recheckin")
         const { id: userId, username, profile_image, game_point, default_board, default_crown } = user
 
         socket.emit("checkInLeague", {

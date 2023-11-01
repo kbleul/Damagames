@@ -51,7 +51,6 @@ const SMSBox = ({ showMsgBox, setShowMsgBox, seasonId }: SMSBoxProps) => {
             alert("Messages sent successfully");
           },
           onError: (err: any) => {
-            console.log(err?.message);
             alert(err?.message);
             setIsLoading(false);
           },

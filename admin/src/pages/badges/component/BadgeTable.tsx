@@ -29,7 +29,6 @@ const BadgeTable = ({ badges, setIsUpdated }: Props) => {
     Accept: "application/json",
     Authorization: `Bearer ${token}`,
   };
-  console.log("test two");
   const deleteBadgeMutation = useMutation(
     async (id: string) =>
       await axios.delete(

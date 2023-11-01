@@ -14,7 +14,6 @@ test("withdraw_computer_game", async ({ page }) => {
   } catch {
     console.log("Start Tour btn not found");
   }
-  //await page.getByRole('button', { name: 'Play With computer' }).click();
   await page.click("text=Play with Computer");
 
   await page.waitForTimeout(10000);

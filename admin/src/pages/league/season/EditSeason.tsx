@@ -42,7 +42,6 @@ const formatTime = (timeString: string) => {
   if (period && period === "pm") {
     const formattedHours = parseInt(hours, 10) + 12;
     formattedTime = `${formattedHours}:${minutes}`;
-    console.log(formattedTime, period);
   }
   // Assign the formatted time to the input field
 
@@ -83,7 +82,6 @@ const EditSeason = () => {
   const SEASON = location.state?.season;
   const { token } = useAuth();
   const navigate = useNavigate();
-  console.log(SEASON);
   const [playingDates, setPlayingDates] = useState<string[]>(
     SEASON.playing_day ? [...JSON.parse(SEASON.playing_day)] : []
   );
@@ -215,15 +213,12 @@ const EditSeason = () => {
     if (hour < 12) {
       tag = " am";
     }
-    console.log({ hour });
 
-    console.log(timeString);
     if (hour > 12) {
       hour -= 12;
     } else if (hour === 0) {
       hour = 12;
     }
-    console.log(hour);
 
     hour = hour === 12 ? 0 : hour;
     return (
@@ -372,7 +367,6 @@ const EditSeason = () => {
       .toString()
       .padStart(2, "0")}`;
 
-    console.log(ethiopianTimeString, gmtTimeString);
     type === "start"
       ? setStartingTime(gmtTimeString)
       : setEndingTime(gmtTimeString);

@@ -37,7 +37,6 @@ const DrawGameModal = ({
   );
 
   const handleDrawGameMutationSubmitHandler = async (values) => {
-    console.log(values)
     try {
       handleDrawGameMutation.mutate(
         { seasonId: seasonId ? seasonId : null },

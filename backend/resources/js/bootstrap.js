@@ -39,6 +39,5 @@ window.Echo = new Echo({
 });
 
 window.Echo.channel("dama").listen("PlayerMovement", (e) => {
-	console.log("listen invitation");
 	console.log(e);
 });

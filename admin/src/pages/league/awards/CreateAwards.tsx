@@ -66,7 +66,6 @@ const CreateAwards = () => {
   );
 
   const createAwardsSubmitHandler = async (values: any) => {
-    console.log(id);
     try {
       createAwardsMutation.mutate(
         {

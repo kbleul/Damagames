@@ -85,7 +85,6 @@ const removeLeagueActivePlayer = (id, by = "userId") => {
     }
   })
 
-  console.log({ userSeasons })
   if (userSeasons.length > 0) {
     userSeasons.forEach(seasonId => { sendActivePlayers(seasonId) })
   }
@@ -189,7 +188,6 @@ console.log(`⚡: Server is live! PORT = ` + 7744);
 
 io.on("connection", (socket) => {
   //user connection
-  console.log("user connected")
   socket.on("postPublicGame", (data) => {
     publicGames.push({
       ...data,
@@ -239,7 +237,6 @@ io.on("connection", (socket) => {
 
     if (!season) {
       leagueActivePlayers.set(seasonId, [{ ...userData, socketId: socket.id }]);
-      // console.log("checkInLeague", seasonId, userData.id, leagueActivePlayers)
 
       return;
     }
@@ -255,7 +252,6 @@ io.on("connection", (socket) => {
     }
 
     sendActivePlayers(seasonId)
-    // console.log("checkInLeague", seasonId, userData.id, leagueActivePlayers)
 
   });
 
@@ -369,7 +365,6 @@ io.on("connection", (socket) => {
   socket.on("remove-from-active-league", () => {
     removeLeagueActivePlayer(socket.id, "socketId")
 
-    console.log("after remove", leagueActivePlayers)
   })
 
   socket.on("leave", (room) => {
@@ -392,7 +387,6 @@ io.on("connection", (socket) => {
 
     removePublicGame(socket.id, "socketId");
     removeLeagueActivePlayer(socket.id, "socketId")
-    console.log(leagueActivePlayers)
   });
 
 });
