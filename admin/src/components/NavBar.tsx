@@ -16,7 +16,7 @@ const NavBar: React.FC<ChildProps> = ({
 }) => {
   const { user } = useAuth();
   return (
-    <div className=" w-full shadow-lg">
+    <div className=" w-full shadow-md">
       <div className="flex items-center justify-between space-x-2 px-5 bg-white  w-full py-2 mb-6">
         <div>
           {!isSideBarOpen && isSmallScreen && (

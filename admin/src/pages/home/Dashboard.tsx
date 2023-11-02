@@ -8,6 +8,10 @@ import { FaUser } from "react-icons/fa";
 import MonthlyReport from "./component/MonthlyReport";
 import IntervalReport from "./component/IntervalReport";
 import Users from "./component/Users";
+import Games from "./component/Games";
+import PopularAssets from "./component/PopularAssets";
+import FinancialAssets from "./component/FinancialAssets";
+import RecentGames from "./component/RecentGames";
 const Dashboard = () => {
   const { token, logout } = useAuth();
 
@@ -39,7 +43,7 @@ const Dashboard = () => {
   );
 
   return (
-    <article className="mx-[5%] ">
+    <article className="mx-[5%] pb-20">
       <section>
         <h2 className="text-2xl text-[#FF4C02] font-bold">Dashboard</h2>
         <p className="text-[#A0AEC0]">
@@ -48,10 +52,53 @@ const Dashboard = () => {
         </p>
       </section>
 
-      <Users
-        totalUsers={dashboardData?.data?.data?.data?.users}
-        subscribedUsers={dashboardData?.data?.data?.data?.users_subscribed}
-      />
+      {!dashboardData.isLoading ? (
+        <Users
+          totalUsers={dashboardData?.data?.data?.data?.users}
+          subscribedUsers={dashboardData?.data?.data?.data?.users_subscribed}
+        />
+      ) : (
+        <div className="flex items-center justify-center mt-20  bg-white w-full py-10">
+          <PulseLoader color="#FF4C01" />
+        </div>
+      )}
+
+      {!dashboardData.isLoading ? (
+        <Games
+          totalUsers={dashboardData?.data?.data?.data?.users}
+          subscribedUsers={dashboardData?.data?.data?.data?.users_subscribed}
+        />
+      ) : (
+        <div className="flex items-center justify-center mt-20 bg-white w-full py-10 ">
+          <PulseLoader color="#FF4C01" />
+        </div>
+      )}
+
+      <section className="flex justify-between items-strech ">
+        {!dashboardData.isLoading ? (
+          <RecentGames />
+        ) : (
+          <div className="flex items-center justify-center mt-20 bg-white w-1/2 py-40 ">
+            <PulseLoader color="#FF4C01" />
+          </div>
+        )}
+
+        {!dashboardData.isLoading ? (
+          <PopularAssets />
+        ) : (
+          <div className="flex items-center justify-center mt-20 bg-white w-1/2 py-40 ">
+            <PulseLoader color="#FF4C01" />
+          </div>
+        )}
+      </section>
+
+      {!dashboardData.isLoading ? (
+        <FinancialAssets />
+      ) : (
+        <div className="flex items-center justify-center mt-20 bg-white w-full py-36 ">
+          <PulseLoader color="#FF4C01" />
+        </div>
+      )}
     </article>
   );
 };

@@ -8,7 +8,7 @@ const Users: React.FC<{
 }> = ({ totalUsers, subscribedUsers }) => {
   return (
     <article className="mt-8">
-      <h2 className=" text-[#949494] font-bold">Users</h2>
+      <h2 className="text-sm text-[#949494] font-bold uppercase">Users</h2>
 
       <section className="w-full flex justify-between items-center">
         <Card title="Total Users" amount={totalUsers} index={1} />
@@ -43,9 +43,9 @@ const Card: React.FC<{
     }
   };
   return (
-    <section className="w-[30%] flex justify-between items-center rounded-lg bg-white px-8 mt-2 py-1">
-      <div className="py-4">
-        <p className="text-[#A0AEC0] text-sm font-semibold">{title}</p>
+    <section className="w-[32%] flex justify-between items-center rounded-lg bg-white px-4 mt-2 ">
+      <div className="py-2">
+        <h3 className="text-[#A0AEC0] text-sm font-semibold">{title}</h3>
         <p className="font-bold mt-2">{amount}</p>
       </div>
       <div className="w-[45px] h-[45px] bg-[#FF6D56] rounded-lg flex items-center justify-center">
