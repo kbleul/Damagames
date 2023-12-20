@@ -21,6 +21,7 @@ import LeagueGame from "./components/League/LeagueGame";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import LeagueGameIsActiveModal from "./components/League/components/LeagueGameIsActiveModal";
+import ComputerGame from './Game/PlayComputer/ComputerGame'
 //'G-YM283P3T0J'
 const tagManagerArgs = {
   gtmId: process.env.REACT_APP_GTM_ID,
@@ -229,6 +230,9 @@ const App = () => {
 
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="*" element={<CreateGame />} />
+
+          <Route path="/computer-game" element={<ComputerGame />} />
+
         </Routes>
       </>
     );
@@ -264,6 +268,9 @@ const App = () => {
 
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="*" element={<Navigate to="/create-game" />} />
+
+          <Route path="/computer-game" element={<ComputerGame />} />
+
         </Routes>
       </>
     );

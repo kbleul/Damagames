@@ -295,10 +295,12 @@ const CreateGame = () => {
         }}
       />}
 
+
       {allBadges && allBadges.length > 0 && <SideMenu showMenu={showMenu} setShowMenu={setShowMenu} badges={allBadges} />}
 
       <article className="w-full flex justify-center absolute top-4">
 
+        <button className="text-white " onClick={() => navigate('/computer-game')}>AI GAME</button>
 
         {!user && !token && (
           <section className=" w-[90%] flex items-center">
