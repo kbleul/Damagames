@@ -15,7 +15,6 @@ class Board {
 
   pieceAt(row, col, color) {
     const piece = this.board[row][col];
-    console.log("found piece", piece);
 
     if (piece && piece.getColor() === color) {
       return piece;
@@ -32,18 +31,18 @@ class Board {
   }
 
   setPieceAt(oldPosition, newPosition) {
-    console.log(this.board, oldPosition)
     const playingPiece = this.board[oldPosition.row][oldPosition.col]
-
-    console.log(this.board[oldPosition.row][oldPosition.col])
-    console.log(this.board[newPosition.row][newPosition.col])
 
     this.board[oldPosition.row][oldPosition.col] = null
     playingPiece.setPosition(new Position(newPosition.row, newPosition.col))
     this.board[newPosition.row][newPosition.col] = playingPiece;
 
-    console.log(this.board[oldPosition.row][oldPosition.col])
-    console.log(this.board[newPosition.row][newPosition.col])
+    if (this.board[newPosition.row][newPosition.col] &&
+      !this.board[newPosition.row][newPosition.col].isKing &&
+      newPosition.row === 0) {
+      this.board[newPosition.row][newPosition.col].setKing(true)
+    }
+
   }
 
   pieces() {

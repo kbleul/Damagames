@@ -66,11 +66,8 @@ class Piece {
   }
 
   setPosition(newPosition) {
-    console.log("newPosition", newPosition, this.position);
     this.position.row = newPosition.row;
     this.position.col = newPosition.col;
-
-    console.log(this.position)
   }
 
   setKing(king) {

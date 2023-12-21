@@ -1,15 +1,19 @@
+const { PlayerTurn } = require("../utils/data");
+const Board = require("./Board");
 const Computer = require("./Computer");
 const Human = require("./Human");
-const { Position, ColorObj } = require("./Piece");
+const { Position, ColorObj, Piece } = require("./Piece");
 
 class Game {
-    initializePlayers() {
-        // Initialize human and computer players with their respective colors
-        this.humanPlayer = new Human(this.gameBoard);
-        this.computerPlayer = new Computer(this.gameBoard);
+
+    constructor() {
+        this.gameBoard = this.initializeBoard()
+        this.humanPlayer = new Human();
+        this.computerPlayer = new Computer();
+        this.currentPlayer = PlayerTurn.Human
     }
 
-    isGameOver() {
+    isGameOver(currentPlayer) {
         // Check if either player has no pieces left
         if (
             this.humanPlayer.getPieces(this.gameBoard.pieces()).length === 0 ||
@@ -131,11 +135,57 @@ class Game {
     displayGameResult() { }
 
     initializeBoard() {
-        this.gameBoard.init();
+        const boardSize = 8;
+        const board = new Board(boardSize);
+
+        const piecePositions = {
+            human: [
+                [7, 0], [7, 2], [7, 4], [7, 6],
+                [6, 1], [6, 3], [6, 5], [6, 7],
+                [4, 1], [5, 2], [5, 4], [5, 6],
+            ],
+            computer: [
+                [0, 0], [0, 2], [1, 4], [0, 6],
+                [1, 1], [1, 3], [1, 5], [1, 7],
+                [2, 0], [3, 2], [2, 4], [2, 6]
+            ]
+        }
+
+        const pieces = [];
+
+        for (const [row, col] of piecePositions.human) {
+            const newPosition = new Position(row, col)
+            const piece = new Piece(ColorObj.RED, newPosition);
+            board.putAt(piece, newPosition);
+            pieces.push(piece);
+        }
+
+        for (const [row, col] of piecePositions.computer) {
+            const newPosition = new Position(row, col)
+            const piece = new Piece(ColorObj.BLACK, newPosition);
+            board.putAt(piece, newPosition);
+            pieces.push(piece);
+        }
+
+
+        for (let i = 0; i < board.size; i++) {
+            for (let j = 0; j < board.size; j++) {
+                !board.getPieceAt({ row: i, col: j }) && board.putAt(null, { row: i, col: j })
+
+            }
+        }
+
+        return board
     }
 
-    getPieces() {
-        return this.gameBoard.pieces();
+    getPieces(gameBoard) {
+        return gameBoard.pieces();
+    }
+
+    setCurrentPlayer(turn) {
+        if (PlayerTurn[turn]) {
+            this.currentPlayer = PlayerTurn[turn]
+        }
     }
 }
 

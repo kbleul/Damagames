@@ -10,9 +10,7 @@ class Computer {
         const depth = 20; // Adjust the depth for game's complexity
         const alpha = Number.MIN_SAFE_INTEGER;
         const beta = Number.MAX_SAFE_INTEGER;
-        console.log("object")
         const bestMove = this.alphaBetaStack(board, depth, alpha, beta, true);
-        console.log(bestMove);
         this.applyMove(bestMove, board, true);
     }
 
@@ -128,7 +126,6 @@ class Computer {
         let bestScore = maximizing ? Number.MIN_SAFE_INTEGER : Number.MAX_SAFE_INTEGER;
 
         while (stateStack.length > 0) {
-            console.log("pp")
             const currentState = stateStack.pop();
             const { board, depth, alpha, beta, maximizing } = currentState;
 

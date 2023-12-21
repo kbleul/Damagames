@@ -1,4 +1,5 @@
-const Capture = require("../utils/Capture");
+const Capture = require("../utils/classes/Capture");
+const { PlayerTurn } = require("../utils/data");
 const Move = require("./Move");
 const { ColorObj, Position } = require("./Piece");
 const Player = require("./Player");
@@ -8,83 +9,47 @@ class Human extends Player {
         super(ColorObj.RED);
     }
 
-    move(gameBoard) {
-        let fromRow, fromCol, toRow, toCol;
+    move(gameBoard, from, to, CreatedGame) {
 
-        fromRow = 4;
-        fromCol = 1
-        toRow = 3
-        toCol = 2
+        const fromPosition = new Position(from.row, from.col);
+        const toPosition = new Position(to.row, to.col);
 
-        const from = new Position(fromRow, fromCol);
-        const to = new Position(toRow, toCol);
-        const move = new Move(from, to);
+        const captureMove = Capture.getCaptureMove(from, gameBoard.board)
 
-        const pieceToMove = gameBoard.pieceAt(fromRow, fromCol, ColorObj.RED);
-        if (this.theMoveIsValid(from, to, gameBoard.board)) {
-            if (pieceToMove && pieceToMove.getColor() === ColorObj.RED) {
-                console.log(move)
-
-                gameBoard.setPieceAt({ row: fromRow, col: fromCol }, { row: toRow, col: toCol })
-
-
-                console.log("newBoard", gameBoard.board)
+        const pieceToMove = gameBoard.pieceAt(from.row, from.col, this.color);
+        if (this.theMoveIsValid(fromPosition, toPosition, gameBoard.board)) {
+            if (pieceToMove && pieceToMove.getColor() === this.color) {
+                gameBoard.setPieceAt({ row: from.row, col: from.col }, { row: to.row, col: to.col })
+                CreatedGame.setCurrentPlayer(PlayerTurn.Computer)
             } else {
                 console.log("The 'from' position doesn't contain your piece. Try again.");
             }
-        } else if (Capture.getCaptureMove({ row: 4, col: 1 }, gameBoard.board)) {
-            let capturePiece = { row: 4, col: 1 }
-            let isCapturing = true
+        }
 
-            console.log(Capture.getCaptureMove(capturePiece, gameBoard.board))
+        else if (captureMove) {
+            let capturePiece = from
+            // let isCapturing = true
 
-            while (isCapturing) {
-                if (Capture.getCaptureMove(capturePiece, gameBoard.board)) {
-                    const captureMove = Capture.getCaptureMove(capturePiece, gameBoard.board)
-                    Capture.handle(gameBoard.board, captureMove)
-                    capturePiece = captureMove.to
-                } else {
-                    isCapturing = false
-                }
+            // while (isCapturing) {
+            if (captureMove.to.row === to.row && captureMove.to.col === to.col) {
+                const captureMove = Capture.getCaptureMove(capturePiece, gameBoard.board)
 
-
+                Capture.handle(gameBoard.board, captureMove)
+                CreatedGame.setCurrentPlayer(PlayerTurn.Computer)
             }
-
-
-            console.log(gameBoard.board)
-
-        } else {
+        }
+        else {
             console.log("Invalid positions. Try again.");
         }
 
+        return gameBoard.board
     }
-
-    // move(from, to) {
-    //     const [fromRow, fromCol] = from;
-    //     const [toRow, toCol] = to;
-    //     if (this.isAdjacentDiagonal(from, to, false) && this.isPositionEmpty(toRow, toCol, this.gameBoard.getBoard())) {
-    //         const board = this.gameBoard.pieces();
-    //         board[toRow][toCol] = board[fromRow][fromCol];
-    //         board[fromRow][fromCol] = null;
-    //         board[toRow][toCol].setPosition(to);
-    //     }
-    // }
-
-    // move(from, to, board, gameBoard) {
-    //     const [fromRow, fromCol] = from;
-    //     const [toRow, toCol] = to;
-    //     if (this.isAdjacentDiagonal(from, to, false) && this.isPositionEmpty(toRow, toCol, board)) {
-    //         board[toRow][toCol] = board[fromRow][fromCol];
-    //         board[fromRow][fromCol] = null;
-    //         board[toRow][toCol].setPosition(to);
-    //     }
-    // }
 
     getPieces(board) {
         const pieces = [];
         for (const row of board) {
             for (const piece of row) {
-                if (piece && piece.getColor() === ColorObj.RED) {
+                if (piece && piece.getColor() === this.color) {
                     pieces.push(piece);
                 }
             }
@@ -96,9 +61,6 @@ class Human extends Player {
         // Implementation not provided in the original C++ code
     }
 
-    // applyMove(move, board) {
-    //     super.applyMove(move, board);
-    // }
 
     applyMove(move, board, gameBoard) {
         const from = move.from;

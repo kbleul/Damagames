@@ -1,5 +1,5 @@
-const Move = require("../classes/Move");
-const { ColorObj } = require("../classes/Piece");
+const Move = require("../../classes/Move");
+const { ColorObj } = require("../../classes/Piece");
 
 class Capture {
     static isCaptureMove(from, to, board, maximizing) {
@@ -21,7 +21,6 @@ class Capture {
     }
 
     static getCapturePosition(from, to) {
-        console.log("---------------------", from, to)
         return { row: (from.row + to.row) / 2, col: (from.col + to.col) / 2 };
     }
 
@@ -53,9 +52,7 @@ class Capture {
 
         piece.setPosition(to);
         piece.setJumpedPosition(catchedPiece);
-        console.log(to)
         if (!maximizing && to.row === 0) {
-            console.log("Jesus is King")
             piece.setKing(true)
         }
         return 1;
@@ -68,13 +65,11 @@ class Capture {
             for (let col = -1; col <= 1; col += 2) {
                 const nextPos = { row: position.row + row * 2, col: position.col + col * 2 };
 
-                Capture.isCaptureMove(position, nextPos, board) && console.log(nextPos)
                 const validPosition = (nextPos.row >= 0 && nextPos.col >= 0) && (nextPos.row < 8 && nextPos.col < 8);
+
                 if (validPosition &&
                     Capture.isCaptureMove(position, nextPos, board, maximizing)) {
-
                     captureMove = new Move(position, nextPos)
-
                 }
             }
         }
