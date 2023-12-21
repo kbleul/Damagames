@@ -3,6 +3,7 @@ import Move from "../classes/Move.js";
 import Board from "../classes/Board.js";
 import Player from "../classes/Player.js";
 import Capture from "./Capture.js";
+import Computer from "../classes/Computer.js";
 
 
 const { ColorObj, Piece, Position } = require("../classes/Piece");
@@ -101,7 +102,7 @@ export const createBoardWithPieces = () => {
     playerTwo: [
       [0, 0], [0, 2], [1, 4], [0, 6],
       [1, 1], [1, 3], [1, 5], [1, 7],
-      [3, 2], [2, 2], [2, 4], [2, 6]
+      [2, 0], [3, 2], [2, 4], [2, 6]
     ]
   }
 
@@ -197,38 +198,43 @@ export function testGameClasses() {
   console.log(gameBoard.board);
 
   // // Create an instance of the Human class
-  const humanPlayer = new Human(gameBoard);
+  const humanPlayer = new Human();
+  const computerPlayer = new Computer();
+
   // // Test the move function
   // console.log("Testing move function:");
   // humanPlayer.move(board, gameBoard);
 
   // console.log(board, gameBoard)
   // Test the Capture class
-  console.log("\nTesting Capture class:");
+
+  humanPlayer.move(gameBoard)
+  computerPlayer.move(gameBoard.board)
+  console.log("change", gameBoard.board)
 
   // // Create an instance of the Capture class
 
 
   // Create a sample Move
 
-  setTimeout(() => {
-    let x = true
-    let myMove = { row: 4, col: 1 }
-    while (x) {
-      const newMove = Capture.getCaptureMove(myMove, gameBoard.board, humanPlayer)
-      console.log("newMove", newMove)
-      if (newMove) {
-        Capture.handle(gameBoard.board, newMove)
-        myMove = newMove.to
-        console.log("myMove", myMove)
+  // setTimeout(() => {
+  //   let x = true
+  //   let myMove = { row: 4, col: 1 }
+  //   while (x) {
+  //     const newMove = Capture.getCaptureMove(myMove, gameBoard.board, humanPlayer)
+  //     console.log("newMove", newMove)
+  //     if (newMove) {
+  //       Capture.handle(gameBoard.board, newMove)
+  //       myMove = newMove.to
+  //       console.log("myMove", myMove)
 
-      } else {
-        x = false
-      }
-    }
+  //     } else {
+  //       x = false
+  //     }
+  //   }
 
-    console.log(gameBoard.board)
-  }, 5000);
+  //   console.log(gameBoard.board)
+  // }, 5000);
 
 
 

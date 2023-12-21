@@ -2,7 +2,7 @@ const Move = require("../classes/Move");
 const { ColorObj } = require("../classes/Piece");
 
 class Capture {
-    static isCaptureMove(from, to, board, player, maximizing) {
+    static isCaptureMove(from, to, board, maximizing) {
         const rowDiff = to.row - from.row;
         const colDiff = to.col - from.col;
 
@@ -31,7 +31,7 @@ class Capture {
                 const nextPos = { row: position.row + row * 2, col: position.col + col * 2 };
                 const validPosition = (nextPos.row > 0 && nextPos.col > 0) && (nextPos.row < 8 && nextPos.col < 8);
                 if (validPosition &&
-                    Capture.isCaptureMove(position, nextPos, board, player)) {
+                    Capture.isCaptureMove(position, nextPos, board)) {
                     return true;
                 }
             }
@@ -61,17 +61,17 @@ class Capture {
         return 1;
     }
 
-    static getCaptureMove(position, board, player, maximizing) {
+    static getCaptureMove(position, board, maximizing) {
 
         let captureMove = null
         for (let row = -1; row <= 1; row += 2) {
             for (let col = -1; col <= 1; col += 2) {
                 const nextPos = { row: position.row + row * 2, col: position.col + col * 2 };
 
-                Capture.isCaptureMove(position, nextPos, board, player) && console.log(nextPos)
+                Capture.isCaptureMove(position, nextPos, board) && console.log(nextPos)
                 const validPosition = (nextPos.row >= 0 && nextPos.col >= 0) && (nextPos.row < 8 && nextPos.col < 8);
                 if (validPosition &&
-                    Capture.isCaptureMove(position, nextPos, board, player, maximizing)) {
+                    Capture.isCaptureMove(position, nextPos, board, maximizing)) {
 
                     captureMove = new Move(position, nextPos)
 

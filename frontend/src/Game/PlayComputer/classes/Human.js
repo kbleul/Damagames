@@ -4,73 +4,59 @@ const { ColorObj, Position } = require("./Piece");
 const Player = require("./Player");
 
 class Human extends Player {
-    constructor(color, gameBoard) {
-        super(color);
-        this.gameBoard = gameBoard;
-        this.capture = new Capture();
+    constructor() {
+        super(ColorObj.RED);
     }
 
-    move(board, gameBoard) {
+    move(gameBoard) {
         let fromRow, fromCol, toRow, toCol;
-        let validMove = false;
 
-        while (!validMove) {
-            // Assume user input for simplicity
-            // In a real application, you would need a proper user input mechanism
-            // Simulate user input
-            const inputvalues = prompt("Enter fromRow fromCol toRow  toCol").split(" ");
+        fromRow = 4;
+        fromCol = 1
+        toRow = 3
+        toCol = 2
 
-            fromRow = parseInt(inputvalues[0]);
-            fromCol = parseInt(inputvalues[1])
-            toRow = parseInt(inputvalues[2])
-            toCol = parseInt(inputvalues[3])
+        const from = new Position(fromRow, fromCol);
+        const to = new Position(toRow, toCol);
+        const move = new Move(from, to);
 
-            const from = new Position(fromRow, fromCol);
-            const to = new Position(toRow, toCol);
-            const move = new Move(from, to);
+        const pieceToMove = gameBoard.pieceAt(fromRow, fromCol, ColorObj.RED);
+        if (this.theMoveIsValid(from, to, gameBoard.board)) {
+            if (pieceToMove && pieceToMove.getColor() === ColorObj.RED) {
+                console.log(move)
 
-            const pieceToMove = gameBoard.pieceAt(fromRow, fromCol, ColorObj.RED);
+                gameBoard.setPieceAt({ row: fromRow, col: fromCol }, { row: toRow, col: toCol })
 
-            if (this.theMoveIsValid(from, to, gameBoard.board)) {
-                if (pieceToMove && pieceToMove.getColor() === ColorObj.RED) {
-                    console.log(move)
 
-                    gameBoard.setPieceAt({ row: fromRow, col: fromCol }, { row: toRow, col: toCol })
-
-                    // Check for additional captures
-                    validMove = true;
-                    console.log("ipdated", gameBoard.board)
-
-                } else {
-                    console.log("The 'from' position doesn't contain your piece. Try again.");
-                }
-            } else if (move.isCapture()) {
-                const captured = this.capture.handle(board, pieceToMove, move);
-                if (captured) {
-                    while (move.isCapture()) {
-                        console.log("You captured a piece! Enter your next jump (toRow toCol): ");
-                        // Simulate user input for the next jump
-                        toRow = parseInt(prompt("Enter toRow: "));
-                        toCol = parseInt(prompt("Enter toCol: "));
-
-                        const nextTo = new Position(toRow, toCol);
-                        const nextMove = new Move(to, nextTo);
-
-                        if (nextMove.isCapture()) {
-                            this.applyMove(nextMove, board, gameBoard);
-                            from = nextTo;
-                            to = nextTo;
-                        } else {
-                            console.log("Invalid jump. The move is not a capture or is not valid. Ending turn.");
-                            break;
-                        }
-                    }
-                    validMove = true;
-                }
+                console.log("newBoard", gameBoard.board)
             } else {
-                console.log("Invalid positions. Try again.");
+                console.log("The 'from' position doesn't contain your piece. Try again.");
             }
+        } else if (Capture.getCaptureMove({ row: 4, col: 1 }, gameBoard.board)) {
+            let capturePiece = { row: 4, col: 1 }
+            let isCapturing = true
+
+            console.log(Capture.getCaptureMove(capturePiece, gameBoard.board))
+
+            while (isCapturing) {
+                if (Capture.getCaptureMove(capturePiece, gameBoard.board)) {
+                    const captureMove = Capture.getCaptureMove(capturePiece, gameBoard.board)
+                    Capture.handle(gameBoard.board, captureMove)
+                    capturePiece = captureMove.to
+                } else {
+                    isCapturing = false
+                }
+
+
+            }
+
+
+            console.log(gameBoard.board)
+
+        } else {
+            console.log("Invalid positions. Try again.");
         }
+
     }
 
     // move(from, to) {

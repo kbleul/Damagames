@@ -60,7 +60,6 @@ class Player {
 
     theMoveIsValid(from, to, board, isMaximizer) {
         const pieceToMove = board[from.row][from.col];
-        console.log(pieceToMove)
         if (isMaximizer) {
             return (
                 pieceToMove &&
@@ -71,7 +70,6 @@ class Player {
             );
         } else {
 
-            console.log(pieceToMove, this.isValidMove(from.row, from.col), this.isValidMove(to.row, to.col), this.isPositionEmpty(to.row, to.col, board), this.isAdjacentDiagonal({ row: from.row, col: from.col }, { row: to.row, col: to.col }, pieceToMove.isKing))
             return (
                 pieceToMove &&
                 this.isValidMove(from.row, from.col) &&

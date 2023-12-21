@@ -1,8 +1,12 @@
+const Computer = require("./Computer");
+const Human = require("./Human");
+const { Position, ColorObj } = require("./Piece");
+
 class Game {
     initializePlayers() {
         // Initialize human and computer players with their respective colors
-        this.humanPlayer = new Human(Color.RED, this.gameBoard);
-        this.computerPlayer = new Computer(Color.BLACK, this.gameBoard);
+        this.humanPlayer = new Human(this.gameBoard);
+        this.computerPlayer = new Computer(this.gameBoard);
     }
 
     isGameOver() {
@@ -57,13 +61,13 @@ class Game {
                         // For regular pieces, they can only move forward
                         if (!isKing) {
                             if (
-                                piece.getColor() === Color.RED &&
+                                piece.getColor() === ColorObj.RED &&
                                 newRow > currentPosition.row
                             ) {
                                 // This is a valid forward move for a red piece
                                 return true;
                             } else if (
-                                piece.getColor() === Color.BLACK &&
+                                piece.getColor() === ColorObj.BLACK &&
                                 newRow < currentPosition.row
                             ) {
                                 // This is a valid forward move for a black piece
@@ -134,3 +138,6 @@ class Game {
         return this.gameBoard.pieces();
     }
 }
+
+
+module.exports = Game;
