@@ -135,5 +135,3 @@ yarn playwright test
 ```
 
 ## Problem?
-
-Having a problem getting this set up? Feel free to [open an issue](https://github.com/aschmelyun/docker-compose-traefik/issues/new), or reach out to me on [Twitter](https://twitter.com/aschmelyun)!
