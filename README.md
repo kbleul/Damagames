@@ -25,13 +25,23 @@ The frontend is built with React and TypeScript, providing a smooth and interact
 
 ### PWA APP Screenshots
 
-<img src="./profile_assets/1.png" alt="Frontend Screenshot" width="300">
-<img src="./profile_assets/2.png" alt="Frontend Screenshot" width="300">
-<img src="./profile_assets/3.png" alt="Frontend Screenshot" width="300">
-<img src="./profile_assets/4.png" alt="Frontend Screenshot" width="300">
-<img src="./profile_assets/5.png" alt="Frontend Screenshot" width="300">
-<img src="./profile_assets/6.png" alt="Frontend Screenshot" width="300">
-<img src="./profile_assets/7.png" alt="Frontend Screenshot" width="300">
+<table>
+  <tr>
+    <td><img src="./profile_assets/1.png" alt="Frontend Screenshot" width="300"></td>
+    <td><img src="./profile_assets/2.png" alt="Frontend Screenshot" width="300"></td>
+  </tr>
+  <tr>
+    <td><img src="./profile_assets/3.png" alt="Frontend Screenshot" width="300"></td>
+    <td><img src="./profile_assets/4.png" alt="Frontend Screenshot" width="300"></td>
+  </tr>
+  <tr>
+    <td><img src="./profile_assets/5.png" alt="Frontend Screenshot" width="300"></td>
+    <td><img src="./profile_assets/6.png" alt="Frontend Screenshot" width="300"></td>
+  </tr>
+  <tr>
+    <td><img src="./profile_assets/7.png" alt="Frontend Screenshot" width="300"></td>
+  </tr>
+</table>
 
 ## 🔧 Admin
 
@@ -45,14 +55,24 @@ The admin interface is also built with React and TypeScript, allowing administra
 
 ### Admin Site Screenshots
 
-<img src="./profile_assets/8.png" alt="Frontend Screenshot" width="300">
-<img src="./profile_assets/9.png" alt="Frontend Screenshot" width="300">
-<img src="./profile_assets/10.png" alt="Frontend Screenshot" width="300">
-<img src="./profile_assets/11.png" alt="Frontend Screenshot" width="300">
-<img src="./profile_assets/12.png" alt="Frontend Screenshot" width="300">
-<img src="./profile_assets/13.png" alt="Frontend Screenshot" width="300">
-<img src="./profile_assets/14.png" alt="Frontend Screenshot" width="300">
-<img src="./profile_assets/15.png" alt="Frontend Screenshot" width="300">
+<table>
+  <tr>
+    <td><img src="./profile_assets/8.png" alt="Frontend Screenshot" width="300"></td>
+    <td><img src="./profile_assets/9.png" alt="Frontend Screenshot" width="300"></td>
+  </tr>
+  <tr>
+    <td><img src="./profile_assets/10.png" alt="Frontend Screenshot" width="300"></td>
+    <td><img src="./profile_assets/11.png" alt="Frontend Screenshot" width="300"></td>
+  </tr>
+  <tr>
+    <td><img src="./profile_assets/12.png" alt="Frontend Screenshot" width="300"></td>
+    <td><img src="./profile_assets/13.png" alt="Frontend Screenshot" width="300"></td>
+  </tr>
+  <tr>
+    <td><img src="./profile_assets/14.png" alt="Frontend Screenshot" width="300"></td>
+    <td><img src="./profile_assets/15.png" alt="Frontend Screenshot" width="300"></td>
+  </tr>
+</table>
 
 # docker-compose-traefik
 
