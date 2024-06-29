@@ -28,7 +28,7 @@ The frontend is built with React and TypeScript, providing a smooth and interact
 <table>
   <tr>
     <td><img src="./profile_assets/1.png" alt="Frontend Screenshot" width="300"></td>
-    <td><img src="./profile_assets/2.png" alt="Frontend Screenshot" width="300"></td>
+       <td><img src="./profile_assets/7.png" alt="Frontend Screenshot" width="300"></td>
   </tr>
   <tr>
     <td><img src="./profile_assets/3.png" alt="Frontend Screenshot" width="300"></td>
@@ -38,9 +38,7 @@ The frontend is built with React and TypeScript, providing a smooth and interact
     <td><img src="./profile_assets/5.png" alt="Frontend Screenshot" width="300"></td>
     <td><img src="./profile_assets/6.png" alt="Frontend Screenshot" width="300"></td>
   </tr>
-  <tr>
-    <td><img src="./profile_assets/7.png" alt="Frontend Screenshot" width="300"></td>
-  </tr>
+  
 </table>
 
 ## 🔧 Admin
